@@ -8,10 +8,10 @@ public class SCP_106 : MonoBehaviour
     NavMeshAgent _navMeshagent;
     float PlayerDistance= 20;
     public GameObject Player;
-    bool isActive = false, playedHorror;
+    bool isActive = false, playedHorror usingAStar = true;
     AudioSource sfx;
     Vector3 Destination;
-    int frameInterval=5;
+    int frameInterval=8;
     public AudioClip[] Horror;
 
     // Use this for initialization
@@ -41,44 +41,27 @@ public class SCP_106 : MonoBehaviour
         {
             playedHorror = false;
         }
+        if (PlayerDistance > 3)
+        {
+            usingAStar = false; 
+        }
 
         if (isActive)
         {
-                    if (Time.frameCount % frameInterval == 0)
-                        SetDestination();
-
-                    if (PlayerDistance < 20f)
-                        _navMeshagent.speed = 25;
-                    else
-                        _navMeshagent.speed = 10;
-                    _navMeshagent.isStopped = false;
-                    sfx.UnPause();
-                    HorrorNear();
-
-                }
-                else
-                {
-                    _navMeshagent.speed = 0;
-                    _navMeshagent.isStopped = true;
-                    sfx.Pause();
-                }
+            Horror();
+            if (UsingAStar)
+            {
+                    SetDestination();
             }
             else
             {
-                _navMeshagent.speed = 0;
                 _navMeshagent.isStopped = true;
-                sfx.Pause();
-                HorrorFar();
-                
-                
             }
         }
-        else
-            sfx.Pause();
     }
 
 
-    void HorrorFar()
+    void Horror()
     {
         if (PlayerDistance < 16 && PlayerDistance > 4 && CheckPlayer())
         {
@@ -99,9 +82,6 @@ public class SCP_106 : MonoBehaviour
             _navMeshagent.SetDestination(Destination);
       }
 
-    }
-
-    
     }
 
     public void WarpMe(bool beActive, Vector3 warppoint)
