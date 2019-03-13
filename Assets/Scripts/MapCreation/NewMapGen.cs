@@ -245,6 +245,8 @@ public class NewMapGen : MonoBehaviour
 
         mapgen[(mapSize.xSize / 2)+1, mapSize.ySize - 1] = 0;
         mapgen[(mapSize.xSize / 2) - 1, mapSize.ySize - 1] = 0;
+        mapgen[(mapSize.xSize / 2) + 2, mapSize.ySize - 1] = 0;
+        mapgen[(mapSize.xSize / 2) - 2, mapSize.ySize - 1] = 0;
 
         mapgen[mapSize.xSize / 2, zone3_limit-1] = 1;
         mapgen[mapSize.xSize / 2, zone2_limit-1] = 1;

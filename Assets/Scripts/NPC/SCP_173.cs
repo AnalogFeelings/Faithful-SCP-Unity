@@ -9,19 +9,20 @@ public class SCP_173 : MonoBehaviour
     public LayerMask DoorLay;
     public LayerMask CanSeePlayer;
     public float DoorFiddle, DoorCoolDown;
-    float DoorTimer, DoorCool;
+    float DoorTimer, DoorCool, PlayerDistance= 20;
     Object_Door DoorObj;
     public GameObject Player;
     Camera mainCamera;
     Plane[] frustum;
     Collider col_173;
     Collider[] Interact;
-    bool canSee = true, canMove = true, hasDoor = false, hasPatrol = false, DidOpen;
+    bool canSee = true, canMove = true, hasDoor = false, hasPatrol = false, DidOpen, playedHorror, playedNear;
     public bool canAttack;
     AudioSource sfx;
     public Transform DoorSpot;
     Vector3 Destination;
-    int MoveAttempts;
+    int MoveAttempts, frameInterval=5;
+    public AudioClip[] farHorror, closeHorror;
 
     // Use this for initialization
     void Awake()
@@ -44,6 +45,11 @@ public class SCP_173 : MonoBehaviour
 
     void Update()
     {
+        if (Time.frameCount % frameInterval == 0)
+            PlayerDistance = (Vector3.Distance(Player.transform.position, transform.position));
+
+        if (PlayerDistance > 20)
+            playedHorror = false;
 
         canSee = IsSeen();
         CheckDoor();
@@ -56,10 +62,16 @@ public class SCP_173 : MonoBehaviour
                 DoorTimer -= Time.deltaTime;
                 if (canMove)
                 {
-                    SetDestination();
-                    _navMeshagent.speed = 15;
+                    if (Time.frameCount % frameInterval == 0)
+                        SetDestination();
+
+                    if (PlayerDistance < 20f)
+                        _navMeshagent.speed = 25;
+                    else
+                        _navMeshagent.speed = 10;
                     _navMeshagent.isStopped = false;
                     sfx.UnPause();
+                    HorrorPlay();
 
                 }
                 else
@@ -74,6 +86,8 @@ public class SCP_173 : MonoBehaviour
                 _navMeshagent.speed = 0;
                 _navMeshagent.isStopped = true;
                 sfx.Pause();
+                
+                
             }
         }
         else
@@ -81,12 +95,52 @@ public class SCP_173 : MonoBehaviour
     }
 
 
+    void HorrorPlay()
+    {
+        if (PlayerDistance < 16 && CheckPlayer())
+        {
+            if (PlayerDistance > 4)
+            {
+                if (playedHorror == false)
+                {
+                    GameController.instance.PlayHorror(farHorror[Random.Range(0, farHorror.Length)]);
+                    playedNear = false;
+                    playedHorror = true;
+                }
+            }
+
+            else
+            {
+                if (playedNear == false)
+                {
+                    GameController.instance.PlayHorror(closeHorror[Random.Range(0, closeHorror.Length)]);
+                    playedNear = true;
+                }
+            }
+        }
+    }
+
+
+
+    bool CheckPlayer()
+    {
+        RaycastHit WallCheck;
+        Debug.DrawRay(Player.transform.position, (transform.position + new Vector3(0, 0.4f, 0)) - Player.transform.position);
+        if (Physics.Raycast(Player.transform.position, (transform.position + new Vector3(0, 0.4f,0))- Player.transform.position, out WallCheck, 40.0f))
+        {
+            if (WallCheck.transform == this.transform)
+                return true;
+        }
+        return false;
+    }
+
+
     private void SetDestination()
     {
-        if (Vector3.Distance(Player.transform.position, transform.position) < 30f)
+        if (PlayerDistance < 30f)
         {
             Destination = Player.transform.position;
-            _navMeshagent.SetDestination(Destination);
+                _navMeshagent.SetDestination(Destination);
         }
         else
             {
@@ -94,7 +148,7 @@ public class SCP_173 : MonoBehaviour
             {
                 Debug.Log(Vector3.Distance(transform.position, Destination));
                 Destination = GameController.instance.GetPatrol(transform.position);
-                _navMeshagent.SetDestination(Destination);
+                    _navMeshagent.SetDestination(Destination);
                 hasPatrol = true;
             }
             if (Vector3.Distance(Destination, transform.position) < 5f)
