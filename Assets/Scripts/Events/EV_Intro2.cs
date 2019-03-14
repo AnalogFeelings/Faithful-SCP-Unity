@@ -179,7 +179,7 @@ public class EV_Intro2 : MonoBehaviour
                         GameController.instance.Warp173(false, ata3);
                         guard_.SetRota(GameController.instance.scp173.transform);
                         //guard_.AnimTrigger(-2, true);
-                        d2_.PlaySFX(GeneralSFX[3]);
+                        sci_.PlaySFX(GeneralSFX[5]);
                         break;
                     }
 
@@ -213,6 +213,7 @@ public class EV_Intro2 : MonoBehaviour
 
                 case 14:
                     {
+                        objPlayer.GetComponent<Player_Control>().FakeBlink(0.3f);
                         objPlayer.transform.position = GameController.instance.WorldAnchor + (objPlayer.transform.position - TeleportAnchor.position);
                         d1.transform.position = GameController.instance.WorldAnchor + (d1.transform.position - TeleportAnchor.position);
                         d2.transform.position = GameController.instance.WorldAnchor + (d2.transform.position - TeleportAnchor.position);
@@ -220,6 +221,8 @@ public class EV_Intro2 : MonoBehaviour
                         GameController.instance.doGameplay = true;
                         GameController.instance.ChangeMusic(TheDread);
                         StopTimer = true;
+                        objPlayer.GetComponent<Player_Control>().DefPost();
+                        RenderSettings.fog = true;
                         break;
                     }
 

@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.PostProcessing;
 
 public class Player_Control : MonoBehaviour
 {
     float InputX, InputY, BlinkingTimer, BlinkMult = 1, CloseTimer, AsfixTimer, Health = 100, speed, amplitude;
     public GameObject Camera, InterHold, DeathCol;
+    private PostProcessingBehaviour currPost;
+    public PostProcessingProfile NormalAmbient;
     private Transform _groundChecker;
     public Transform DefHead, CrouchHead;
     public LayerMask Ground, InteractiveLayer;
@@ -26,7 +29,7 @@ public class Player_Control : MonoBehaviour
 
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         _controller = GetComponent<CharacterController>();
         _groundChecker = transform.GetChild(0);
@@ -34,6 +37,7 @@ public class Player_Control : MonoBehaviour
         sfx.GetComponent<AudioSource>();
         speed = Basespeed;
         headPos = DefHead.transform.position;
+        currPost = Camera.GetComponent<PostProcessingBehaviour>();
 
     }
 
@@ -76,8 +80,6 @@ public class Player_Control : MonoBehaviour
             speed = crouchspeed;
         if (isRunning)
             speed = runSpeed;
-            
-
 
     }
 
@@ -143,7 +145,22 @@ public class Player_Control : MonoBehaviour
             Cursor.visible = true;
         }
     
-}
+    }
+
+    public void ChangePost(PostProcessingProfile post)
+    {
+        currPost.profile = post;
+    }
+
+    public void DefPost()
+    {
+        currPost.profile = NormalAmbient;
+    }
+
+
+
+
+
 
     void ACT_Gravity()
     {

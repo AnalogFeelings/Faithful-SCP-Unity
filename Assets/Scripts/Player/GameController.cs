@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.PostProcessing;
 
 [System.Serializable]
 public class CameraPool
@@ -13,6 +14,7 @@ public class CameraPool
 public class GameController : MonoBehaviour
 {
     public static GameController instance = null;
+    public PostProcessingProfile startup;
 
     public bool CreateMap;
     public bool SpawnMap;
@@ -20,9 +22,10 @@ public class GameController : MonoBehaviour
     int xPlayer, yPlayer;
 
     public GameObject player;
-    public GameObject scp173, startEv;
+    public GameObject scp173, startEv, scp106;
     public NewMapGen mapCreate;
     SCP_173 con_173;
+    SCP_106 con_106;
 
     public Vector3 WorldAnchor;
 
@@ -38,7 +41,7 @@ public class GameController : MonoBehaviour
     int[,,] culllookup;
     int[,] Binary_Map;
 
-    public bool doGameplay, spawnPlayer, spawnHere, spawn173, StopTimer = false;
+    public bool doGameplay, spawnPlayer, spawnHere, spawn173, spawn106, StopTimer = false;
     public Transform place173, playerSpawn;
 
     public AudioSource Music;
@@ -112,6 +115,13 @@ public class GameController : MonoBehaviour
             con_173 = scp173.GetComponent<SCP_173>();
         }
 
+        if (spawn106)
+        {
+            scp106 = Instantiate(scp106, new Vector3(0,0,0), Quaternion.identity);
+            con_106 = scp106.GetComponent<SCP_106>();
+        }
+
+        player.GetComponent<Player_Control>().ChangePost(startup);
 
 
     }
@@ -137,6 +147,11 @@ public class GameController : MonoBehaviour
     public void Warp173(bool beActive, Transform Here)
     {
         con_173.WarpMe(beActive, Here.position);
+    }
+
+    public void Warp106(Transform Here)
+    {
+        con_106.Spawn(Here.position);
     }
 
     void DoAmbiance()
