@@ -20,12 +20,9 @@ public class SCP_106 : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-
-
         Player = GameController.instance.player;
         _navMeshagent = this.GetComponent<NavMeshAgent>();
         sfx = GetComponent<AudioSource>();
-        _navMeshagent.Warp(transform.position);
         _navMeshagent.enabled = false;
     }
 
