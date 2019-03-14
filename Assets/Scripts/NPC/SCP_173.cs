@@ -49,7 +49,10 @@ public class SCP_173 : MonoBehaviour
             PlayerDistance = (Vector3.Distance(Player.transform.position, transform.position));
 
         if (PlayerDistance > 20)
+        {
             playedHorror = false;
+            playedNear = false;
+            }
 
         canSee = IsSeen();
         CheckDoor();
@@ -71,7 +74,7 @@ public class SCP_173 : MonoBehaviour
                         _navMeshagent.speed = 10;
                     _navMeshagent.isStopped = false;
                     sfx.UnPause();
-                    HorrorPlay();
+                    HorrorNear();
 
                 }
                 else
@@ -86,6 +89,7 @@ public class SCP_173 : MonoBehaviour
                 _navMeshagent.speed = 0;
                 _navMeshagent.isStopped = true;
                 sfx.Pause();
+                HorrorFar();
                 
                 
             }
@@ -95,28 +99,28 @@ public class SCP_173 : MonoBehaviour
     }
 
 
-    void HorrorPlay()
+    void HorrorFar()
     {
-        if (PlayerDistance < 16 && CheckPlayer())
+        if (PlayerDistance < 16 && PlayerDistance > 4 && CheckPlayer())
         {
-            if (PlayerDistance > 4)
-            {
+                playedNear = false;
                 if (playedHorror == false)
                 {
                     GameController.instance.PlayHorror(farHorror[Random.Range(0, farHorror.Length)]);
-                    playedNear = false;
                     playedHorror = true;
                 }
-            }
-
-            else
-            {
+        }
+    }
+    
+    void HorrorNear()
+    {
+        if (PlayerDistance < 4 && CheckPlayer())
+        {
                 if (playedNear == false)
                 {
                     GameController.instance.PlayHorror(closeHorror[Random.Range(0, closeHorror.Length)]);
                     playedNear = true;
                 }
-            }
         }
     }
 
@@ -126,10 +130,14 @@ public class SCP_173 : MonoBehaviour
     {
         RaycastHit WallCheck;
         Debug.DrawRay(Player.transform.position, (transform.position + new Vector3(0, 0.4f, 0)) - Player.transform.position);
-        if (Physics.Raycast(Player.transform.position, (transform.position + new Vector3(0, 0.4f,0))- Player.transform.position, out WallCheck, 40.0f))
+        
+        if (Time.frameCount % frameInterval == 0)
         {
-            if (WallCheck.transform == this.transform)
-                return true;
+            if (Physics.Raycast(Player.transform.position, (transform.position + new Vector3(0, 0.4f,0))- Player.transform.position, out WallCheck, 40.0f))
+            {
+                if (WallCheck.transform == this.transform)
+                    return true;
+            }
         }
         return false;
     }
