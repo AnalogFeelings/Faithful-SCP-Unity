@@ -201,7 +201,7 @@ public class Player_Control : MonoBehaviour
 
         if (InterHold != null && Input.GetButtonDown("Interact"))
         {
-            InterHold.GetComponent<Object_Button>().Pressed();
+            InterHold.GetComponent<Object_Interact>().Pressed();
 
         }
     }
