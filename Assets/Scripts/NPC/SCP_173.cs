@@ -101,7 +101,7 @@ public class SCP_173 : MonoBehaviour
 
     void HorrorFar()
     {
-        if (PlayerDistance < 16 && PlayerDistance > 4 && CheckPlayer())
+        if (PlayerDistance < 16 && CheckPlayer())
         {
                 playedNear = false;
                 if (playedHorror == false)
@@ -239,6 +239,8 @@ public class SCP_173 : MonoBehaviour
     {
         _navMeshagent.Warp(warppoint);
         canAttack = beActive;
+        playedNear = false;
+        playedHorror = false;
     }
 
 

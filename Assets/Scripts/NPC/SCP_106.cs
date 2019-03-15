@@ -40,9 +40,9 @@ public class SCP_106 : MonoBehaviour
             }
 
 
-            if (PlayerDistance > 15)
+            if (PlayerDistance > 20)
             {
-                playedHorror = false;
+                UnSpawn();
             }
             if (PlayerDistance > 3.5f)
             {
@@ -107,6 +107,7 @@ public class SCP_106 : MonoBehaviour
         transform.position = (new Vector3(0, -10, 0));
         isActive = false;
         isSpawn = false;
+        GameController.instance.DefMusic();
     }
 
     public void Spawn(Vector3 here)
@@ -119,6 +120,7 @@ public class SCP_106 : MonoBehaviour
         sfx.PlayOneShot(Sfx[0]);
         timer = spawntimer;
         GameController.instance.ChangeMusic(music);
+        playedHorror = false;
     }
 
 

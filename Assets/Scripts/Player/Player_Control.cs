@@ -178,21 +178,32 @@ public class Player_Control : MonoBehaviour
 
     void ACT_Buttons()
     {
+        float lastdistance = 100f;
         Interact = Physics.OverlapSphere(transform.position, 2.0f, InteractiveLayer);
         if (Interact.Length != 0)
         {
             InterHold = Interact[0].gameObject;
-            Debug.DrawRay(InterHold.transform.position, (headPos-new Vector3(0.0f,0.4f,0.0f)) - InterHold.transform.position, new Color(255, 255, 255, 1.0f), 5);
-            if (Physics.Raycast(InterHold.transform.position, (headPos - new Vector3(0.0f, 0.4f, 0.0f)) - InterHold.transform.position, out WallCheck, 4.0f, Ground, QueryTriggerInteraction.Ignore))
+            for (int i = 0; i < Interact.Length; i++)
             {
-                if (WallCheck.transform == this.transform && Input.GetButtonDown("Interact"))
+                Debug.DrawRay(Interact[i].transform.position, (headPos - new Vector3(0.0f, 0.4f, 0.0f)) - Interact[i].transform.position, new Color(255, 255, 255, 1.0f), 5);
+                if (Physics.Raycast(Interact[i].transform.position, (headPos - new Vector3(0.0f, 0.4f, 0.0f)) - Interact[i].transform.position, out WallCheck, 4.0f, Ground, QueryTriggerInteraction.Ignore))
                 {
-                    InterHold.GetComponent<Object_Button>().Pressed();
+                    if (WallCheck.transform == this.transform && (Vector3.Distance(this.transform.position, Interact[i].transform.position) < lastdistance))
+                    {
+                        lastdistance = Vector3.Distance(this.transform.position, Interact[i].transform.position);
+                        InterHold = Interact[i].gameObject;
+                    }
                 }
             }
         }
         else
             InterHold = null;
+
+        if (InterHold != null && Input.GetButtonDown("Interact"))
+        {
+            InterHold.GetComponent<Object_Button>().Pressed();
+
+        }
     }
 
     void ACT_Blinking()

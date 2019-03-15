@@ -17,7 +17,6 @@ public class GameController : MonoBehaviour
     public PostProcessingProfile startup;
 
     public bool CreateMap;
-    public bool SpawnMap;
 
     int xPlayer, yPlayer;
 
@@ -33,7 +32,7 @@ public class GameController : MonoBehaviour
     int Zone3limit, Zone2limit;
     int zoneAmbiance = -1;
     bool CullerFlag;
-    bool CullerOn, changeTrack, changed, playIntro;
+    bool CullerOn, changeTrack, changed, playIntro = true;
     float roomsize = 15.3f, ambiancetimer=0, Timer = 5, normalAmbiance, ambiancefreq;
     public float ambifreq;
 
@@ -58,6 +57,7 @@ public class GameController : MonoBehaviour
     public AudioClip[] Z2;
     public AudioClip[] Z3;
     AudioClip trackTo;
+    public AudioClip NormalMusic;
 
     public CameraPool [] cameraPool;
     
@@ -71,7 +71,6 @@ public class GameController : MonoBehaviour
         else if (instance != null)
             Destroy(gameObject);
     }
-
 
     void OnGUI()
     {
@@ -103,10 +102,10 @@ public class GameController : MonoBehaviour
 
         else
         {
-            GUI.Box(new Rect(10, 10, 500, 90), "Menu juego");
-            GUI.Label(new Rect(20, 40, 80, 20), "Mapa X " + xPlayer + " Mapa Y " + yPlayer);
-            GUI.Label(new Rect(120, 40, 80, 20), "Zona Actual " + zoneAmbiance);
-            GUI.Label(new Rect(220, 40, 80, 20), "¿Ejecutando procesos normales?" + doGameplay);
+            GUI.Box(new Rect(10, 10, 300, 100), "Menu juego");
+            GUI.Label(new Rect(20, 40, 300, 20), "Mapa X " + xPlayer + " Mapa Y " + yPlayer);
+            GUI.Label(new Rect(20, 65, 300, 20), "Zona Actual " + zoneAmbiance);
+            GUI.Label(new Rect(20, 90, 300, 20), "¿Ejecutando procesos normales? " + doGameplay);
         }
     }
 
@@ -114,6 +113,7 @@ public class GameController : MonoBehaviour
 
     void StartGame()
     {
+
         AmbianceLibrary = PreBreach;
         CullerFlag = false;
         CullerOn = false;
@@ -257,6 +257,13 @@ public class GameController : MonoBehaviour
     {
         changeTrack = true;
         trackTo = newMusic;
+        changed = false;
+    }
+
+    public void DefMusic()
+    {
+        changeTrack = true;
+        trackTo = NormalMusic;
         changed = false;
     }
 

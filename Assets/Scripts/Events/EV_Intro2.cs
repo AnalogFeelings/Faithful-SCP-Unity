@@ -214,14 +214,15 @@ public class EV_Intro2 : MonoBehaviour
                 case 14:
                     {
                         sci_.SetSeq(Alarm);
-                        objPlayer.GetComponent<Player_Control>().FakeBlink(0.5f);
-                        objPlayer.transform.position = GameController.instance.WorldAnchor + (objPlayer.transform.position - TeleportAnchor.position);
                         d1.transform.position = GameController.instance.WorldAnchor + (d1.transform.position - TeleportAnchor.position);
                         d2.transform.position = GameController.instance.WorldAnchor + (d2.transform.position - TeleportAnchor.position);
                         guard.transform.position = GameController.instance.WorldAnchor + (guard.transform.position - TeleportAnchor.position);
-                        GameController.instance.doGameplay = true;
+
                         StopTimer = true;
 
+                        objPlayer.GetComponent<Player_Control>().FakeBlink(0.5f);
+                        objPlayer.transform.position = GameController.instance.WorldAnchor + (objPlayer.transform.position - TeleportAnchor.position);
+                        GameController.instance.doGameplay = true;
                         break;
                     }
 

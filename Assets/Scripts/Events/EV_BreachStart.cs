@@ -10,7 +10,6 @@ public class EV_BreachStart : MonoBehaviour
     bool check2 = true, check = true, StopTimer =true;
     float Timer;
     public AudioClip Dialog;
-    public AudioClip TheDread;
 
     // Update is called once per frame
     private void Start()
@@ -24,7 +23,7 @@ public class EV_BreachStart : MonoBehaviour
             Timer -= Time.deltaTime;
         if (Timer <= 0.0f && StopTimer == false)
         {
-            GameController.instance.player.GetComponent<Player_Control>().FakeBlink(0.3f);
+            GameController.instance.player.GetComponent<Player_Control>().FakeBlink(0.5f);
             GameController.instance.DefaultAmbiance();
             GameController.instance.Warp173(false, GameController.instance.transform);
             Destroy(this.gameObject);
@@ -35,7 +34,7 @@ public class EV_BreachStart : MonoBehaviour
             if (trigger.GetComponent<BoxTrigger>().GetState())
             {
                 check = false;
-                GameController.instance.ChangeMusic(TheDread);
+                GameController.instance.DefMusic();
                 GameController.instance.player.GetComponent<Player_Control>().DefPost();
                 RenderSettings.fog = true;
             }
@@ -52,7 +51,7 @@ public class EV_BreachStart : MonoBehaviour
                 GameController.instance.Warp173(false, Anchor1.transform);
                 check2 = false;
                 StopTimer = false;
-                Timer = 10;
+                Timer = 14;
             }
         }
 
