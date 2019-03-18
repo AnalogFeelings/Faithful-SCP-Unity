@@ -243,5 +243,15 @@ public class SCP_173 : MonoBehaviour
         playedHorror = false;
     }
 
+    private void OnTriggerStay(Collider other)
+    {
+        if ((!IsSeen())&&(other.gameObject.CompareTag("Player")))
+        {
+            other.gameObject.GetComponent<Player_Control>().Death(0);
+            Debug.Log("You are ded ded ded");
+        }
+
+    }
+
 
 }

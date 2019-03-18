@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// :{)
 
 public class Object_Button : Object_Interact
+{ 
     public GameObject Door01, Door02;
     public override void Pressed()
     {

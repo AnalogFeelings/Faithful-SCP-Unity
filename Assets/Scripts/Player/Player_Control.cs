@@ -55,7 +55,7 @@ public class Player_Control : MonoBehaviour
             _controller.Move(movement * speed * Time.deltaTime);
         }
         if (Health <= 0)
-            Death();
+            Death(0);
     }
 
     void ACT_Move()
@@ -249,16 +249,27 @@ public class Player_Control : MonoBehaviour
         }
     }
 
-    public void Death()
+    public void Death(int cause)
     {
-        _controller.enabled = false;
-        DeathCol.SetActive(true);
-        DeathCol.transform.parent = null;
-        Camera.transform.parent = DeathCol.transform;
-        Camera.GetComponent<Player_MouseLook>().enabled = false;
-        isGameplay = false;
-        eyes.enabled = false;
+        if (isGameplay)
+        {
+            _controller.enabled = false;
+            DeathCol.SetActive(true);
+            DeathCol.transform.parent = null;
+            Camera.transform.parent = DeathCol.transform;
+            Camera.GetComponent<Player_MouseLook>().enabled = false;
+            isGameplay = false;
+            eyes.enabled = false;
 
+            switch (cause)
+            {
+                case 0:
+                    {
+                        sfx.PlayOneShot(Conch[Random.Range(0, Conch.Length)]);
+                        break;
+                    }
+            }
+        }
     }
 
     public void FakeBlink(float time)
@@ -278,28 +289,12 @@ public class Player_Control : MonoBehaviour
             return (false);
     }
 
-    /*private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("173"))
-        {
-            Death();
-            Debug.Log("You are ded ded ded");
-        }
-
-    }*/
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Smoke"))
             isSmoke = true;
         else
             isSmoke = false;
-        if (other.gameObject.CompareTag("173")&&IsBlinking())
-        {
-            Death();
-            sfx.clip = Conch[Random.Range(0, Conch.Length)];
-            sfx.Play();
-        }
     }
 
 
