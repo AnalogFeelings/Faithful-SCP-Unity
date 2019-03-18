@@ -31,6 +31,7 @@ public class GameController : MonoBehaviour
     int xStart, xEnd, yStart, yEnd;
     int Zone3limit, Zone2limit;
     int zoneAmbiance = -1;
+    int zoneMusic = -1;
     bool CullerFlag;
     bool CullerOn, changeTrack, changed, playIntro = true;
     float roomsize = 15.3f, ambiancetimer=0, Timer = 5, normalAmbiance, ambiancefreq;
@@ -57,7 +58,7 @@ public class GameController : MonoBehaviour
     public AudioClip[] Z2;
     public AudioClip[] Z3;
     AudioClip trackTo;
-    public AudioClip NormalMusic;
+    public AudioClip Mus1,Mus2,Mus3;
 
     public CameraPool [] cameraPool;
     
@@ -250,6 +251,29 @@ public class GameController : MonoBehaviour
         }
     }
 
+    void MusicManager()
+    {
+        if (zoneMusic != -1)
+        {
+            if (yPlayer < Zone3limit && zoneMusic != 2)
+            {
+                ChangeMusic(Mus3);
+                zoneMusic = 2;
+            }
+            if ((yPlayer > Zone3limit && yPlayer < Zone2limit) && zoneMusic != 1)
+            {
+                ChangeMusic(Mus2);
+                zoneMusic = 1;
+            }
+            if (yPlayer > Zone2limit && zoneMusic != 0)
+            {
+                ChangeMusic(Mus1);
+                zoneMusic = 0;
+            }
+
+        }
+    }
+
 
 
 
@@ -258,13 +282,12 @@ public class GameController : MonoBehaviour
         changeTrack = true;
         trackTo = newMusic;
         changed = false;
+        zoneMusic = -1;
     }
 
     public void DefMusic()
     {
-        changeTrack = true;
-        trackTo = NormalMusic;
-        changed = false;
+        zoneMusic = 3;
     }
 
     void MusicChanging()
@@ -303,6 +326,7 @@ public class GameController : MonoBehaviour
         //Debug.Log("Posicion X= " + xPlayer + " Posicion Y= " + yPlayer + " Hay cuarto? " + Binary_Map[xPlayer, yPlayer]);
 
         AmbianceManager();
+        MusicManager();
 
         PlayerEvents();
 

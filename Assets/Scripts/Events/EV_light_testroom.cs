@@ -10,7 +10,7 @@ public class EV_light_testroom : MonoBehaviour
     public AudioClip [] SFX;
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {   if (ActiveTimer)
             Timer -= Time.deltaTime;
         if (Timer <= 0.0f && StopTimer == false)

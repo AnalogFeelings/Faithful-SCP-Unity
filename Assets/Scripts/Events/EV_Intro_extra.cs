@@ -32,16 +32,15 @@ public class EV_Intro_extra : MonoBehaviour
         else
             FinalMessage = new AudioClip[7];
 
-        FinalMessage[0] = ONOFF[0];
-
-
         FinalMessage[1] = DIA1[Random.Range(0, DIA1.Length)];
+
         if (Group == 0)
             FinalMessage[2] = SCI_1[Random.Range(0, SCI_1.Length)];
         if (Group == 1)
             FinalMessage[2] = CRE_1[Random.Range(0, CRE_1.Length)];
         if (Group == 2)
             FinalMessage[2] = SEC_1[Random.Range(0, SEC_1.Length)];
+
         if (LineOrGo == 0)
         {
             FinalMessage[3] = NUMBERS[9];
@@ -50,6 +49,8 @@ public class EV_Intro_extra : MonoBehaviour
         }
         else
         {
+            FinalMessage[6] = ONOFF[1];
+
             FinalMessage[3] = DIA2[Random.Range(0, DIA2.Length)];
 
             if (Group == 0)
@@ -65,9 +66,12 @@ public class EV_Intro_extra : MonoBehaviour
                 FinalMessage[5] = CRE_3[Random.Range(0, CRE_3.Length)];
             if (Group == 2)
                 FinalMessage[5] = SEC_3[Random.Range(0, SEC_3.Length)];
-            FinalMessage[6] = ONOFF[1];
+
+
         }
-        
+
+        FinalMessage[0] = ONOFF[0];
+
 
     }
 

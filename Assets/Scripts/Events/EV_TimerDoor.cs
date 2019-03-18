@@ -18,7 +18,7 @@ public class EV_TimerDoor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isActive == false && (Button1.GetComponent<Object_Button>().activated == true || Button2.GetComponent<Object_Button>().activated == true))
+        if (isActive == false && (Button1.GetComponent<Object_Button_Trigger>().activated == true || Button2.GetComponent<Object_Button_Trigger>().activated == true))
         {
             Timer = 6;
             isActive = true;

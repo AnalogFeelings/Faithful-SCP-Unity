@@ -232,9 +232,17 @@ public class NewMapGen : MonoBehaviour
 
         Debug.Log("Creando");
         CreaLab();
-        walker_list.Add(new walker_dat(mapSize.xSize / 2, zone3_limit-1, (mapSize.xSize/2)*3, minHall, 1, true));
+        /*walker_list.Add(new walker_dat(mapSize.xSize / 2, zone3_limit-1, (mapSize.xSize/2)*3, minHall, 1, true));
         walker_list.Add(new walker_dat(mapSize.xSize / 2, zone2_limit-1, (mapSize.xSize / 2) * 3, minHall, 1, true));
-        walker_list.Add(new walker_dat(mapSize.xSize / 2, mapSize.ySize - 2, (mapSize.xSize / 2) * 3, minHall, 1, true));
+        walker_list.Add(new walker_dat(mapSize.xSize / 2, mapSize.ySize - 2, mapSize.xSize, minHall, 0, true));
+        walker_list.Add(new walker_dat(mapSize.xSize / 2, mapSize.ySize - 2, mapSize.xSize, minHall, 2, true));*/
+
+        walker_list.Add(new walker_dat(mapSize.xSize / 2, zone3_limit - 1, mapSize.xSize, minHall, 0, true));
+        walker_list.Add(new walker_dat(mapSize.xSize / 2, zone3_limit - 1, mapSize.xSize, minHall, 2, true));
+        walker_list.Add(new walker_dat(mapSize.xSize / 2, zone2_limit - 1, mapSize.xSize, minHall, 2, true));
+        walker_list.Add(new walker_dat(mapSize.xSize / 2, zone2_limit - 1, mapSize.xSize, minHall, 0, true));
+        walker_list.Add(new walker_dat(mapSize.xSize / 2, mapSize.ySize - 2, mapSize.xSize, minHall, 0, true));
+        walker_list.Add(new walker_dat(mapSize.xSize / 2, mapSize.ySize - 2, mapSize.xSize, minHall, 2, true));
 
         step();
 
@@ -555,7 +563,7 @@ public class NewMapGen : MonoBehaviour
         {
             for (j = 0; j < mapSize.ySize; j++)
             {
-                if ((mapfil[i, j].empty == false))      //Imprime el mapa
+                if (mapfil[i, j].empty == false && mapfil[i, j].RoomHolder != null)      //Imprime el mapa
                     RoomInstance(i, j);
             }
         }
