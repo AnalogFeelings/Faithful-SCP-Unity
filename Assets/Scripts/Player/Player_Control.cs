@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.PostProcessing;
 
 public class Player_Control : MonoBehaviour
 {
     float InputX, InputY, BlinkingTimer, BlinkMult = 1, CloseTimer, AsfixTimer, Health = 100, speed, amplitude;
     public GameObject Camera, InterHold, DeathCol;
+    private PostProcessingBehaviour currPost;
+    public PostProcessingProfile NormalAmbient;
     private Transform _groundChecker;
     public Transform DefHead, CrouchHead;
     public LayerMask Ground, InteractiveLayer;
@@ -26,7 +29,7 @@ public class Player_Control : MonoBehaviour
 
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         _controller = GetComponent<CharacterController>();
         _groundChecker = transform.GetChild(0);
@@ -34,6 +37,7 @@ public class Player_Control : MonoBehaviour
         sfx.GetComponent<AudioSource>();
         speed = Basespeed;
         headPos = DefHead.transform.position;
+        currPost = Camera.GetComponent<PostProcessingBehaviour>();
 
     }
 
@@ -51,7 +55,7 @@ public class Player_Control : MonoBehaviour
             _controller.Move(movement * speed * Time.deltaTime);
         }
         if (Health <= 0)
-            Death();
+            Death(0);
     }
 
     void ACT_Move()
@@ -76,8 +80,6 @@ public class Player_Control : MonoBehaviour
             speed = crouchspeed;
         if (isRunning)
             speed = runSpeed;
-            
-
 
     }
 
@@ -143,7 +145,22 @@ public class Player_Control : MonoBehaviour
             Cursor.visible = true;
         }
     
-}
+    }
+
+    public void ChangePost(PostProcessingProfile post)
+    {
+        currPost.profile = post;
+    }
+
+    public void DefPost()
+    {
+        currPost.profile = NormalAmbient;
+    }
+
+
+
+
+
 
     void ACT_Gravity()
     {
@@ -161,21 +178,32 @@ public class Player_Control : MonoBehaviour
 
     void ACT_Buttons()
     {
+        float lastdistance = 100f;
         Interact = Physics.OverlapSphere(transform.position, 2.0f, InteractiveLayer);
         if (Interact.Length != 0)
         {
             InterHold = Interact[0].gameObject;
-            Debug.DrawRay(InterHold.transform.position, (headPos-new Vector3(0.0f,0.4f,0.0f)) - InterHold.transform.position, new Color(255, 255, 255, 1.0f), 5);
-            if (Physics.Raycast(InterHold.transform.position, (headPos - new Vector3(0.0f, 0.4f, 0.0f)) - InterHold.transform.position, out WallCheck, 4.0f, Ground, QueryTriggerInteraction.Ignore))
+            for (int i = 0; i < Interact.Length; i++)
             {
-                if (WallCheck.transform == this.transform && Input.GetButtonDown("Interact"))
+                Debug.DrawRay(Interact[i].transform.position, (headPos - new Vector3(0.0f, 0.4f, 0.0f)) - Interact[i].transform.position, new Color(255, 255, 255, 1.0f), 5);
+                if (Physics.Raycast(Interact[i].transform.position, (headPos - new Vector3(0.0f, 0.4f, 0.0f)) - Interact[i].transform.position, out WallCheck, 4.0f, Ground, QueryTriggerInteraction.Ignore))
                 {
-                    InterHold.GetComponent<Object_Button>().Pressed();
+                    if (WallCheck.transform == this.transform && (Vector3.Distance(this.transform.position, Interact[i].transform.position) < lastdistance))
+                    {
+                        lastdistance = Vector3.Distance(this.transform.position, Interact[i].transform.position);
+                        InterHold = Interact[i].gameObject;
+                    }
                 }
             }
         }
         else
             InterHold = null;
+
+        if (InterHold != null && Input.GetButtonDown("Interact"))
+        {
+            InterHold.GetComponent<Object_Interact>().Pressed();
+
+        }
     }
 
     void ACT_Blinking()
@@ -221,16 +249,27 @@ public class Player_Control : MonoBehaviour
         }
     }
 
-    public void Death()
+    public void Death(int cause)
     {
-        _controller.enabled = false;
-        DeathCol.SetActive(true);
-        DeathCol.transform.parent = null;
-        Camera.transform.parent = DeathCol.transform;
-        Camera.GetComponent<Player_MouseLook>().enabled = false;
-        isGameplay = false;
-        eyes.enabled = false;
+        if (isGameplay)
+        {
+            _controller.enabled = false;
+            DeathCol.SetActive(true);
+            DeathCol.transform.parent = null;
+            Camera.transform.parent = DeathCol.transform;
+            Camera.GetComponent<Player_MouseLook>().enabled = false;
+            isGameplay = false;
+            eyes.enabled = false;
 
+            switch (cause)
+            {
+                case 0:
+                    {
+                        sfx.PlayOneShot(Conch[Random.Range(0, Conch.Length)]);
+                        break;
+                    }
+            }
+        }
     }
 
     public void FakeBlink(float time)
@@ -250,28 +289,12 @@ public class Player_Control : MonoBehaviour
             return (false);
     }
 
-    /*private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("173"))
-        {
-            Death();
-            Debug.Log("You are ded ded ded");
-        }
-
-    }*/
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Smoke"))
             isSmoke = true;
         else
             isSmoke = false;
-        if (other.gameObject.CompareTag("173")&&IsBlinking())
-        {
-            Death();
-            sfx.clip = Conch[Random.Range(0, Conch.Length)];
-            sfx.Play();
-        }
     }
 
 

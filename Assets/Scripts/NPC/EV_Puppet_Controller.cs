@@ -77,7 +77,7 @@ public class EV_Puppet_Controller : MonoBehaviour
         {
             _controller.Move(movement);
             movement = Vector3.Lerp(movement, Vector3.zero, 0.05f);
-            transform.rotation = Quaternion.Lerp(transform.rotation, toAngle, 0.05f);
+            transform.rotation = Quaternion.Lerp(transform.rotation, toAngle, 0.1f);
         }
 
 

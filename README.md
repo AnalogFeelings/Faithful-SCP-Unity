@@ -1,2 +1,6 @@
 SCP - Faithful Remake
-EntreDocumentacionAqui xd
+
+---------------------------------------
+Aqui iria la documentacion...
+Si tuviera ganas de escribir una
+

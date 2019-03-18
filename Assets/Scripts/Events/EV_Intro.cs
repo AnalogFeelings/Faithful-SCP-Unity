@@ -21,15 +21,15 @@ public class EV_Intro : MonoBehaviour
 
 
 
-    // Start is called before the first frame update
     void OnEnable()
     {
-        Timer = Timer1;
         Guard1_con = Guard1.GetComponent<EV_Puppet_Controller>();
         Guard2_con = Guard2.GetComponent<EV_Puppet_Controller>();
-        Guard1_con.PlaySound(Dialogs[0]);
-        Player = GameController.instance.player;
         playerHead = Camera.main.transform;
+        Player = GameController.instance.player;
+        Timer = Timer1;
+        Guard1_con.PlaySound(Dialogs[0]);
+
     }
     void Update()
     {
@@ -148,7 +148,7 @@ public class EV_Intro : MonoBehaviour
             {
                 Guard1_con.StopPursuit();
                 Guard1_con.PlaySound(Gunshot);
-                Player.GetComponent<Player_Control>().Death();
+                Player.GetComponent<Player_Control>().Death(0);
                 Check4 = false;
                 Guard1_con.AnimTrigger(-1, true);
             }

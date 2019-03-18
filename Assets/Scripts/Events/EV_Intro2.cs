@@ -9,8 +9,8 @@ public class EV_Intro2 : MonoBehaviour
     public Transform ata1, ata2, ata3, deadlook, TeleportAnchor;
     GameObject objPlayer;
     EV_Puppet_Controller d1_, d2_, sci_, guard_;
-    public AudioClip[] Dialogs, Refuse, NewAmbiance, Horror, GeneralSFX;
-    public AudioClip MusicChange, TheDread;
+    public AudioClip[] Dialogs, Refuse, NewAmbiance, Horror, GeneralSFX, Alarm;
+    public AudioClip MusicChange;
     int eventstat = 0;
     float Timer, TimerSecondary=0.1f;
     public float Timer1, Timer2, Timer3, Timer4, Timer5;
@@ -179,7 +179,7 @@ public class EV_Intro2 : MonoBehaviour
                         GameController.instance.Warp173(false, ata3);
                         guard_.SetRota(GameController.instance.scp173.transform);
                         //guard_.AnimTrigger(-2, true);
-                        d2_.PlaySFX(GeneralSFX[3]);
+                        sci_.PlaySFX(GeneralSFX[5]);
                         break;
                     }
 
@@ -213,13 +213,16 @@ public class EV_Intro2 : MonoBehaviour
 
                 case 14:
                     {
-                        objPlayer.transform.position = GameController.instance.WorldAnchor + (objPlayer.transform.position - TeleportAnchor.position);
+                        sci_.SetSeq(Alarm);
                         d1.transform.position = GameController.instance.WorldAnchor + (d1.transform.position - TeleportAnchor.position);
                         d2.transform.position = GameController.instance.WorldAnchor + (d2.transform.position - TeleportAnchor.position);
                         guard.transform.position = GameController.instance.WorldAnchor + (guard.transform.position - TeleportAnchor.position);
-                        GameController.instance.doGameplay = true;
-                        GameController.instance.ChangeMusic(TheDread);
+
                         StopTimer = true;
+
+                        objPlayer.GetComponent<Player_Control>().FakeBlink(0.5f);
+                        objPlayer.transform.position = GameController.instance.WorldAnchor + (objPlayer.transform.position - TeleportAnchor.position);
+                        GameController.instance.doGameplay = true;
                         break;
                     }
 

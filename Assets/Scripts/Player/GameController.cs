@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.PostProcessing;
 
 [System.Serializable]
 public class CameraPool
@@ -13,22 +14,26 @@ public class CameraPool
 public class GameController : MonoBehaviour
 {
     public static GameController instance = null;
+    public PostProcessingProfile startup;
 
     public bool CreateMap;
-    public bool SpawnMap;
 
     int xPlayer, yPlayer;
 
     public GameObject player;
-    public GameObject scp173, startEv;
+    public GameObject scp173, startEv, scp106;
     public NewMapGen mapCreate;
     SCP_173 con_173;
+    SCP_106 con_106;
 
     public Vector3 WorldAnchor;
 
     int xStart, xEnd, yStart, yEnd;
+    int Zone3limit, Zone2limit;
+    int zoneAmbiance = -1;
+    int zoneMusic = -1;
     bool CullerFlag;
-    bool CullerOn, changeTrack, changed, swapAmbiance;
+    bool CullerOn, changeTrack, changed, playIntro = true;
     float roomsize = 15.3f, ambiancetimer=0, Timer = 5, normalAmbiance, ambiancefreq;
     public float ambifreq;
 
@@ -38,7 +43,7 @@ public class GameController : MonoBehaviour
     int[,,] culllookup;
     int[,] Binary_Map;
 
-    public bool doGameplay, spawnPlayer, spawnHere, spawn173, StopTimer = false;
+    public bool doGameplay, spawnPlayer, spawnHere, spawn173, spawn106, StopTimer = false, isStart=false;
     public Transform place173, playerSpawn;
 
     public AudioSource Music;
@@ -50,9 +55,13 @@ public class GameController : MonoBehaviour
     public AudioClip[] AmbianceLibrary;
     public AudioClip [] PreBreach;
     public AudioClip[] Z1;
+    public AudioClip[] Z2;
+    public AudioClip[] Z3;
     AudioClip trackTo;
+    public AudioClip Mus1,Mus2,Mus3;
 
     public CameraPool [] cameraPool;
+    
 
 
 
@@ -64,10 +73,48 @@ public class GameController : MonoBehaviour
             Destroy(gameObject);
     }
 
-
-
-    void Start()
+    void OnGUI()
     {
+        if (!isStart)
+        {
+            // Make a background box
+            GUI.Box(new Rect(10, 10, 500, 90), "Menu Inicio");
+
+
+            mapCreate.mapgenseed = GUI.TextField(new Rect(20, 40, 80, 20), mapCreate.mapgenseed);
+            playIntro = GUI.Toggle(new Rect(120, 40, 80, 20), playIntro, "Iniciar Intro");
+            if (GUI.Button(new Rect(220, 40, 80, 20), "Iniciar"))
+            {
+                StartGame();
+                isStart = true;
+            }
+
+            if (playIntro)
+            {
+                spawnHere = true;
+                doGameplay = false;
+            }
+            else
+            {
+                spawnHere = false;
+                doGameplay = true;
+            }
+        }
+
+        else
+        {
+            GUI.Box(new Rect(10, 10, 300, 100), "Menu juego");
+            GUI.Label(new Rect(20, 40, 300, 20), "Mapa X " + xPlayer + " Mapa Y " + yPlayer);
+            GUI.Label(new Rect(20, 65, 300, 20), "Zona Actual " + zoneAmbiance);
+            GUI.Label(new Rect(20, 90, 300, 20), "¿Ejecutando procesos normales? " + doGameplay);
+        }
+    }
+
+
+
+    void StartGame()
+    {
+
         AmbianceLibrary = PreBreach;
         CullerFlag = false;
         CullerOn = false;
@@ -78,6 +125,8 @@ public class GameController : MonoBehaviour
 
                 mapSize = mapCreate.mapSize;
                 roomsize = mapCreate.roomsize;
+            Zone3limit = mapCreate.zone3_limit;
+            Zone2limit = mapCreate.zone2_limit;
 
                 mapCreate.MostrarMundo();
 
@@ -101,7 +150,7 @@ public class GameController : MonoBehaviour
         if (spawnPlayer)
         {
             if (!spawnHere)
-                player = Instantiate(player, new Vector3(roomsize * (mapSize.xSize / 2), 1.0f, roomsize * (mapSize.ySize - 1)), Quaternion.identity);
+                player = Instantiate(player, WorldAnchor, Quaternion.identity);
             else
                 player = Instantiate(player, playerSpawn.position, Quaternion.identity);
         }
@@ -112,31 +161,43 @@ public class GameController : MonoBehaviour
             con_173 = scp173.GetComponent<SCP_173>();
         }
 
+        if (spawn106)
+        {
+            scp106 = Instantiate(scp106, new Vector3(0,0,0), Quaternion.identity);
+            con_106 = scp106.GetComponent<SCP_106>();
+        }
+
+        player.GetComponent<Player_Control>().ChangePost(startup);
 
 
     }
 
     void Update()
     {
-        StartIntro();
+        if (isStart)
+        {
+            if (spawnHere)
+                StartIntro();
 
 
-        if (doGameplay)
-            Gameplay();
+            if (doGameplay)
+                Gameplay();
 
-        if (changeTrack == true)
-            MusicChanging();
+            if (changeTrack == true)
+                MusicChanging();
 
-        DoAmbiance();
-
-
-
-
+            DoAmbiance();
+        }
     }
 
     public void Warp173(bool beActive, Transform Here)
     {
         con_173.WarpMe(beActive, Here.position);
+    }
+
+    public void Warp106(Transform Here)
+    {
+        con_106.Spawn(Here.position);
     }
 
     void DoAmbiance()
@@ -154,11 +215,63 @@ public class GameController : MonoBehaviour
     {
         AmbianceLibrary = NewAmbiance;
         ambiancefreq = freq;
-        swapAmbiance = true;
+        zoneAmbiance = -1;
     }
+
+
+
     public void DefaultAmbiance()
     {
-        swapAmbiance = false;
+        zoneAmbiance = 0;
+    }
+
+    void AmbianceManager()
+    {
+        if (zoneAmbiance!=-1)
+        {
+            if (yPlayer < Zone3limit && zoneAmbiance != 2)
+            {
+                AmbianceLibrary = Z3;
+                zoneAmbiance = 2;
+                ambiancefreq = ambifreq;
+            }
+            if ((yPlayer > Zone3limit && yPlayer < Zone2limit)&& zoneAmbiance != 1)
+            {
+                AmbianceLibrary = Z2;
+                zoneAmbiance = 1;
+                ambiancefreq = ambifreq;
+            }
+            if (yPlayer > Zone2limit && zoneAmbiance != 0)
+            {
+                AmbianceLibrary = Z1;
+                zoneAmbiance = 0;
+                ambiancefreq = ambifreq;
+            }
+
+        }
+    }
+
+    void MusicManager()
+    {
+        if (zoneMusic != -1)
+        {
+            if (yPlayer < Zone3limit && zoneMusic != 2)
+            {
+                ChangeMusic(Mus3);
+                zoneMusic = 2;
+            }
+            if ((yPlayer > Zone3limit && yPlayer < Zone2limit) && zoneMusic != 1)
+            {
+                ChangeMusic(Mus2);
+                zoneMusic = 1;
+            }
+            if (yPlayer > Zone2limit && zoneMusic != 0)
+            {
+                ChangeMusic(Mus1);
+                zoneMusic = 0;
+            }
+
+        }
     }
 
 
@@ -169,6 +282,12 @@ public class GameController : MonoBehaviour
         changeTrack = true;
         trackTo = newMusic;
         changed = false;
+        zoneMusic = -1;
+    }
+
+    public void DefMusic()
+    {
+        zoneMusic = 3;
     }
 
     void MusicChanging()
@@ -205,6 +324,9 @@ public class GameController : MonoBehaviour
         xPlayer = (Mathf.Clamp((Mathf.RoundToInt((player.transform.position.x / roomsize))), 0, mapSize.xSize - 1));
         yPlayer = (Mathf.Clamp((Mathf.RoundToInt((player.transform.position.z / roomsize))), 0, mapSize.ySize - 1));
         //Debug.Log("Posicion X= " + xPlayer + " Posicion Y= " + yPlayer + " Hay cuarto? " + Binary_Map[xPlayer, yPlayer]);
+
+        AmbianceManager();
+        MusicManager();
 
         PlayerEvents();
 
