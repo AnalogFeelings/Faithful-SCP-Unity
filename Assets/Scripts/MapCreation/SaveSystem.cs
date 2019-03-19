@@ -11,7 +11,7 @@ using UnityEngine;
 /// 
 
 
-public class SaveData()
+public class SaveData
 {
   public string saveName;
   public room_dat[,] savedMap;
@@ -43,14 +43,14 @@ public class SaveSystem : MonoBehaviour
                 Directory.CreateDirectory (folderPath);            
 
             string dataPath = Path.Combine(folderPath, playData.saveName + fileExtension);       
-            SaveData (playData dataPath);
+            WriteSaveFile(playData, dataPath);
     }
   public void LoadState()
   {
     string[] filePaths = GetFilePaths ();
             
             if(filePaths.Length > 0)
-                playData = LoadCharacter (filePaths[0]);
+                playData = LoadSaveFile(filePaths[0]);
   }
     
     
@@ -76,7 +76,7 @@ public class SaveSystem : MonoBehaviour
         }
     }
     
-   void GetFilePaths()
+   string [] GetFilePaths()
    {
    string folderPath = Path.Combine(Application.persistentDataPath, folderName);
 
