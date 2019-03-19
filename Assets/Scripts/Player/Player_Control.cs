@@ -19,8 +19,7 @@ public class Player_Control : MonoBehaviour
     public float GroundDistance = 0.2f, bobSpeed, Gravity = -9.81f, maxfallspeed, Basespeed = 3, crouchspeed = 2, runSpeed = 4, BlinkingTimerBase, ClosedEyes, AsfixiaTimer;
     bool Grounded = true, isGameplay = true, isSmoke = false, Crouch = false, fakeBlink, isRunning;
     Camera PlayerCam;
-    public Canvas HUD;
-    public Image eyes;
+    Image eyes;
 
     public AudioClip [] Conch;
     public AudioSource sfx;
@@ -38,6 +37,7 @@ public class Player_Control : MonoBehaviour
         speed = Basespeed;
         headPos = DefHead.transform.position;
         currPost = Camera.GetComponent<PostProcessingBehaviour>();
+        eyes = SCP_UI.instance.eyes;
 
     }
 
@@ -133,17 +133,15 @@ public class Player_Control : MonoBehaviour
 
 
 
-        if (Input.GetMouseButtonDown(0))
+       /* if (Input.GetMouseButtonDown(0))
         {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
+            
+        }*/
     
     }
 

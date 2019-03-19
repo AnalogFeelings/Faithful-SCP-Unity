@@ -174,6 +174,18 @@ public class GameController : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetButtonDown("Pause"))
+        {
+            SCP_UI.instance.TogglePauseMenu();
+
+        }
+
+        if (Input.GetButtonDown("Inventory"))
+        {
+            SCP_UI.instance.ToggleInventory();
+
+        }
+
         if (isStart)
         {
             if (spawnHere)
@@ -187,6 +199,7 @@ public class GameController : MonoBehaviour
                 MusicChanging();
 
             DoAmbiance();
+
         }
     }
 

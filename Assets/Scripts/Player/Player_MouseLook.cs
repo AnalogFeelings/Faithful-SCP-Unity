@@ -11,8 +11,8 @@ public class Player_MouseLook : MonoBehaviour
     }
     void LateUpdate()
     {
-        rotation.y += Input.GetAxis("Mouse X");
-        rotation.x += -Input.GetAxis("Mouse Y");
+        rotation.y += Input.GetAxis("Mouse X") * Time.timeScale;
+        rotation.x += -Input.GetAxis("Mouse Y") * Time.timeScale;
         rotation.x = Mathf.Clamp(rotation.x, -25f, 30f);
         transform.eulerAngles = (Vector2)rotation * speed;
 
