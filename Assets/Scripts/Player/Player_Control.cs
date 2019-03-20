@@ -4,13 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.PostProcessing;
 
-public enum bodyPart { Head, Body, Hand, Any};
-
 public class Player_Control : MonoBehaviour
 {
     float InputX, InputY, BlinkingTimer, BlinkMult = 1, CloseTimer, AsfixTimer, Health = 100, speed, amplitude;
     public GameObject Camera, InterHold, DeathCol;
-    private GameObject hand;
     private PostProcessingBehaviour currPost;
     public PostProcessingProfile NormalAmbient;
     private Transform _groundChecker;
@@ -22,26 +19,12 @@ public class Player_Control : MonoBehaviour
     public float GroundDistance = 0.2f, bobSpeed, Gravity = -9.81f, maxfallspeed, Basespeed = 3, crouchspeed = 2, runSpeed = 4, BlinkingTimerBase, ClosedEyes, AsfixiaTimer;
     bool Grounded = true, isGameplay = true, isSmoke = false, Crouch = false, fakeBlink, isRunning;
     Camera PlayerCam;
-    Image eyes, blinkbar, overlay;
-    RectTransform hand_rect, hud_rect;
+    Image eyes;
 
     public AudioClip [] Conch;
     public AudioSource sfx;
 
     Collider[] Interact;
-
-    //Iteeemssss
-    public string equippedHead = null;
-    public string equippedBody = null;
-    public string equippedHand = null;
-    public string equippedAny = null;
-
-    int headSlot=0;
-    int bodySlot = 0;
-    int anySlot = 0;
-    int handSlot = 0;
-
-    bool protectSmoke;
 
 
     // Start is called before the first frame update
@@ -55,14 +38,6 @@ public class Player_Control : MonoBehaviour
         headPos = DefHead.transform.position;
         currPost = Camera.GetComponent<PostProcessingBehaviour>();
         eyes = SCP_UI.instance.eyes;
-        blinkbar = SCP_UI.instance.blinkBar;
-        hand = SCP_UI.instance.hand;
-        overlay = SCP_UI.instance.Overlay;
-
-        hand_rect = hand.GetComponent<RectTransform>();
-        hud_rect = SCP_UI.instance.HUD.GetComponent<RectTransform>();
-        
-
 
     }
 
@@ -76,7 +51,6 @@ public class Player_Control : MonoBehaviour
             ACT_Gravity();
             ACT_Blinking();
             ACT_Buttons();
-            ACT_HUD();
 
             _controller.Move(movement * speed * Time.deltaTime);
         }
@@ -106,41 +80,6 @@ public class Player_Control : MonoBehaviour
             speed = crouchspeed;
         if (isRunning)
             speed = runSpeed;
-
-    }
-
-    void ACT_HUD()
-    {
-        int Percent = ((int)Mathf.Ceil((BlinkingTimer / (BlinkingTimerBase / 100))/5));
-        
-        blinkbar.rectTransform.sizeDelta = new Vector2(Percent * 8, 20);
-
-        if (InterHold != null)
-        {
-            hand.SetActive(true);
-            Vector3 screen = PlayerCam.WorldToScreenPoint(InterHold.transform.position);
-            
-            Vector3 heading = InterHold.transform.position - Camera.transform.position;
-            if (Vector3.Dot(Camera.transform.forward, heading) < 0) {
-                screen.y = 0f;
-            }
-
-            hand.transform.position = screen;
-            Debug.Log(screen);
-        }
-        else
-            hand.SetActive(false);
-
-        Vector3 pos = hand_rect.localPosition;
-
-        Vector3 minPosition = hud_rect.rect.min - hand_rect.rect.min;
-        Vector3 maxPosition = hud_rect.rect.max - hand_rect.rect.max;
-
-        pos.x = Mathf.Clamp(hand_rect.localPosition.x, minPosition.x, maxPosition.x);
-        pos.y = Mathf.Clamp(hand_rect.localPosition.y, minPosition.y, maxPosition.y);
-
-        hand_rect.localPosition = pos;
-
 
     }
 
@@ -242,20 +181,16 @@ public class Player_Control : MonoBehaviour
         if (Interact.Length != 0)
         {
             InterHold = Interact[0].gameObject;
-            float currdistance;
             for (int i = 0; i < Interact.Length; i++)
             {
-                currdistance = Vector3.Distance(this.transform.position, Interact[i].transform.position);
                 Debug.DrawRay(Interact[i].transform.position, (headPos - new Vector3(0.0f, 0.4f, 0.0f)) - Interact[i].transform.position, new Color(255, 255, 255, 1.0f), 5);
-                if (Physics.Raycast(Interact[i].transform.position, (headPos - new Vector3(0.0f, 0.4f, 0.0f)) - Interact[i].transform.position, currdistance-0.2f, Ground, QueryTriggerInteraction.Ignore))
+                if (Physics.Raycast(Interact[i].transform.position, (headPos - new Vector3(0.0f, 0.4f, 0.0f)) - Interact[i].transform.position, out WallCheck, 4.0f, Ground, QueryTriggerInteraction.Ignore))
                 {
-                    InterHold = null;
-                }
-                else
-                if (currdistance < lastdistance)
-                {
-                    lastdistance = currdistance;
-                    InterHold = Interact[i].gameObject;
+                    if (WallCheck.transform == this.transform && (Vector3.Distance(this.transform.position, Interact[i].transform.position) < lastdistance))
+                    {
+                        lastdistance = Vector3.Distance(this.transform.position, Interact[i].transform.position);
+                        InterHold = Interact[i].gameObject;
+                    }
                 }
             }
         }
@@ -280,7 +215,7 @@ public class Player_Control : MonoBehaviour
             BlinkingTimer = -1f;
         }
 
-        if (isSmoke && !protectSmoke)
+        if (isSmoke)
         {
             BlinkMult = 4;
             AsfixTimer -= (Time.deltaTime);
@@ -360,94 +295,24 @@ public class Player_Control : MonoBehaviour
             isSmoke = false;
     }
 
-    public void ACT_Equip(Equipable_Wear item)
-    {
-        switch (item.part)
-        {
-            case bodyPart.Head:
-                {
-                    ItemController.instance.slots[headSlot].isEquip = false;
-                    ItemController.instance.slots[headSlot].updateInfo();
-                    headSlot = ItemController.instance.currhover;
-                    ItemController.instance.slots[headSlot].isEquip = true;
 
-                    protectSmoke = item.protectGas;
-                    equippedHead = item.itemName;
-                    overlay.sprite = item.Overlay;
-                    break;
-                }
-            case bodyPart.Body:
-                {
-                    ItemController.instance.slots[bodySlot].isEquip = false;
-                    ItemController.instance.slots[bodySlot].updateInfo();
-                    bodySlot = ItemController.instance.currhover;
-                    ItemController.instance.slots[bodySlot].isEquip = true;
 
-                    equippedBody = item.itemName;
-                    break;
-                }
-            case bodyPart.Any:
-                {
-                    ItemController.instance.slots[anySlot].isEquip = false;
-                    ItemController.instance.slots[anySlot].updateInfo();
-                    anySlot = ItemController.instance.currhover;
-                    ItemController.instance.slots[anySlot].isEquip = true;
 
-                    equippedAny = item.itemName;
-                    break;
-                }
-            case bodyPart.Hand:
-                {
-                    ItemController.instance.slots[handSlot].isEquip = false;
-                    ItemController.instance.slots[handSlot].updateInfo();
-                    handSlot = ItemController.instance.currhover;
-                    ItemController.instance.slots[handSlot].isEquip = true;
 
-                    equippedHand = item.itemName;
-                    break;
-                }
-        }
-        
-    }
 
-    public void ACT_UnEquip(bodyPart where)
-    {
-        
-        switch (where)
-        {
-            case bodyPart.Head:
-                {
-                    ItemController.instance.slots[headSlot].isEquip = false;
-                    ItemController.instance.slots[headSlot].updateInfo();
-                    overlay.sprite = null;
-                    protectSmoke = false;
-                    equippedHead = null;
-                    break;
-                }
-            case bodyPart.Body:
-                {
-                    ItemController.instance.slots[bodySlot].isEquip = false;
-                    ItemController.instance.slots[bodySlot].updateInfo();
-                    equippedBody = null;
-                    break;
-                }
-            case bodyPart.Hand:
-                {
-                    ItemController.instance.slots[handSlot].isEquip = false;
-                    ItemController.instance.slots[bodySlot].updateInfo();
-                    equippedHand = null;
-                    break;
-                }
-            case bodyPart.Any:
-                {
-                    ItemController.instance.slots[anySlot].isEquip = false;
-                    ItemController.instance.slots[bodySlot].updateInfo();
-                    equippedAny = null;
-                    break;
-                }
-        }
-        
-    }
+
+
+    /* void ButtonOverlay()
+     {
+         Vector3 offsetPos = InterHold.transform.position;
+         // Calculate *screen* position (note, not a canvas/recttransform position)
+         Vector2 canvasPos;
+         Vector2 screenPoint = PlayerCam.WorldToScreenPoint(offsetPos);
+         // Convert screen position to Canvas / RectTransform space <- leave camera null if Screen Space Overlay
+         RectTransformUtility.ScreenPointToLocalPointInRectangle(HUD.pixelRect, screenPoint, null, out canvasPos);
+
+     }*/
+
 }
 
 

@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
-
-public enum Menu { None, Pause, Inv };
 
 public class SCP_UI : MonoBehaviour
 {
@@ -12,13 +9,6 @@ public class SCP_UI : MonoBehaviour
     public Image eyes;
     public Canvas PauseM;
     public Canvas Inventory;
-    public Canvas HUD;
-    public EventSystem menu;
-    Menu currMenu = Menu.None;
-
-    public Image blinkBar, Overlay;
-
-    public GameObject defInv, defPause, hand;
     // Start is called before the first frame update
 
     void Awake()
@@ -42,51 +32,44 @@ public class SCP_UI : MonoBehaviour
 
     public void TogglePauseMenu()
     {
-        if (currMenu == Menu.Pause)
+        Debug.Log("Tumama");
+        // not the optimal way but for the sake of readability
+        if (PauseM.enabled)
         {
             Time.timeScale = 1.0f;
             PauseM.enabled = false;
             Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-            currMenu = Menu.None;
-            return;
+            //Cursor.visible = false;
         }
-        if (currMenu == Menu.None)
+        else
         {
             PauseM.enabled = true;
             Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            //Cursor.visible = true;
             Time.timeScale = 0f;
-            currMenu = Menu.Pause;
-            return;
         }
+
     }
 
     public void ToggleInventory()
     {
-        if (currMenu == Menu.Inv)
+        Debug.Log("Tumama2");
+        // not the optimal way but for the sake of readability
+        if (Inventory.enabled)
         {
             Inventory.enabled = false;
             Time.timeScale = 1.0f;
 
             Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-            currMenu = Menu.None;
-            return;
+            //Cursor.visible = false;
         }
-        if (currMenu == Menu.None)
+        else
         {
             Inventory.enabled = true;
             Time.timeScale = 0f;
             Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            currMenu = Menu.Inv;
-            menu.SetSelectedGameObject(defInv);
-
-            return;
-
-            //
+            //Cursor.visible = true;
         }
-    }
 
+    }
 }
