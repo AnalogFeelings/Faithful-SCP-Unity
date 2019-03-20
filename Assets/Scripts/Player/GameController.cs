@@ -130,14 +130,14 @@ public class GameController : MonoBehaviour
 
         if (CreateMap)
         {
-            SCP_Map = mapCreate.CreaMundo();
-
             mapSize = mapCreate.mapSize;
             roomsize = mapCreate.roomsize;
             Zone3limit = mapCreate.zone3_limit;
             Zone2limit = mapCreate.zone2_limit;
 
+            mapCreate.CreaMundo();
             mapCreate.MostrarMundo();
+            SCP_Map = mapCreate.DameMundo();
             Binary_Map = mapCreate.MapaBinario();
 
             culllookup = new int[mapSize.xSize, mapSize.ySize, 2];
@@ -188,8 +188,9 @@ public class GameController : MonoBehaviour
         zoneMusic = 0;
 
 
-        mapCreate.mapfil = SaveSystem.instance.playData.savedMap;
-        SCP_Map = SaveSystem.instance.playData.savedMap;
+
+
+        mapCreate.mapsave = SaveSystem.instance.playData.savedMap;
 
         Binary_Map = SaveSystem.instance.playData.savedBin;
         mapCreate.mapgen = SaveSystem.instance.playData.savedBin;
@@ -201,7 +202,10 @@ public class GameController : MonoBehaviour
         Zone3limit = mapCreate.zone3_limit;
         Zone2limit = mapCreate.zone2_limit;
 
+        mapCreate.LoadingSave();
         mapCreate.MostrarMundo();
+
+        SCP_Map = mapCreate.DameMundo();
 
 
             culllookup = new int[mapSize.xSize, mapSize.ySize, 2];
@@ -234,8 +238,11 @@ public class GameController : MonoBehaviour
             con_106 = scp106.GetComponent<SCP_106>();
         }
 
-        doGameplay = true;
         StopTimer = true;
+
+        spawnHere = false;
+        doGameplay = true;
+
     }
 
 
@@ -465,7 +472,7 @@ public class GameController : MonoBehaviour
 
     void QuickSave()
     {
-        SaveSystem.instance.playData.savedMap = SCP_Map;
+        SaveSystem.instance.playData.savedMap = mapCreate.mapsave;
         SaveSystem.instance.playData.savedBin = Binary_Map;
         SaveSystem.instance.playData.savedSize = mapSize;
         SaveSystem.instance.playData.pX = player.transform.position.x;

@@ -16,7 +16,7 @@ public class EventHandler : MonoBehaviour
 
     public GameObject UniqueHandler;
     public string SpecialName;
-    public int EventChosen;
+    public int EventChosen = -1;
     worldPos roomPos;
     bool IsActive, hasUnique;
 
@@ -32,6 +32,11 @@ public class EventHandler : MonoBehaviour
             }
         }
         return (EventChosen);
+    }
+
+    public void ForceEvent(int forcedevent)
+    {
+        EventChosen = forcedevent;
     }
 
     public void EventSpecial()

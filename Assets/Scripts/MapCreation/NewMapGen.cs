@@ -37,9 +37,9 @@ public enum RoomType { TwoWay, FourWay, CornerWay, TWay, EndWay };
 [System.Serializable]
 public class room_dat
 {
-    public int id, done, Zone, angle;
+    public int id, done, Zone=0, angle;
     public RoomType type;
-    public bool empty, isSpecial, hasEvents = false, hasSpecial = false, eventDone;
+    public bool empty, isSpecial, hasEvents = false, hasSpecial = false, eventDone=false, eventPreset=false;
     public int[] neighbours = new int[4];
     public GameObject RoomHolder;
     public int Event;
@@ -52,6 +52,16 @@ public class room_dat
         eventDone = false;
     }
 };
+
+[HideInInspector]
+[System.Serializable]
+public class saved_room
+{
+    public int angle, Event=-1, Zone;
+    public bool empty=true, eventDone=false;
+    public string roomName;
+};
+
 
 [HideInInspector]
 public class Roomlookup
@@ -93,6 +103,7 @@ public class NewMapGen : MonoBehaviour
     List<walker_dat> walker_list = new List<walker_dat>();
 
     public int[,] mapgen;
+    public saved_room[,] mapsave;
     public int[,,] cull_lookup;
     public room_dat[,] mapfil;
     public int zone3_limit;
@@ -100,6 +111,7 @@ public class NewMapGen : MonoBehaviour
     private int mapdone;
     public string mapgenseed;
     public int extrawalker;
+    bool IsNew;
 
     int walker_count;
     public bool forceConnect;
@@ -160,6 +172,7 @@ public class NewMapGen : MonoBehaviour
 
         mapgen = new int[mapSize.xSize, mapSize.ySize];
         mapfil = new room_dat[mapSize.xSize, mapSize.ySize];
+        mapsave = new saved_room[mapSize.xSize, mapSize.ySize];
         cull_lookup = new int[mapSize.xSize, mapSize.ySize, 2];
         mapdone = 0;
         walker_count = 0;
@@ -227,8 +240,9 @@ public class NewMapGen : MonoBehaviour
     }
 
 
-    public room_dat[,] CreaMundo()
+    public void CreaMundo()
     {
+        IsNew = true;
         Random.InitState(mapgenseed.GetHashCode());
 
         Debug.Log("Creando");
@@ -273,6 +287,7 @@ public class NewMapGen : MonoBehaviour
         mapfil[mapSize.xSize / 2, mapSize.ySize - 1].RoomHolder = introRoom;
         mapfil[mapSize.xSize / 2, mapSize.ySize - 1].isSpecial = true;
         mapfil[mapSize.xSize / 2, mapSize.ySize - 1].angle = 180;
+        mapfil[mapSize.xSize / 2, mapSize.ySize - 1].Zone = 3;
         mapfil[mapSize.xSize / 2, mapSize.ySize - 1].type = RoomType.EndWay;
         mapfil[mapSize.xSize / 2, mapSize.ySize - 1].hasEvents = false;
         mapfil[mapSize.xSize / 2, mapSize.ySize - 1].hasSpecial = false;
@@ -280,7 +295,6 @@ public class NewMapGen : MonoBehaviour
         SpecialRoomSpawn();
 
         Debug.Log("Creado");
-        return (mapfil);
     }
 
     public room_dat[,] DameMundo()
@@ -298,9 +312,12 @@ public class NewMapGen : MonoBehaviour
                 mapgen[i, j] = 0;
                 cull_lookup[i, j, 0] = 0;
                 cull_lookup[i, j, 1] = 0;
+                mapsave[i, j] = new saved_room();
             }
         }
     }
+
+
 
     void step()
     {
@@ -819,6 +836,8 @@ public class NewMapGen : MonoBehaviour
                 mapfil[i, j].hasEvents = roomlist[z].hasEvent;
                 mapfil[i, j].hasSpecial = roomlist[z].hasSpecial;
 
+
+
                 switch (type)
                 {
                     case RoomType.TwoWay:
@@ -894,6 +913,7 @@ public class NewMapGen : MonoBehaviour
                     mapfil[currtype[chance].xPos, currtype[chance].yPos].isSpecial = true;
                     mapfil[currtype[chance].xPos, currtype[chance].yPos].hasEvents = speciallist[i].hasEvent;
                     mapfil[currtype[chance].xPos, currtype[chance].yPos].hasSpecial = speciallist[i].hasSpecial;
+
                     spawned = true;
                     break;
                 }
@@ -902,39 +922,141 @@ public class NewMapGen : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// </summary>
+    void SavedtoMap(int i, int j)
+    {
+        string ZonePath = "";
+        switch (mapsave[i, j].Zone)
+        {
+            case 1:
+                {
+                    ZonePath = "Map/Z3Room/";
+                        break;
+                }
+            case 2:
+                {
+                    ZonePath = "Map/Z2Room/";
+                    break;
+                }
+            case 3:
+                {
+                    ZonePath = "Map/Z1Room/";
+                    break;
+                }
+            case 0:
+                {
+                    ZonePath = "Map/CheckPoints/";
+                    break;
+                }
+
+
+        }
+
+        mapfil[i, j].RoomHolder = Resources.Load<GameObject>(string.Concat(ZonePath, mapsave[i, j].roomName));
+        Debug.Log("Armando " + string.Concat(ZonePath, mapsave[i, j].roomName));
+        mapfil[i, j].angle = mapsave[i, j].angle;
+        mapfil[i, j].empty = mapsave[i, j].empty;
+        mapfil[i, j].type = RoomType.TwoWay;
+        mapfil[i, j].eventPreset = true;
+
+        mapfil[i, j].Event = mapsave[i, j].Event;
+        mapfil[i, j].eventDone = mapsave[i, j].eventDone;
+
+        if (mapfil[i, j].Event <= 0)
+            mapfil[i, j].hasEvents = true;
+        if (mapfil[i, j].Event == -2)
+            mapfil[i, j].hasSpecial = true;
+    }
+
+
+    public void LoadingSave()
+    {
+        int i, j;
+        for (i = 0; i < mapSize.xSize; i++)
+        {
+            for (j = 0; j < mapSize.ySize; j++)
+            {
+                mapfil[i,j] = new room_dat(true);
+            }
+        }
+
+        for (i = 0; i < mapSize.xSize; i++)
+        {
+            for (j = 0; j < mapSize.ySize; j++)
+            {
+                SavedtoMap(i, j);
+            }
+        }
+        Debug.Log("Cargado");
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     void RoomInstance(int i, int j)
     {
-        Debug.Log("Instanciando cuarto " + mapfil[i, j].RoomHolder.name + " Posicion " + i + " " + j);
+        if (IsNew)
+        {
+            mapsave[i, j].roomName = mapfil[i, j].RoomHolder.name;
+            mapsave[i, j].Zone = mapfil[i, j].Zone;
+            mapsave[i, j].empty = false;
+            mapsave[i, j].angle = mapfil[i, j].angle;
+        }
 
         GameObject roomTemp = mapfil[i, j].RoomHolder;
         int angleTemp = mapfil[i, j].angle;
         mapfil[i, j].RoomHolder = Instantiate(roomTemp, new Vector3(roomsize * i, 0.0f, roomsize * j), roomTemp.transform.rotation * Quaternion.Euler(0, angleTemp + 90, 0));
         mapfil[i, j].RoomHolder.transform.parent = mapParent.transform;
 
-        if (mapfil[i, j].hasEvents)
+        if (mapfil[i, j].eventPreset == false)
         {
-            mapfil[i, j].RoomHolder.GetComponent<EventHandler>().EventSet();
-        }
-
-        /////////////////////////////////////////////////////////////////////
-        if (mapfil[i, j].hasSpecial)
-        {
-            bool found = false;
-            string evName = mapfil[i, j].RoomHolder.GetComponent<EventHandler>().GetEventName();
-
-            for (int z = 0; z < eventList.Count; z++)
+            if (mapfil[i, j].hasEvents)
             {
-                Debug.Log(eventList[z]);
-                if (eventList[z] == evName)
-                    found = true;
+                mapsave[i, j].Event = mapfil[i, j].RoomHolder.GetComponent<EventHandler>().EventSet();
             }
 
-            if (!found)
+            /////////////////////////////////////////////////////////////////////
+            if (mapfil[i, j].hasSpecial)
             {
-                eventList.Add(evName);
-                Debug.Log("Agregando " + evName);
-                mapfil[i, j].RoomHolder.GetComponent<EventHandler>().EventSpecial();
+                bool found = false;
+                string evName = mapfil[i, j].RoomHolder.GetComponent<EventHandler>().GetEventName();
+
+                for (int z = 0; z < eventList.Count; z++)
+                {
+                    Debug.Log(eventList[z]);
+                    if (eventList[z] == evName)
+                        found = true;
+                }
+
+                if (!found)
+                {
+                    eventList.Add(evName);
+                    Debug.Log("Agregando " + evName);
+                    mapfil[i, j].RoomHolder.GetComponent<EventHandler>().EventSpecial();
+                    mapsave[i, j].Event = -2;
+                }
+            }
+        }
+        else
+        {
+            if (mapfil[i, j].Event != -1)
+            {
+                mapfil[i, j].RoomHolder.GetComponent<EventHandler>().ForceEvent(mapfil[i, j].Event);
             }
         }
     }

@@ -14,7 +14,7 @@ using UnityEngine;
 public class SaveData
 {
     public string saveName;
-    public room_dat[,] savedMap;
+    public saved_room[,] savedMap;
     public MapSize savedSize;
     public int[,] savedBin;
     public float pX, pY, pZ;
@@ -47,12 +47,18 @@ public class SaveSystem : MonoBehaviour
         string dataPath = Path.Combine(folderPath, playData.saveName + fileExtension);
         WriteSaveFile(playData, dataPath);
     }
+
     public void LoadState()
     {
         string[] filePaths = GetFilePaths();
 
         if (filePaths.Length > 0)
+        {
             playData = LoadSaveFile(filePaths[0]);
+            Debug.Log("Lo cargue!");
+        }
+        else
+            Debug.Log("No encontre nada");
     }
 
 
@@ -81,7 +87,9 @@ public class SaveSystem : MonoBehaviour
     string[] GetFilePaths()
     {
         string folderPath = Path.Combine(Application.persistentDataPath, folderName);
+        folderPath = folderPath.Replace("/", @"\");
+        Debug.Log(folderPath);
 
-        return Directory.GetFiles(folderPath, fileExtension);
+        return Directory.GetFiles(folderPath, "*"+fileExtension);
     }
 }
