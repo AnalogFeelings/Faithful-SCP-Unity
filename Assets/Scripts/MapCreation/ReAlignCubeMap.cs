@@ -20,6 +20,7 @@ public class ReAlignCubeMap : MonoBehaviour
         
         // Make a game object
             GameObject probeGameObject = new GameObject("The Reflection Probe");
+        probeGameObject.transform.parent = this.transform;
 
         // Add the reflection probe component
         ReflectionProbe probeComponent = probeGameObject.AddComponent<ReflectionProbe>() as ReflectionProbe;
