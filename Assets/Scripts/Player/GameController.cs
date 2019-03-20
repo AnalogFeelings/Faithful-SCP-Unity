@@ -192,9 +192,6 @@ public class GameController : MonoBehaviour
 
         mapCreate.mapsave = SaveSystem.instance.playData.savedMap;
 
-        Binary_Map = SaveSystem.instance.playData.savedBin;
-        mapCreate.mapgen = SaveSystem.instance.playData.savedBin;
-
         mapCreate.mapSize = SaveSystem.instance.playData.savedSize;
         mapSize = SaveSystem.instance.playData.savedSize;
 
@@ -206,6 +203,7 @@ public class GameController : MonoBehaviour
         mapCreate.MostrarMundo();
 
         SCP_Map = mapCreate.DameMundo();
+        Binary_Map = mapCreate.MapaBinario();
 
 
             culllookup = new int[mapSize.xSize, mapSize.ySize, 2];
@@ -473,7 +471,6 @@ public class GameController : MonoBehaviour
     void QuickSave()
     {
         SaveSystem.instance.playData.savedMap = mapCreate.mapsave;
-        SaveSystem.instance.playData.savedBin = Binary_Map;
         SaveSystem.instance.playData.savedSize = mapSize;
         SaveSystem.instance.playData.pX = player.transform.position.x;
         SaveSystem.instance.playData.pY = player.transform.position.y;
