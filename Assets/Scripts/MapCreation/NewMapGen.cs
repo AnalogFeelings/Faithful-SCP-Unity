@@ -964,7 +964,7 @@ public class NewMapGen : MonoBehaviour
         mapfil[i, j].Event = mapsave[i, j].Event;
         mapfil[i, j].eventDone = mapsave[i, j].eventDone;
 
-        if (mapfil[i, j].Event <= 0)
+        if (mapfil[i, j].Event >= 0)
             mapfil[i, j].hasEvents = true;
         if (mapfil[i, j].Event == -2)
             mapfil[i, j].hasSpecial = true;
@@ -986,7 +986,11 @@ public class NewMapGen : MonoBehaviour
         {
             for (j = 0; j < mapSize.ySize; j++)
             {
-                SavedtoMap(i, j);
+                if (mapsave[i,j].empty == false)
+                {
+                    SavedtoMap(i, j);
+                    mapgen[i,j] =1;
+                }
             }
         }
         Debug.Log("Cargado");
