@@ -16,7 +16,6 @@ public class SaveData
     public string saveName;
     public saved_room[,] savedMap;
     public MapSize savedSize;
-    public int[,] savedBin;
     public float pX, pY, pZ;
 }
 
