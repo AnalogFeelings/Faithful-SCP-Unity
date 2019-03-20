@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.PostProcessing;
 
-public enum bodyPart { Head, Body, Hand, Any};
+public enum bodyPart { Head, Body, Hand, Any };
 
 public class Player_Control : MonoBehaviour
 {
@@ -25,7 +25,7 @@ public class Player_Control : MonoBehaviour
     Image eyes, blinkbar, overlay;
     RectTransform hand_rect, hud_rect;
 
-    public AudioClip [] Conch;
+    public AudioClip[] Conch;
     public AudioSource sfx;
 
     Collider[] Interact;
@@ -36,7 +36,7 @@ public class Player_Control : MonoBehaviour
     public string equippedHand = null;
     public string equippedAny = null;
 
-    int headSlot=0;
+    int headSlot = 0;
     int bodySlot = 0;
     int anySlot = 0;
     int handSlot = 0;
@@ -61,7 +61,7 @@ public class Player_Control : MonoBehaviour
 
         hand_rect = hand.GetComponent<RectTransform>();
         hud_rect = SCP_UI.instance.HUD.GetComponent<RectTransform>();
-        
+
 
 
     }
@@ -94,7 +94,7 @@ public class Player_Control : MonoBehaviour
         movement = ((transform.right * InputX) + (transform.forward * InputY));
         Vector3.Normalize(movement);
 
-        if (Input.GetButtonDown("Crouch")&& !isRunning)
+        if (Input.GetButtonDown("Crouch") && !isRunning)
             Crouch = !Crouch;
 
         isRunning = (Input.GetButton("Run") && !Crouch);
@@ -111,22 +111,22 @@ public class Player_Control : MonoBehaviour
 
     void ACT_HUD()
     {
-        int Percent = ((int)Mathf.Ceil((BlinkingTimer / (BlinkingTimerBase / 100))/5));
-        
-        blinkbar.rectTransform.sizeDelta = new Vector2(Percent * 8, 20);
+        int Percent = ((int)Mathf.Ceil((BlinkingTimer / (BlinkingTimerBase / 100)) / 5));
+
+        blinkbar.rectTransform.sizeDelta = new Vector2(Percent * 8, 14);
 
         if (InterHold != null)
         {
             hand.SetActive(true);
             Vector3 screen = PlayerCam.WorldToScreenPoint(InterHold.transform.position);
-            
+
             Vector3 heading = InterHold.transform.position - Camera.transform.position;
-            if (Vector3.Dot(Camera.transform.forward, heading) < 0) {
+            if (Vector3.Dot(Camera.transform.forward, heading) < 0)
+            {
                 screen.y = 0f;
             }
 
             hand.transform.position = screen;
-            Debug.Log(screen);
         }
         else
             hand.SetActive(false);
@@ -188,22 +188,6 @@ public class Player_Control : MonoBehaviour
                 Camera.transform.position = headPos;
         }
 
-
-
-
-
-
-
-       /* if (Input.GetMouseButtonDown(0))
-        {
-            
-        }
-
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            
-        }*/
-    
     }
 
     public void ChangePost(PostProcessingProfile post)
@@ -225,7 +209,7 @@ public class Player_Control : MonoBehaviour
     {
         fallSpeed.y -= Gravity * Time.deltaTime;
         if (fallSpeed.y < maxfallspeed)
-        fallSpeed.y = maxfallspeed;
+            fallSpeed.y = maxfallspeed;
 
         if (Grounded && fallSpeed.y < 0)
         {
@@ -247,7 +231,7 @@ public class Player_Control : MonoBehaviour
             {
                 currdistance = Vector3.Distance(this.transform.position, Interact[i].transform.position);
                 Debug.DrawRay(Interact[i].transform.position, (headPos - new Vector3(0.0f, 0.4f, 0.0f)) - Interact[i].transform.position, new Color(255, 255, 255, 1.0f), 5);
-                if (Physics.Raycast(Interact[i].transform.position, (headPos - new Vector3(0.0f, 0.4f, 0.0f)) - Interact[i].transform.position, currdistance-0.2f, Ground, QueryTriggerInteraction.Ignore))
+                if (Physics.Raycast(Interact[i].transform.position, (headPos - new Vector3(0.0f, 0.4f, 0.0f)) - Interact[i].transform.position, currdistance - 0.2f, Ground, QueryTriggerInteraction.Ignore))
                 {
                     InterHold = null;
                 }
@@ -272,7 +256,7 @@ public class Player_Control : MonoBehaviour
     void ACT_Blinking()
     {
 
-        eyes.enabled = (IsBlinking()||fakeBlink==true);
+        eyes.enabled = (IsBlinking() || fakeBlink == true);
 
         if (Input.GetButton("Blink"))
         {
@@ -299,7 +283,7 @@ public class Player_Control : MonoBehaviour
         }
 
 
-        BlinkingTimer -= (Time.deltaTime)*BlinkMult;
+        BlinkingTimer -= (Time.deltaTime) * BlinkMult;
         if (BlinkingTimer <= 0.0f)
         {
             CloseTimer -= Time.deltaTime;
@@ -346,7 +330,7 @@ public class Player_Control : MonoBehaviour
 
     public bool IsBlinking()
     {
-        if (BlinkingTimer <= 0.0f && fakeBlink!=true)
+        if (BlinkingTimer <= 0.0f && fakeBlink != true)
             return (true);
         else
             return (false);
@@ -407,12 +391,12 @@ public class Player_Control : MonoBehaviour
                     break;
                 }
         }
-        
+
     }
 
     public void ACT_UnEquip(bodyPart where)
     {
-        
+
         switch (where)
         {
             case bodyPart.Head:
@@ -446,7 +430,7 @@ public class Player_Control : MonoBehaviour
                     break;
                 }
         }
-        
+
     }
 }
 

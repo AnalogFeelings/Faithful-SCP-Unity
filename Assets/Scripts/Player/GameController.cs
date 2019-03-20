@@ -11,6 +11,10 @@ public class CameraPool
         public bool isUsing;
     }
 
+
+
+
+
 public class GameController : MonoBehaviour
 {
     public static GameController instance = null;
@@ -78,14 +82,19 @@ public class GameController : MonoBehaviour
         if (!isStart)
         {
             // Make a background box
-            GUI.Box(new Rect(10, 10, 500, 90), "Menu Inicio");
+            GUI.Box(new Rect(10, 10, 500, 120), "Menu Inicio");
 
 
             mapCreate.mapgenseed = GUI.TextField(new Rect(20, 40, 80, 20), mapCreate.mapgenseed);
             playIntro = GUI.Toggle(new Rect(120, 40, 80, 20), playIntro, "Iniciar Intro");
             if (GUI.Button(new Rect(220, 40, 80, 20), "Iniciar"))
             {
-                StartGame();
+                NewGame();
+                isStart = true;
+            }
+            if (GUI.Button(new Rect(220, 85, 80, 20), "Cargar"))
+            {
+                LoadGame();
                 isStart = true;
             }
 
@@ -112,7 +121,7 @@ public class GameController : MonoBehaviour
 
 
 
-    void StartGame()
+    void NewGame()
     {
 
         AmbianceLibrary = PreBreach;
@@ -121,17 +130,14 @@ public class GameController : MonoBehaviour
 
         if (CreateMap)
         {
-                SCP_Map = mapCreate.CreaMundo();
+            SCP_Map = mapCreate.CreaMundo();
 
-                mapSize = mapCreate.mapSize;
-                roomsize = mapCreate.roomsize;
+            mapSize = mapCreate.mapSize;
+            roomsize = mapCreate.roomsize;
             Zone3limit = mapCreate.zone3_limit;
             Zone2limit = mapCreate.zone2_limit;
 
-                mapCreate.MostrarMundo();
-
-            
-            //postest = Instantiate(postest, new Vector3(roomsize * (mapSize.xSize / 2), 1.0f, roomsize * (mapSize.ySize - 1)), Quaternion.identity);
+            mapCreate.MostrarMundo();
             Binary_Map = mapCreate.MapaBinario();
 
             culllookup = new int[mapSize.xSize, mapSize.ySize, 2];
@@ -168,9 +174,72 @@ public class GameController : MonoBehaviour
         }
 
         player.GetComponent<Player_Control>().ChangePost(startup);
-
-
     }
+
+    void LoadGame()
+    {
+        SaveSystem.instance.LoadState();
+
+        AmbianceLibrary = Z1;
+        CullerFlag = false;
+        CullerOn = false;
+
+        zoneAmbiance = 0;
+        zoneMusic = 0;
+
+
+        mapCreate.mapfil = SaveSystem.instance.playData.savedMap;
+        SCP_Map = SaveSystem.instance.playData.savedMap;
+
+        Binary_Map = SaveSystem.instance.playData.savedBin;
+        mapCreate.mapgen = SaveSystem.instance.playData.savedBin;
+
+        mapCreate.mapSize = SaveSystem.instance.playData.savedSize;
+        mapSize = SaveSystem.instance.playData.savedSize;
+
+        roomsize = mapCreate.roomsize;
+        Zone3limit = mapCreate.zone3_limit;
+        Zone2limit = mapCreate.zone2_limit;
+
+        mapCreate.MostrarMundo();
+
+
+            culllookup = new int[mapSize.xSize, mapSize.ySize, 2];
+            int i, j;
+            for (i = 0; i < mapSize.xSize; i++)
+            {
+                for (j = 0; j < mapSize.ySize; j++)
+                {
+                    culllookup[i, j, 0] = 0;
+                    culllookup[i, j, 1] = 0;
+                }
+            }
+            StartCoroutine(HidAfterProbeRendering());
+
+
+        player = Instantiate(player, new Vector3(SaveSystem.instance.playData.pX, SaveSystem.instance.playData.pY, SaveSystem.instance.playData.pZ), Quaternion.identity);
+  
+
+
+
+        if (spawn173)
+        {
+            scp173 = Instantiate(scp173, place173.position, Quaternion.identity);
+            con_173 = scp173.GetComponent<SCP_173>();
+        }
+
+        if (spawn106)
+        {
+            scp106 = Instantiate(scp106, new Vector3(0, 0, 0), Quaternion.identity);
+            con_106 = scp106.GetComponent<SCP_106>();
+        }
+
+        doGameplay = true;
+        StopTimer = true;
+    }
+
+
+
 
     void Update()
     {
@@ -200,7 +269,15 @@ public class GameController : MonoBehaviour
 
             DoAmbiance();
 
+            if(Input.GetButtonDown("Save"))
+            {
+                QuickSave();
+            }
+
+
         }
+
+
     }
 
     public void Warp173(bool beActive, Transform Here)
@@ -386,6 +463,18 @@ public class GameController : MonoBehaviour
     }
 
 
+    void QuickSave()
+    {
+        SaveSystem.instance.playData.savedMap = SCP_Map;
+        SaveSystem.instance.playData.savedBin = Binary_Map;
+        SaveSystem.instance.playData.savedSize = mapSize;
+        SaveSystem.instance.playData.pX = player.transform.position.x;
+        SaveSystem.instance.playData.pY = player.transform.position.y;
+        SaveSystem.instance.playData.pZ = player.transform.position.z;
+        SaveSystem.instance.playData.saveName = "TestSave";
+
+        SaveSystem.instance.SaveState();
+    }
 
 
 

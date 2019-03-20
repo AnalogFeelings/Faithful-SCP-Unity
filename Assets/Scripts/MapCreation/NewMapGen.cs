@@ -34,6 +34,7 @@ public class walker_dat
 public enum RoomType { TwoWay, FourWay, CornerWay, TWay, EndWay };
 
 [HideInInspector]
+[System.Serializable]
 public class room_dat
 {
     public int id, done, Zone, angle;
