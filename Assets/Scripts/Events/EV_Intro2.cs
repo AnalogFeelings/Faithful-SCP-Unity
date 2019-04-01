@@ -28,7 +28,7 @@ public class EV_Intro2 : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         if (eventstat == 0)
         {
@@ -83,7 +83,7 @@ public class EV_Intro2 : MonoBehaviour
                 case 2:
                     {
                         d1_.SetPath(path1);
-                        GameController.instance.PlayHorror(Horror[0]);
+                        GameController.instance.PlayHorror(Horror[0], ata1);
                         eventstat = 3;
                         Timer = 0.6f;
                         break;
@@ -144,7 +144,7 @@ public class EV_Intro2 : MonoBehaviour
                         sci_.PlaySFX(GeneralSFX[0]);
                         eventstat = 9;
                         Timer = 1f;
-                        GameController.instance.PlayHorror(Horror[1]);
+                        GameController.instance.PlayHorror(Horror[1], null);
                         break;
                     }
                 case 9:
@@ -214,14 +214,15 @@ public class EV_Intro2 : MonoBehaviour
                 case 14:
                     {
                         sci_.SetSeq(Alarm);
-                        d1.transform.position = GameController.instance.WorldAnchor + (d1.transform.position - TeleportAnchor.position);
-                        d2.transform.position = GameController.instance.WorldAnchor + (d2.transform.position - TeleportAnchor.position);
-                        guard.transform.position = GameController.instance.WorldAnchor + (guard.transform.position - TeleportAnchor.position);
+                        objPlayer.GetComponent<Player_Control>().playerWarp(GameController.instance.WorldAnchor + (objPlayer.transform.position - TeleportAnchor.position));
+                        d1_.puppetWarp(GameController.instance.WorldAnchor + (d1.transform.position - TeleportAnchor.position));
+                        d2_.puppetWarp(GameController.instance.WorldAnchor + (d2.transform.position - TeleportAnchor.position));
+                        guard_.puppetWarp(GameController.instance.WorldAnchor + (guard.transform.position - TeleportAnchor.position));
 
                         StopTimer = true;
 
                         objPlayer.GetComponent<Player_Control>().FakeBlink(0.5f);
-                        objPlayer.transform.position = GameController.instance.WorldAnchor + (objPlayer.transform.position - TeleportAnchor.position);
+                        
                         GameController.instance.doGameplay = true;
                         break;
                     }

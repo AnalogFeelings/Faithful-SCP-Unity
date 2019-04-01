@@ -6,7 +6,8 @@ using UnityEngine;
 public class EventChance
 {
     public int Chance;
-    public GameObject EventHandler;
+    public string EventHandler;
+    public Transform pos;
 }
 
 
@@ -14,8 +15,11 @@ public class EventHandler : MonoBehaviour
 {
     public EventChance[] EventList;
 
-    public GameObject UniqueHandler;
+
+    public string UniqueHandler;
+    public bool Spawned = false;
     public string SpecialName;
+    public Transform UniquePos;
     public int EventChosen = -1;
     worldPos roomPos;
     bool IsActive, hasUnique;
@@ -49,13 +53,61 @@ public class EventHandler : MonoBehaviour
         return (SpecialName);
     }
 
-    public void EventStart()
+    public void EventStart(int x, int y)
     {
-        if (EventChosen == -2)
-            UniqueHandler.SetActive(true);
+        Debug.Log("Evento Nuevo");
+        if (Spawned == false)
+        {
+            if (EventChosen == -2)
+                EventSpawn(UniqueHandler, x, y, UniquePos);
 
-        if (EventChosen >= 0)
-            EventList[EventChosen].EventHandler.SetActive(true);
+            if (EventChosen >= 0)
+                EventSpawn(EventList[EventChosen].EventHandler, x, y, EventList[EventChosen].pos);
+            Spawned = true;
+        }
+    }
+
+    public void EventDone(int x, int y)
+    {
+        Debug.Log("Evento Hecho");
+        if (Spawned == false)
+        {
+            if (EventChosen == -2)
+                EventDone(UniqueHandler, x, y, UniquePos);
+
+            if (EventChosen >= 0)
+                EventDone(EventList[EventChosen].EventHandler, x, y, EventList[EventChosen].pos);
+            Spawned = true;
+        }
+    }
+
+    void EventSpawn(string scp_event, int x, int y, Transform pos)
+    {
+        GameObject res_event = Resources.Load<GameObject>(string.Concat("Events/", scp_event));
+        if (pos == null)
+        {
+            res_event = Instantiate(res_event, this.transform.position, this.transform.rotation, this.transform);
+        }
+        else
+            res_event = Instantiate(res_event, pos.position, pos.rotation, this.transform);
+
+        res_event.GetComponent<Event_Parent>().x = x;
+        res_event.GetComponent<Event_Parent>().y = y;
+        res_event.GetComponent<Event_Parent>().EventStart();
+    }
+
+    void EventDone(string scp_event, int x, int y, Transform pos)
+    {
+        GameObject res_event = Resources.Load<GameObject>(string.Concat("Events/", scp_event));
+        if (pos == null)
+        {
+            res_event = Instantiate(res_event, this.transform.position, this.transform.rotation, this.transform);
+        }
+        else
+            res_event = Instantiate(res_event, pos.position, pos.rotation, this.transform);
+        res_event.GetComponent<Event_Parent>().x = x;
+        res_event.GetComponent<Event_Parent>().y = y;
+        res_event.GetComponent<Event_Parent>().EventFinished();
     }
 
 }

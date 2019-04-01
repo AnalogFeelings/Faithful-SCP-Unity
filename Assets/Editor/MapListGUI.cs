@@ -25,15 +25,6 @@ public class MapListGUI : Editor
         //Update our list
 
         GetTarget.Update();
-
-        /*Choose how to display the list<> Example purposes only
-        EditorGUILayout.Space();
-        EditorGUILayout.Space();
-        DisplayFieldType = (displayFieldType)EditorGUILayout.EnumPopup("", DisplayFieldType);
-
-        //Resize our list
-        EditorGUILayout.Space();
-        EditorGUILayout.Space();*/
         SerializedProperty ZoneId = GetTarget.FindProperty("Zone");
         choiceList = (RoomType)EditorGUILayout.EnumPopup("Tipos de Cuarto", choiceList);
         EditorGUILayout.PropertyField(ZoneId);
@@ -84,6 +75,7 @@ public class MapListGUI : Editor
             SerializedProperty Chance = MyListRef.FindPropertyRelative("Chance");
             SerializedProperty Id = MyListRef.FindPropertyRelative("Id");
             SerializedProperty isSpecial = MyListRef.FindPropertyRelative("isSpecial");
+            SerializedProperty hasItem = MyListRef.FindPropertyRelative("hasItem");
             SerializedProperty hasEvent = MyListRef.FindPropertyRelative("hasEvent");
             SerializedProperty hasSpecial = MyListRef.FindPropertyRelative("hasSpecial");
             SerializedProperty Zone = MyListRef.FindPropertyRelative("Zone");
@@ -107,6 +99,7 @@ public class MapListGUI : Editor
                 EditorGUILayout.PropertyField(Zone);
                 EditorGUILayout.PropertyField(hasEvent);
                 EditorGUILayout.PropertyField(hasSpecial);
+                EditorGUILayout.PropertyField(hasItem);
                 EditorGUILayout.Space();
                 EditorGUILayout.Space();
                 if (GUILayout.Button("Remove This Index (" + i.ToString() + ")"))

@@ -8,7 +8,7 @@ public class SCP_173 : MonoBehaviour
     NavMeshAgent _navMeshagent;
     public LayerMask DoorLay;
     public LayerMask CanSeePlayer;
-    public float DoorFiddle, DoorCoolDown;
+    public float DoorFiddle, DoorCoolDown, TeleCoolDown;
     float DoorTimer, DoorCool, PlayerDistance= 20;
     Object_Door DoorObj;
     public GameObject Player;
@@ -16,12 +16,12 @@ public class SCP_173 : MonoBehaviour
     Plane[] frustum;
     Collider col_173;
     Collider[] Interact;
-    bool canSee = true, canMove = true, hasDoor = false, hasPatrol = false, DidOpen, playedHorror, playedNear;
+    bool canSee = true, canMove = true, hasDoor = false, hasPatrol = false, DidOpen, playedHorror, playedNear, TeleWait;
     public bool canAttack;
     AudioSource sfx;
     public Transform DoorSpot;
     Vector3 Destination;
-    int MoveAttempts, frameInterval=5;
+    int MoveAttempts, TeleAttempts, frameInterval=5;
     public AudioClip[] farHorror, closeHorror;
 
     // Use this for initialization
@@ -35,6 +35,7 @@ public class SCP_173 : MonoBehaviour
 
         _navMeshagent = this.GetComponent<NavMeshAgent>();
         sfx = GetComponent<AudioSource>();
+        _navMeshagent.updateRotation = false;
     }
 
     void Start()
@@ -60,21 +61,32 @@ public class SCP_173 : MonoBehaviour
 
         if (canAttack)
         {
+            HorrorFar();
+
+            if (TeleWait)
+                TeleCoolDown -= Time.deltaTime;
+
             if (!canSee)
             {
+                HorrorNear();
+
+                if (_navMeshagent.velocity.sqrMagnitude > Mathf.Epsilon)
+                {
+                    transform.rotation = Quaternion.LookRotation(_navMeshagent.velocity.normalized);
+                }
+
+
                 DoorTimer -= Time.deltaTime;
                 if (canMove)
                 {
-                    if (Time.frameCount % frameInterval == 0)
-                        SetDestination();
-
                     if (PlayerDistance < 20f)
                         _navMeshagent.speed = 25;
                     else
                         _navMeshagent.speed = 10;
                     _navMeshagent.isStopped = false;
                     sfx.UnPause();
-                    HorrorNear();
+                    if (Time.frameCount % frameInterval == 0)
+                        SetDestination();
 
                 }
                 else
@@ -89,9 +101,6 @@ public class SCP_173 : MonoBehaviour
                 _navMeshagent.speed = 0;
                 _navMeshagent.isStopped = true;
                 sfx.Pause();
-                HorrorFar();
-                
-                
             }
         }
         else
@@ -106,7 +115,7 @@ public class SCP_173 : MonoBehaviour
                 playedNear = false;
                 if (playedHorror == false)
                 {
-                    GameController.instance.PlayHorror(farHorror[Random.Range(0, farHorror.Length)]);
+                    GameController.instance.PlayHorror(farHorror[Random.Range(0, farHorror.Length)],transform);
                     playedHorror = true;
                 }
         }
@@ -114,11 +123,11 @@ public class SCP_173 : MonoBehaviour
     
     void HorrorNear()
     {
-        if (PlayerDistance < 4 && CheckPlayer())
+        if (PlayerDistance < 6 && CheckPlayer())
         {
                 if (playedNear == false)
                 {
-                    GameController.instance.PlayHorror(closeHorror[Random.Range(0, closeHorror.Length)]);
+                    GameController.instance.PlayHorror(closeHorror[Random.Range(0, closeHorror.Length)],transform);
                     playedNear = true;
                 }
         }
@@ -128,19 +137,22 @@ public class SCP_173 : MonoBehaviour
 
     bool CheckPlayer()
     {
-        RaycastHit WallCheck;
         Debug.DrawRay(Player.transform.position, (transform.position + new Vector3(0, 0.4f, 0)) - Player.transform.position);
         
         if (Time.frameCount % frameInterval == 0)
         {
-            if (Physics.Raycast(Player.transform.position, (transform.position + new Vector3(0, 0.4f,0))- Player.transform.position, out WallCheck, 40.0f))
+            if (!Physics.Raycast(Player.transform.position, (transform.position + new Vector3(0, 0.4f,0))- Player.transform.position, PlayerDistance, CanSeePlayer))
             {
-                if (WallCheck.transform == this.transform)
                     return true;
             }
         }
         return false;
     }
+
+
+
+
+
 
 
     private void SetDestination()
@@ -168,6 +180,25 @@ public class SCP_173 : MonoBehaviour
                 hasPatrol = false;
             }
 
+            if (PlayerDistance > 40f)
+            {
+                if (TeleWait != true)
+                {
+                    TeleCoolDown = 15f;
+                    TeleWait = true;
+                }
+
+                if (TeleCoolDown <= 0)
+                {
+                    TeleWait = false;
+                    hasPatrol = false;
+                    Vector3 here = GameController.instance.Get173Point();
+                    if (here != Vector3.zero && GameController.instance.PlayerNotHere(here))
+                        WarpMe(true, here);
+                }
+                
+            }
+
         }
     }
 
@@ -186,11 +217,11 @@ public class SCP_173 : MonoBehaviour
     {
         if (hasDoor == false)
         {
-           Interact = Interact = Physics.OverlapSphere(DoorSpot.position, 1.0f, DoorLay);
-            if (Interact.Length != 0)
+            RaycastHit hit;
+            Debug.DrawRay(transform.position, transform.forward);
+            if (Physics.Raycast(transform.position, transform.forward, out hit, 5f, DoorLay, QueryTriggerInteraction.Collide))
             {
-                Debug.DrawRay(transform.position, Interact[0].transform.position - transform.position);
-                DoorObj = Interact[0].transform.gameObject.GetComponent<Object_Door>();
+                DoorObj = hit.transform.gameObject.GetComponent<Object_Door>();
                 DoorTimer = DoorFiddle;
                 hasDoor = true;
             }
@@ -241,14 +272,16 @@ public class SCP_173 : MonoBehaviour
         canAttack = beActive;
         playedNear = false;
         playedHorror = false;
+        hasDoor = false;
+        hasPatrol = false;
     }
 
     private void OnTriggerStay(Collider other)
     {
         if ((!IsSeen())&&(other.gameObject.CompareTag("Player")))
         {
-            other.gameObject.GetComponent<Player_Control>().Death(0);
-            Debug.Log("You are ded ded ded");
+            other.gameObject.GetComponent<Player_Control>().Death(1);
+            canAttack = false;
         }
 
     }

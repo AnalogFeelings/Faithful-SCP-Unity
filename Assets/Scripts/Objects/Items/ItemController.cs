@@ -46,10 +46,35 @@ public class ItemController : MonoBehaviour
             {
                 slots[i].item = newitem;
                 slots[i].updateInfo();
+                Debug.Log(newitem.name);
+                SCP_UI.instance.ItemSFX(newitem.SFX);
                 return (true);
             }
         }
 
         return (false);
+    }
+
+    public string [] GetItems()
+    {
+        string [] temp_items = new string [10];
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (slots[i].item != null)
+                temp_items[i] = slots[i].item.name;
+            else
+                temp_items[i] = "null";
+        }
+        return (temp_items);
+    }
+
+    public void LoadItems(string[] temp_items)
+    {
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (temp_items[i]!="null")
+                slots[i].item = Resources.Load<Item>(string.Concat("Items/", temp_items[i]));
+            slots[i].updateInfo();
+        }
     }
 }

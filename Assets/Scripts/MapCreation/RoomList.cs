@@ -7,7 +7,7 @@ public class RoomChance
 {
     public GameObject Room;
     public int Chance, Id;
-    public bool isSpecial, hasEvent, hasSpecial;
+    public bool isSpecial, hasEvent, hasSpecial, hasItem = false;
     public RoomType type;
     public int Zone;
 

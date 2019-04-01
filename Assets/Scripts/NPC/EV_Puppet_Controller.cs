@@ -77,7 +77,7 @@ public class EV_Puppet_Controller : MonoBehaviour
         {
             _controller.Move(movement);
             movement = Vector3.Lerp(movement, Vector3.zero, 0.05f);
-            transform.rotation = Quaternion.Lerp(transform.rotation, toAngle, 0.1f);
+            transform.rotation = Quaternion.Lerp(transform.rotation, toAngle, 4f*Time.deltaTime);
         }
 
 
@@ -259,7 +259,6 @@ public class EV_Puppet_Controller : MonoBehaviour
             }
             else
                 isSequence = false;
-
         }
 
     }
@@ -274,6 +273,14 @@ public class EV_Puppet_Controller : MonoBehaviour
                 Interact[0].transform.gameObject.GetComponent<Object_Door>().ForceOpen(1.5f);
             }
     }
+
+    public void puppetWarp(Vector3 here)
+    {
+        _controller.enabled = false;
+        transform.position = here;
+        _controller.enabled = true;
+    }
+
 
 
 

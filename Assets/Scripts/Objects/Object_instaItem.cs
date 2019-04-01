@@ -2,11 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Object_Item : Object_Interact
+public class Object_instaItem : Object_Interact
 {
+    // Start is called before the first frame update
     public Item item;
-    public int id;
+
     // Start is called before the first frame updat
+
+    public void Start()
+    {
+        Spawn();
+    }
 
     public void Spawn()
     {
@@ -17,7 +23,6 @@ public class Object_Item : Object_Interact
     public override void Pressed()
     {
         ItemController.instance.AddItem(item);
-        GameController.instance.DeleteItem(id);
         DestroyImmediate(this.gameObject);
     }
 
@@ -25,9 +30,4 @@ public class Object_Item : Object_Interact
     {
     }
 
-    public void Delete()
-    {
-        GameController.instance.DeleteItem(id);
-        DestroyImmediate(this.gameObject);
-    }
 }

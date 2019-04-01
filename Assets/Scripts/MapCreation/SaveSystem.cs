@@ -9,6 +9,14 @@ using UnityEngine;
 /// Datos para los caminantes
 /// </summary>
 /// 
+[System.Serializable]
+public class ItemList
+{
+    public string item;
+    public float X, Y, Z;
+}
+
+
 
 [System.Serializable]
 public class SaveData
@@ -17,7 +25,11 @@ public class SaveData
     public saved_room[,] savedMap;
     public MapSize savedSize;
     public float pX, pY, pZ;
+    public string[] items;
+    public ItemList[] worldItems;
+    //public ItemList[] worldItems;
 }
+
 
 public class SaveSystem : MonoBehaviour
 {

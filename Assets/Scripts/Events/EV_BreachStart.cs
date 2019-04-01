@@ -35,7 +35,6 @@ public class EV_BreachStart : MonoBehaviour
             {
                 check = false;
                 GameController.instance.DefMusic();
-                GameController.instance.player.GetComponent<Player_Control>().DefPost();
                 RenderSettings.fog = true;
             }
         }

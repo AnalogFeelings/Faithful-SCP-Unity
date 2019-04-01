@@ -95,7 +95,7 @@ public class SCP_106 : MonoBehaviour
         {
                 if (playedHorror == false)
                 {
-                    GameController.instance.PlayHorror(Horror[Random.Range(0, Horror.Length)]);
+                    GameController.instance.PlayHorror(Horror[Random.Range(0, Horror.Length)], this.transform);
                     playedHorror = true;
                 }
         }
@@ -130,6 +130,17 @@ public class SCP_106 : MonoBehaviour
       {
             _navMeshagent.SetDestination(Player.transform.position);
       }
+
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if ((isSpawn) && (other.gameObject.CompareTag("Player")))
+        {
+            other.gameObject.GetComponent<Player_Control>().Death(2);
+            UnSpawn();
+            Debug.Log("You are ded ded ded");
+        }
 
     }
 

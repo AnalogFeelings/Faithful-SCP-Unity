@@ -20,20 +20,33 @@ public class slotController : MonoBehaviour, IDragHandler, IEndDragHandler
 
     public void OnDrag(PointerEventData eventData)
     {
-        transform.position = Input.mousePosition;
-        dragging = true;
-        ItemController.instance.currdrag = id;
-        GetComponent<Image>().raycastTarget = false;
+        if (id != -1)
+        {
+            transform.position = Input.mousePosition;
+            dragging = true;
+            ItemController.instance.currdrag = id;
+            GetComponent<Image>().raycastTarget = false;
+        }
     }
     public void OnEndDrag(PointerEventData eventData)
     {
- 
-        if (ItemController.instance.slots[ItemController.instance.currhover].item == null)
-            slotMove();
-
         transform.position = orpos;
         GetComponent<Image>().raycastTarget = true;
         dragging = false;
+
+        if (ItemController.instance.currhover == -1 && isEquip == false && item != null)
+        {
+            GameController.instance.player.GetComponent<Player_Control>().DropItem(item);
+            SCP_UI.instance.ItemSFX(item.SFX);
+            item = null;
+            updateInfo();
+            SCP_UI.instance.ToggleInventory();
+        }
+
+        if (ItemController.instance.currhover != -1 && ItemController.instance.slots[ItemController.instance.currhover].item == null)
+            slotMove();
+
+        
     }
 
 
@@ -54,7 +67,7 @@ public class slotController : MonoBehaviour, IDragHandler, IEndDragHandler
         }
         else
         {
-            displayText.text = " " + id;
+            displayText.text = "";
             displayImage.sprite = null;
             displayImage.color = Color.black;
         }
@@ -65,6 +78,7 @@ public class slotController : MonoBehaviour, IDragHandler, IEndDragHandler
     {
         if (item && !dragging)
         {
+            SCP_UI.instance.ItemSFX(item.SFX);
             item.Use();
             if (item.deleteUse == true)
             {
@@ -78,7 +92,6 @@ public class slotController : MonoBehaviour, IDragHandler, IEndDragHandler
     public void Hover()
     {
         ItemController.instance.currhover = id;
-        Debug.Log(id);
     }
     public void slotMove()
     {

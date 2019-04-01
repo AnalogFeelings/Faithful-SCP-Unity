@@ -6,5 +6,6 @@ using UnityEngine;
 [CreateAssetMenu (fileName = "new Consumable", menuName = "Items/Consumable")]
 public class Consumable : Item
 {
+
     
 }

@@ -14,9 +14,10 @@ public class SCP_UI : MonoBehaviour
     public Canvas Inventory;
     public Canvas HUD;
     public EventSystem menu;
+    public AudioClip[] inventory;
     Menu currMenu = Menu.None;
 
-    public Image blinkBar, Overlay;
+    public Image blinkBar, Overlay, handEquip, runBar;
 
     public GameObject defInv, defPause, hand;
     // Start is called before the first frame update
@@ -38,6 +39,11 @@ public class SCP_UI : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void ItemSFX(int sfx)
+    {
+        GameController.instance.GlobalSFX.PlayOneShot(inventory[sfx]);
     }
 
     public void TogglePauseMenu()

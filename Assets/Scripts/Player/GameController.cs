@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.PostProcessing;
+using UnityEngine.Rendering.PostProcessing;
+using Pixelplacement;
+using Pixelplacement.TweenSystem;
 
 [System.Serializable]
 public class CameraPool
@@ -11,24 +13,24 @@ public class CameraPool
         public bool isUsing;
     }
 
-
-
-
-
 public class GameController : MonoBehaviour
 {
     public static GameController instance = null;
-    public PostProcessingProfile startup;
-
     public bool CreateMap;
+    public PostProcessVolume HorrorVol;
+    DepthOfField depth;
+    TweenBase HorrorTween;
 
     int xPlayer, yPlayer;
+    SmokeBlur HorrorBlur;
+    Camera HorrorFov;
 
     public GameObject player;
-    public GameObject scp173, startEv, scp106;
+    public GameObject scp173, startEv, scp106, itemSpawner;
     public NewMapGen mapCreate;
     SCP_173 con_173;
     SCP_106 con_106;
+    Transform currentTarget;
 
     public Vector3 WorldAnchor;
 
@@ -42,6 +44,7 @@ public class GameController : MonoBehaviour
     public float ambifreq;
 
     room_dat[,] SCP_Map;
+    ItemList[] itemData;
 
     MapSize mapSize;
     int[,,] culllookup;
@@ -54,6 +57,7 @@ public class GameController : MonoBehaviour
     public AudioSource Ambiance;
     public AudioSource MixAmbiance;
     public AudioSource Horror;
+    public AudioSource GlobalSFX;
 
 
     public AudioClip[] AmbianceLibrary;
@@ -65,7 +69,15 @@ public class GameController : MonoBehaviour
     public AudioClip Mus1,Mus2,Mus3;
 
     public CameraPool [] cameraPool;
-    
+
+
+
+
+    /// <summary>
+    /// NPC Data
+    /// </summary>
+    public List<Vector3> places_173 = new List<Vector3>();
+    int place173_curr = 0;
 
 
 
@@ -84,19 +96,8 @@ public class GameController : MonoBehaviour
             // Make a background box
             GUI.Box(new Rect(10, 10, 500, 120), "Menu Inicio");
 
-
             mapCreate.mapgenseed = GUI.TextField(new Rect(20, 40, 80, 20), mapCreate.mapgenseed);
             playIntro = GUI.Toggle(new Rect(120, 40, 80, 20), playIntro, "Iniciar Intro");
-            if (GUI.Button(new Rect(220, 40, 80, 20), "Iniciar"))
-            {
-                NewGame();
-                isStart = true;
-            }
-            if (GUI.Button(new Rect(220, 85, 80, 20), "Cargar"))
-            {
-                LoadGame();
-                isStart = true;
-            }
 
             if (playIntro)
             {
@@ -107,6 +108,17 @@ public class GameController : MonoBehaviour
             {
                 spawnHere = false;
                 doGameplay = true;
+            }
+
+            if (GUI.Button(new Rect(220, 40, 80, 20), "Iniciar"))
+            {
+                NewGame();
+                isStart = true;
+            }
+            if (GUI.Button(new Rect(220, 85, 80, 20), "Cargar"))
+            {
+                LoadGame();
+                isStart = true;
             }
         }
 
@@ -123,6 +135,8 @@ public class GameController : MonoBehaviour
 
     void NewGame()
     {
+        depth = HorrorVol.sharedProfile.GetSetting<DepthOfField>();
+        depth.focusDistance.Override(2f);
 
         AmbianceLibrary = PreBreach;
         CullerFlag = false;
@@ -153,12 +167,21 @@ public class GameController : MonoBehaviour
             StartCoroutine(HidAfterProbeRendering());
         }
 
+        itemData = new ItemList[100];
+        for (int i = 0; i < itemData.Length; i++)
+        {
+            itemData[i] = null;
+        }
+
         if (spawnPlayer)
         {
             if (!spawnHere)
                 player = Instantiate(player, WorldAnchor, Quaternion.identity);
             else
                 player = Instantiate(player, playerSpawn.position, Quaternion.identity);
+
+            HorrorFov = Camera.main;
+            HorrorBlur = HorrorFov.gameObject.GetComponent<SmokeBlur>();
         }
 
         if (spawn173)
@@ -172,12 +195,13 @@ public class GameController : MonoBehaviour
             scp106 = Instantiate(scp106, new Vector3(0,0,0), Quaternion.identity);
             con_106 = scp106.GetComponent<SCP_106>();
         }
-
-        player.GetComponent<Player_Control>().ChangePost(startup);
     }
 
     void LoadGame()
     {
+        depth = HorrorVol.sharedProfile.GetSetting<DepthOfField>();
+        depth.focusDistance.Override(2f);
+
         SaveSystem.instance.LoadState();
 
         AmbianceLibrary = Z1;
@@ -187,7 +211,7 @@ public class GameController : MonoBehaviour
         zoneAmbiance = 0;
         zoneMusic = 0;
 
-
+        itemData = SaveSystem.instance.playData.worldItems;
 
 
         mapCreate.mapsave = SaveSystem.instance.playData.savedMap;
@@ -198,15 +222,19 @@ public class GameController : MonoBehaviour
         roomsize = mapCreate.roomsize;
         Zone3limit = mapCreate.zone3_limit;
         Zone2limit = mapCreate.zone2_limit;
+        ItemController.instance.LoadItems(SaveSystem.instance.playData.items);
 
         mapCreate.LoadingSave();
         mapCreate.MostrarMundo();
+        LoadItems();
 
         SCP_Map = mapCreate.DameMundo();
         Binary_Map = mapCreate.MapaBinario();
 
+        Debug.Log(SaveSystem.instance.playData.savedSize);
 
-            culllookup = new int[mapSize.xSize, mapSize.ySize, 2];
+
+        culllookup = new int[mapSize.xSize, mapSize.ySize, 2];
             int i, j;
             for (i = 0; i < mapSize.xSize; i++)
             {
@@ -220,9 +248,7 @@ public class GameController : MonoBehaviour
 
 
         player = Instantiate(player, new Vector3(SaveSystem.instance.playData.pX, SaveSystem.instance.playData.pY, SaveSystem.instance.playData.pZ), Quaternion.identity);
-  
-
-
+ 
 
         if (spawn173)
         {
@@ -257,7 +283,6 @@ public class GameController : MonoBehaviour
         if (Input.GetButtonDown("Inventory"))
         {
             SCP_UI.instance.ToggleInventory();
-
         }
 
         if (isStart)
@@ -289,6 +314,27 @@ public class GameController : MonoBehaviour
     {
         con_173.WarpMe(beActive, Here.position);
     }
+    public Vector3 Get173Point()
+    {
+        if (places_173.Count != 0)
+        {
+            place173_curr += 1;
+            if (place173_curr >= places_173.Count)
+                place173_curr = 0;
+            return (places_173[place173_curr]);
+        }
+        else
+            return (Vector3.zero);
+    }
+
+    public bool PlayerNotHere(Vector3 MyPos)
+    {
+        int xPos = (Mathf.Clamp((Mathf.RoundToInt((MyPos.x / roomsize))), 0, mapSize.xSize - 1));
+        int yPos = (Mathf.Clamp((Mathf.RoundToInt((MyPos.z / roomsize))), 0, mapSize.ySize - 1));
+
+        return (xPos != xPlayer && yPos != yPlayer);
+    }
+
 
     public void Warp106(Transform Here)
     {
@@ -408,9 +454,23 @@ public class GameController : MonoBehaviour
 
     }
 
-    public void PlayHorror(AudioClip horrorsound)
+    public void PlayHorror(AudioClip horrorsound, Transform origin)
     {
         Horror.PlayOneShot(horrorsound);
+        HorrorTween = Tween.Value(0f, 1f, HorrorUpdate, 0.7f, 0, Tween.EaseInStrong, Tween.LoopType.None, null, () => Tween.Value(1f, -0.2f, HorrorUpdate, 11.0f, 0, Tween.EaseOut));
+        if (origin != null)
+        {
+            currentTarget = origin;
+        }
+    }
+
+    public void HorrorUpdate(float value)
+    {
+        HorrorBlur.atten = 1 - (0.94f * value);
+        HorrorFov.fieldOfView = 65 + (7 * value);
+
+        HorrorVol.weight = value;
+        depth.focusDistance.Override(Vector3.Distance(player.transform.position, currentTarget.transform.position) - 1.5f);
     }
 
 
@@ -447,8 +507,8 @@ public class GameController : MonoBehaviour
 
         do
         {
-            xPatrol = Random.Range(Mathf.Clamp(xPos - 3, 0, mapSize.xSize-1), Mathf.Clamp(xPos + 3, 0, mapSize.xSize-1));
-            yPatrol = Random.Range(Mathf.Clamp(yPos - 3, 0, mapSize.ySize-1), Mathf.Clamp(yPos + 3, 0, mapSize.ySize-1));
+            xPatrol = Random.Range(Mathf.Clamp(xPos - 4, 0, mapSize.xSize-1), Mathf.Clamp(xPos + 4, 0, mapSize.xSize-1));
+            yPatrol = Random.Range(Mathf.Clamp(yPos - 4, 0, mapSize.ySize-1), Mathf.Clamp(yPos + 4, 0, mapSize.ySize-1));
         }
         while (Binary_Map[xPatrol, yPatrol] == 0);
 
@@ -467,14 +527,61 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public int AddItem(Vector3 pos, Item item)
+    {
+        for (int i=0; i < itemData.Length; i++)
+        {
+            if (itemData[i] == null)
+            {
+                itemData[0] = new ItemList();
+                itemData[0].X = pos.x;
+                itemData[0].Y = pos.y;
+                itemData[0].Z = pos.z;
 
-    void QuickSave()
+                itemData[0].item = item.name;
+                return (i);
+            }
+
+        }
+        return (-1);
+    }
+
+    public void DeleteItem(int i)
+    {
+        itemData[i] = null;
+    }
+
+    void LoadItems()
+    {
+        for (int i = 0; i < itemData.Length; i++)
+        {
+            if (itemData[i] != null)
+            {
+                GameObject newObject;
+                newObject = Instantiate(itemSpawner, new Vector3(itemData[i].X, itemData[i].Y+0.1f, itemData[i].Z), Quaternion.identity);
+                newObject.GetComponent<Object_Item>().item = Resources.Load<Item>(string.Concat("Items/", itemData[i].item)); ;
+                newObject.GetComponent<Object_Item>().Spawn();
+            }
+        }
+
+
+    }
+
+
+
+
+
+
+    public void QuickSave()
     {
         SaveSystem.instance.playData.savedMap = mapCreate.mapsave;
         SaveSystem.instance.playData.savedSize = mapSize;
         SaveSystem.instance.playData.pX = player.transform.position.x;
         SaveSystem.instance.playData.pY = player.transform.position.y;
         SaveSystem.instance.playData.pZ = player.transform.position.z;
+        SaveSystem.instance.playData.items = ItemController.instance.GetItems();
+        SaveSystem.instance.playData.worldItems = itemData;
+
         SaveSystem.instance.playData.saveName = "TestSave";
 
         SaveSystem.instance.SaveState();
@@ -482,14 +589,28 @@ public class GameController : MonoBehaviour
 
 
 
-
+    public void setDone(int x, int y)
+    {
+        SCP_Map[x, y].eventDone = true;
+        mapCreate.mapsave[x, y].eventDone = true;
+    }
 
     void PlayerEvents()
     {
         if (Binary_Map[xPlayer, yPlayer]!= 0 && ((SCP_Map[xPlayer, yPlayer].hasEvents == true || SCP_Map[xPlayer, yPlayer].hasSpecial == true))&& SCP_Map[xPlayer, yPlayer].eventDone == false)
         {
-            SCP_Map[xPlayer, yPlayer].RoomHolder.GetComponent<EventHandler>().EventStart();
-            SCP_Map[xPlayer, yPlayer].eventDone = true;
+            if (mapCreate.mapsave[xPlayer, yPlayer].eventDone == true)
+                SCP_Map[xPlayer, yPlayer].RoomHolder.GetComponent<EventHandler>().EventDone(xPlayer, yPlayer);
+            else
+                SCP_Map[xPlayer, yPlayer].RoomHolder.GetComponent<EventHandler>().EventStart(xPlayer, yPlayer);
+        }
+
+
+        if (Binary_Map[xPlayer, yPlayer] != 0 && SCP_Map[xPlayer, yPlayer].hasItem == 1)
+        {
+            SCP_Map[xPlayer, yPlayer].RoomHolder.GetComponent<Item_Spawner>().Spawn();
+            SCP_Map[xPlayer, yPlayer].hasItem = 2;
+            mapCreate.mapsave[xPlayer, yPlayer].items = 2;
         }
     }
 
@@ -516,7 +637,7 @@ public class GameController : MonoBehaviour
         {
             for (j = 0; j < mapSize.ySize; j++)
             {
-                if ((SCP_Map[i, j].empty == false))      //Imprime el mapa
+                if ((Binary_Map[i,j] == 1))      //Imprime el mapa
                     HidRoom(i, j);
             }
         }
