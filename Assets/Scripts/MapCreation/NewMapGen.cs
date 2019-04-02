@@ -162,23 +162,6 @@ public class NewMapGen : MonoBehaviour
 
     void Awake()
     {
-
-        eventList = new List<string>();
-        eventList.Add("Porsiacaso");
-        mapParent = new GameObject();
-        mapParent.name = "Generated Map";
-
-        doorParent = new GameObject();
-        doorParent.name = "Doors";
-
-        mapgen = new int[mapSize.xSize, mapSize.ySize];
-        mapfil = new room_dat[mapSize.xSize, mapSize.ySize];
-        mapsave = new saved_room[mapSize.xSize, mapSize.ySize];
-        cull_lookup = new int[mapSize.xSize, mapSize.ySize, 2];
-        mapdone = 0;
-        walker_count = 0;
-
-
         RoomTable = GetComponents<RoomList>();
 
         for (int i = 0; i < RoomTable.Length; i++)
@@ -243,9 +226,32 @@ public class NewMapGen : MonoBehaviour
         }
     }
 
+    private void MapStart()
+    {
+        eventList = new List<string>();
+        eventList.Add("Porsiacaso");
+        mapParent = new GameObject();
+        mapParent.name = "Generated Map";
+
+        doorParent = new GameObject();
+        doorParent.name = "Doors";
+
+        mapgen = new int[mapSize.xSize, mapSize.ySize];
+        mapfil = new room_dat[mapSize.xSize, mapSize.ySize];
+        mapsave = new saved_room[mapSize.xSize, mapSize.ySize];
+        mapdone = 0;
+        walker_count = 0;
+    }
+
+
+
+
 
     public void CreaMundo()
     {
+        MapStart();
+
+
         IsNew = true;
         Random.InitState(mapgenseed.GetHashCode());
 
