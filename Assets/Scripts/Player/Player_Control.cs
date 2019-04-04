@@ -632,7 +632,7 @@ public class Player_Control : MonoBehaviour
     public void DropItem(Item item)
     {
         GameObject newObject;
-        newObject = Instantiate(GameController.instance.itemSpawner, handPos.transform.position, Quaternion.identity);
+        newObject = Instantiate(GameController.instance.itemSpawner, handPos.transform.position, Quaternion.identity, GameController.instance.itemParent);
         newObject.GetComponent<Object_Item>().item = item;
         newObject.GetComponent<Object_Item>().id = GameController.instance.AddItem(handPos.transform.position, item);
         newObject.GetComponent<Object_Item>().Spawn();
