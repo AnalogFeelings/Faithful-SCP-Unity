@@ -86,10 +86,10 @@ public class EventHandler : MonoBehaviour
         GameObject res_event = Resources.Load<GameObject>(string.Concat("Events/", scp_event));
         if (pos == null)
         {
-            res_event = Instantiate(res_event, this.transform.position, this.transform.rotation, this.transform);
+            res_event = Instantiate(res_event, this.transform.position, this.transform.rotation, this.transform, GameController.instance.eventParent);
         }
         else
-            res_event = Instantiate(res_event, pos.position, pos.rotation, this.transform);
+            res_event = Instantiate(res_event, pos.position, pos.rotation, this.transform, GameController.instance.eventParent);
 
         res_event.GetComponent<Event_Parent>().x = x;
         res_event.GetComponent<Event_Parent>().y = y;
@@ -101,10 +101,10 @@ public class EventHandler : MonoBehaviour
         GameObject res_event = Resources.Load<GameObject>(string.Concat("Events/", scp_event));
         if (pos == null)
         {
-            res_event = Instantiate(res_event, this.transform.position, this.transform.rotation, this.transform);
+            res_event = Instantiate(res_event, this.transform.position, this.transform.rotation, this.transform, GameController.instance.eventParent);
         }
         else
-            res_event = Instantiate(res_event, pos.position, pos.rotation, this.transform);
+            res_event = Instantiate(res_event, pos.position, pos.rotation, this.transform, GameController.instance.eventParent);
         res_event.GetComponent<Event_Parent>().x = x;
         res_event.GetComponent<Event_Parent>().y = y;
         res_event.GetComponent<Event_Parent>().EventFinished();
