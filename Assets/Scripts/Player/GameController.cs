@@ -27,6 +27,10 @@ public class GameController : MonoBehaviour
 
     public GameObject player;
     public GameObject scp173, startEv, scp106, itemSpawner;
+
+    public GameObject itemParent;
+    public GameObject eventParent;
+
     public NewMapGen mapCreate;
     SCP_173 con_173;
     SCP_106 con_106;
