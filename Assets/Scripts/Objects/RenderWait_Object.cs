@@ -5,7 +5,7 @@ using UnityEngine;
 public class RenderWait_Object : MonoBehaviour
 {
     public GameObject contains;
-    float Timer = 30;
+    float Timer = GlobalValues.renderTime;
     // Start is called before the first frame update
     void Start()
     {

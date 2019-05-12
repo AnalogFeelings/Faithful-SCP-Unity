@@ -7,6 +7,7 @@ public class Object_Door : MonoBehaviour
 {
     public GameObject Door01, Door02;
     public float OpenSpeed, DoorEndPos, DoorTime;
+    public int id;
 
     public AudioClip[] Open_AUD;
     public AudioClip[] SCP_AUD;
@@ -22,11 +23,27 @@ public class Object_Door : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        id = GameController.instance.GetDoorID();
+        transform.parent = GameController.instance.doorParent.transform;
+        resetState();
+
+
         Pos1 = Door01.transform.position;
         Pos2 = Door02.transform.position;
         LastPos1 = 10f;
         AUD = GetComponent<AudioSource>();
-        //DoorOpen();
+    }
+
+    public void resetState()
+    {
+        int doorState = GameController.instance.GetDoorState(id);
+        if (doorState != -1)
+        {
+            if (doorState == 0)
+                switchOpen = false;
+            if (doorState == 1)
+                switchOpen = true;
+        }
     }
 
     // Update is called once per frame
@@ -49,12 +66,19 @@ public class Object_Door : MonoBehaviour
         {
             Door01.transform.position += Door01.transform.right * OpenSpeed * Time.deltaTime;
             if (tempdis > LastPos1)
+            {
                 IsOpen = true;
+                GameController.instance.SetDoorState(true, id);
+            }
             else
                 LastPos1 = tempdis;
-            
+
         }
-        else IsOpen = true;
+        else
+        {
+            IsOpen = true;
+            GameController.instance.SetDoorState(true, id);
+        }
 
         tempdis = Vector3.Distance(Door02.transform.position, Pos2 + (Door02.transform.right * DoorEndPos));
         if (tempdis >= 0.02)
@@ -74,11 +98,18 @@ public class Object_Door : MonoBehaviour
         {
             Door01.transform.position += Door01.transform.right * -OpenSpeed * Time.deltaTime;
             if (tempdis > LastPos1)
+            {
                 IsOpen = false;
+                GameController.instance.SetDoorState(false, id);
+            }
             else
                 LastPos1 = tempdis;
         }
-        else IsOpen = false;
+        else
+        {
+            IsOpen = false;
+            GameController.instance.SetDoorState(false, id);
+        }
 
         tempdis = Vector3.Distance(Door02.transform.position, Pos2);
         if (tempdis >= 0.02)
@@ -106,7 +137,6 @@ public class Object_Door : MonoBehaviour
     {
         isForcing = true;
         DoorTime = time;
-        Debug.Log("HoldTheDooor");
     }
 
     void Hodor()

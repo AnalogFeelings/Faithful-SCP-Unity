@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class SCP_173 : MonoBehaviour
+public class SCP_173 : Roam_NPC
 {
     NavMeshAgent _navMeshagent;
     public LayerMask DoorLay;
@@ -16,12 +16,12 @@ public class SCP_173 : MonoBehaviour
     Plane[] frustum;
     Collider col_173;
     Collider[] Interact;
-    bool canSee = true, canMove = true, hasDoor = false, hasPatrol = false, DidOpen, playedHorror, playedNear, TeleWait;
+    bool canSee = true, canMove = true, hasDoor = false, hasPatrol = false, DidOpen, playedHorror, playedNear, TeleWait, blinkFrame, closeDoor = false;
     public bool canAttack;
     AudioSource sfx;
     public Transform DoorSpot;
     Vector3 Destination;
-    int MoveAttempts, TeleAttempts, frameInterval=5;
+    int MoveAttempts, TeleAttempts, frameInterval=30;
     public AudioClip[] farHorror, closeHorror;
 
     // Use this for initialization
@@ -79,14 +79,25 @@ public class SCP_173 : MonoBehaviour
                 DoorTimer -= Time.deltaTime;
                 if (canMove)
                 {
-                    if (PlayerDistance < 20f)
-                        _navMeshagent.speed = 25;
-                    else
+                    if (PlayerDistance < 20f && !closeDoor)
+                        _navMeshagent.speed = 18;
+                    if (PlayerDistance >= 20f && !closeDoor)
                         _navMeshagent.speed = 10;
+
+                    if (closeDoor)
+                    {
+                        _navMeshagent.speed = 4;
+                    }
+
+                    
+
                     _navMeshagent.isStopped = false;
                     sfx.UnPause();
-                    if (Time.frameCount % frameInterval == 0)
+                    if (Time.frameCount % frameInterval == 0 || blinkFrame == false)
+                    {
                         SetDestination();
+                        blinkFrame = true;
+                    }
 
                 }
                 else
@@ -98,6 +109,7 @@ public class SCP_173 : MonoBehaviour
             }
             else
             {
+                blinkFrame = false;
                 _navMeshagent.speed = 0;
                 _navMeshagent.isStopped = true;
                 sfx.Pause();
@@ -115,7 +127,7 @@ public class SCP_173 : MonoBehaviour
                 playedNear = false;
                 if (playedHorror == false)
                 {
-                    GameController.instance.PlayHorror(farHorror[Random.Range(0, farHorror.Length)],transform);
+                    GameController.instance.PlayHorror(farHorror[Random.Range(0, farHorror.Length)],transform, npc.scp173);
                     playedHorror = true;
                 }
         }
@@ -127,7 +139,7 @@ public class SCP_173 : MonoBehaviour
         {
                 if (playedNear == false)
                 {
-                    GameController.instance.PlayHorror(closeHorror[Random.Range(0, closeHorror.Length)],transform);
+                    GameController.instance.PlayHorror(closeHorror[Random.Range(0, closeHorror.Length)],transform, npc.scp173);
                     playedNear = true;
                 }
         }
@@ -164,7 +176,7 @@ public class SCP_173 : MonoBehaviour
         }
         else
             {
-            if (hasPatrol == false)
+            if (hasPatrol == false && agroLevel != 0)
             {
                 Debug.Log(Vector3.Distance(transform.position, Destination));
                 Destination = GameController.instance.GetPatrol(transform.position);
@@ -180,11 +192,14 @@ public class SCP_173 : MonoBehaviour
                 hasPatrol = false;
             }
 
-            if (PlayerDistance > 40f)
+            if (PlayerDistance > 50f )
             {
                 if (TeleWait != true)
                 {
-                    TeleCoolDown = 15f;
+                    if (agroLevel == 1)
+                    TeleCoolDown = 10f;
+                    if (agroLevel == 0)
+                        TeleCoolDown = 20f;
                     TeleWait = true;
                 }
 
@@ -194,7 +209,7 @@ public class SCP_173 : MonoBehaviour
                     hasPatrol = false;
                     Vector3 here = GameController.instance.Get173Point();
                     if (here != Vector3.zero && GameController.instance.PlayerNotHere(here))
-                        WarpMe(true, here);
+                        Spawn(true, here);
                 }
                 
             }
@@ -219,7 +234,14 @@ public class SCP_173 : MonoBehaviour
         {
             RaycastHit hit;
             Debug.DrawRay(transform.position, transform.forward);
-            if (Physics.Raycast(transform.position, transform.forward, out hit, 5f, DoorLay, QueryTriggerInteraction.Collide))
+            if (Physics.Raycast(transform.position, transform.forward, out hit, 6f, DoorLay, QueryTriggerInteraction.Collide))
+            {
+                closeDoor = true;
+            }
+            else
+                closeDoor = false;
+
+            if (Physics.Raycast(transform.position, transform.forward, out hit, 1f, DoorLay, QueryTriggerInteraction.Collide))
             {
                 DoorObj = hit.transform.gameObject.GetComponent<Object_Door>();
                 DoorTimer = DoorFiddle;
@@ -250,7 +272,7 @@ public class SCP_173 : MonoBehaviour
                     {
                         hasDoor = false;
                         canMove = true;
-                        WarpMe(true, GameController.instance.GetPatrol(transform.position));
+                        Spawn(true, GameController.instance.GetPatrol(transform.position));
                         MoveAttempts = 0;
                     }
                     if (DidOpen == false)
@@ -266,7 +288,7 @@ public class SCP_173 : MonoBehaviour
 
     }
 
-    public void WarpMe(bool beActive, Vector3 warppoint)
+    public override void Spawn(bool beActive, Vector3 warppoint)
     {
         _navMeshagent.Warp(warppoint);
         canAttack = beActive;

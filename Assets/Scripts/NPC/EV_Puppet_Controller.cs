@@ -76,7 +76,7 @@ public class EV_Puppet_Controller : MonoBehaviour
         if (!isPursuit)
         {
             _controller.Move(movement);
-            movement = Vector3.Lerp(movement, Vector3.zero, 0.05f);
+            movement = Vector3.Lerp(movement, Vector3.zero, 4f * Time.deltaTime);
             transform.rotation = Quaternion.Lerp(transform.rotation, toAngle, 4f*Time.deltaTime);
         }
 

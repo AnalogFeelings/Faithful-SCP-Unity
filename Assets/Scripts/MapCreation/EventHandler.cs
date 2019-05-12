@@ -55,23 +55,26 @@ public class EventHandler : MonoBehaviour
 
     public void EventStart(int x, int y)
     {
-        Debug.Log("Evento Nuevo");
+        
         if (Spawned == false)
         {
+            Debug.Log("Evento Nuevo " + x + " " + y);
             if (EventChosen == -2)
                 EventSpawn(UniqueHandler, x, y, UniquePos);
 
             if (EventChosen >= 0)
                 EventSpawn(EventList[EventChosen].EventHandler, x, y, EventList[EventChosen].pos);
+
             Spawned = true;
         }
     }
 
     public void EventDone(int x, int y)
     {
-        Debug.Log("Evento Hecho");
+        
         if (Spawned == false)
         {
+            Debug.Log("Evento Hecho");
             if (EventChosen == -2)
                 EventDone(UniqueHandler, x, y, UniquePos);
 
@@ -86,10 +89,10 @@ public class EventHandler : MonoBehaviour
         GameObject res_event = Resources.Load<GameObject>(string.Concat("Events/", scp_event));
         if (pos == null)
         {
-            res_event = Instantiate(res_event, this.transform.position, this.transform.rotation, this.transform, GameController.instance.eventParent);
+            res_event = Instantiate(res_event, this.transform.position, this.transform.rotation, GameController.instance.eventParent.transform);
         }
         else
-            res_event = Instantiate(res_event, pos.position, pos.rotation, this.transform, GameController.instance.eventParent);
+            res_event = Instantiate(res_event, pos.position, pos.rotation, GameController.instance.eventParent.transform);
 
         res_event.GetComponent<Event_Parent>().x = x;
         res_event.GetComponent<Event_Parent>().y = y;
@@ -101,10 +104,10 @@ public class EventHandler : MonoBehaviour
         GameObject res_event = Resources.Load<GameObject>(string.Concat("Events/", scp_event));
         if (pos == null)
         {
-            res_event = Instantiate(res_event, this.transform.position, this.transform.rotation, this.transform, GameController.instance.eventParent);
+            res_event = Instantiate(res_event, this.transform.position, this.transform.rotation, GameController.instance.eventParent.transform);
         }
         else
-            res_event = Instantiate(res_event, pos.position, pos.rotation, this.transform, GameController.instance.eventParent);
+            res_event = Instantiate(res_event, pos.position, pos.rotation, GameController.instance.eventParent.transform);
         res_event.GetComponent<Event_Parent>().x = x;
         res_event.GetComponent<Event_Parent>().y = y;
         res_event.GetComponent<Event_Parent>().EventFinished();

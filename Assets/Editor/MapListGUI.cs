@@ -79,6 +79,7 @@ public class MapListGUI : Editor
             SerializedProperty hasEvent = MyListRef.FindPropertyRelative("hasEvent");
             SerializedProperty hasSpecial = MyListRef.FindPropertyRelative("hasSpecial");
             SerializedProperty Zone = MyListRef.FindPropertyRelative("Zone");
+            SerializedProperty Music = MyListRef.FindPropertyRelative("music");
 
 
 
@@ -86,8 +87,8 @@ public class MapListGUI : Editor
 
 
             // Choose to display automatic or custom field types. This is only for example to help display automatic and custom fields.
-             //1. Automatic, No customization <-- Choose me I'm automatic and easy to setup
-                Texture2D myTexture = AssetPreview.GetAssetPreview(Room.objectReferenceValue);
+            //1. Automatic, No customization <-- Choose me I'm automatic and easy to setup
+            Texture2D myTexture = AssetPreview.GetAssetPreview(Room.objectReferenceValue);
                 EditorGUILayout.BeginHorizontal();
                 GUILayout.Label(myTexture);
                 EditorGUILayout.BeginVertical();
@@ -100,6 +101,7 @@ public class MapListGUI : Editor
                 EditorGUILayout.PropertyField(hasEvent);
                 EditorGUILayout.PropertyField(hasSpecial);
                 EditorGUILayout.PropertyField(hasItem);
+                EditorGUILayout.PropertyField(Music);
                 EditorGUILayout.Space();
                 EditorGUILayout.Space();
                 if (GUILayout.Button("Remove This Index (" + i.ToString() + ")"))

@@ -77,4 +77,12 @@ public class ItemController : MonoBehaviour
             slots[i].updateInfo();
         }
     }
+
+    public void EmptyItems()
+    {
+        for (int i = 0; i < slots.Length; i++)
+        {
+            slots[i].item = null;
+        }
+    }
 }

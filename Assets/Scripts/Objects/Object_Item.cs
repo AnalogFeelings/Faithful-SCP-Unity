@@ -10,6 +10,7 @@ public class Object_Item : Object_Interact
 
     public void Spawn()
     {
+        Debug.Log(item.itemName);
         Instantiate(item.ItemModel, this.transform);
     }
 

@@ -10,7 +10,7 @@ public class RoomChance
     public bool isSpecial, hasEvent, hasSpecial, hasItem = false;
     public RoomType type;
     public int Zone;
-
+    public int music = -1;
 }
 
 

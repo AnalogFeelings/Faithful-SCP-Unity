@@ -21,13 +21,13 @@ public class ItemList
 [System.Serializable]
 public class SaveData
 {
+    public List<savedDoor> doorState;
     public string saveName;
     public saved_room[,] savedMap;
     public MapSize savedSize;
     public float pX, pY, pZ;
     public string[] items;
     public ItemList[] worldItems;
-    //public ItemList[] worldItems;
 }
 
 
@@ -35,8 +35,6 @@ public class SaveSystem : MonoBehaviour
 {
     public SaveData playData = new SaveData();
     public static SaveSystem instance = null;
-    const string folderName = "SCPSaves";
-    const string fileExtension = ".scp";
 
 
     void Awake()
@@ -51,25 +49,27 @@ public class SaveSystem : MonoBehaviour
 
     public void SaveState()
     {
-        string folderPath = Path.Combine(Application.persistentDataPath, folderName);
+        string folderPath = Path.Combine(Application.persistentDataPath, GlobalValues.folderName);
         if (!Directory.Exists(folderPath))
             Directory.CreateDirectory(folderPath);
 
-        string dataPath = Path.Combine(folderPath, playData.saveName + fileExtension);
+        playData.saveName = GlobalValues.mapname;
+
+        string dataPath = Path.Combine(folderPath, playData.saveName + GlobalValues.fileExtension);
         WriteSaveFile(playData, dataPath);
     }
 
     public void LoadState()
     {
-        string[] filePaths = GetFilePaths();
+        /*string[] filePaths = GetFilePaths();
 
         if (filePaths.Length > 0)
-        {
-            playData = LoadSaveFile(filePaths[0]);
-            Debug.Log("Lo cargue!");
-        }
+        {*/
+            playData = LoadSaveFile(GlobalValues.pathfile);
+            Debug.Log("Lo cargue! " + GlobalValues.pathfile);
+        /*}
         else
-            Debug.Log("No encontre nada");
+            Debug.Log("No encontre nada");*/
     }
 
 
@@ -95,12 +95,12 @@ public class SaveSystem : MonoBehaviour
         }
     }
 
-    string[] GetFilePaths()
+    /*string[] GetFilePaths()
     {
         string folderPath = Path.Combine(Application.persistentDataPath, folderName);
         folderPath = folderPath.Replace("/", @"\");
         Debug.Log(folderPath);
 
         return Directory.GetFiles(folderPath, "*"+fileExtension);
-    }
+    }*/
 }

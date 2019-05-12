@@ -28,8 +28,8 @@ public class EV_light_testroom : Event_Parent
                 GameController.instance.Warp173(true, Anchor2.transform);
                 StopTimer = true;
                 Screen.SetActive(false);
-                GameController.instance.PlayHorror(SFX[0],Anchor2.transform);
-                GameController.instance.PlayHorror(SFX[1],Anchor2.transform);
+                GameController.instance.PlayHorror(SFX[0],Anchor2.transform, npc.none);
+                GameController.instance.PlayHorror(SFX[1],Anchor2.transform, npc.none);
                 EventFinished();
             }
         }

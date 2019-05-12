@@ -11,7 +11,7 @@ public class Object_instaItem : Object_Interact
 
     public void Start()
     {
-        this.transform.parent = GameController.instance.itemParent;
+        this.transform.parent = GameController.instance.itemParent.transform;
         Spawn();
     }
 
