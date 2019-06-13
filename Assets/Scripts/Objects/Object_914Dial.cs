@@ -27,11 +27,11 @@ public class Object_914Dial : Object_Interact
             if (change == true)
             {
 
-                if (Input.GetAxis("Mouse X") > 0)
+                if (Input.GetAxis("Mouse X") < 0)
                 {
                     Option = Mathf.Clamp(Option + 1, 0, 5);
                 }
-                if (Input.GetAxis("Mouse X") < 0)
+                if (Input.GetAxis("Mouse X") > 0)
                 {
                     Option = Mathf.Clamp(Option - 1, 0, 5);
                 }

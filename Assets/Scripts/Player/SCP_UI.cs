@@ -19,7 +19,7 @@ public class SCP_UI : MonoBehaviour
     public AudioClip[] inventory;
     Menu currMenu = Menu.None;
 
-    public Image blinkBar, Overlay, handEquip, runBar;
+    public Image blinkBar, Overlay, handEquip, runBar, navBar;
 
     public GameObject defInv, defPause, hand;
     // Start is called before the first frame update
@@ -52,15 +52,18 @@ public class SCP_UI : MonoBehaviour
     {
         if (currMenu == Menu.Pause)
         {
-            Time.timeScale = 1.0f;
+            Debug.Log("Quitando pausa");
             PauseM.enabled = false;
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+            Time.timeScale = 1.0f;
             currMenu = Menu.None;
+            Debug.Log("Pausa Quitada");
             return;
         }
         if (currMenu == Menu.None)
         {
+            Debug.Log("Pausando");
             PauseM.enabled = true;
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;

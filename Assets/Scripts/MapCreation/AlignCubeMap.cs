@@ -53,7 +53,7 @@ public class AlignCubeMap : MonoBehaviour
             angle = -90;
         }
 
-        Debug.Log(transform.eulerAngles.y + " Detectado como angulo " + angle);
+        //Debug.Log(transform.eulerAngles.y + " Detectado como angulo " + angle);
 
         /*probeComponent.mode = UnityEngine.Rendering.ReflectionProbeMode.Realtime;
         probeComponent.refreshMode = UnityEngine.Rendering.ReflectionProbeRefreshMode.ViaScripting;

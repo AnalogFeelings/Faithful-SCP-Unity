@@ -59,10 +59,7 @@ public class MapListGUI : Editor
         EditorGUILayout.Space();
         EditorGUILayout.Space();
         //Or add a new item to the List<> with a button
-        if (GUILayout.Button("Add New"))
-        {
-            t.AddNew(choiceList);
-        }
+        
 
         EditorGUILayout.Space();
 
@@ -70,10 +67,14 @@ public class MapListGUI : Editor
 
         for (int i = 0; i < ThisList.arraySize; i++)
         {
+            if (GUILayout.Button("Add here"))
+            {
+                t.InsertNew(choiceList, i);
+            }
+
             SerializedProperty MyListRef = ThisList.GetArrayElementAtIndex(i);
             SerializedProperty Room = MyListRef.FindPropertyRelative("Room");
             SerializedProperty Chance = MyListRef.FindPropertyRelative("Chance");
-            SerializedProperty Id = MyListRef.FindPropertyRelative("Id");
             SerializedProperty isSpecial = MyListRef.FindPropertyRelative("isSpecial");
             SerializedProperty hasItem = MyListRef.FindPropertyRelative("hasItem");
             SerializedProperty hasEvent = MyListRef.FindPropertyRelative("hasEvent");
@@ -93,9 +94,8 @@ public class MapListGUI : Editor
                 GUILayout.Label(myTexture);
                 EditorGUILayout.BeginVertical();
                 EditorGUIUtility.labelWidth = 60;
-                Room.objectReferenceValue = EditorGUILayout.ObjectField("Room", Room.objectReferenceValue, typeof(GameObject), true);
+                Room.objectReferenceValue = EditorGUILayout.ObjectField("Room ", Room.objectReferenceValue, typeof(GameObject), true);
                 EditorGUILayout.PropertyField(Chance);
-                EditorGUILayout.PropertyField(Id);
                 EditorGUILayout.PropertyField(isSpecial);
                 EditorGUILayout.PropertyField(Zone);
                 EditorGUILayout.PropertyField(hasEvent);

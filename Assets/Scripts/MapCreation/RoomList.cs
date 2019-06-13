@@ -6,15 +6,19 @@ using UnityEngine;
 public class RoomChance
 {
     public GameObject Room;
-    public int Chance, Id;
+    public int Chance;
     public bool isSpecial, hasEvent, hasSpecial, hasItem = false;
     public RoomType type;
     public int Zone;
     public int music = -1;
+        public RoomChance(RoomType _type)
+        {
+        type = _type;
+        }
 }
 
-
-public class RoomList : MonoBehaviour
+[CreateAssetMenu(fileName = "new RoomTable", menuName = "Map Creator/Room Table")]
+public class RoomList : ScriptableObject
 {
     public int Zone;
     //This is our list we want to use to represent our class as an array.
@@ -31,27 +35,59 @@ public class RoomList : MonoBehaviour
         {
             case RoomType.TwoWay:
                 {
-                    twoWay_List.Add(new RoomChance());
+                    twoWay_List.Add(new RoomChance( choiceList));
                     break;
                 }
             case RoomType.CornerWay:
                 {
-                    cornerWay_List.Add(new RoomChance());
+                    cornerWay_List.Add(new RoomChance(choiceList));
                     break;
                 }
             case RoomType.TWay:
                 {
-                    tWay_List.Add(new RoomChance());
+                    tWay_List.Add(new RoomChance(choiceList));
                     break;
                 }
             case RoomType.EndWay:
                 {
-                    endWay_List.Add(new RoomChance());
+                    endWay_List.Add(new RoomChance(choiceList));
                     break;
                 }
             case RoomType.FourWay:
                 {
-                    fourWay_List.Add(new RoomChance());
+                    fourWay_List.Add(new RoomChance(choiceList));
+                    break;
+                }
+        }
+    }
+
+    public void InsertNew(RoomType choiceList, int i)
+    {
+        switch (choiceList)
+        {
+            case RoomType.TwoWay:
+                {
+                    twoWay_List.Insert(i, new RoomChance(choiceList));
+                    break;
+                }
+            case RoomType.CornerWay:
+                {
+                    cornerWay_List.Insert(i, new RoomChance(choiceList));
+                    break;
+                }
+            case RoomType.TWay:
+                {
+                    tWay_List.Insert(i, new RoomChance(choiceList));
+                    break;
+                }
+            case RoomType.EndWay:
+                {
+                    endWay_List.Insert(i, new RoomChance(choiceList));
+                    break;
+                }
+            case RoomType.FourWay:
+                {
+                    fourWay_List.Insert(i, new RoomChance(choiceList));
                     break;
                 }
         }

@@ -15,7 +15,6 @@ public class EV_Puppet_Controller : MonoBehaviour
     Transform[] ActualPath;
     Transform rotaAt, lookAt, Location;
     int pathNodes, audSeq;
-    private CharacterController _controller;
     public GameObject Puppet_Mesh, Def_LookAt;
     Animator Puppet_Anim;
     HeadLookController Head;
@@ -33,7 +32,6 @@ public class EV_Puppet_Controller : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _controller = GetComponent<CharacterController>();
         Audio = GetComponent<AudioSource>();
         _navMeshagent = this.GetComponent<NavMeshAgent>();
 
@@ -71,11 +69,13 @@ public class EV_Puppet_Controller : MonoBehaviour
             Head.target = Def_LookAt.transform.position;
         }
 
-
-        ACT_Gravity();
         if (!isPursuit)
         {
-            _controller.Move(movement);
+            _navMeshagent.autoTraverseOffMeshLink = false;
+            if (_navMeshagent.isOnOffMeshLink)
+                transform.position += movement;
+            else
+                _navMeshagent.Move(movement);
             movement = Vector3.Lerp(movement, Vector3.zero, 4f * Time.deltaTime);
             transform.rotation = Quaternion.Lerp(transform.rotation, toAngle, 4f*Time.deltaTime);
         }
@@ -129,11 +129,6 @@ public class EV_Puppet_Controller : MonoBehaviour
                 fallSpeed -= Gravity * Time.deltaTime;
                 if (fallSpeed < maxfallspeed)
                     fallSpeed = maxfallspeed;
-
-                if (_controller.isGrounded && fallSpeed < 0)
-                {
-                    fallSpeed = 0f;
-                }
 
                 movement.y = fallSpeed;
             }
@@ -197,6 +192,7 @@ public class EV_Puppet_Controller : MonoBehaviour
 
     void FindPath()
     {
+        _navMeshagent.autoTraverseOffMeshLink = true;
         Vector3 targetVector = Location.transform.position;
         _navMeshagent.SetDestination(targetVector);
     }
@@ -276,9 +272,7 @@ public class EV_Puppet_Controller : MonoBehaviour
 
     public void puppetWarp(Vector3 here)
     {
-        _controller.enabled = false;
-        transform.position = here;
-        _controller.enabled = true;
+        _navMeshagent.Warp(here);
     }
 
 

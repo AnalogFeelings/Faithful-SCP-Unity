@@ -60,12 +60,12 @@ public class GameController : MonoBehaviour
 
     Transform currentTarget;
 
-    public Vector3 WorldAnchor;
+    public Transform WorldAnchor;
 
     int xStart, xEnd, yStart, yEnd;
     int Zone3limit, Zone2limit;
     int zoneAmbiance = -1;
-    int zoneMusic = -1;
+    int zoneMusic = -1, currentMusic = -1;
     bool CullerFlag, DebugFlag = false;
     bool CullerOn, playIntro = true;
     float roomsize = 15.3f, ambiancetimer=0, GENambiancetimer = 0, Timer = 5, normalAmbiance, ambiancefreq=3;
@@ -671,7 +671,7 @@ public class GameController : MonoBehaviour
         yPlayer = y;
     }
 
-    public Vector3 GetPatrol(Vector3 MyPos)
+    public Vector3 GetPatrol(Vector3 MyPos, int Outer, int Inner)
     {
         int xPos = (Mathf.Clamp((Mathf.RoundToInt((MyPos.x / roomsize))), 0, mapSize.xSize-1));
         int yPos = (Mathf.Clamp((Mathf.RoundToInt((MyPos.z / roomsize))), 0, mapSize.ySize-1));
@@ -682,12 +682,12 @@ public class GameController : MonoBehaviour
 
         do
         {
-            xPatrol = Random.Range(Mathf.Clamp(xPos - 4, 0, mapSize.xSize-1), Mathf.Clamp(xPos + 4, 0, mapSize.xSize-1));
-            yPatrol = Random.Range(Mathf.Clamp(yPos - 4, 0, mapSize.ySize-1), Mathf.Clamp(yPos + 4, 0, mapSize.ySize-1));
+            xPatrol = Random.Range(Mathf.Clamp(xPos - Outer, 0, mapSize.xSize-1), Mathf.Clamp(xPos + Outer, 0, mapSize.xSize-1));
+            yPatrol = Random.Range(Mathf.Clamp(yPos - Outer, 0, mapSize.ySize-1), Mathf.Clamp(yPos + Outer, 0, mapSize.ySize-1));
         }
-        while (Binary_Map[xPatrol, yPatrol] == 0);
+        while (Binary_Map[xPatrol, yPatrol] == 0 && ((xPatrol < xPos + Inner) && (xPatrol > xPos - Inner) && (yPatrol < yPos + Inner) && (yPatrol > yPos - Inner)));
 
-        Debug.Log("Otorgue Posicion X= " + xPatrol + " Posicion Y= " + yPatrol);
+        Debug.Log("Otorgue Posicion X= " + xPatrol + " Posicion Y= " + yPatrol + " desde x " + xPos + " y " + yPos);
 
         return (new Vector3(xPatrol * roomsize, 0.0f, yPatrol * roomsize));
     }
@@ -793,9 +793,10 @@ public class GameController : MonoBehaviour
             }
 
 
-            if (SCP_Map[xPlayer, yPlayer].music != -1 && RoomMusicChange == false)
+            if (SCP_Map[xPlayer, yPlayer].music != -1 && (RoomMusicChange == false || currentMusic != SCP_Map[xPlayer, yPlayer].music))
             {
                 ChangeMusic(RoomMusic[SCP_Map[xPlayer, yPlayer].music]);
+                currentMusic = SCP_Map[xPlayer, yPlayer].music;
                 RoomMusicChange = true;
             }
             if (SCP_Map[xPlayer, yPlayer].music == -1)
@@ -988,7 +989,7 @@ public class GameController : MonoBehaviour
             {
                 if ((Binary_Map[i, j] == 1))      //Imprime el mapa
                 {
-                    //Debug.Log("Hiding Room at x" + i + " y " + j);
+                    Debug.Log("Hiding Room at x" + i + " y " + j);
                     HidRoom(i, j);
                 }
             }
@@ -1002,7 +1003,7 @@ public class GameController : MonoBehaviour
                 {
                     if (!spawnHere)
                     {
-                        player = Instantiate(origplayer, WorldAnchor, Quaternion.identity);
+                        player = Instantiate(origplayer, WorldAnchor.transform.position, Quaternion.identity);
                         doGameplay = true;
                         RenderSettings.fog = true;
                         DefMusic();
@@ -1014,7 +1015,7 @@ public class GameController : MonoBehaviour
                         MusicPlayer.instance.StartMusic(MusIntro);
                     }
 
-                    SetMapPos(10, 20);
+                    SetMapPos(0, 10);
                     HorrorFov = Camera.main;
                     HorrorBlur = HorrorFov.gameObject.GetComponent<SmokeBlur>();
 

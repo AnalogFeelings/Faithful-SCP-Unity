@@ -2,12 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SetAnchor : MonoBehaviour
+public class dummy : MonoBehaviour
 {
     // Start is called before the first frame update
-    void Awake()
+    void Start()
     {
-        GameController.instance.WorldAnchor = transform;
+        
     }
 
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
 }

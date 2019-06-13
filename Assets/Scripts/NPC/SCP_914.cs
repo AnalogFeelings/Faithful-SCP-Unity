@@ -48,12 +48,12 @@ public class SCP_914 : MonoBehaviour
     {
         switch (dial.Option)
         {
-            case 0:
+            case 4:
                 {
                     Knob.transform.localRotation = Quaternion.Euler(0, 0, 83f);
                     break;
                 }
-            case 1:
+            case 3:
                 {
                     Knob.transform.localRotation = Quaternion.Euler(0, 0, 43.5f);
                     break;
@@ -63,12 +63,12 @@ public class SCP_914 : MonoBehaviour
                     Knob.transform.localRotation = Quaternion.Euler(0, 0, 0f);
                     break;
                 }
-            case 3:
+            case 1:
                 {
                     Knob.transform.localRotation = Quaternion.Euler(0, 0, -44f);
                     break;
                 }
-            case 4:
+            case 0:
                 {
                     Knob.transform.localRotation = Quaternion.Euler(0, 0, -83f);
                     break;

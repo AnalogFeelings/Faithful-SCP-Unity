@@ -50,7 +50,7 @@ public class Player_Control : MonoBehaviour
     public float GroundDistance = 0.2f, baseAmplitude, bobSpeed, Gravity = -9.81f, maxfallspeed, Basespeed = 3, crouchspeed = 2, runSpeed = 4, BlinkingTimerBase, ClosedEyes, AsfixiaTimer, RunningTimerBase, lookingForce = 3f, Camplitude, Cspeed;
     bool Grounded = true, isGameplay = true, isSmoke = false, Crouch = false, fakeBlink, isRunning, isTired = false, isLooking=false, cognitoEffect;
     Camera PlayerCam;
-    Image eyes, blinkbar, runbar, overlay, handEquip;
+    Image eyes, blinkbar, runbar, batbar, overlay, handEquip;
     RectTransform hand_rect, hud_rect;
     public bool Freeze = false;
 
@@ -109,6 +109,7 @@ public class Player_Control : MonoBehaviour
         eyes = SCP_UI.instance.eyes;
         blinkbar = SCP_UI.instance.blinkBar;
         runbar = SCP_UI.instance.runBar;
+        batbar = SCP_UI.instance.navBar;
         hand = SCP_UI.instance.hand;
         overlay = SCP_UI.instance.Overlay;
         handEquip = SCP_UI.instance.handEquip;
@@ -753,7 +754,9 @@ public class Player_Control : MonoBehaviour
         if (equipment[(int)bodyPart.Hand] is Equipable_Elec)
         {
             ((Equipable_Elec)equipment[(int)bodyPart.Hand]).Battery -= 0.2f * Time.deltaTime;
+            int batPercent = ((int)Mathf.Floor((((Equipable_Elec)equipment[(int)bodyPart.Hand]).Battery / (100 / 100)) / 5));
 
+            batbar.rectTransform.sizeDelta = new Vector2(batPercent * 8, 14);
         }
 
 
@@ -863,10 +866,11 @@ public class Player_Control : MonoBehaviour
         newObject.GetComponent<Object_Item>().Spawn();
     }
 
-    public void playerWarp(Vector3 here)
+    public void playerWarp(Vector3 here, float rotation)
     {
         _controller.enabled = false;
         transform.position = here;
+        CameraObj.transform.rotation = Quaternion.Euler(CameraObj.transform.eulerAngles.x, CameraObj.transform.eulerAngles.y + rotation, CameraObj.transform.eulerAngles.z);
         _controller.enabled = true;
     }
 

@@ -125,23 +125,9 @@ public class NewMapGen : MonoBehaviour
     GameObject cornway;
     GameObject endway;
 
-    List<RoomChance> twaylist;
-    List<RoomChance> twowaylist;
-    List<RoomChance> cornwaylist;
-    List<RoomChance> endwaylist;
-    List<RoomChance> fourwaylist;
-
-    List<RoomChance> twaylist2;
-    List<RoomChance> twowaylist2;
-    List<RoomChance> cornwaylist2;
-    List<RoomChance> endwaylist2;
-    List<RoomChance> fourwaylist2;
-
-    List<RoomChance> twaylist3;
-    List<RoomChance> twowaylist3;
-    List<RoomChance> cornwaylist3;
-    List<RoomChance> endwaylist3;
-    List<RoomChance> fourwaylist3;
+    public RoomList zEntrance;
+    public RoomList zHeavy;
+    public RoomList zLight;
 
     List<Roomlookup> cornerWay_Lookup = new List<Roomlookup>();
     List<Roomlookup> twoWay_Lookup = new List<Roomlookup>();
@@ -163,54 +149,23 @@ public class NewMapGen : MonoBehaviour
 
     void Awake()
     {
-        RoomTable = GetComponents<RoomList>();
+        ScanForSpecials(zEntrance.twoWay_List);
+        ScanForSpecials(zEntrance.cornerWay_List);
+        ScanForSpecials(zEntrance.endWay_List);
+        ScanForSpecials(zEntrance.tWay_List);
+        ScanForSpecials(zEntrance.fourWay_List);
 
-        for (int i = 0; i < RoomTable.Length; i++)
-        {
-            switch (RoomTable[i].Zone)
-            {
-                case 1:
-                    twowaylist = RoomTable[i].twoWay_List;
-                    cornwaylist = RoomTable[i].cornerWay_List;
-                    endwaylist = RoomTable[i].endWay_List;
-                    twaylist = RoomTable[i].tWay_List;
-                    fourwaylist = RoomTable[i].fourWay_List;
-                    break;
-                case 2:
-                    twowaylist2 = RoomTable[i].twoWay_List;
-                    cornwaylist2 = RoomTable[i].cornerWay_List;
-                    endwaylist2 = RoomTable[i].endWay_List;
-                    twaylist2 = RoomTable[i].tWay_List;
-                    fourwaylist2 = RoomTable[i].fourWay_List;
-                    break;
-                case 3:
-                    twowaylist3 = RoomTable[i].twoWay_List;
-                    cornwaylist3 = RoomTable[i].cornerWay_List;
-                    endwaylist3 = RoomTable[i].endWay_List;
-                    twaylist3 = RoomTable[i].tWay_List;
-                    fourwaylist3 = RoomTable[i].fourWay_List;
-                    break;
+        ScanForSpecials(zHeavy.twoWay_List);
+        ScanForSpecials(zHeavy.cornerWay_List);
+        ScanForSpecials(zHeavy.endWay_List);
+        ScanForSpecials(zHeavy.tWay_List);
+        ScanForSpecials(zHeavy.fourWay_List);
 
-            }
-        }
-
-        ScanForSpecials(twowaylist);
-        ScanForSpecials(cornwaylist);
-        ScanForSpecials(endwaylist);
-        ScanForSpecials(twaylist);
-        ScanForSpecials(fourwaylist);
-
-        ScanForSpecials(twowaylist2);
-        ScanForSpecials(cornwaylist2);
-        ScanForSpecials(endwaylist2);
-        ScanForSpecials(twaylist2);
-        ScanForSpecials(fourwaylist2);
-
-        ScanForSpecials(twowaylist3);
-        ScanForSpecials(cornwaylist3);
-        ScanForSpecials(endwaylist3);
-        ScanForSpecials(twaylist3);
-        ScanForSpecials(fourwaylist3);
+        ScanForSpecials(zLight.twoWay_List);
+        ScanForSpecials(zLight.cornerWay_List);
+        ScanForSpecials(zLight.endWay_List);
+        ScanForSpecials(zLight.tWay_List);
+        ScanForSpecials(zLight.fourWay_List);
 
     }
 
@@ -260,14 +215,23 @@ public class NewMapGen : MonoBehaviour
         walker_list.Add(new walker_dat(mapSize.xSize / 2, mapSize.ySize - 2, mapSize.xSize, minHall, 0, true));
         walker_list.Add(new walker_dat(mapSize.xSize / 2, mapSize.ySize - 2, mapSize.xSize, minHall, 2, true));*/
 
-        walker_list.Add(new walker_dat(mapSize.xSize / 2+4, zone3_limit - 1, mapSize.xSize, minHall, 1, true));
+        /*walker_list.Add(new walker_dat(mapSize.xSize / 2+4, zone3_limit - 1, mapSize.xSize, minHall, 1, true));
         walker_list.Add(new walker_dat(mapSize.xSize / 2-4, zone3_limit - 1, mapSize.xSize, minHall, 1, true));
 
         walker_list.Add(new walker_dat(mapSize.xSize / 2, mapSize.ySize / 2, (mapSize.xSize / 2) * 3, minHall, 1, true));
         walker_list.Add(new walker_dat(mapSize.xSize / 2, mapSize.ySize / 2, (mapSize.xSize / 2) * 3, minHall, 3, true));
 
         walker_list.Add(new walker_dat(mapSize.xSize / 2, mapSize.ySize - 2, mapSize.xSize, maxHall, 0, true));
-        walker_list.Add(new walker_dat(mapSize.xSize / 2, mapSize.ySize - 2, mapSize.xSize, maxHall, 2, true));
+        walker_list.Add(new walker_dat(mapSize.xSize / 2, mapSize.ySize - 2, mapSize.xSize, maxHall, 2, true));*/
+
+        walker_list.Add(new walker_dat(mapSize.xSize / 2, zone3_limit - 1, mapSize.xSize, minHall, 1, true));
+        walker_list.Add(new walker_dat(mapSize.xSize / 2, zone2_limit + 1, mapSize.xSize, minHall, 3, true));
+
+        walker_list.Add(new walker_dat(0, mapSize.ySize / 2, (mapSize.xSize / 2) * 3, minHall, 0, true));
+        walker_list.Add(new walker_dat(mapSize.xSize, mapSize.ySize / 2, (mapSize.xSize / 2) * 3, minHall, 2, true));
+
+
+
 
         step();
 
@@ -279,15 +243,15 @@ public class NewMapGen : MonoBehaviour
 
         LlenarMundo();          //Al finalizar, llena el mapa con objetos
 
-        mapfil[mapSize.xSize / 2, mapSize.ySize - 1] = new room_dat(false);
+        mapfil[0, mapSize.ySize - 1] = new room_dat(false);
 
-        mapfil[mapSize.xSize / 2, mapSize.ySize - 1].RoomHolder = introRoom;
-        mapfil[mapSize.xSize / 2, mapSize.ySize - 1].isSpecial = true;
-        mapfil[mapSize.xSize / 2, mapSize.ySize - 1].angle = 180;
-        mapfil[mapSize.xSize / 2, mapSize.ySize - 1].Zone = 3;
-        mapfil[mapSize.xSize / 2, mapSize.ySize - 1].type = RoomType.EndWay;
-        mapfil[mapSize.xSize / 2, mapSize.ySize - 1].hasEvents = false;
-        mapfil[mapSize.xSize / 2, mapSize.ySize - 1].hasSpecial = false;
+        mapfil[0, mapSize.ySize /2].RoomHolder = introRoom;
+        mapfil[0, mapSize.ySize /2].isSpecial = true;
+        mapfil[0, mapSize.ySize /2].angle = 90;
+        mapfil[0, mapSize.ySize /2].Zone = 3;
+        mapfil[0, mapSize.ySize /2].type = RoomType.EndWay;
+        mapfil[0, mapSize.ySize /2].hasEvents = false;
+        mapfil[0, mapSize.ySize /2].hasSpecial = false;
 
         SpecialRoomSpawn();
 
@@ -465,7 +429,7 @@ public class NewMapGen : MonoBehaviour
     void ZoneConection()
     {
         int i;
-        for (i = zone3_limit+1; i < mapSize.ySize; i++)
+        for (i = zone3_limit-1; i < zone2_limit+1; i++)
         {
             if (mapgen[mapSize.xSize / 2, i] == 1)
                 break;
@@ -473,11 +437,20 @@ public class NewMapGen : MonoBehaviour
                 mapgen[mapSize.xSize / 2, i] = 1;
         }
 
-        for (i = mapSize.xSize / 2 - 4; i < mapSize.xSize / 2 + 4; i++)
+        for (i = 0; i < mapSize.xSize; i++)
         {
-                mapgen[i, zone3_limit - 1] = 1;
+                mapgen[i, mapSize.ySize/2] = 1;
         }
 
+        for (i = zone2_limit + 1; i > zone3_limit + 1; i--)
+        {
+            if (mapgen[mapSize.xSize / 2, i] == 1)
+                break;
+            else
+                mapgen[mapSize.xSize / 2, i] = 1;
+        }
+
+        /*
         for (i = mapSize.ySize/2; i < mapSize.ySize - 1; i++)
         {   if (i > zone2_limit + 1)
             {
@@ -488,7 +461,7 @@ public class NewMapGen : MonoBehaviour
             }
             else
                 mapgen[mapSize.xSize / 2, i] = 1;
-        }
+        }*/
 
     }
 
@@ -497,10 +470,10 @@ public class NewMapGen : MonoBehaviour
     {
         int i, j, delChance;
 
-        mapgen[(mapSize.xSize / 2) + 1, mapSize.ySize - 1] = 0;
-        mapgen[(mapSize.xSize / 2) + 2, mapSize.ySize - 1] = 0;
-        if (mapgen[(mapSize.xSize / 2) - 1, mapSize.ySize - 1] == 1)
-        {
+        mapgen[0, (mapSize.ySize/2)+1] = 0;
+        mapgen[0, (mapSize.ySize / 2) - 1] = 0;
+        /*if (mapgen[(mapSize.xSize / 2) - 1, mapSize.ySize - 1] == 1)
+        /*{
             mapgen[(mapSize.xSize / 2) - 2, mapSize.ySize - 2] = 1;
             mapgen[(mapSize.xSize / 2) - 1, mapSize.ySize - 1] = 0;
         }
@@ -515,7 +488,7 @@ public class NewMapGen : MonoBehaviour
         mapgen[mapSize.xSize / 2, zone2_limit] = 1;
 
         mapgen[mapSize.xSize / 2, mapSize.ySize - 1] = 1;
-        mapgen[mapSize.xSize / 2, mapSize.ySize - 2] = 1;
+        mapgen[mapSize.xSize / 2, mapSize.ySize - 2] = 1;*/
 
         ZoneCarving();
 
@@ -652,6 +625,7 @@ public class NewMapGen : MonoBehaviour
 
     void RoomCheck(int i, int j)
     {
+        bool cantSpawn=true;
         if (j < zone3_limit)
             mapfil[i, j].Zone = 1;
 
@@ -663,10 +637,11 @@ public class NewMapGen : MonoBehaviour
         if (j == zone3_limit && mapfil[i, j].neighbours[1] == 1 && mapfil[i, j].neighbours[3] == 1)
         {
             mapfil[i, j].RoomHolder = zone3Check;
-            mapfil[i, j].angle = 0;
+            mapfil[i, j].angle = 180;
             mapfil[i, j].type = RoomType.TwoWay;
             mapfil[i, j].isSpecial = true;
             mapfil[i, j].Zone = 0;
+            cantSpawn = false;
 
             twoWay_Lookup.Add(new Roomlookup(i, j));
             return;
@@ -679,60 +654,70 @@ public class NewMapGen : MonoBehaviour
             mapfil[i, j].isSpecial = true;
             mapfil[i, j].Zone = 0;
             twoWay_Lookup.Add(new Roomlookup(i, j));
+            cantSpawn = false;
             return;
         }
 
         if (j == zone3_limit && mapfil[i, j].neighbours[1] == 0 && mapfil[i, j].neighbours[3] == 1)
         {
-            RoomSpawn(endwaylist, 0, RoomType.EndWay, i, j);
+            RoomSpawn(zEntrance.endWay_List, 0, RoomType.EndWay, i, j);
             mapfil[i, j].Zone = 2;
+            cantSpawn = false;
             return;
         }
 
         if (j == zone3_limit && mapfil[i, j].neighbours[1] == 1 && mapfil[i, j].neighbours[3] == 0)
         {
-            RoomSpawn(endwaylist, 180, RoomType.EndWay, i, j);
+            RoomSpawn(zEntrance.endWay_List, 180, RoomType.EndWay, i, j);
             mapfil[i, j].Zone = 1;
+            cantSpawn = false;
             return;
         }
 
         if (j == zone2_limit && mapfil[i, j].neighbours[1] == 0 && mapfil[i, j].neighbours[3] == 1)
         {
-            RoomSpawn(endwaylist3, 0, RoomType.EndWay, i, j);
+            RoomSpawn(zLight.endWay_List, 0, RoomType.EndWay, i, j);
             mapfil[i, j].Zone = 3;
+            cantSpawn = false;
             return;
         }
 
         if (j == zone2_limit && mapfil[i, j].neighbours[1] == 1 && mapfil[i, j].neighbours[3] == 0)
         {
-            RoomSpawn(endwaylist3, 180, RoomType.EndWay, i, j);
+            RoomSpawn(zHeavy.endWay_List, 180, RoomType.EndWay, i, j);
             mapfil[i, j].Zone = 2;
+            cantSpawn = false;
             return;
+        }
+
+        if (cantSpawn &&  (j == zone2_limit || j == zone3_limit))
+        {
+            mapgen[i, j] = 0;
         }
 
 
 
 
-        ////////Pasillo
+            ////////Pasillo
 
-        if (mapfil[i, j].neighbours[0] == 1 && mapfil[i, j].neighbours[2] == 1 && mapfil[i, j].neighbours[1] == 0 && mapfil[i, j].neighbours[3] == 0)
+            if (mapfil[i, j].neighbours[0] == 1 && mapfil[i, j].neighbours[2] == 1 && mapfil[i, j].neighbours[1] == 0 && mapfil[i, j].neighbours[3] == 0)
         {
             if (j < zone3_limit)
-                RoomSpawn(twowaylist, 90, RoomType.TwoWay, i, j);
+                RoomSpawn(zEntrance.twoWay_List, 90, RoomType.TwoWay, i, j);
             if (j > zone3_limit && j < zone2_limit)
-                RoomSpawn(twowaylist2, 90, RoomType.TwoWay, i, j);
+                RoomSpawn(zHeavy.twoWay_List, 90, RoomType.TwoWay, i, j);
             if (j > zone2_limit)
-                RoomSpawn(twowaylist3, 90, RoomType.TwoWay, i, j);
+                RoomSpawn(zLight.twoWay_List, 90, RoomType.TwoWay, i, j);
             return;
         }
         if (mapfil[i, j].neighbours[0] == 0 && mapfil[i, j].neighbours[2] == 0 && mapfil[i, j].neighbours[1] == 1 && mapfil[i, j].neighbours[3] == 1)
         {
             if (j < zone3_limit)
-                RoomSpawn(twowaylist, 0, RoomType.TwoWay, i, j);
+                RoomSpawn(zEntrance.twoWay_List, 0, RoomType.TwoWay, i, j);
             if (j > zone3_limit && j < zone2_limit)
-                RoomSpawn(twowaylist2, 0, RoomType.TwoWay, i, j);
+                RoomSpawn(zHeavy.twoWay_List, 0, RoomType.TwoWay, i, j);
             if (j > zone2_limit)
-                RoomSpawn(twowaylist3, 0, RoomType.TwoWay, i, j);
+                RoomSpawn(zLight.twoWay_List, 0, RoomType.TwoWay, i, j);
             return;
         }
 
@@ -744,41 +729,41 @@ public class NewMapGen : MonoBehaviour
         if (mapfil[i, j].neighbours[0] == 1 && mapfil[i, j].neighbours[1] == 1 && mapfil[i, j].neighbours[2] == 0 && mapfil[i, j].neighbours[3] == 0)
         {
             if (j < zone3_limit)
-                RoomSpawn(cornwaylist, 180, RoomType.CornerWay, i, j);
+                RoomSpawn(zEntrance.cornerWay_List, 180, RoomType.CornerWay, i, j);
             if (j > zone3_limit && j < zone2_limit)
-                RoomSpawn(cornwaylist2, 180, RoomType.CornerWay, i, j);
+                RoomSpawn(zHeavy.cornerWay_List, 180, RoomType.CornerWay, i, j);
             if (j > zone2_limit)
-                RoomSpawn(cornwaylist3, 180, RoomType.CornerWay, i, j);
+                RoomSpawn(zLight.cornerWay_List, 180, RoomType.CornerWay, i, j);
             return;
         }
         if (mapfil[i, j].neighbours[0] == 0 && mapfil[i, j].neighbours[1] == 1 && mapfil[i, j].neighbours[2] == 1 && mapfil[i, j].neighbours[3] == 0)
         {
             if (j < zone3_limit)
-                RoomSpawn(cornwaylist, -90, RoomType.CornerWay, i, j);
+                RoomSpawn(zEntrance.cornerWay_List, -90, RoomType.CornerWay, i, j);
             if (j > zone3_limit && j < zone2_limit)
-                RoomSpawn(cornwaylist2, -90, RoomType.CornerWay, i, j);
+                RoomSpawn(zHeavy.cornerWay_List, -90, RoomType.CornerWay, i, j);
             if (j > zone2_limit)
-                RoomSpawn(cornwaylist3, -90, RoomType.CornerWay, i, j);
+                RoomSpawn(zLight.cornerWay_List, -90, RoomType.CornerWay, i, j);
             return;
         }
         if (mapfil[i, j].neighbours[0] == 0 && mapfil[i, j].neighbours[1] == 0 && mapfil[i, j].neighbours[2] == 1 && mapfil[i, j].neighbours[3] == 1)
         {
             if (j < zone3_limit)
-                RoomSpawn(cornwaylist, 0, RoomType.CornerWay, i, j);
+                RoomSpawn(zEntrance.cornerWay_List, 0, RoomType.CornerWay, i, j);
             if (j > zone3_limit && j < zone2_limit)
-                RoomSpawn(cornwaylist2, 0, RoomType.CornerWay, i, j);
+                RoomSpawn(zHeavy.cornerWay_List, 0, RoomType.CornerWay, i, j);
             if (j > zone2_limit)
-                RoomSpawn(cornwaylist3, 0, RoomType.CornerWay, i, j);
+                RoomSpawn(zLight.cornerWay_List, 0, RoomType.CornerWay, i, j);
             return;
         }
         if (mapfil[i, j].neighbours[0] == 1 && mapfil[i, j].neighbours[1] == 0 && mapfil[i, j].neighbours[2] == 0 && mapfil[i, j].neighbours[3] == 1)
         {
             if (j < zone3_limit)
-                RoomSpawn(cornwaylist, 90, RoomType.CornerWay, i, j);
+                RoomSpawn(zEntrance.cornerWay_List, 90, RoomType.CornerWay, i, j);
             if (j > zone3_limit && j < zone2_limit)
-                RoomSpawn(cornwaylist2, 90, RoomType.CornerWay, i, j);
+                RoomSpawn(zHeavy.cornerWay_List, 90, RoomType.CornerWay, i, j);
             if (j > zone2_limit)
-                RoomSpawn(cornwaylist3, 90, RoomType.CornerWay, i, j);
+                RoomSpawn(zLight.cornerWay_List, 90, RoomType.CornerWay, i, j);
             return;
         }
 
@@ -789,41 +774,41 @@ public class NewMapGen : MonoBehaviour
         if (mapfil[i, j].neighbours[0] == 1 && mapfil[i, j].neighbours[1] == 0 && mapfil[i, j].neighbours[2] == 1 && mapfil[i, j].neighbours[3] == 1)
         {
             if (j < zone3_limit)
-                RoomSpawn(twaylist, 0, RoomType.TWay, i, j);
+                RoomSpawn(zEntrance.tWay_List, 0, RoomType.TWay, i, j);
             if (j > zone3_limit && j < zone2_limit)
-                RoomSpawn(twaylist2, 0, RoomType.TWay, i, j);
+                RoomSpawn(zHeavy.tWay_List, 0, RoomType.TWay, i, j);
             if (j > zone2_limit)
-                RoomSpawn(twaylist3, 0, RoomType.TWay, i, j);
+                RoomSpawn(zLight.tWay_List, 0, RoomType.TWay, i, j);
             return;
         }
         if (mapfil[i, j].neighbours[0] == 0 && mapfil[i, j].neighbours[1] == 1 && mapfil[i, j].neighbours[2] == 1 && mapfil[i, j].neighbours[3] == 1)
         {
             if (j < zone3_limit)
-                RoomSpawn(twaylist, -90, RoomType.TWay, i, j);
+                RoomSpawn(zEntrance.tWay_List, -90, RoomType.TWay, i, j);
             if (j > zone3_limit && j < zone2_limit)
-                RoomSpawn(twaylist2, -90, RoomType.TWay, i, j);
+                RoomSpawn(zHeavy.tWay_List, -90, RoomType.TWay, i, j);
             if (j > zone2_limit)
-                RoomSpawn(twaylist3, -90, RoomType.TWay, i, j);
+                RoomSpawn(zLight.tWay_List, -90, RoomType.TWay, i, j);
             return;
         }
         if (mapfil[i, j].neighbours[0] == 1 && mapfil[i, j].neighbours[1] == 1 && mapfil[i, j].neighbours[2] == 1 && mapfil[i, j].neighbours[3] == 0)
         {
             if (j < zone3_limit)
-                RoomSpawn(twaylist, 180, RoomType.TWay, i, j);
+                RoomSpawn(zEntrance.tWay_List, 180, RoomType.TWay, i, j);
             if (j > zone3_limit && j < zone2_limit)
-                RoomSpawn(twaylist2, 180, RoomType.TWay, i, j);
+                RoomSpawn(zHeavy.tWay_List, 180, RoomType.TWay, i, j);
             if (j > zone2_limit)
-                RoomSpawn(twaylist3, 180, RoomType.TWay, i, j);
+                RoomSpawn(zLight.tWay_List, 180, RoomType.TWay, i, j);
             return;
         }
         if (mapfil[i, j].neighbours[0] == 1 && mapfil[i, j].neighbours[1] == 1 && mapfil[i, j].neighbours[2] == 0 && mapfil[i, j].neighbours[3] == 1)
         {
             if (j < zone3_limit)
-                RoomSpawn(twaylist, 90, RoomType.TWay, i, j);
+                RoomSpawn(zEntrance.tWay_List, 90, RoomType.TWay, i, j);
             if (j > zone3_limit && j < zone2_limit)
-                RoomSpawn(twaylist2, 90, RoomType.TWay, i, j);
+                RoomSpawn(zHeavy.tWay_List, 90, RoomType.TWay, i, j);
             if (j > zone2_limit)
-                RoomSpawn(twaylist3, 90, RoomType.TWay, i, j);
+                RoomSpawn(zLight.tWay_List, 90, RoomType.TWay, i, j);
             return;
         }
 
@@ -832,41 +817,41 @@ public class NewMapGen : MonoBehaviour
         if (mapfil[i, j].neighbours[0] == 1 && mapfil[i, j].neighbours[1] == 0 && mapfil[i, j].neighbours[2] == 0 && mapfil[i, j].neighbours[3] == 0)
         {
             if (j < zone3_limit || j == zone3_limit || j== zone2_limit)
-                RoomSpawn(endwaylist, 90, RoomType.EndWay, i, j);
+                RoomSpawn(zEntrance.endWay_List, 90, RoomType.EndWay, i, j);
             if (j > zone3_limit && j < zone2_limit)
-                RoomSpawn(endwaylist2, 90, RoomType.EndWay, i, j);
+                RoomSpawn(zHeavy.endWay_List, 90, RoomType.EndWay, i, j);
             if (j > zone2_limit)
-                RoomSpawn(endwaylist3, 90, RoomType.EndWay, i, j);
+                RoomSpawn(zLight.endWay_List, 90, RoomType.EndWay, i, j);
             return;
         }
         if (mapfil[i, j].neighbours[0] == 0 && mapfil[i, j].neighbours[1] == 1 && mapfil[i, j].neighbours[2] == 0 && mapfil[i, j].neighbours[3] == 0)
         {
             if (j < zone3_limit || j == zone3_limit || j == zone2_limit)
-                RoomSpawn(endwaylist, 180, RoomType.EndWay, i, j);
+                RoomSpawn(zEntrance.endWay_List, 180, RoomType.EndWay, i, j);
             if (j > zone3_limit && j < zone2_limit)
-                RoomSpawn(endwaylist2, 180, RoomType.EndWay, i, j);
+                RoomSpawn(zHeavy.endWay_List, 180, RoomType.EndWay, i, j);
             if (j > zone2_limit)
-                RoomSpawn(endwaylist3, 180, RoomType.EndWay, i, j);
+                RoomSpawn(zLight.endWay_List, 180, RoomType.EndWay, i, j);
             return;
         }
         if (mapfil[i, j].neighbours[0] == 0 && mapfil[i, j].neighbours[1] == 0 && mapfil[i, j].neighbours[2] == 1 && mapfil[i, j].neighbours[3] == 0)
         {
             if (j < zone3_limit || j == zone3_limit || j == zone2_limit)
-                RoomSpawn(endwaylist, -90, RoomType.EndWay, i, j);
+                RoomSpawn(zEntrance.endWay_List, -90, RoomType.EndWay, i, j);
             if (j > zone3_limit && j < zone2_limit)
-                RoomSpawn(endwaylist2, -90, RoomType.EndWay, i, j);
+                RoomSpawn(zHeavy.endWay_List, -90, RoomType.EndWay, i, j);
             if (j > zone2_limit)
-                RoomSpawn(endwaylist3, -90, RoomType.EndWay, i, j);
+                RoomSpawn(zLight.endWay_List, -90, RoomType.EndWay, i, j);
             return;
         }
         if (mapfil[i, j].neighbours[0] == 0 && mapfil[i, j].neighbours[1] == 0 && mapfil[i, j].neighbours[2] == 0 && mapfil[i, j].neighbours[3] == 1)
         {
             if (j < zone3_limit || j == zone3_limit || j == zone2_limit)
-                RoomSpawn(endwaylist, 0, RoomType.EndWay, i, j);
+                RoomSpawn(zEntrance.endWay_List, 0, RoomType.EndWay, i, j);
             if (j > zone3_limit && j < zone2_limit)
-                RoomSpawn(endwaylist2, 0, RoomType.EndWay, i, j);
+                RoomSpawn(zHeavy.endWay_List, 0, RoomType.EndWay, i, j);
             if (j > zone2_limit)
-                RoomSpawn(endwaylist3, 0, RoomType.EndWay, i, j);
+                RoomSpawn(zLight.endWay_List, 0, RoomType.EndWay, i, j);
             return;
         }
 
@@ -875,11 +860,11 @@ public class NewMapGen : MonoBehaviour
         if (mapfil[i, j].neighbours[0] == 1 && mapfil[i, j].neighbours[1] == 1 && mapfil[i, j].neighbours[2] == 1 && mapfil[i, j].neighbours[3] == 1)
         {
             if (j < zone3_limit)
-                RoomSpawn(fourwaylist, 0, RoomType.FourWay, i, j);
+                RoomSpawn(zEntrance.fourWay_List, 0, RoomType.FourWay, i, j);
             if (j > zone3_limit && j < zone2_limit)
-                RoomSpawn(fourwaylist2, 0, RoomType.FourWay, i, j);
+                RoomSpawn(zHeavy.fourWay_List, 0, RoomType.FourWay, i, j);
             if (j > zone2_limit)
-                RoomSpawn(fourwaylist3, 0, RoomType.FourWay, i, j);
+                RoomSpawn(zLight.fourWay_List, 0, RoomType.FourWay, i, j);
             return;
         }
     }
@@ -931,11 +916,12 @@ public class NewMapGen : MonoBehaviour
 
     void SpecialRoomSpawn()
     {
-        int i, chance;
+        int i, chance, tries = 100;
         ref List<Roomlookup> currtype = ref twoWay_Lookup;
         bool spawned;
         for (i = 0; i < (speciallist.Count); i++)
         {
+            tries = 100;
             spawned = false;
             switch (speciallist[i].type)
             {
@@ -972,6 +958,7 @@ public class NewMapGen : MonoBehaviour
             }
             do
             {
+                tries -= 1;
                 chance = Random.Range(0, currtype.Count);
                 if ((mapfil[currtype[chance].xPos, currtype[chance].yPos].isSpecial == false) && mapfil[currtype[chance].xPos, currtype[chance].yPos].Zone == speciallist[i].Zone)
                 {
@@ -986,6 +973,11 @@ public class NewMapGen : MonoBehaviour
 
                     spawned = true;
                     break;
+                }
+                if (tries < 0)
+                {
+                    spawned = true;
+                    Debug.Log("Error al aparecer " + speciallist[i].Room.name);
                 }
             }
             while (spawned == false);
@@ -1002,17 +994,17 @@ public class NewMapGen : MonoBehaviour
         {
             case 1:
                 {
-                    ZonePath = "Map/Z3Room/";
+                    ZonePath = "Map/Office/";
                         break;
                 }
             case 2:
                 {
-                    ZonePath = "Map/Z2Room/";
+                    ZonePath = "Map/Light/";
                     break;
                 }
             case 3:
                 {
-                    ZonePath = "Map/Z1Room/";
+                    ZonePath = "Map/Heavy/";
                     break;
                 }
             case 0:
@@ -1023,9 +1015,9 @@ public class NewMapGen : MonoBehaviour
         }
 
         if (j == zone2_limit && mapsave[i, j].Zone != 0)
-            ZonePath = "Map/Z1Room/";
+            ZonePath = "Map/Office/";
         if (j == zone3_limit && mapsave[i, j].Zone != 0)
-            ZonePath = "Map/Z3Room/";
+            ZonePath = "Map/Heavy/";
 
 
         mapfil[i, j].RoomHolder = Resources.Load<GameObject>(string.Concat(ZonePath, mapsave[i, j].roomName));
