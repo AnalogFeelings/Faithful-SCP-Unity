@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 public class Player_MouseLook : MonoBehaviour
 {
-    Vector2 rotation = new Vector2(0, 0);
+    Vector3 rotation = new Vector3(0, 0, 0);
+    public Quaternion addedRota = Quaternion.identity;
     public float speed = 3;
     private void Start()
     {
@@ -11,10 +12,25 @@ public class Player_MouseLook : MonoBehaviour
     }
     void LateUpdate()
     {
-        rotation.y += Input.GetAxis("Mouse X");
-        rotation.x += -Input.GetAxis("Mouse Y");
-        rotation.x = Mathf.Clamp(rotation.x, -25f, 30f);
-        transform.eulerAngles = (Vector2)rotation * speed;
+        float z = transform.eulerAngles.z;
 
+
+        if (addedRota != Quaternion.identity)
+        {
+            rotation = addedRota.eulerAngles;
+            rotation.x = (rotation.x > 180) ? rotation.x - 360 : rotation.x;
+        }
+
+            rotation.y += (Input.GetAxis("Mouse X") * speed) * Time.timeScale;
+            rotation.x += -(Input.GetAxis("Mouse Y") * speed) * Time.timeScale;
+            rotation.x = Mathf.Clamp(rotation.x, -85f, 75f);
+
+
+
+        rotation.z = z;
+
+
+
+        transform.rotation =  Quaternion.Euler(rotation);
     }
 }

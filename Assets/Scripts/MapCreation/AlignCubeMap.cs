@@ -11,38 +11,49 @@ public class CubeMapSettings
 
 public class AlignCubeMap : MonoBehaviour
 {
-    public CubeMapSettings cube;
+    public float angle = -2;
     // Start is called before the first frame update
     void Start()
     {
-        Transform parrot = GetComponentInParent<Transform>();
-
+        
         // Add the reflection probe component
-        ReflectionProbe probeComponent = GetComponent<ReflectionProbe>() as ReflectionProbe;
+        ReflectionProbe probeComponent = GetComponent<ReflectionProbe>();
 
+
+        var vec = transform.eulerAngles;
+        vec.x = Mathf.Round(vec.x / 90) * 90;
+        vec.y = Mathf.Round(vec.y / 90) * 90;
+        vec.z = Mathf.Round(vec.z / 90) * 90;
+        transform.eulerAngles = vec;
 
         // Reflection will be used for objects in 10 units around the position of the probe
 
         if (transform.eulerAngles.y == 0)
         {
-            probeComponent.size = new Vector3(cube.xBox, cube.uBox, cube.yBox);
-            probeComponent.center = new Vector3(cube.xOff, cube.uOff, cube.yOff);
+            probeComponent.size = new Vector3(probeComponent.size.x, probeComponent.size.y, probeComponent.size.z);
+            probeComponent.center = new Vector3(probeComponent.center.x, probeComponent.center.y, probeComponent.center.z);
+            angle = 0;
         }
         if (transform.eulerAngles.y == 90)
         {
-            probeComponent.size = new Vector3(cube.yBox, 20, cube.xBox);
-            probeComponent.center = new Vector3(cube.yOff, 0, cube.xOff);
+            probeComponent.size = new Vector3(probeComponent.size.z, probeComponent.size.y, probeComponent.size.x);
+            probeComponent.center = new Vector3(probeComponent.center.z, probeComponent.center.y, probeComponent.center.x);
+            angle = 90;
         }
         if (transform.eulerAngles.y == 180)
         {
-            probeComponent.size = new Vector3(-cube.xBox, 20, -cube.yBox);
-            probeComponent.center = new Vector3(-cube.xOff, 0, -cube.yOff);
+            probeComponent.size = new Vector3(-probeComponent.size.x, probeComponent.size.y, -probeComponent.size.z);
+            probeComponent.center = new Vector3(-probeComponent.center.x, probeComponent.center.y, -probeComponent.center.z);
+            angle = 180;
         }
-        if (transform.eulerAngles.y == -90)
+        if (transform.eulerAngles.y == -90 || transform.eulerAngles.y == 270)
         {
-            probeComponent.size = new Vector3(-cube.yBox, 20, -cube.xBox);
-            probeComponent.center = new Vector3(-cube.yOff, 0, -cube.xOff);
+            probeComponent.size = new Vector3(-probeComponent.size.z, probeComponent.size.y, -probeComponent.size.x);
+            probeComponent.center = new Vector3(-probeComponent.center.z, probeComponent.center.y, -probeComponent.center.x);
+            angle = -90;
         }
+
+        //Debug.Log(transform.eulerAngles.y + " Detectado como angulo " + angle);
 
         /*probeComponent.mode = UnityEngine.Rendering.ReflectionProbeMode.Realtime;
         probeComponent.refreshMode = UnityEngine.Rendering.ReflectionProbeRefreshMode.ViaScripting;

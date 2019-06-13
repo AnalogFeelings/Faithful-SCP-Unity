@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EV_light_testroom : MonoBehaviour
+public class EV_light_testroom : Event_Parent
 {
     public GameObject Anchor1, Anchor2, SCP, Screen;
     public float Timer;
@@ -10,7 +10,14 @@ public class EV_light_testroom : MonoBehaviour
     public AudioClip [] SFX;
 
     // Update is called once per frame
-    void LateUpdate()
+
+    private void LateUpdate()
+    {
+        if (isStarted == true)
+            EventUpdate();
+    }
+
+    public override void EventUpdate()
     {   if (ActiveTimer)
             Timer -= Time.deltaTime;
         if (Timer <= 0.0f && StopTimer == false)
@@ -21,16 +28,24 @@ public class EV_light_testroom : MonoBehaviour
                 GameController.instance.Warp173(true, Anchor2.transform);
                 StopTimer = true;
                 Screen.SetActive(false);
-                GameController.instance.PlayHorror(SFX[0]);
-                GameController.instance.PlayHorror(SFX[1]);
+                GameController.instance.PlayHorror(SFX[0],Anchor2.transform, npc.none);
+                GameController.instance.PlayHorror(SFX[1],Anchor2.transform, npc.none);
+                EventFinished();
             }
         }
     }
 
 
-    void OnEnable()
+    public override void EventStart()
     {
+        base.EventStart();
         GameController.instance.Warp173(true, Anchor1.transform);
+    }
+
+    public override void EventFinished()
+    {
+        base.EventFinished();
+        Screen.SetActive(false);
     }
 
     void OnTriggerEnter(Collider other)

@@ -7,7 +7,7 @@ public class SetAnchor : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        GameController.instance.WorldAnchor = transform.position;
+        GameController.instance.WorldAnchor = transform;
     }
 
 }

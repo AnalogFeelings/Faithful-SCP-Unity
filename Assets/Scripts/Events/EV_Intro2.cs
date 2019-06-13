@@ -28,7 +28,7 @@ public class EV_Intro2 : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         if (eventstat == 0)
         {
@@ -83,7 +83,7 @@ public class EV_Intro2 : MonoBehaviour
                 case 2:
                     {
                         d1_.SetPath(path1);
-                        GameController.instance.PlayHorror(Horror[0]);
+                        GameController.instance.PlayHorror(Horror[0], ata1, npc.none);
                         eventstat = 3;
                         Timer = 0.6f;
                         break;
@@ -101,8 +101,8 @@ public class EV_Intro2 : MonoBehaviour
                     {
                         check2 = true;
                         StopTimer = true;
-                        d1_.SetLookAt(GameController.instance.scp173.transform);
-                        d2_.SetLookAt(GameController.instance.scp173.transform);
+                        d1_.SetLookAt(GameController.instance.npcObjects[(int)npc.scp173].transform);
+                        d2_.SetLookAt(GameController.instance.npcObjects[(int)npc.scp173].transform);
                         break;
                     }
 
@@ -126,25 +126,26 @@ public class EV_Intro2 : MonoBehaviour
                     }
                 case 7:
                     {
+                        objPlayer.GetComponent<Player_Control>().FakeBlink(0.3f);
                         lightmana.SetActive(false);
                         eventstat = 8;
                         Timer = 0.5f;
                         d1_.AnimTrigger(-1, true);
                         d1_.PlaySFX(GeneralSFX[3]);
-                        GameController.instance.scp173.transform.rotation = Quaternion.Euler(0, -90, 0);
+                        GameController.instance.npcObjects[(int)npc.scp173].transform.rotation = Quaternion.Euler(0, 90, 0);
                         GameController.instance.Warp173(false, ata1);
                         d1_.SetLookAt(deadlook);
-                        objPlayer.GetComponent<Player_Control>().FakeBlink(0.3f);
+                        
                         break;
                     }
                 case 8:
                     {
-                        d2_.SetLookAt(GameController.instance.scp173.transform);
+                        d2_.SetLookAt(GameController.instance.npcObjects[(int)npc.scp173].transform);
                         lightmana.SetActive(true);
                         sci_.PlaySFX(GeneralSFX[0]);
                         eventstat = 9;
                         Timer = 1f;
-                        GameController.instance.PlayHorror(Horror[1]);
+                        GameController.instance.PlayHorror(Horror[1], null, npc.none);
                         break;
                     }
                 case 9:
@@ -175,9 +176,9 @@ public class EV_Intro2 : MonoBehaviour
                         objPlayer.GetComponent<Player_Control>().FakeBlink(0.3f);
                         eventstat = 12;
                         Timer = 0.5f;
-                        GameController.instance.scp173.transform.rotation = Quaternion.Euler(0, 90f, 0);
+                        GameController.instance.npcObjects[(int)npc.scp173].transform.rotation = Quaternion.Euler(0, -90, 0);
                         GameController.instance.Warp173(false, ata3);
-                        guard_.SetRota(GameController.instance.scp173.transform);
+                        guard_.SetRota(GameController.instance.npcObjects[(int)npc.scp173].transform);
                         //guard_.AnimTrigger(-2, true);
                         sci_.PlaySFX(GeneralSFX[5]);
                         break;
@@ -214,14 +215,16 @@ public class EV_Intro2 : MonoBehaviour
                 case 14:
                     {
                         sci_.SetSeq(Alarm);
-                        d1.transform.position = GameController.instance.WorldAnchor + (d1.transform.position - TeleportAnchor.position);
-                        d2.transform.position = GameController.instance.WorldAnchor + (d2.transform.position - TeleportAnchor.position);
-                        guard.transform.position = GameController.instance.WorldAnchor + (guard.transform.position - TeleportAnchor.position);
+                        objPlayer.GetComponent<Player_Control>().playerWarp((GameController.instance.WorldAnchor.transform.position +((GameController.instance.WorldAnchor.transform.rotation) * (objPlayer.transform.position - TeleportAnchor.position))), GameController.instance.WorldAnchor.transform.eulerAngles.y - TeleportAnchor.transform.eulerAngles.y);
+                        d1_.puppetWarp(GameController.instance.WorldAnchor.transform.position + ((GameController.instance.WorldAnchor.transform.rotation) * (d1.transform.position - TeleportAnchor.position)));
+                        d2_.puppetWarp(GameController.instance.WorldAnchor.transform.position + ((GameController.instance.WorldAnchor.transform.rotation) * (d2.transform.position - TeleportAnchor.position)));
+                        guard_.puppetWarp(GameController.instance.WorldAnchor.transform.position + ((GameController.instance.WorldAnchor.transform.rotation) * (guard.transform.position - TeleportAnchor.position)));
+                        GameController.instance.canSave = true;
 
                         StopTimer = true;
 
                         objPlayer.GetComponent<Player_Control>().FakeBlink(0.5f);
-                        objPlayer.transform.position = GameController.instance.WorldAnchor + (objPlayer.transform.position - TeleportAnchor.position);
+                        GameController.instance.SetMapPos(0, 10);
                         GameController.instance.doGameplay = true;
                         break;
                     }

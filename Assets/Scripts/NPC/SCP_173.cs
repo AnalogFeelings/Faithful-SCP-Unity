@@ -3,25 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class SCP_173 : MonoBehaviour
+public class SCP_173 : Roam_NPC
 {
     NavMeshAgent _navMeshagent;
     public LayerMask DoorLay;
     public LayerMask CanSeePlayer;
-    public float DoorFiddle, DoorCoolDown;
-    float DoorTimer, DoorCool, PlayerDistance= 20;
+    public float DoorFiddle, DoorCoolDown, TeleCoolDown;
+    float DoorTimer, DoorCool, PlayerDistance= 20, DoorDistance;
     Object_Door DoorObj;
     public GameObject Player;
     Camera mainCamera;
     Plane[] frustum;
     Collider col_173;
     Collider[] Interact;
-    bool canSee = true, canMove = true, hasDoor = false, hasPatrol = false, DidOpen, playedHorror, playedNear;
+    bool canSee = true, canMove = true, hasDoor = false, hasPatrol = false, DidOpen, playedHorror, playedNear, TeleWait, blinkFrame, closeDoor = false;
     public bool canAttack;
     AudioSource sfx;
     public Transform DoorSpot;
     Vector3 Destination;
-    int MoveAttempts, frameInterval=5;
+    int MoveAttempts, TeleAttempts, frameInterval=30;
     public AudioClip[] farHorror, closeHorror;
 
     // Use this for initialization
@@ -35,6 +35,7 @@ public class SCP_173 : MonoBehaviour
 
         _navMeshagent = this.GetComponent<NavMeshAgent>();
         sfx = GetComponent<AudioSource>();
+        _navMeshagent.updateRotation = false;
     }
 
     void Start()
@@ -55,26 +56,50 @@ public class SCP_173 : MonoBehaviour
             }
 
         canSee = IsSeen();
+
         CheckDoor();
+
         DoorCool -= Time.deltaTime;
 
         if (canAttack)
         {
+            HorrorFar();
+
+            if (TeleWait)
+                TeleCoolDown -= Time.deltaTime;
+
             if (!canSee)
             {
+                HorrorNear();
+
+                if (_navMeshagent.velocity.sqrMagnitude > Mathf.Epsilon)
+                {
+                    transform.rotation = Quaternion.LookRotation(_navMeshagent.velocity.normalized);
+                }
+
+
                 DoorTimer -= Time.deltaTime;
                 if (canMove)
                 {
-                    if (Time.frameCount % frameInterval == 0)
-                        SetDestination();
-
-                    if (PlayerDistance < 20f)
-                        _navMeshagent.speed = 25;
-                    else
+                    if (PlayerDistance < 20f && !closeDoor)
+                        _navMeshagent.speed = 18;
+                    if (PlayerDistance >= 20f && !closeDoor)
                         _navMeshagent.speed = 10;
+
+                    if (closeDoor)
+                    {
+                        _navMeshagent.speed = 5;
+                    }
+
+                    
+
                     _navMeshagent.isStopped = false;
                     sfx.UnPause();
-                    HorrorNear();
+                    if (Time.frameCount % frameInterval == 0 || blinkFrame == false)
+                    {
+                        SetDestination();
+                        blinkFrame = true;
+                    }
 
                 }
                 else
@@ -86,12 +111,10 @@ public class SCP_173 : MonoBehaviour
             }
             else
             {
+                blinkFrame = false;
                 _navMeshagent.speed = 0;
                 _navMeshagent.isStopped = true;
                 sfx.Pause();
-                HorrorFar();
-                
-                
             }
         }
         else
@@ -106,7 +129,7 @@ public class SCP_173 : MonoBehaviour
                 playedNear = false;
                 if (playedHorror == false)
                 {
-                    GameController.instance.PlayHorror(farHorror[Random.Range(0, farHorror.Length)]);
+                    GameController.instance.PlayHorror(farHorror[Random.Range(0, farHorror.Length)],transform, npc.scp173);
                     playedHorror = true;
                 }
         }
@@ -114,11 +137,11 @@ public class SCP_173 : MonoBehaviour
     
     void HorrorNear()
     {
-        if (PlayerDistance < 4 && CheckPlayer())
+        if (PlayerDistance < 6 && CheckPlayer())
         {
                 if (playedNear == false)
                 {
-                    GameController.instance.PlayHorror(closeHorror[Random.Range(0, closeHorror.Length)]);
+                    GameController.instance.PlayHorror(closeHorror[Random.Range(0, closeHorror.Length)],transform, npc.scp173);
                     playedNear = true;
                 }
         }
@@ -128,19 +151,22 @@ public class SCP_173 : MonoBehaviour
 
     bool CheckPlayer()
     {
-        RaycastHit WallCheck;
         Debug.DrawRay(Player.transform.position, (transform.position + new Vector3(0, 0.4f, 0)) - Player.transform.position);
         
         if (Time.frameCount % frameInterval == 0)
         {
-            if (Physics.Raycast(Player.transform.position, (transform.position + new Vector3(0, 0.4f,0))- Player.transform.position, out WallCheck, 40.0f))
+            if (!Physics.Raycast(Player.transform.position, (transform.position + new Vector3(0, 0.4f,0))- Player.transform.position, PlayerDistance, CanSeePlayer))
             {
-                if (WallCheck.transform == this.transform)
                     return true;
             }
         }
         return false;
     }
+
+
+
+
+
 
 
     private void SetDestination()
@@ -152,20 +178,43 @@ public class SCP_173 : MonoBehaviour
         }
         else
             {
-            if (hasPatrol == false)
+            if (hasPatrol == false && agroLevel != 0)
             {
-                Debug.Log(Vector3.Distance(transform.position, Destination));
-                Destination = GameController.instance.GetPatrol(transform.position);
+                Destination = GameController.instance.GetPatrol(transform.position, 4, 0);
                     _navMeshagent.SetDestination(Destination);
                 hasPatrol = true;
             }
-            if (Vector3.Distance(Destination, transform.position) < 5f)
+            if (Vector3.Distance(Destination, transform.position) < 3f)
             {
                 hasPatrol = false;
             }
             if (_navMeshagent.pathStatus == NavMeshPathStatus.PathInvalid)
             {
                 hasPatrol = false;
+            }
+
+            if (PlayerDistance > 35f )
+            {
+                if (TeleWait != true)
+                {
+                    if (agroLevel == 1)
+                    TeleCoolDown = 6f;
+                    if (agroLevel == 0)
+                        TeleCoolDown = 15f;
+                    TeleWait = true;
+                }
+
+                if (TeleCoolDown <= 0)
+                {
+                    TeleWait = false;
+                    hasPatrol = false;
+
+                    if (agroLevel == 1)
+                        Spawn(true, GameController.instance.GetPatrol(Player.transform.position, 3, 1));
+                    if (agroLevel == 0)
+                        Spawn(true, GameController.instance.GetPatrol(Player.transform.position, 6, 2));
+                }
+                
             }
 
         }
@@ -186,11 +235,24 @@ public class SCP_173 : MonoBehaviour
     {
         if (hasDoor == false)
         {
-           Interact = Interact = Physics.OverlapSphere(DoorSpot.position, 1.0f, DoorLay);
-            if (Interact.Length != 0)
+            RaycastHit hit;
+            Debug.DrawRay(transform.position, transform.forward);
+            if (Physics.Raycast(transform.position, transform.forward, out hit, 6f, DoorLay, QueryTriggerInteraction.Collide))
             {
-                Debug.DrawRay(transform.position, Interact[0].transform.position - transform.position);
-                DoorObj = Interact[0].transform.gameObject.GetComponent<Object_Door>();
+                if (PlayerDistance < hit.distance)
+                    closeDoor = false;
+                else
+                {
+                    DoorObj = hit.transform.gameObject.GetComponent<Object_Door>();
+                    closeDoor = !DoorObj.GetState();
+                }
+            }
+            else
+                closeDoor = false;
+
+            if (Physics.Raycast(transform.position, transform.forward, out hit, 1.5f, DoorLay, QueryTriggerInteraction.Collide))
+            {
+                DoorObj = hit.transform.gameObject.GetComponent<Object_Door>();
                 DoorTimer = DoorFiddle;
                 hasDoor = true;
             }
@@ -219,7 +281,7 @@ public class SCP_173 : MonoBehaviour
                     {
                         hasDoor = false;
                         canMove = true;
-                        WarpMe(true, GameController.instance.GetPatrol(transform.position));
+                        Spawn(true, GameController.instance.GetPatrol(transform.position, 4, 1));
                         MoveAttempts = 0;
                     }
                     if (DidOpen == false)
@@ -235,20 +297,36 @@ public class SCP_173 : MonoBehaviour
 
     }
 
-    public void WarpMe(bool beActive, Vector3 warppoint)
+    public override void Spawn(bool beActive, Vector3 warppoint)
     {
-        _navMeshagent.Warp(warppoint);
-        canAttack = beActive;
-        playedNear = false;
-        playedHorror = false;
+        NavMeshHit here;
+
+        if (NavMesh.SamplePosition(warppoint, out here, 0.2f, NavMesh.AllAreas))
+        {
+            _navMeshagent.Warp(warppoint);
+            canAttack = beActive;
+            playedNear = false;
+            playedHorror = false;
+            hasDoor = false;
+            hasPatrol = false;
+        }
+        else if (NavMesh.SamplePosition(warppoint, out here, 10f, NavMesh.AllAreas))
+        {
+            _navMeshagent.Warp(here.position);
+            canAttack = beActive;
+            playedNear = false;
+            playedHorror = false;
+            hasDoor = false;
+            hasPatrol = false;
+        }
     }
 
     private void OnTriggerStay(Collider other)
     {
         if ((!IsSeen())&&(other.gameObject.CompareTag("Player")))
         {
-            other.gameObject.GetComponent<Player_Control>().Death(0);
-            Debug.Log("You are ded ded ded");
+            other.gameObject.GetComponent<Player_Control>().Death(1);
+            canAttack = false;
         }
 
     }

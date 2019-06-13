@@ -20,7 +20,7 @@ public class EV_TimerDoor : MonoBehaviour
     {
         if (isActive == false && (Button1.GetComponent<Object_Button_Trigger>().activated == true || Button2.GetComponent<Object_Button_Trigger>().activated == true))
         {
-            Timer = 6;
+            Timer = 8;
             isActive = true;
             Door1.GetComponent<Object_Door>().DoorSwitch();
             Door2.GetComponent<Object_Door>().DoorSwitch();

@@ -25,15 +25,6 @@ public class MapListGUI : Editor
         //Update our list
 
         GetTarget.Update();
-
-        /*Choose how to display the list<> Example purposes only
-        EditorGUILayout.Space();
-        EditorGUILayout.Space();
-        DisplayFieldType = (displayFieldType)EditorGUILayout.EnumPopup("", DisplayFieldType);
-
-        //Resize our list
-        EditorGUILayout.Space();
-        EditorGUILayout.Space();*/
         SerializedProperty ZoneId = GetTarget.FindProperty("Zone");
         choiceList = (RoomType)EditorGUILayout.EnumPopup("Tipos de Cuarto", choiceList);
         EditorGUILayout.PropertyField(ZoneId);
@@ -68,10 +59,7 @@ public class MapListGUI : Editor
         EditorGUILayout.Space();
         EditorGUILayout.Space();
         //Or add a new item to the List<> with a button
-        if (GUILayout.Button("Add New"))
-        {
-            t.AddNew(choiceList);
-        }
+        
 
         EditorGUILayout.Space();
 
@@ -79,14 +67,20 @@ public class MapListGUI : Editor
 
         for (int i = 0; i < ThisList.arraySize; i++)
         {
+            if (GUILayout.Button("Add here"))
+            {
+                t.InsertNew(choiceList, i);
+            }
+
             SerializedProperty MyListRef = ThisList.GetArrayElementAtIndex(i);
             SerializedProperty Room = MyListRef.FindPropertyRelative("Room");
             SerializedProperty Chance = MyListRef.FindPropertyRelative("Chance");
-            SerializedProperty Id = MyListRef.FindPropertyRelative("Id");
             SerializedProperty isSpecial = MyListRef.FindPropertyRelative("isSpecial");
+            SerializedProperty hasItem = MyListRef.FindPropertyRelative("hasItem");
             SerializedProperty hasEvent = MyListRef.FindPropertyRelative("hasEvent");
             SerializedProperty hasSpecial = MyListRef.FindPropertyRelative("hasSpecial");
             SerializedProperty Zone = MyListRef.FindPropertyRelative("Zone");
+            SerializedProperty Music = MyListRef.FindPropertyRelative("music");
 
 
 
@@ -94,19 +88,20 @@ public class MapListGUI : Editor
 
 
             // Choose to display automatic or custom field types. This is only for example to help display automatic and custom fields.
-             //1. Automatic, No customization <-- Choose me I'm automatic and easy to setup
-                Texture2D myTexture = AssetPreview.GetAssetPreview(Room.objectReferenceValue);
+            //1. Automatic, No customization <-- Choose me I'm automatic and easy to setup
+            Texture2D myTexture = AssetPreview.GetAssetPreview(Room.objectReferenceValue);
                 EditorGUILayout.BeginHorizontal();
                 GUILayout.Label(myTexture);
                 EditorGUILayout.BeginVertical();
                 EditorGUIUtility.labelWidth = 60;
-                Room.objectReferenceValue = EditorGUILayout.ObjectField("Room", Room.objectReferenceValue, typeof(GameObject), true);
+                Room.objectReferenceValue = EditorGUILayout.ObjectField("Room ", Room.objectReferenceValue, typeof(GameObject), true);
                 EditorGUILayout.PropertyField(Chance);
-                EditorGUILayout.PropertyField(Id);
                 EditorGUILayout.PropertyField(isSpecial);
                 EditorGUILayout.PropertyField(Zone);
                 EditorGUILayout.PropertyField(hasEvent);
                 EditorGUILayout.PropertyField(hasSpecial);
+                EditorGUILayout.PropertyField(hasItem);
+                EditorGUILayout.PropertyField(Music);
                 EditorGUILayout.Space();
                 EditorGUILayout.Space();
                 if (GUILayout.Button("Remove This Index (" + i.ToString() + ")"))

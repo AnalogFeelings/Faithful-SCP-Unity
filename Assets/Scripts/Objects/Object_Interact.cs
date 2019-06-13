@@ -10,6 +10,7 @@ public abstract class Object_Interact : MonoBehaviour
 
     public virtual void Pressed()
     {
+
     }
     
     public virtual void Hold()
