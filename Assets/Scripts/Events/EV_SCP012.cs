@@ -135,6 +135,7 @@ public class EV_SCP012 : Event_Parent
         box.SetBool("start", true);
         golgotha.Play();
         door.DoorSwitch();
+
         check = false;
         isStarted = true;
         Timer = StartTimer;

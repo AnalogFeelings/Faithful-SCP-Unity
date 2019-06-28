@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class Event_Parent : MonoBehaviour
 {
     public bool isStarted = false;
-    public int x, y;
+    public int x, y, state;
     // Start is called before the first frame update
     public virtual void EventStart()
     {

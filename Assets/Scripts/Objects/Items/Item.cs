@@ -6,16 +6,22 @@ using UnityEngine;
 public class Item : ScriptableObject
 {
     public string itemName;
-    public string itemDispName;
     public Sprite icon;
-    public bool deleteUse, hasEffect;
+    public bool deleteUse, hasEffect, isFem = false;
     public efecttable Effects;
     public GameObject ItemModel;
+    public float valueFloat;
+    public int valueInt;
     public int SFX;
 
     public virtual void Use()
     {
 
+    }
+
+    public virtual bool Mix(Item toMix)
+    {
+        return false;
     }
 
 

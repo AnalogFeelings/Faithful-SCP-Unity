@@ -1,6 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+[System.Serializable]
+public class ChanceTable
+{
+    public Item Spawn;
+    public int Rate;
+}
 
 public class SCP_914 : MonoBehaviour
 {
@@ -17,12 +23,7 @@ public class SCP_914 : MonoBehaviour
     bool Activated;
     float Refining;
 
-    [System.Serializable]
-    public class ChanceTable
-        {
-            public Item Spawn;
-            public int Rate;
-        }
+    
 
     [System.Serializable]
     public class Table914

@@ -9,7 +9,7 @@ public class SCP_106 : Roam_NPC
     public LayerMask Ground;
     float PlayerDistance= 20, timer, ambianceTimer;
     public GameObject Player;
-    bool isActive = false, playedHorror, usingAStar = true, isSpawn = false, isBlocked = false, isOut = false, isPath;
+    bool playedHorror, usingAStar = true, isSpawn = false, isBlocked = false, isOut = false, isPath;
     Quaternion toAngle, realAngle;
     public float speed, spawntimer, Distance;
     float escapeTimer;
@@ -28,7 +28,7 @@ public class SCP_106 : Roam_NPC
 
 
 
-    void Start()
+    void Awake()
     {
         Player = GameController.instance.player;
         _navMeshagent = this.GetComponent<NavMeshAgent>();
@@ -168,34 +168,46 @@ public class SCP_106 : Roam_NPC
         isSpawn = false;
         isChase = false;
         Escaped = false;
+        anim.SetBool("move", false);
 
         GameController.instance.DefMusic();
     }
 
     public override void Spawn(bool beActive, Vector3 here)
     {
-        col.enabled = false;
-        anim.SetBool("move", false);
-        anim.SetTrigger("spawn");
         transform.position = here;
         _navMeshagent.enabled = true;
         _navMeshagent.Warp(here);
-        isActive = true;
-        isSpawn = false;
-        sfx.PlayOneShot(Sfx[0]);
-        
-        playedHorror = false;
-        DecalSystem.instance.Decal(here, new Vector3(90f, 0, 0), 4f, false, 5f, 2, 0);
-        if (isChase == false)
+        if (beActive)
         {
-            timer = spawntimer;
-            escapeTimer = 0;
-            GameController.instance.ChangeMusic(music);
+            col.enabled = false;
+            anim.SetBool("move", false);
+            anim.SetTrigger("spawn");
+            transform.position = here;
+            _navMeshagent.enabled = true;
+            _navMeshagent.Warp(here);
+            isActive = true;
+            isSpawn = false;
+            sfx.PlayOneShot(Sfx[0]);
+
+            playedHorror = false;
+            DecalSystem.instance.Decal(here, new Vector3(90f, 0, 0), 4f, false, 5f, 2, 0);
+            if (isChase == false)
+            {
+                timer = spawntimer;
+                escapeTimer = 0;
+                GameController.instance.ChangeMusic(music);
+            }
+            else
+                timer = spawntimer - 2;
+
+            isChase = true;
         }
         else
-            timer = spawntimer - 2;
-
-        isChase = true;
+        {
+            isActive = false;
+            anim.SetBool("move", false);
+        }
 
     }
 

@@ -37,7 +37,7 @@ public class Timers
 
 public class Player_Control : MonoBehaviour
 {
-    float InputX, InputY, BlinkingTimer, BlinkMult = 1, RunMult = 1, CloseTimer, AsfixTimer, Health = 100, speed, headBob, amplitude, lastBob=0, RunningTimer;
+    float InputX, InputY, BlinkingTimer, BlinkMult = 1, RunMult = 1, CloseTimer, AsfixTimer, Health = 100, speed, headBob, amplitude, lastBob=0, RunningTimer, OpenTimer=1;
     public GameObject CameraObj, InterHold, DeathCol, handPos, CameraContainer, CinemaEffect;
     private GameObject hand, CinemaLoaded;
     private Transform _groundChecker;
@@ -47,8 +47,8 @@ public class Player_Control : MonoBehaviour
     Vector3 holdCam, fallSpeed, movement, HoldPos, OriPos, totalmove, headPos, forceLook;
     Quaternion toAngle;
     private CharacterController _controller;
-    public float GroundDistance = 0.2f, baseAmplitude, bobSpeed, Gravity = -9.81f, maxfallspeed, Basespeed = 3, crouchspeed = 2, runSpeed = 4, BlinkingTimerBase, ClosedEyes, AsfixiaTimer, RunningTimerBase, lookingForce = 3f, Camplitude, Cspeed;
-    bool Grounded = true, isGameplay = true, isSmoke = false, Crouch = false, fakeBlink, isRunning, isTired = false, isLooking=false, cognitoEffect;
+    public float GroundDistance = 0.2f, baseAmplitude, bobSpeed, Gravity = -9.81f, maxfallspeed, Basespeed = 3, crouchspeed = 2, runSpeed = 4, BlinkingTimerBase, ClosedEyes, AsfixiaTimer, RunningTimerBase, lookingForce = 3f, Camplitude, Cspeed, OpenMulti;
+    bool Grounded = true, isGameplay = true, isSmoke = false, Crouch = false, fakeBlink, isRunning, isTired = false, isLooking=false, cognitoEffect, onBlink;
     Camera PlayerCam;
     Image eyes, blinkbar, runbar, batbar, overlay, handEquip;
     RectTransform hand_rect, hud_rect;
@@ -56,7 +56,7 @@ public class Player_Control : MonoBehaviour
 
 
 
-    public AudioClip[] Conch, NormalStep, Deaths, Breath;
+    public AudioClip[] Conch, CurrentStep, Deaths, Breath, Concrete, Metal, PD, Forest;
     public AudioSource sfx, va;
     public AudioReverbZone Reverb;
 
@@ -70,6 +70,12 @@ public class Player_Control : MonoBehaviour
     int bodySlot = 0;
     int anySlot = 0;
     int handSlot = 0;
+
+    int headInv = 0;
+    int bodyInv = 0;
+    int anyInv = 0;
+    int handInv = 0;
+
 
     float eyesMin, sprintMin;
 
@@ -95,7 +101,6 @@ public class Player_Control : MonoBehaviour
     {
         CameraObj = Camera.main.gameObject;
         CameraObj.transform.position = CameraContainer.transform.position;
-        CameraObj.transform.rotation = CameraContainer.transform.rotation;
 
         handPos.transform.parent = CameraObj.transform;
 
@@ -121,6 +126,15 @@ public class Player_Control : MonoBehaviour
         playerEffects[1] = null;
         effecTimers[0] = new Timers();
         effecTimers[1] = new Timers();
+    }
+
+    private void Start()
+    {
+        if (GlobalValues.isNew == false)
+        {
+            CameraObj.GetComponent<Player_MouseLook>().rotation = new Vector3(0, SaveSystem.instance.playData.angle, 0);
+        }
+        handPos.transform.position = CameraObj.transform.position + (CameraObj.transform.forward * 0.5f);
     }
 
     // Update is called once per frame
@@ -261,7 +275,34 @@ public class Player_Control : MonoBehaviour
     {
         if(lastBob > 0 && headBob < 0)
         {
-            sfx.PlayOneShot(NormalStep[Random.Range(0, NormalStep.Length)]);
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position, Vector3.down, out hit, 2, Ground, QueryTriggerInteraction.Ignore))
+            {
+                switch (hit.collider.gameObject.tag)
+                {
+                    case "Metal":
+                        {
+                            CurrentStep = Metal;
+                            break;
+                        }
+                    case "PD":
+                        {
+                            CurrentStep = PD;
+                            break;
+                        }
+                    case "Forest":
+                        {
+                            CurrentStep = Forest;
+                            break;
+                        }
+                    default:
+                        {
+                            CurrentStep = Concrete;
+                            break;
+                        }
+                }
+                sfx.PlayOneShot(CurrentStep[Random.Range(0, CurrentStep.Length)]);
+            }
         }
         lastBob = headBob;
     }
@@ -302,7 +343,7 @@ public class Player_Control : MonoBehaviour
 
         hand_rect.localPosition = pos;
 
-        if (Input.GetButtonDown("Unequip"))
+        if (Input.GetButtonDown("Unequip") && equipment[(int)bodyPart.Hand] != null)
             ACT_UnEquip(bodyPart.Hand);
 
 
@@ -312,7 +353,9 @@ public class Player_Control : MonoBehaviour
     {
         cognitoEffect = state;
         if (cognitoEffect == false)
+        {
             PlayerCam.fieldOfView = 60;
+        }
     }
 
     void ACT_Camera()
@@ -408,16 +451,10 @@ public class Player_Control : MonoBehaviour
 
     void ACT_ForceLook()
     {
-        //ForceMouse
-        /*if (Time.frameCount % 2 == 0)
-        {*/
             CameraObj.GetComponent<Player_MouseLook>().addedRota = Quaternion.Slerp(CameraObj.transform.rotation, toAngle, lookingForce * Time.deltaTime);
             Vector3 Point = new Vector3(forceLook.x, forceLook.y, forceLook.z) - CameraObj.transform.position;
 
             toAngle = Quaternion.LookRotation(Point);
-        /*}
-        else
-            CameraObj.GetComponent<Player_MouseLook>().addedRota = Quaternion.identity;*/
     }
 
    
@@ -431,9 +468,6 @@ public class Player_Control : MonoBehaviour
         }
 
         Vector3 Point = new Vector3(Path[currentNode].position.x, transform.position.y, Path[currentNode].position.z) - transform.position;
-
-        //toAngle = Quaternion.LookRotation(Point.normalized);
-
         movement += (Point.normalized * 1.6f);
 
         if (Vector3.Distance(new Vector3(Path[currentNode].position.x, transform.position.y, Path[currentNode].position.z), transform.position) < NodeDistance)
@@ -450,11 +484,6 @@ public class Player_Control : MonoBehaviour
             }
 
         }
-
-        /*if ((Vector3.Distance(new Vector3(ActualPath[currentNode].position.x, transform.position.y, ActualPath[currentNode].position.z), transform.position) < stopDistance) && currentNode == pathNodes)
-        {
-            isPath = false;
-        }*/
     }
 
     public void StopWalk()
@@ -468,11 +497,7 @@ public class Player_Control : MonoBehaviour
         currentNode = 0;
         Path = newPath;
         isPath = true;
-
     }
-
-
-
 
     void ACT_Buttons()
     {
@@ -532,27 +557,24 @@ public class Player_Control : MonoBehaviour
         {
             isTired = false;
         }
-
-
     }   
-
-
-
-
-
-
 
     void ACT_Blinking()
     {
-        if (IsBlinking() || fakeBlink == true)
-            eyes.color = Color.black;
+        if (onBlink == false)
+            eyes.color = new Color(255, 255, 255, Mathf.Clamp(-((BlinkingTimer-0.25f)*4), 0.0f, 1.0f));
         else
-            eyes.color = Color.clear;
+        {
+            OpenTimer -= Time.deltaTime * OpenMulti;
+            if (OpenTimer < 0)
+                onBlink = false;
+            eyes.color = new Color(255, 255, 255, OpenTimer);
+        }
 
         if (Input.GetButton("Blink"))
         {
             CloseTimer = ClosedEyes;
-            BlinkingTimer = -1f;
+            BlinkingTimer = -2f;
         }
 
         if (isSmoke && !protectSmoke)
@@ -583,6 +605,8 @@ public class Player_Control : MonoBehaviour
                 BlinkingTimer = BlinkingTimerBase;
                 CloseTimer = ClosedEyes;
                 fakeBlink = false;
+                OpenTimer = 1;
+                onBlink = true;
             }
         }
     }
@@ -597,7 +621,7 @@ public class Player_Control : MonoBehaviour
             CameraObj.transform.parent = DeathCol.transform;
             CameraObj.GetComponent<Player_MouseLook>().enabled = false;
             isGameplay = false;
-            eyes.enabled = false;
+            eyes.color = Color.clear;
             Destroy(handPos);
 
             switch (cause)
@@ -629,8 +653,6 @@ public class Player_Control : MonoBehaviour
         fakeBlink = true;
     }
 
-
-
     public bool IsBlinking()
     {
         if (BlinkingTimer <= 0.0f && fakeBlink != true)
@@ -659,7 +681,7 @@ public class Player_Control : MonoBehaviour
     {
         if (equipment[(int)item.part] is Equipable_Nav)
         {
-            SCP_UI.instance.SNav.enabled = false;
+            SCP_UI.instance.SNav.SetActive(false);
         }
 
         switch (item.part)
@@ -668,41 +690,60 @@ public class Player_Control : MonoBehaviour
                 {
                     equipment[(int)item.part] = item;
 
-                    ItemController.instance.slots[headSlot].isEquip = false;
-                    ItemController.instance.slots[headSlot].updateInfo();
+                    if (item.isFem)
+                        SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_equip_fem"], GlobalValues.itemStrings[item.itemName]));
+                    else
+                        SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_equip_male"], GlobalValues.itemStrings[item.itemName]));
+
+                    ItemController.instance.equip[headInv][headSlot] = false;
                     headSlot = ItemController.instance.currhover;
-                    ItemController.instance.slots[headSlot].isEquip = true;
+                    headInv = ItemController.instance.currInv;
+                    ItemController.instance.equip[headInv][headSlot] = true;
                     break;
                 }
             case bodyPart.Body:
                 {
                     equipment[(int)item.part] = item;
 
-                    ItemController.instance.slots[bodySlot].isEquip = false;
-                    ItemController.instance.slots[bodySlot].updateInfo();
+                    if (item.isFem)
+                        SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_equip_fem"], GlobalValues.itemStrings[item.itemName]));
+                    else
+                        SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_equip_male"], GlobalValues.itemStrings[item.itemName]));
+
+
+                    ItemController.instance.equip[bodyInv][bodySlot] = false;
                     bodySlot = ItemController.instance.currhover;
-                    ItemController.instance.slots[bodySlot].isEquip = true;
+                    bodyInv = ItemController.instance.currInv;
+                    ItemController.instance.equip[bodyInv][bodySlot] = true;
+
+
+
                     break;
                 }
             case bodyPart.Any:
                 {
                     equipment[(int)item.part] = item;
 
-                    ItemController.instance.slots[anySlot].isEquip = false;
-                    ItemController.instance.slots[anySlot].updateInfo();
-                    anySlot = ItemController.instance.currhover;
-                    ItemController.instance.slots[anySlot].isEquip = true;
+                    if (item.isFem)
+                        SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_equip_fem"], GlobalValues.itemStrings[item.itemName]));
+                    else
+                        SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_equip_male"], GlobalValues.itemStrings[item.itemName]));
 
+
+                    ItemController.instance.equip[anyInv][anySlot] = false;
+                    anySlot = ItemController.instance.currhover;
+                    anyInv = ItemController.instance.currInv;
+                    ItemController.instance.equip[anyInv][anySlot] = true;
                     break;
                 }
             case bodyPart.Hand:
                 {
                     equipment[(int)item.part] = item;
 
-                    ItemController.instance.slots[handSlot].isEquip = false;
-                    ItemController.instance.slots[handSlot].updateInfo();
+                    ItemController.instance.equip[handInv][handSlot] = false;
                     handSlot = ItemController.instance.currhover;
-                    ItemController.instance.slots[handSlot].isEquip = true;
+                    handInv = ItemController.instance.currInv;
+                    ItemController.instance.equip[handInv][handSlot] = true;
 
                     break;
                 }
@@ -753,8 +794,8 @@ public class Player_Control : MonoBehaviour
 
         if (equipment[(int)bodyPart.Hand] is Equipable_Elec)
         {
-            ((Equipable_Elec)equipment[(int)bodyPart.Hand]).Battery -= 0.2f * Time.deltaTime;
-            int batPercent = ((int)Mathf.Floor((((Equipable_Elec)equipment[(int)bodyPart.Hand]).Battery / (100 / 100)) / 5));
+            (equipment[(int)bodyPart.Hand]).valueFloat -= 0.6f * Time.deltaTime;
+            int batPercent = ((int)Mathf.Floor((((Equipable_Elec)equipment[(int)bodyPart.Hand]).valueFloat / (100 / 100)) / 5));
 
             batbar.rectTransform.sizeDelta = new Vector2(batPercent * 8, 14);
         }
@@ -785,6 +826,8 @@ public class Player_Control : MonoBehaviour
 
     public void ACT_UnEquip(bodyPart where)
     {
+        SCP_UI.instance.ItemSFX(equipment[(int)where].SFX);
+
         if (equipment[(int)where].hasEffect)
         {
             StopEffects(equipment[(int)where].Effects.Affected);
@@ -792,33 +835,39 @@ public class Player_Control : MonoBehaviour
 
         if (equipment[(int)where] is Equipable_Nav)
         {
-            SCP_UI.instance.SNav.enabled = false;
+            SCP_UI.instance.SNav.SetActive(false);
         }
+
+        if (where != bodyPart.Hand)
+        {
+            if (equipment[(int)where].isFem)
+                SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_equip_fem"], GlobalValues.itemStrings[equipment[(int)where].itemName]));
+            else
+                SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_equip_male"], GlobalValues.itemStrings[equipment[(int)where].itemName]));
+
+        }
+
 
         switch (where)
         {
             case bodyPart.Head:
                 {
-                    ItemController.instance.slots[headSlot].isEquip = false;
-                    ItemController.instance.slots[headSlot].updateInfo();
+                    ItemController.instance.equip[headInv][headSlot] = false;
                     break;
                 }
             case bodyPart.Body:
                 {
-                    ItemController.instance.slots[bodySlot].isEquip = false;
-                    ItemController.instance.slots[bodySlot].updateInfo();
+                    ItemController.instance.equip[bodyInv][bodySlot] = false;
                     break;
                 }
             case bodyPart.Hand:
                 {
-                    ItemController.instance.slots[handSlot].isEquip = false;
-                    ItemController.instance.slots[bodySlot].updateInfo();
+                    ItemController.instance.equip[handInv][handSlot] = false;
                     break;
                 }
             case bodyPart.Any:
                 {
-                    ItemController.instance.slots[anySlot].isEquip = false;
-                    ItemController.instance.slots[bodySlot].updateInfo();
+                    ItemController.instance.equip[anyInv][anySlot] = false;
                     break;
                 }
         }
@@ -834,7 +883,7 @@ public class Player_Control : MonoBehaviour
             protectSmoke = equipment[(int)bodyPart.Head].protectGas;
             Reverb.enabled = equipment[(int)bodyPart.Head].protectGas;
             overlay.sprite = equipment[(int)bodyPart.Head].Overlay;
-            overlay.color = new Color(255, 255, 255, 0.5f);
+            overlay.color = new Color(255, 255, 255, 0.75f);
         }
         else
         {
@@ -870,7 +919,7 @@ public class Player_Control : MonoBehaviour
     {
         _controller.enabled = false;
         transform.position = here;
-        CameraObj.transform.rotation = Quaternion.Euler(CameraObj.transform.eulerAngles.x, CameraObj.transform.eulerAngles.y + rotation, CameraObj.transform.eulerAngles.z);
+        CameraObj.GetComponent<Player_MouseLook>().rotation = new Vector3(0, CameraObj.transform.eulerAngles.y + rotation, 0);
         _controller.enabled = true;
     }
 

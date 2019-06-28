@@ -6,6 +6,7 @@ public abstract class Roam_NPC : MonoBehaviour
 {
     public int agroLevel = 1;
     public bool isEvent;
+    public bool isActive;
 
     public virtual void Spawn(bool beActive, Vector3 warppoint)
     {

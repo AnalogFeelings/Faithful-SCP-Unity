@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EV_BreachStart : MonoBehaviour
+public class EV_BreachStart : Event_Parent
 {
-    public GameObject trigger, trigger2, Sci, Gua, Anchor1;
+    public GameObject trigger2, Sci, Gua, Anchor1;
     EV_Puppet_Controller Sci_, Gua_;
     public Transform[] Path;
     public Transform[] Path2;
-    bool check2 = true, check = true, StopTimer =true;
+    bool check2 = true, StopTimer =true;
     float Timer;
     public AudioClip Dialog;
 
     // Update is called once per frame
-    private void Start()
+    private void Awake()
     {
         Sci_ = Sci.GetComponent<EV_Puppet_Controller>();
         Gua_ = Gua.GetComponent<EV_Puppet_Controller>();
@@ -21,16 +21,24 @@ public class EV_BreachStart : MonoBehaviour
 
     void Update()
     {
-            Timer -= Time.deltaTime;
+        if (isStarted == true)
+            EventUpdate();
+    }
+
+    public override void EventUpdate()
+    {
+        Timer -= Time.deltaTime;
+
         if (Timer <= 0.0f && StopTimer == false)
         {
             GameController.instance.player.GetComponent<Player_Control>().FakeBlink(0.5f);
             GameController.instance.DefaultAmbiance();
             GameController.instance.Warp173(false, GameController.instance.transform);
-            Destroy(this.gameObject);
+            StopTimer = true;
+            EventFinished();
         }
 
-            if (check == true)
+        /*if (check == true)
         {
             if (trigger.GetComponent<BoxTrigger>().GetState())
             {
@@ -39,7 +47,7 @@ public class EV_BreachStart : MonoBehaviour
                 RenderSettings.fog = true;
                 Destroy(GameController.instance.startEv);
             }
-        }
+        }*/
 
         if (check2 == true)
         {
@@ -48,17 +56,28 @@ public class EV_BreachStart : MonoBehaviour
                 Sci_.SetPath(Path);
                 Gua_.SetPath(Path);
                 Gua_.PlaySound(Dialog);
+                SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["scene_BreachStart_1"], GlobalValues.charaStrings["chara_franklin"]));
+                SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["scene_BreachStart_2"], GlobalValues.charaStrings["chara_ulgrin"]));
+                SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["scene_BreachStart_3"], GlobalValues.charaStrings["chara_franklin"]));
+                SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["scene_BreachStart_4"], GlobalValues.charaStrings["chara_ulgrin"]));
+                SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["scene_BreachStart_5"], GlobalValues.charaStrings["chara_franklin"]));
+
                 GameController.instance.Warp173(false, Anchor1.transform);
                 check2 = false;
                 StopTimer = false;
                 Timer = 14;
             }
         }
-
-
-
-
-
-
     }
+
+    public override void EventFinished()
+    {
+        Destroy(Sci);
+        Destroy(Gua);
+
+        base.EventFinished();
+    }
+
 }
+
+
