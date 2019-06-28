@@ -10,14 +10,24 @@ public class Object_Item : Object_Interact
 
     public void Spawn()
     {
-        Debug.Log(item.itemName);
         Instantiate(item.ItemModel, this.transform);
     }
 
     // Update is called once per frame
     public override void Pressed()
     {
-        ItemController.instance.AddItem(item);
+        Debug.Log(item.name);
+        Item newitem = Object.Instantiate(item);
+        newitem.name = item.name;
+
+        if (item.isFem)
+            SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_picked_fem"], GlobalValues.itemStrings[item.itemName]));
+        else
+            SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_picked_male"], GlobalValues.itemStrings[item.itemName]));
+
+
+
+        ItemController.instance.AddItem(newitem, 0);
         GameController.instance.DeleteItem(id);
         DestroyImmediate(this.gameObject);
     }
@@ -31,4 +41,7 @@ public class Object_Item : Object_Interact
         GameController.instance.DeleteItem(id);
         DestroyImmediate(this.gameObject);
     }
+
+
+
 }

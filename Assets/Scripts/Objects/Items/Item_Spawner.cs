@@ -4,16 +4,32 @@ using UnityEngine;
 
 public class Item_Spawner : MonoBehaviour
 {
-    public Item[] items;
+    [System.Serializable]
+    public class itemChance
+    {
+        public ChanceTable[] items;
+    }
+
+    public itemChance [] table;
+
     public Transform[] positions;
     // Start is called before the first frame update
     public void Spawn()
     {
-        for (int i = 0; i < items.Length; i++)
+        for (int i = 0; i < table.Length; i++)
         {
-            GameObject newObject;
-            newObject = Instantiate(GameController.instance.itemSpawner, positions[i].position, Quaternion.identity);
-            Helper(newObject, items[i], positions[i].position);
+            int gend;
+            for (int j = 0; j < table[i].items.Length; j++)
+            { 
+                gend = Random.Range(0, 100);
+                if (gend < table[i].items[j].Rate)
+                {
+                    GameObject newObject;
+                    newObject = Instantiate(GameController.instance.itemSpawner, positions[i].position, Quaternion.identity);
+                    Helper(newObject, table[i].items[j].Spawn, positions[i].position);
+                    j = table[i].items.Length + 1;
+                }
+            }
         }
     }
 

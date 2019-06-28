@@ -16,7 +16,7 @@ public class Equipable_Nav : Equipable_Elec
 
         if (player.equipment[(int)this.part] == null || player.equipment[(int)this.part].itemName != this.itemName)
         {
-            SCP_UI.instance.SNav.enabled = true;
+            SCP_UI.instance.SNav.SetActive(true);
             player.ACT_Equip(this);
         }
         else
@@ -24,6 +24,17 @@ public class Equipable_Nav : Equipable_Elec
             player.ACT_UnEquip(part);
         }
 
+    }
+
+    public override bool Mix(Item toMix)
+    {
+        if (toMix.itemName.Equals("bat_nor"))
+        {
+            valueFloat = 100;
+            return (true);
+        }
+        else
+            return (false);
     }
 
 }

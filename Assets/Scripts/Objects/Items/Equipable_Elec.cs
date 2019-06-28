@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class Equipable_Elec : Equipable_Wear
 {
-    public float Battery = 100;
-
     public override void Use()
     {
         Player_Control player = GameController.instance.player.GetComponent<Player_Control>();
@@ -13,6 +11,5 @@ public class Equipable_Elec : Equipable_Wear
             player.ACT_Equip(this);
         else
             player.ACT_UnEquip(part);
-
     }
 }

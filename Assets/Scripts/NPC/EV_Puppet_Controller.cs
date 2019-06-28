@@ -73,7 +73,10 @@ public class EV_Puppet_Controller : MonoBehaviour
         {
             _navMeshagent.autoTraverseOffMeshLink = false;
             if (_navMeshagent.isOnOffMeshLink)
+            {
                 transform.position += movement;
+                Debug.Log("HELP");
+            }
             else
                 _navMeshagent.Move(movement);
             movement = Vector3.Lerp(movement, Vector3.zero, 4f * Time.deltaTime);

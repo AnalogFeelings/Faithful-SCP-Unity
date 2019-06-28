@@ -22,11 +22,17 @@ public class Object_KeyButton : Object_Interact
                 if (Door02 != null)
                     Door02.GetComponent<Object_Door>().DoorSwitch();
                 soundsource.PlayOneShot(Accepted);
+                SubtitleEngine.instance.playSub(GlobalValues.playStrings["play_button_card"]);
             }
             else
+            {
+                SubtitleEngine.instance.playSub(GlobalValues.playStrings["play_button_lowcard"]);
                 soundsource.PlayOneShot(Rejected);
+            }
 
         }
+        else
+            SubtitleEngine.instance.playSub(GlobalValues.playStrings["play_button_nocard"]);
     }
 
     public override void Hold()

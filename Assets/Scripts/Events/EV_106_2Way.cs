@@ -27,10 +27,13 @@ public class EV_106_2Way : Event_Parent
 
     public override void EventStart()
     {
-        GameController.instance.npcTable[(int)npc.scp106].Event_Spawn(true, start.position);
-        DecalSystem.instance.Decal(decal1.position, decal1.rotation.eulerAngles, 3f, false, 5f, 2, 0);
-        ((SCP_106)GameController.instance.npcTable[(int)npc.scp106]).SetPath(path);
-        isStarted = true;
+        if (!isStarted)
+        {
+            GameController.instance.npcTable[(int)npc.scp106].Event_Spawn(true, start.position);
+            DecalSystem.instance.Decal(decal1.position, decal1.rotation.eulerAngles, 3f, false, 5f, 2, 0);
+            ((SCP_106)GameController.instance.npcTable[(int)npc.scp106]).SetPath(path);
+            isStarted = true;
+        }
     }
 
     public override void EventUpdate()
