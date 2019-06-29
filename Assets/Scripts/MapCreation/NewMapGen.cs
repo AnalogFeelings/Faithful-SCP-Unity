@@ -37,29 +37,20 @@ public enum RoomType { TwoWay, FourWay, CornerWay, TWay, EndWay };
 [System.Serializable]
 public class room_dat
 {
-    public int id, done, Zone=1, angle;
     public RoomType type;
-    public bool empty, isSpecial, hasEvents = false, hasSpecial = false, eventDone=false, eventPreset=false;
-    public int[] neighbours = new int[4];
+    public bool isSpecial, hasEvents = false, hasSpecial = false, hasItems = false;
     public GameObject RoomHolder;
-    public int Event, hasItem = 0, music = -1;
-
-
-    public room_dat(bool _empty)
-    {
-        empty = _empty;
-        done = 0;
-        isSpecial = false;
-        eventDone = false;
-    }
+    public int music = -1, Zone = 1;
 };
 
 [HideInInspector]
 [System.Serializable]
-public class saved_room
+public class room
 {
-    public int angle, Event=-1, Zone, items=0;
-    public bool empty=true, eventDone=false;
+    public RoomType type;
+    public int angle, Event=-1, Zone, items=0, EventState=0;
+    public bool empty=true, eventDone=false, isSpecial=false;
+    public int[] neighbours = new int[4];
     public string roomName;
 };
 
@@ -94,6 +85,8 @@ public class NewMapGen : MonoBehaviour
     public MapSize mapSize;
     public LayerMask ground;
 
+    public Dictionary<string, room_dat> roomTable = new Dictionary<string, room_dat>();
+
     RoomList[] RoomTable;
 
     GameObject mapParent;
@@ -105,9 +98,9 @@ public class NewMapGen : MonoBehaviour
     List<walker_dat> walker_list = new List<walker_dat>();
 
     public int[,] mapgen;
-    public saved_room[,] mapsave;
     public int[,,] cull_lookup;
-    public room_dat[,] mapfil;
+    public room[,] mapfil;
+    public GameObject[,] mapobjects;
     public int zone3_limit;
     public int zone2_limit;
     private int mapdone;
@@ -166,7 +159,6 @@ public class NewMapGen : MonoBehaviour
         ScanForSpecials(zLight.endWay_List);
         ScanForSpecials(zLight.tWay_List);
         ScanForSpecials(zLight.fourWay_List);
-
     }
 
     void ScanForSpecials(List<RoomChance> roomlist)
@@ -180,6 +172,29 @@ public class NewMapGen : MonoBehaviour
                 Debug.Log("Cuarto Especial " + roomlist[i].Room.name + " Tipo " + roomlist[i].type);
             }
         }
+
+        AddToList(roomlist);
+    }
+
+    void AddToList(List<RoomChance> roomlist)
+    {
+        int i;
+        for (i = 0; i < (roomlist.Count); i++)
+        {
+            room_dat temp = new room_dat();
+            temp.RoomHolder = roomlist[i].Room;
+            temp.music = roomlist[i].music;
+            temp.isSpecial = roomlist[i].isSpecial;
+            temp.hasSpecial = roomlist[i].hasSpecial;
+            temp.hasEvents = roomlist[i].hasEvent;
+            temp.hasItems = roomlist[i].hasItem;
+            temp.Zone = roomlist[i].Zone;
+            temp.type = roomlist[i].type;
+
+            Debug.Log("Cuarto " + roomlist[i].Room.name + " Tipo " + roomlist[i].type);
+
+            roomTable.Add(temp.RoomHolder.name, temp);
+        }
     }
 
     private void MapStart()
@@ -191,9 +206,9 @@ public class NewMapGen : MonoBehaviour
 
 
         mapgen = new int[mapSize.xSize, mapSize.ySize];
-        mapfil = new room_dat[mapSize.xSize, mapSize.ySize];
         if (IsNew)
-            mapsave = new saved_room[mapSize.xSize, mapSize.ySize];
+            mapfil = new room[mapSize.xSize, mapSize.ySize];
+        mapobjects = new GameObject[mapSize.xSize, mapSize.ySize];
         mapdone = 0;
         walker_count = 0;
     }
@@ -243,15 +258,13 @@ public class NewMapGen : MonoBehaviour
 
         LlenarMundo();          //Al finalizar, llena el mapa con objetos
 
-        mapfil[0, mapSize.ySize - 1] = new room_dat(false);
+        mapfil[0, mapSize.ySize / 2] = new room();
 
-        mapfil[0, mapSize.ySize /2].RoomHolder = introRoom;
+        mapfil[0, mapSize.ySize /2].roomName = introRoom.name;
         mapfil[0, mapSize.ySize /2].isSpecial = true;
         mapfil[0, mapSize.ySize /2].angle = 90;
         mapfil[0, mapSize.ySize /2].Zone = 3;
         mapfil[0, mapSize.ySize /2].type = RoomType.EndWay;
-        mapfil[0, mapSize.ySize /2].hasEvents = false;
-        mapfil[0, mapSize.ySize /2].hasSpecial = false;
 
         SpecialRoomSpawn();
 
@@ -259,7 +272,7 @@ public class NewMapGen : MonoBehaviour
         Debug.Log("Creado");
     }
 
-    public room_dat[,] DameMundo()
+    public room[,] DameMundo()
     {
         return (mapfil);
     }
@@ -272,7 +285,6 @@ public class NewMapGen : MonoBehaviour
             for (j = 0; j < mapSize.ySize; j++)
             {
                 mapgen[i, j] = 0;
-                mapsave[i, j] = new saved_room();
             }
         }
     }
@@ -560,7 +572,7 @@ public class NewMapGen : MonoBehaviour
             {
                 if (mapgen[i, j] == 1)
                 {
-                    mapfil[i, j] = new room_dat(false);
+                    mapfil[i, j] = new room();
 
                     //printf("x %i y %i", i, j);
                     if ((atedge(i, j, 0) == 0) && (mapgen[i + 1, j] == 1))     //Si hay un cuarto a la derecha, se agregara a la lista de cuartos vecinos o colindantes
@@ -596,7 +608,7 @@ public class NewMapGen : MonoBehaviour
                     RoomCheck(i, j);
                 }
                 else
-                    mapfil[i, j] = new room_dat(true);
+                    mapfil[i, j] = null;
             }
         }
     }
@@ -609,7 +621,7 @@ public class NewMapGen : MonoBehaviour
         {
             for (j = 0; j < mapSize.ySize; j++)
             {
-                if (mapfil[i, j].empty == false && mapfil[i, j].RoomHolder != null)      //Imprime el mapa
+                if (mapgen[i, j] == 1)      //Imprime el mapa
                     RoomInstance(i, j);
             }
         }
@@ -636,8 +648,8 @@ public class NewMapGen : MonoBehaviour
 
         if (j == zone3_limit && mapfil[i, j].neighbours[1] == 1 && mapfil[i, j].neighbours[3] == 1)
         {
-            mapfil[i, j].RoomHolder = zone3Check;
-            mapfil[i, j].angle = 180;
+            mapfil[i, j].roomName = zone3Check.name;
+            mapfil[i, j].angle = 0;
             mapfil[i, j].type = RoomType.TwoWay;
             mapfil[i, j].isSpecial = true;
             mapfil[i, j].Zone = 0;
@@ -648,7 +660,7 @@ public class NewMapGen : MonoBehaviour
         }
         if (j == zone2_limit && mapfil[i, j].neighbours[1] == 1 && mapfil[i, j].neighbours[3] == 1)
         {
-            mapfil[i, j].RoomHolder = zone2Check;
+            mapfil[i, j].roomName = zone2Check.name;
             mapfil[i, j].angle = 0;
             mapfil[i, j].type = RoomType.TwoWay;
             mapfil[i, j].isSpecial = true;
@@ -693,6 +705,8 @@ public class NewMapGen : MonoBehaviour
         if (cantSpawn &&  (j == zone2_limit || j == zone3_limit))
         {
             mapgen[i, j] = 0;
+            mapfil[i, j] = null;
+            return;
         }
 
 
@@ -867,6 +881,10 @@ public class NewMapGen : MonoBehaviour
                 RoomSpawn(zLight.fourWay_List, 0, RoomType.FourWay, i, j);
             return;
         }
+
+        mapgen[i, j] = 0;
+        mapfil[i, j] = null;
+        return;
     }
 
     void RoomSpawn(List<RoomChance> roomlist, int angle, RoomType type, int i, int j)
@@ -877,15 +895,12 @@ public class NewMapGen : MonoBehaviour
             gend = Random.Range(0, 100);
             if (gend < roomlist[z].Chance)
             {
-                mapfil[i, j].RoomHolder = roomlist[z].Room;
+                mapfil[i, j].roomName = roomlist[z].Room.name;
                 mapfil[i, j].angle = angle;
                 mapfil[i, j].type = type;
-                mapfil[i, j].hasEvents = roomlist[z].hasEvent;
-                mapfil[i, j].hasSpecial = roomlist[z].hasSpecial;
-                mapfil[i, j].music = roomlist[z].music;
 
                 if (roomlist[z].hasItem)
-                    mapfil[i, j].hasItem = 1;
+                    mapfil[i, j].items = 1;
 
 
 
@@ -907,7 +922,7 @@ public class NewMapGen : MonoBehaviour
                         fourWay_Lookup.Add(new Roomlookup(i, j));
                         break;
                 }
-                Debug.Log("Cuarto " + mapfil[i, j].RoomHolder.name + "Posicion " + i + " " + j);
+                Debug.Log("Cuarto " + mapfil[i, j].roomName + "Posicion " + i + " " + j);
                 break;
             }
 
@@ -962,14 +977,11 @@ public class NewMapGen : MonoBehaviour
                 chance = Random.Range(0, currtype.Count);
                 if ((mapfil[currtype[chance].xPos, currtype[chance].yPos].isSpecial == false) && mapfil[currtype[chance].xPos, currtype[chance].yPos].Zone == speciallist[i].Zone)
                 {
-                    mapfil[currtype[chance].xPos, currtype[chance].yPos].RoomHolder = speciallist[i].Room;
+                    mapfil[currtype[chance].xPos, currtype[chance].yPos].roomName = speciallist[i].Room.name;
                     mapfil[currtype[chance].xPos, currtype[chance].yPos].isSpecial = true;
-                    mapfil[currtype[chance].xPos, currtype[chance].yPos].hasEvents = speciallist[i].hasEvent;
-                    mapfil[currtype[chance].xPos, currtype[chance].yPos].hasSpecial = speciallist[i].hasSpecial;
-                    mapfil[currtype[chance].xPos, currtype[chance].yPos].music = speciallist[i].music;
 
                     if (speciallist[i].hasItem)
-                        mapfil[currtype[chance].xPos, currtype[chance].yPos].hasItem = 1;
+                        mapfil[currtype[chance].xPos, currtype[chance].yPos].items = 1;
 
                     spawned = true;
                     break;
@@ -987,7 +999,7 @@ public class NewMapGen : MonoBehaviour
     /// <summary>
     /// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// </summary>
-    void SavedtoMap(int i, int j)
+    /*void SavedtoMap(int i, int j)
     {
         string ZonePath = "";
         switch (mapsave[i, j].Zone)
@@ -1035,7 +1047,7 @@ public class NewMapGen : MonoBehaviour
             mapfil[i, j].hasEvents = true;
         if (mapfil[i, j].Event == -2)
             mapfil[i, j].hasSpecial = true;
-    }
+    }*/
 
 
     public void LoadingSave()
@@ -1048,17 +1060,8 @@ public class NewMapGen : MonoBehaviour
         {
             for (j = 0; j < mapSize.ySize; j++)
             {
-                mapfil[i,j] = new room_dat(true);
-            }
-        }
-
-        for (i = 0; i < mapSize.xSize; i++)
-        {
-            for (j = 0; j < mapSize.ySize; j++)
-            {
-                if (mapsave[i,j].empty == false && mapsave[i, j].roomName != null)
+                if (mapfil[i,j] != null)
                 {
-                    SavedtoMap(i, j);
                     mapgen[i,j] = 1;
                 }
                 else
@@ -1068,58 +1071,24 @@ public class NewMapGen : MonoBehaviour
         Debug.Log("Cargado");
     }
 
-    void SavedtoQuick(int i, int j)
-    {
-        mapfil[i, j].eventPreset = true;
-        mapfil[i, j].hasItem = mapsave[i, j].items;
-
-        mapfil[i, j].Event = mapsave[i, j].Event;
-        mapfil[i, j].eventDone = false;
-
-        if (mapfil[i, j].Event >= 0)
-            mapfil[i, j].hasEvents = true;
-        if (mapfil[i, j].Event == -2)
-            mapfil[i, j].hasSpecial = true;
-    }
 
 
 
 
 
-
-    public void LoadingQuick()
-    {
-        for (int i = 0; i < mapSize.xSize; i++)
-        {
-            for (int j = 0; j < mapSize.ySize; j++)
-            {
-                if (mapsave[i, j].empty == false && mapsave[i, j].roomName != null)
-                {
-                    SavedtoQuick(i, j);
-                    mapgen[i, j] = 1;
-                }
-            }
-        }
-    }
 
 
 
     void RoomInstance(int i, int j)
     {
-        if (IsNew)
-        {
-            mapsave[i, j].roomName = mapfil[i, j].RoomHolder.name;
-            mapsave[i, j].Zone = mapfil[i, j].Zone;
-            mapsave[i, j].empty = false;
-            mapsave[i, j].angle = mapfil[i, j].angle;
-            mapsave[i, j].items = mapfil[i, j].hasItem;
-        }
 
-        Debug.Log("Creating " + mapfil[i, j].RoomHolder.name + " in " + i + " " + j);
-        GameObject roomTemp = mapfil[i, j].RoomHolder;
+        Debug.Log("Creating " + mapfil[i, j].roomName + " in " + i + " " + j);
+
+        room_dat room_ = roomTable[mapfil[i, j].roomName];
+
         int angleTemp = mapfil[i, j].angle;
-        mapfil[i, j].RoomHolder = Instantiate(roomTemp, new Vector3(roomsize * i, 0.0f, roomsize * j), roomTemp.transform.rotation * Quaternion.Euler(0, angleTemp, 0));
-        mapfil[i, j].RoomHolder.transform.parent = mapParent.transform;
+        mapobjects[i, j] = Instantiate(room_.RoomHolder, new Vector3(roomsize * i, 0.0f, roomsize * j), Quaternion.Euler(0, angleTemp, 0));
+        mapobjects[i, j].transform.parent = mapParent.transform;
 
         float xDecal = Random.Range(-5.0f, 5.0f);
         float yDecal = Random.Range(-5.0f, 5.0f);
@@ -1127,18 +1096,21 @@ public class NewMapGen : MonoBehaviour
         if (Physics.CheckSphere(new Vector3((roomsize * i) + xDecal, 0.05f, (roomsize * j) + yDecal), 0.1f, ground, QueryTriggerInteraction.Ignore))
             DecalSystem.instance.SpawnDecal(new Vector3((roomsize * i) + xDecal, 0.05f, (roomsize * j) + yDecal));
 
-        if (mapfil[i, j].eventPreset == false)
+
+        if (mapfil[i, j].Event == -1)
         {
-            if (mapfil[i, j].hasEvents)
+            if (room_.hasEvents)
             {
-                mapsave[i, j].Event = mapfil[i, j].RoomHolder.GetComponent<EventHandler>().EventSet();
+                mapfil[i, j].Event = mapobjects[i, j].GetComponent<EventHandler>().EventSet();
             }
+            else
+                mapfil[i, j].Event = -1;
 
             /////////////////////////////////////////////////////////////////////
-            if (mapfil[i, j].hasSpecial)
+            if (room_.hasSpecial)
             {
                 bool found = false;
-                string evName = mapfil[i, j].RoomHolder.GetComponent<EventHandler>().GetEventName();
+                string evName = mapobjects[i, j].GetComponent<EventHandler>().GetEventName();
 
                 for (int z = 0; z < eventList.Count; z++)
                 {
@@ -1151,17 +1123,14 @@ public class NewMapGen : MonoBehaviour
                 {
                     eventList.Add(evName);
                     Debug.Log("Agregando " + evName);
-                    mapfil[i, j].RoomHolder.GetComponent<EventHandler>().EventSpecial();
-                    mapsave[i, j].Event = -2;
+                    mapobjects[i, j].GetComponent<EventHandler>().EventSpecial();
+                    mapfil[i, j].Event = -2;
                 }
             }
         }
         else
         {
-            if (mapfil[i, j].Event != -1)
-            {
-                mapfil[i, j].RoomHolder.GetComponent<EventHandler>().ForceEvent(mapfil[i, j].Event);
-            }
+            mapobjects[i, j].GetComponent<EventHandler>().ForceEvent(mapfil[i, j].Event);
         }
     }
 
@@ -1192,13 +1161,4 @@ public class NewMapGen : MonoBehaviour
             }
         }
     }
-
-
-
-
-
-
-
-
-
 }

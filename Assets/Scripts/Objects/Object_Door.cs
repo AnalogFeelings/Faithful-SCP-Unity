@@ -12,26 +12,33 @@ public class Object_Door : MonoBehaviour
     public AudioClip[] Open_AUD;
     public AudioClip[] SCP_AUD;
     public AudioClip[] Close_AUD;
-    AudioSource AUD;
+    public AudioSource AUD;
 
     float LastPos1;
 
     Vector3 Pos1, Pos2;
-    public bool switchOpen = false, scp173 = true;
+    public bool switchOpen = false, scp173 = true, ignoreSave = false;
     bool IsOpen = false, isForcing = false;
-    
+
     // Start is called before the first frame update
+
+    private void Awake()
+    {
+        AUD = GetComponent<AudioSource>();
+    }
+
     void Start()
     {
-        id = GameController.instance.GetDoorID();
-        transform.parent = GameController.instance.doorParent.transform;
-        resetState();
-
+        if (!ignoreSave)
+        {
+            id = GameController.instance.GetDoorID();
+            transform.parent = GameController.instance.doorParent.transform;
+            resetState();
+        }
 
         Pos1 = Door01.transform.position;
         Pos2 = Door02.transform.position;
         LastPos1 = 10f;
-        AUD = GetComponent<AudioSource>();
     }
 
     public void resetState()
@@ -39,10 +46,18 @@ public class Object_Door : MonoBehaviour
         int doorState = GameController.instance.GetDoorState(id);
         if (doorState != -1)
         {
+            LastPos1 = 10f;
+
             if (doorState == 0)
+            {
+                IsOpen = true;
                 switchOpen = false;
+            }
             if (doorState == 1)
+            {
+                IsOpen = false;
                 switchOpen = true;
+            }
         }
     }
 
@@ -68,7 +83,8 @@ public class Object_Door : MonoBehaviour
             if (tempdis > LastPos1)
             {
                 IsOpen = true;
-                GameController.instance.SetDoorState(true, id);
+                if (!ignoreSave)
+                    GameController.instance.SetDoorState(true, id);
             }
             else
                 LastPos1 = tempdis;
@@ -77,7 +93,8 @@ public class Object_Door : MonoBehaviour
         else
         {
             IsOpen = true;
-            GameController.instance.SetDoorState(true, id);
+            if (!ignoreSave)
+                GameController.instance.SetDoorState(true, id);
         }
 
         tempdis = Vector3.Distance(Door02.transform.position, Pos2 + (Door02.transform.right * DoorEndPos));
@@ -100,7 +117,8 @@ public class Object_Door : MonoBehaviour
             if (tempdis > LastPos1)
             {
                 IsOpen = false;
-                GameController.instance.SetDoorState(false, id);
+                if (!ignoreSave)
+                    GameController.instance.SetDoorState(false, id);
             }
             else
                 LastPos1 = tempdis;
@@ -108,7 +126,8 @@ public class Object_Door : MonoBehaviour
         else
         {
             IsOpen = false;
-            GameController.instance.SetDoorState(false, id);
+            if (!ignoreSave)
+                GameController.instance.SetDoorState(false, id);
         }
 
         tempdis = Vector3.Distance(Door02.transform.position, Pos2);

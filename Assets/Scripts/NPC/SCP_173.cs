@@ -17,12 +17,12 @@ public class SCP_173 : Roam_NPC
     Collider col_173;
     Collider[] Interact;
     bool canSee = true, canMove = true, hasDoor = false, hasPatrol = false, DidOpen, playedHorror, playedNear, TeleWait, blinkFrame, closeDoor = false;
-    public bool canAttack;
     AudioSource sfx;
     public Transform DoorSpot;
     Vector3 Destination;
-    int MoveAttempts, TeleAttempts, frameInterval=30;
+    int MoveAttempts, TeleAttempts, frameInterval=15;
     public AudioClip[] farHorror, closeHorror;
+    public AudioClip teleport;
 
     // Use this for initialization
     void Awake()
@@ -61,7 +61,7 @@ public class SCP_173 : Roam_NPC
 
         DoorCool -= Time.deltaTime;
 
-        if (canAttack)
+        if (isActive)
         {
             HorrorFar();
 
@@ -126,18 +126,19 @@ public class SCP_173 : Roam_NPC
     {
         if (PlayerDistance < 16 && CheckPlayer())
         {
-                playedNear = false;
+                
                 if (playedHorror == false)
                 {
                     GameController.instance.PlayHorror(farHorror[Random.Range(0, farHorror.Length)],transform, npc.scp173);
                     playedHorror = true;
+                    playedNear = false;
                 }
         }
     }
     
     void HorrorNear()
     {
-        if (PlayerDistance < 6 && CheckPlayer())
+        if (PlayerDistance < 4 && CheckPlayer())
         {
                 if (playedNear == false)
                 {
@@ -210,9 +211,27 @@ public class SCP_173 : Roam_NPC
                     hasPatrol = false;
 
                     if (agroLevel == 1)
-                        Spawn(true, GameController.instance.GetPatrol(Player.transform.position, 3, 1));
+                    {
+                        Vector3 here;
+                        do
+                        {
+                            here = GameController.instance.GetPatrol(Player.transform.position, 4, 2);
+
+                        }
+                        while (!GameController.instance.PlayerNotHere(here));
+                        Spawn(true, here);
+                    }
                     if (agroLevel == 0)
-                        Spawn(true, GameController.instance.GetPatrol(Player.transform.position, 6, 2));
+                    {
+                        Vector3 here;
+                        do
+                        {
+                            here = GameController.instance.GetPatrol(Player.transform.position, 6, 2);
+
+                        }
+                        while (!GameController.instance.PlayerNotHere(here));
+                        Spawn(true, here);
+                    }
                 }
                 
             }
@@ -281,7 +300,14 @@ public class SCP_173 : Roam_NPC
                     {
                         hasDoor = false;
                         canMove = true;
-                        Spawn(true, GameController.instance.GetPatrol(transform.position, 4, 1));
+                        Vector3 here;
+                        do
+                        {
+                            here = GameController.instance.GetPatrol(Player.transform.position, 2, 1);
+
+                        }
+                        while (!GameController.instance.PlayerNotHere(here));
+                        Spawn(true, here);
                         MoveAttempts = 0;
                     }
                     if (DidOpen == false)
@@ -304,7 +330,7 @@ public class SCP_173 : Roam_NPC
         if (NavMesh.SamplePosition(warppoint, out here, 0.2f, NavMesh.AllAreas))
         {
             _navMeshagent.Warp(warppoint);
-            canAttack = beActive;
+            isActive = beActive;
             playedNear = false;
             playedHorror = false;
             hasDoor = false;
@@ -313,11 +339,16 @@ public class SCP_173 : Roam_NPC
         else if (NavMesh.SamplePosition(warppoint, out here, 10f, NavMesh.AllAreas))
         {
             _navMeshagent.Warp(here.position);
-            canAttack = beActive;
+            isActive = beActive;
             playedNear = false;
             playedHorror = false;
             hasDoor = false;
             hasPatrol = false;
+        }
+
+        if (isActive)
+        {
+            GameController.instance.GlobalSFX.PlayOneShot(teleport);
         }
     }
 
@@ -326,7 +357,7 @@ public class SCP_173 : Roam_NPC
         if ((!IsSeen())&&(other.gameObject.CompareTag("Player")))
         {
             other.gameObject.GetComponent<Player_Control>().Death(1);
-            canAttack = false;
+            isActive = false;
         }
 
     }

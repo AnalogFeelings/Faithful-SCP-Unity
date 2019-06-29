@@ -21,6 +21,7 @@ public class Object_Button_Trigger : Object_Interact
     {
         deactivate = 1.0f;
         activated = true;
+        SubtitleEngine.instance.playSub(GlobalValues.playStrings["play_button"]);
     }
 
     public override void Hold()

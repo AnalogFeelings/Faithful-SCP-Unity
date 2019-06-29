@@ -23,7 +23,7 @@ public class Object_instaItem : Object_Interact
     // Update is called once per frame
     public override void Pressed()
     {
-        ItemController.instance.AddItem(item);
+        ItemController.instance.AddItem(item, 0);
         DestroyImmediate(this.gameObject);
     }
 

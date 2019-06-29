@@ -2,21 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/*[System.Serializable]
-public class CubeMapSettings
-{
-    public float xBox, yBox, xOff, yOff, cubeInten;
-    public int cubeRes, cubeImpor;
-}*/
 
 public class AlignCubeMap : MonoBehaviour
 {
     public float angle = -2;
-    // Start is called before the first frame update
     void Start()
     {
-        
-        // Add the reflection probe component
+        if (QualitySettings.realtimeReflectionProbes == false)
+            Destroy(this.gameObject);
+
         ReflectionProbe probeComponent = GetComponent<ReflectionProbe>();
 
 
@@ -26,7 +20,6 @@ public class AlignCubeMap : MonoBehaviour
         vec.z = Mathf.Round(vec.z / 90) * 90;
         transform.eulerAngles = vec;
 
-        // Reflection will be used for objects in 10 units around the position of the probe
 
         if (transform.eulerAngles.y == 0)
         {
@@ -52,13 +45,6 @@ public class AlignCubeMap : MonoBehaviour
             probeComponent.center = new Vector3(-probeComponent.center.z, probeComponent.center.y, -probeComponent.center.x);
             angle = -90;
         }
-
-        //Debug.Log(transform.eulerAngles.y + " Detectado como angulo " + angle);
-
-        /*probeComponent.mode = UnityEngine.Rendering.ReflectionProbeMode.Realtime;
-        probeComponent.refreshMode = UnityEngine.Rendering.ReflectionProbeRefreshMode.ViaScripting;
-
-        probeComponent.RenderProbe();*/
     }
 
     // Update is called once per frame
