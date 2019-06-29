@@ -385,17 +385,10 @@ public class GameController : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.F11))
-<<<<<<< HEAD:Assets/Scripts/GameSystem/GameController.cs
-=======
         {
             LoadQuickSave();
         }
 
-        if (debugCamera)
->>>>>>> b51288c654010cd38746c4fc80b787219a127ef4:Assets/Scripts/GameSystem/GameController.cs
-        {
-            LoadQuickSave();
-        }
 
         if (isAlive)
         {
@@ -610,7 +603,6 @@ public class GameController : MonoBehaviour
     {
         if (!holdRoom)
         {
-<<<<<<< HEAD:Assets/Scripts/GameSystem/GameController.cs
             int tempX = (Mathf.Clamp((Mathf.RoundToInt((player.transform.position.x / roomsize))), 0, mapSize.xSize - 1));
             int tempY = (Mathf.Clamp((Mathf.RoundToInt((player.transform.position.z / roomsize))), 0, mapSize.ySize - 1));
             if ((Binary_Map[tempX, tempY] != 0) && ((tempY == yPlayer && tempX == xPlayer + 1) || (tempY == yPlayer && tempX == xPlayer - 1) || (tempY == yPlayer + 1 && tempX == xPlayer) || (tempY == yPlayer - 1 && tempX == xPlayer)))
@@ -622,14 +614,6 @@ public class GameController : MonoBehaviour
             }
             LightTrigger.transform.position = new Vector3(xPlayer * roomsize, 0f, yPlayer * roomsize);
         }
-=======
-            xPlayer = tempX;
-            yPlayer = tempY;
-            PlayerReveal(xPlayer, yPlayer);
-            PlayerEvents();
-        }
-        LightTrigger.transform.position = new Vector3(xPlayer * roomsize, 0f, yPlayer * roomsize);
->>>>>>> b51288c654010cd38746c4fc80b787219a127ef4:Assets/Scripts/GameSystem/GameController.cs
 
         if (Input.GetKeyDown(KeyCode.F10))
         {

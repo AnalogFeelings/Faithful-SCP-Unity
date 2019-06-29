@@ -38,11 +38,7 @@ public class Timers
 public class Player_Control : MonoBehaviour
 {
     float InputX, InputY, BlinkingTimer, BlinkMult = 1, RunMult = 1, CloseTimer, AsfixTimer, Health = 100, speed, headBob, amplitude, lastBob=0, RunningTimer, OpenTimer=1;
-<<<<<<< HEAD
     public GameObject CameraObj, InterHold, DeathCol, handPos, CameraContainer, CinemaEffect, SoundPrefab;
-=======
-    public GameObject CameraObj, InterHold, DeathCol, handPos, CameraContainer, CinemaEffect;
->>>>>>> b51288c654010cd38746c4fc80b787219a127ef4
     private GameObject hand, CinemaLoaded;
     private Transform _groundChecker;
     public Transform DefHead, CrouchHead;
@@ -306,7 +302,7 @@ public class Player_Control : MonoBehaviour
                         }
                 }
                 sfx.PlayOneShot(CurrentStep[Random.Range(0, CurrentStep.Length)]);
-<<<<<<< HEAD
+
                 GameObject soundSpawn = Instantiate(SoundPrefab, transform.position, Quaternion.identity);
                 int sound = 1;
                 if (Crouch)
@@ -317,9 +313,6 @@ public class Player_Control : MonoBehaviour
                 soundSpawn.GetComponent<WorldSound>().SoundLevel = sound;
 
 
-
-=======
->>>>>>> b51288c654010cd38746c4fc80b787219a127ef4
             }
         }
         lastBob = headBob;
@@ -746,13 +739,7 @@ public class Player_Control : MonoBehaviour
                         SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_equip_fem"], GlobalValues.itemStrings[item.itemName]));
                     else
                         SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_equip_male"], GlobalValues.itemStrings[item.itemName]));
-<<<<<<< HEAD
 
-
-=======
-
-
->>>>>>> b51288c654010cd38746c4fc80b787219a127ef4
                     ItemController.instance.equip[anyInv][anySlot] = false;
                     anySlot = ItemController.instance.currhover;
                     anyInv = ItemController.instance.currInv;
@@ -859,7 +846,14 @@ public class Player_Control : MonoBehaviour
         if (equipment[(int)where] is Equipable_Nav)
         {
             SCP_UI.instance.SNav.SetActive(false);
-<<<<<<< HEAD
+        }
+
+        if (where != bodyPart.Hand)
+        {
+            if (equipment[(int)where].isFem)
+                SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_equip_fem"], GlobalValues.itemStrings[equipment[(int)where].itemName]));
+            else
+                SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_equip_male"], GlobalValues.itemStrings[equipment[(int)where].itemName]));
         }
 
         if (where != bodyPart.Hand)
@@ -870,21 +864,6 @@ public class Player_Control : MonoBehaviour
                 SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_equip_male"], GlobalValues.itemStrings[equipment[(int)where].itemName]));
 
         }
-
-=======
-        }
-
-        if (where != bodyPart.Hand)
-        {
-            if (equipment[(int)where].isFem)
-                SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_equip_fem"], GlobalValues.itemStrings[equipment[(int)where].itemName]));
-            else
-                SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_equip_male"], GlobalValues.itemStrings[equipment[(int)where].itemName]));
-
-        }
-
->>>>>>> b51288c654010cd38746c4fc80b787219a127ef4
-
         switch (where)
         {
             case bodyPart.Head:
