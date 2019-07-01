@@ -37,7 +37,7 @@ public class Timers
 
 public class Player_Control : MonoBehaviour
 {
-    float InputX, InputY, BlinkingTimer, BlinkMult = 1, RunMult = 1, CloseTimer, AsfixTimer, Health = 100, speed, headBob, amplitude, lastBob=0, RunningTimer, OpenTimer=1;
+    float InputX, InputY, BlinkingTimer, BlinkMult = 1, RunMult = 1, CloseTimer, AsfixTimer, speed, headBob, amplitude, lastBob=0, RunningTimer, OpenTimer=1;
     public GameObject CameraObj, InterHold, DeathCol, handPos, CameraContainer, CinemaEffect, SoundPrefab;
     private GameObject hand, CinemaLoaded;
     private Transform _groundChecker;
@@ -47,7 +47,7 @@ public class Player_Control : MonoBehaviour
     Vector3 holdCam, fallSpeed, movement, HoldPos, OriPos, totalmove, headPos, forceLook;
     Quaternion toAngle;
     private CharacterController _controller;
-    public float GroundDistance = 0.2f, baseAmplitude, bobSpeed, Gravity = -9.81f, maxfallspeed, Basespeed = 3, crouchspeed = 2, runSpeed = 4, BlinkingTimerBase, ClosedEyes, AsfixiaTimer, RunningTimerBase, lookingForce = 3f, Camplitude, Cspeed, OpenMulti;
+    public float GroundDistance = 0.2f, baseAmplitude, bobSpeed, Gravity = -9.81f, maxfallspeed, Basespeed = 3, crouchspeed = 2, runSpeed = 4, BlinkingTimerBase, ClosedEyes, AsfixiaTimer, RunningTimerBase, lookingForce = 3f, Camplitude, Cspeed, OpenMulti, Health = 100;
     bool Grounded = true, isGameplay = true, isSmoke = false, Crouch = false, fakeBlink, isRunning, isTired = false, isLooking=false, cognitoEffect, onBlink;
     Camera PlayerCam;
     Image eyes, blinkbar, runbar, batbar, overlay, handEquip;
@@ -130,6 +130,7 @@ public class Player_Control : MonoBehaviour
 
     private void Start()
     {
+        CameraObj.transform.rotation = Quaternion.identity;
         if (GlobalValues.isNew == false)
         {
             CameraObj.GetComponent<Player_MouseLook>().rotation = new Vector3(0, SaveSystem.instance.playData.angle, 0);
@@ -169,25 +170,6 @@ public class Player_Control : MonoBehaviour
                 ACT_SimpleMove();
                 ACT_NoClipCamera();
                 transform.position += movement * Time.deltaTime;
-            }
-        }
-
-
-        if (Input.GetKeyDown(KeyCode.F3))
-        {
-            if (IsNoClip == false)
-            {
-                IsNoClip = true;
-                _controller.enabled = false;
-                SCP_UI.instance.canvas.SetActive(false);
-                CinemaLoaded = Instantiate(CinemaEffect);
-            }
-            else
-            {
-                IsNoClip = false;
-                _controller.enabled = true;
-                SCP_UI.instance.canvas.SetActive(true);
-                DestroyImmediate(CinemaLoaded);
             }
         }
 
@@ -305,12 +287,17 @@ public class Player_Control : MonoBehaviour
 
                 GameObject soundSpawn = Instantiate(SoundPrefab, transform.position, Quaternion.identity);
                 int sound = 1;
+                int dur = 2;
                 if (Crouch)
+                {
                     sound = 0;
+                    dur = 4;
+                }
                 if (isRunning)
                     sound = 2;
 
                 soundSpawn.GetComponent<WorldSound>().SoundLevel = sound;
+                soundSpawn.GetComponent<WorldSound>().Timer = dur;
 
 
             }
@@ -935,9 +922,30 @@ public class Player_Control : MonoBehaviour
     {
         _controller.enabled = false;
         transform.position = here;
-        CameraObj.GetComponent<Player_MouseLook>().rotation = new Vector3(0, CameraObj.transform.eulerAngles.y + rotation, 0);
+        Vector3 rota = CameraObj.GetComponent<Player_MouseLook>().rotation;
+        CameraObj.GetComponent<Player_MouseLook>().rotation = new Vector3(0, rota.y + rotation, 0);
         _controller.enabled = true;
     }
+
+
+    public void SwitchNoClip()
+    {
+        if (IsNoClip == false)
+        {
+            IsNoClip = true;
+            _controller.enabled = false;
+            SCP_UI.instance.HUD.enabled = false;
+            CinemaLoaded = Instantiate(CinemaEffect);
+        }
+        else
+        {
+            IsNoClip = false;
+            _controller.enabled = true;
+            SCP_UI.instance.HUD.enabled = true;
+            DestroyImmediate(CinemaLoaded);
+        }
+    }
+
 
 }
 

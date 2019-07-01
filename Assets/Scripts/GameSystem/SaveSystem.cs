@@ -41,6 +41,7 @@ public class SaveData
     public float angle;
     public MapSize savedSize;
     public float pX, pY, pZ;
+    public int mapX, mapY;
     public List<svItem[]> items;
     public ItemList[] worldItems;
     public SeriVector[] npcPos;

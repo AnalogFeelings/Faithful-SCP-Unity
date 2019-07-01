@@ -235,6 +235,15 @@ public class EV_Intro : MonoBehaviour
 
     }
 
+    public void End()
+    {
+        Guard2_con.StopLookAt();
+        Guard1_con.StopLookAt();
+        Guard1_con.StopRota();
+        Guard2_con.StopRota();
+
+    }
+
 
 
 

@@ -225,6 +225,7 @@ public class EV_Intro2 : MonoBehaviour
 
                         objPlayer.GetComponent<Player_Control>().FakeBlink(0.5f);
                         GameController.instance.SetMapPos(0, 10);
+                        GameController.instance.startEv.GetComponent<EV_Intro>().End();
                         GameController.instance.doGameplay = true;
                         break;
                     }

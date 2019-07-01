@@ -4,10 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public enum Menu { None, Pause, Inv , Death, Screen};
+public enum Menu { None, Pause, Inv , Death, Screen, Debug};
 
 public class SCP_UI : MonoBehaviour
 {
+
     public static SCP_UI instance = null;
     public Image eyes;
     public Canvas PauseM;
@@ -147,4 +148,24 @@ public class SCP_UI : MonoBehaviour
         }
     }
 
+    public bool ToggleConsole()
+    {
+        if (currMenu == Menu.Debug)
+        {
+            Time.timeScale = 1.0f;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            currMenu = Menu.None;
+            return(false);
+        }
+        if (currMenu == Menu.None)
+        {
+            Time.timeScale = 0f;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            currMenu = Menu.Debug;
+            return(true);
+        }
+        return (false);
+    }
 }

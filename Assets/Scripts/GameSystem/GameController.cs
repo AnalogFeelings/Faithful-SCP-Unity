@@ -71,7 +71,7 @@ public class GameController : MonoBehaviour
     int zoneMusic = -1, currentMusic = -1;
     bool CullerFlag, DebugFlag = false;
     bool CullerOn, playIntro = true;
-    float roomsize = 15.3f, ambiancetimer=0, GENambiancetimer = 0, Timer = 5, normalAmbiance, ambiancefreq=3;
+    float roomsize = 15.3f, ambiancetimer = 0, GENambiancetimer = 0, Timer = 5, normalAmbiance, ambiancefreq = 3;
     public float ambifreq, GENambiancefreq;
 
     MapSize mapSize;
@@ -86,7 +86,7 @@ public class GameController : MonoBehaviour
     public List<savedDoor> doorTable;
 
 
-    public bool doGameplay, spawnPlayer, spawnHere, spawn173, spawn106, StopTimer = false, isStart=false;
+    public bool doGameplay, spawnPlayer, spawnHere, spawn173, spawn106, StopTimer = false, isStart = false;
     public Transform place173, playerSpawn;
 
     public AudioSource Ambiance;
@@ -96,19 +96,19 @@ public class GameController : MonoBehaviour
 
 
     public AudioClip[] AmbianceLibrary;
-    public AudioClip [] PreBreach;
+    public AudioClip[] PreBreach;
     public AudioClip[] GenericAmbiance;
     public AudioClip[] Z1;
     public AudioClip[] Z2;
     public AudioClip[] Z3;
     public AudioClip[] RoomMusic;
-    public AudioClip Mus1,Mus2,Mus3, MusIntro;
+    public AudioClip Mus1, Mus2, Mus3, MusIntro;
 
     bool RoomMusicChange = false;
 
-    public CameraPool [] cameraPool;
+    public CameraPool[] cameraPool;
 
-    
+
 
 
 
@@ -178,7 +178,7 @@ public class GameController : MonoBehaviour
 
     void Awake()
     {
-        
+
         if (instance == null)
             instance = this;
         else if (instance != null)
@@ -277,106 +277,48 @@ public class GameController : MonoBehaviour
     }
 
 
-
     void NewGame()
     {
-        depth = HorrorVol.sharedProfile.GetSetting<DepthOfField>();
-        depth.focusDistance.Override(2f);
-
-        zoneAmbiance = -1;
-        zoneMusic = -1;
-
-        CullerFlag = false;
-        CullerOn = false;
-
-        if (CreateMap)
-        {
-            mapSize = mapCreate.mapSize;
-            roomsize = mapCreate.roomsize;
-            Zone3limit = mapCreate.zone3_limit;
-            Zone2limit = mapCreate.zone2_limit;
-
-            mapCreate.CreaMundo();
-            Binary_Map = mapCreate.MapaBinario();
-            roomLookup = mapCreate.roomTable;
-            if (ShowMap)
-            {
-                mapCreate.MostrarMundo();
-                SCP_Map = mapCreate.DameMundo();
-                rooms = mapCreate.mapobjects;
-                Debug.Log(doorParent.name);
-
-
-
-                culllookup = new int[mapSize.xSize, mapSize.ySize, 2];
-                int i, j;
-                for (i = 0; i < mapSize.xSize; i++)
-                {
-                    for (j = 0; j < mapSize.ySize; j++)
-                    {
-                        culllookup[i, j, 0] = 0;
-                        culllookup[i, j, 1] = 0;
-                    }
-                }
-                StartCoroutine(HidAfterProbeRendering());
-            }
-        }
-
-        itemData = new ItemList[100];
+        GL_PreStart();
+        GL_NewStart();
+        GL_PostStart();
     }
 
     void LoadGame()
     {
-        depth = HorrorVol.sharedProfile.GetSetting<DepthOfField>();
-        depth.focusDistance.Override(2f);
+        GL_PreStart();
+        GL_Loading();
+        GL_LoadStart();
+        GL_PostStart();
+    }
 
-        SaveSystem.instance.LoadState();
+    public void LoadQuickSave()
+    {
+        GlobalValues.isNew = false;
+        DestroyImmediate(itemParent);
+        DestroyImmediate(eventParent);
 
-        AmbianceLibrary = Z1;
-        CullerFlag = false;
-        CullerOn = false;
+        itemParent = new GameObject("itemParent");
+        eventParent = new GameObject("eventParent");
 
-        zoneAmbiance = 3;
-        zoneMusic = 3;
+        GL_Loading();
 
-        itemData = SaveSystem.instance.playData.worldItems;
-        doorTable = SaveSystem.instance.playData.doorState;
-        mapCreate.mapfil = SaveSystem.instance.playData.savedMap;
-        mapCreate.mapSize = SaveSystem.instance.playData.savedSize;
-        mapSize = SaveSystem.instance.playData.savedSize;
+        Camera.main.gameObject.transform.parent = null;
 
-        roomsize = mapCreate.roomsize;
-        Zone3limit = mapCreate.zone3_limit;
-        Zone2limit = mapCreate.zone2_limit;
-        ItemController.instance.LoadItems(SaveSystem.instance.playData.items);
+        doorParent.BroadcastMessage("resetState");
 
-        mapCreate.LoadingSave();
-        mapCreate.MostrarMundo();
+        DestroyImmediate(player);
+        DestroyImmediate(npcObjects[(int)npc.scp173]);
+        DestroyImmediate(npcObjects[(int)npc.scp106]);
 
-        SCP_Map = mapCreate.DameMundo();
-        Binary_Map = mapCreate.MapaBinario();
-        rooms = mapCreate.mapobjects;
-
-        Debug.Log(SaveSystem.instance.playData.savedSize);
-
-        LoadItems();
+        canSave = true;
+        doGameplay = true;
+        isAlive = true;
 
 
+        GL_Spawning();
 
-        SeriVector[] pos = SaveSystem.instance.playData.npcPos;
-        bool[] actives = SaveSystem.instance.playData.Activenpc;
-
-        culllookup = new int[mapSize.xSize, mapSize.ySize, 2];
-            int i, j;
-            for (i = 0; i < mapSize.xSize; i++)
-            {
-                for (j = 0; j < mapSize.ySize; j++)
-                {
-                    culllookup[i, j, 0] = 0;
-                    culllookup[i, j, 1] = 0;
-                }
-            }
-            StartCoroutine(HidAfterProbeRendering());
+        SCP_UI.instance.ToggleDeath();
     }
 
 
@@ -384,12 +326,6 @@ public class GameController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F11))
-        {
-            LoadQuickSave();
-        }
-
-
         if (isAlive)
         {
             if (Input.GetButtonDown("Pause"))
@@ -471,13 +407,13 @@ public class GameController : MonoBehaviour
         if (GENambiancetimer <= 0)
         {
             int i = Random.Range(0, GenericAmbiance.Length);
-            
+
             MixAmbiance.PlayOneShot(GenericAmbiance[i]);
             GENambiancetimer = GENambiancefreq * Random.Range(2, 5);
         }
     }
 
-    public void ChangeAmbiance(AudioClip [] NewAmbiance, float freq)
+    public void ChangeAmbiance(AudioClip[] NewAmbiance, float freq)
     {
         AmbianceLibrary = NewAmbiance;
         ambiancefreq = freq;
@@ -493,7 +429,7 @@ public class GameController : MonoBehaviour
 
     void AmbianceManager()
     {
-        if (zoneAmbiance!=-1)
+        if (zoneAmbiance != -1)
         {
             if (yPlayer < Zone3limit && zoneAmbiance != 2)
             {
@@ -501,7 +437,7 @@ public class GameController : MonoBehaviour
                 zoneAmbiance = 2;
                 ambiancefreq = ambifreq;
             }
-            if ((yPlayer > Zone3limit && yPlayer < Zone2limit)&& zoneAmbiance != 1)
+            if ((yPlayer > Zone3limit && yPlayer < Zone2limit) && zoneAmbiance != 1)
             {
                 AmbianceLibrary = Z2;
                 zoneAmbiance = 1;
@@ -615,11 +551,6 @@ public class GameController : MonoBehaviour
             LightTrigger.transform.position = new Vector3(xPlayer * roomsize, 0f, yPlayer * roomsize);
         }
 
-        if (Input.GetKeyDown(KeyCode.F10))
-        {
-            player.GetComponent<Player_Control>().Death(0);
-        }
-
         if (Input.GetKeyDown(KeyCode.F1))
         {
             if (npcPanel == false)
@@ -642,7 +573,7 @@ public class GameController : MonoBehaviour
         NPCManager();
 
         MapCamera.transform.position = new Vector3(xPlayer, yPlayer, MapCamera.transform.position.z);
-        MapTarget.transform.position = new Vector3(xPlayer+0.5f, yPlayer+0.5f, MapTarget.transform.position.z);
+        MapTarget.transform.position = new Vector3(xPlayer + 0.5f, yPlayer + 0.5f, MapTarget.transform.position.z);
         MapTarget.transform.rotation = Quaternion.Euler(0.0f, 0.0f, -player.transform.eulerAngles.y);
 
         AmbianceManager();
@@ -650,17 +581,12 @@ public class GameController : MonoBehaviour
 
         GenAmbiance();
 
-        
+
 
         if (CullerFlag == true && CullerOn == false)
         {
             StartCoroutine(RoomHiding());
         }
-
-        /*if (Input.GetKeyDown(KeyCode.F12))
-        {
-            CullerFlag = !CullerFlag;
-        }*/
     }
 
     public void SetMapPos(int x, int y)
@@ -677,8 +603,8 @@ public class GameController : MonoBehaviour
 
     public Vector3 GetPatrol(Vector3 MyPos, int Outer, int Inner)
     {
-        int xPos = (Mathf.Clamp((Mathf.RoundToInt((MyPos.x / roomsize))), 0, mapSize.xSize-1));
-        int yPos = (Mathf.Clamp((Mathf.RoundToInt((MyPos.z / roomsize))), 0, mapSize.ySize-1));
+        int xPos = (Mathf.Clamp((Mathf.RoundToInt((MyPos.x / roomsize))), 0, mapSize.xSize - 1));
+        int yPos = (Mathf.Clamp((Mathf.RoundToInt((MyPos.z / roomsize))), 0, mapSize.ySize - 1));
         Debug.Log("Recibi Posicion X= " + xPos + " Posicion Y= " + yPos);
         Debug.Log("Posicion X= " + xPlayer + " Posicion Y= " + yPlayer + " Hay cuarto? " + Binary_Map[xPlayer, yPlayer]);
 
@@ -686,8 +612,8 @@ public class GameController : MonoBehaviour
 
         do
         {
-            xPatrol = Random.Range(Mathf.Clamp(xPos - Outer, 0, mapSize.xSize-1), Mathf.Clamp(xPos + Outer, 0, mapSize.xSize-1));
-            yPatrol = Random.Range(Mathf.Clamp(yPos - Outer, 0, mapSize.ySize-1), Mathf.Clamp(yPos + Outer, 0, mapSize.ySize-1));
+            xPatrol = Random.Range(Mathf.Clamp(xPos - Outer, 0, mapSize.xSize - 1), Mathf.Clamp(xPos + Outer, 0, mapSize.xSize - 1));
+            yPatrol = Random.Range(Mathf.Clamp(yPos - Outer, 0, mapSize.ySize - 1), Mathf.Clamp(yPos + Outer, 0, mapSize.ySize - 1));
         }
         while (Binary_Map[xPatrol, yPatrol] == 0 && ((xPatrol < xPos + Inner) && (xPatrol > xPos - Inner) && (yPatrol < yPos + Inner) && (yPatrol > yPos - Inner)));
 
@@ -708,7 +634,7 @@ public class GameController : MonoBehaviour
 
     public int AddItem(Vector3 pos, Item item)
     {
-        for (int i=0; i < itemData.Length; i++)
+        for (int i = 0; i < itemData.Length; i++)
         {
             if (itemData[i] == null)
             {
@@ -770,7 +696,7 @@ public class GameController : MonoBehaviour
         SaveSystem.instance.playData.angle = Camera.main.gameObject.transform.eulerAngles.y;
 
         SeriVector[] pos = new SeriVector[npcObjects.Length];
-        bool [] active = new bool[npcObjects.Length];
+        bool[] active = new bool[npcObjects.Length];
 
         for (int i = 0; i < npcObjects.Length; i++)
         {
@@ -810,7 +736,7 @@ public class GameController : MonoBehaviour
 
     void PlayerEvents()
     {
-        if (Binary_Map[xPlayer, yPlayer]!= 0)
+        if (Binary_Map[xPlayer, yPlayer] != 0)
         {
             if (SCP_Map[xPlayer, yPlayer].Event != -1)
             {
@@ -839,97 +765,17 @@ public class GameController : MonoBehaviour
             }
 
         }
-       
-    }
-
-    public void LoadQuickSave()
-    {
-        GlobalValues.isNew = false;
-        Debug.Log("Cargando partida");
-
-        DestroyImmediate(itemParent);
-        itemParent = new GameObject("itemParent");
-
-        DestroyImmediate(eventParent);
-        eventParent = new GameObject("eventParent");
-        SaveSystem.instance.LoadState();
-
-        itemData = SaveSystem.instance.playData.worldItems;
-        Debug.Log("Cargando items, length = " + itemData.Length);
-        mapCreate.mapfil = SaveSystem.instance.playData.savedMap;
-        doorTable = SaveSystem.instance.playData.doorState;
-        Debug.Log("Cargando puertas, length = " + SaveSystem.instance.playData.doorState.Count);
-
-        SCP_Map = mapCreate.DameMundo();
-
-        ItemController.instance.EmptyItems();
-        
-        ItemController.instance.LoadItems(SaveSystem.instance.playData.items);
-
-        LoadItems();
-
-        Debug.Log("Listo para acomodar puertas");
-
-        Debug.Log(doorParent.name);
-
-        doorParent.BroadcastMessage("resetState");
-
-        Camera.main.gameObject.transform.parent = null;
-        
-
-        DestroyImmediate(player);
-        DestroyImmediate(npcObjects[(int)npc.scp173]);
-        DestroyImmediate(npcObjects[(int)npc.scp106]);
-
-
-        player = Instantiate(origplayer, new Vector3(SaveSystem.instance.playData.pX, SaveSystem.instance.playData.pY, SaveSystem.instance.playData.pZ), Quaternion.identity);
-        HorrorFov = Camera.main;
-        HorrorBlur = HorrorFov.gameObject.GetComponent<SmokeBlur>();
-        canSave = true;
-
-        isStart = true;
-        isAlive = true;
-        StopTimer = true;
-        spawnHere = false;
-        doGameplay = true;
-   
-
-
-
-        if (spawn173)
-        {
-            npcObjects[(int)npc.scp173] = Instantiate(orig173, place173.position, Quaternion.identity);
-            npcTable[(int)npc.scp173] = npcObjects[(int)npc.scp173].GetComponent<SCP_173>();
-        }
-
-        if (spawn106)
-        {
-            npcObjects[(int)npc.scp106] = Instantiate(orig106, new Vector3(0, 0, 0), Quaternion.identity);
-            npcTable[(int)npc.scp106] = npcObjects[(int)npc.scp106].GetComponent<SCP_106>();
-        }
-
-        SeriVector[] pos = SaveSystem.instance.playData.npcPos;
-        bool[] actives = SaveSystem.instance.playData.Activenpc;
-
-
-        for (int i = 0; i < npcObjects.Length; i++)
-        {
-            npcTable[i].Spawn(actives[i], new Vector3(pos[i].x, pos[i].y, pos[i].z));
-        }
-        RenderMap();
-        nav_Map = SaveSystem.instance.playData.navMap;
-        LoadMap();
-
-        SCP_UI.instance.ToggleDeath();
 
     }
+
+    
 
     /// <summary>
     /// SNavCode
     /// </summary>
     public void RenderMap()
     {
-        nav_Map = new int[mapSize.xSize,mapSize.ySize];
+        nav_Map = new int[mapSize.xSize, mapSize.ySize];
         //Clear the map (ensures we dont overlap)
         mapFull.ClearAllTiles();
         mapFill.ClearAllTiles();
@@ -943,7 +789,7 @@ public class GameController : MonoBehaviour
                 {
                     mapFull.SetTile(new Vector3Int(x, y, 0), tile);
                     mapFill.SetTile(new Vector3Int(x, y, 0), tile);
-                    
+
                 }
                 mapFill.SetTileFlags(new Vector3Int(x, y, 0), TileFlags.None);
                 mapFill.SetColor(new Vector3Int(x, y, 0), Color.clear);
@@ -956,7 +802,7 @@ public class GameController : MonoBehaviour
             //Loop through the height of the map
             for (int y = 0; y < mapSize.ySize; y++)
             {
-                nav_Map[x,y] = 0;
+                nav_Map[x, y] = 0;
                 mapFill.SetTileFlags(new Vector3Int(x, y, 0), TileFlags.None);
                 mapFill.SetColor(new Vector3Int(x, y, 0), Color.clear);
             }
@@ -1058,7 +904,7 @@ public class GameController : MonoBehaviour
         isAlive = false;
     }
 
-        IEnumerator HidAfterProbeRendering()
+    IEnumerator HidAfterProbeRendering()
     {
         yield return new WaitForSeconds(GlobalValues.renderTime);
         int i, j;
@@ -1073,94 +919,8 @@ public class GameController : MonoBehaviour
                 }
             }
         }
-
-        if (ShowMap)
-        {
-
-            if (GlobalValues.isNew == true)
-            {
-                if (spawnPlayer)
-                {
-                    if (!spawnHere)
-                    {
-                        player = Instantiate(origplayer, WorldAnchor.transform.position, Quaternion.identity);
-                        doGameplay = true;
-                        RenderSettings.fog = true;
-                        DefMusic();
-                        DefaultAmbiance();
-                    }
-                    else
-                    {
-                        player = Instantiate(origplayer, playerSpawn.position, Quaternion.identity);
-                        MusicPlayer.instance.StartMusic(MusIntro);
-                    }
-
-                    SetMapPos(0, 10);
-                    HorrorFov = Camera.main;
-                    HorrorBlur = HorrorFov.gameObject.GetComponent<SmokeBlur>();
-
-                    PlayHorror(Z1[0], player.transform, npc.none);
-
-                    isStart = true;
-                }
-            }
-            else
-            {
-                player = Instantiate(origplayer, new Vector3(SaveSystem.instance.playData.pX, SaveSystem.instance.playData.pY, SaveSystem.instance.playData.pZ), Quaternion.identity);
-
-                RenderSettings.fog = true;
-                HorrorFov = Camera.main;
-                HorrorBlur = HorrorFov.gameObject.GetComponent<SmokeBlur>();
-                canSave = true;
-                DefaultAmbiance();
-
-
-                isStart = true;
-                StopTimer = true;
-                spawnHere = false;
-                SetMapPos(Mathf.Clamp((Mathf.RoundToInt((player.transform.position.x / roomsize))), 0, mapSize.xSize - 1), (Mathf.Clamp((Mathf.RoundToInt((player.transform.position.z / roomsize))), 0, mapSize.ySize - 1)));
-                doGameplay = true;
-
-                RenderMap();
-                nav_Map = SaveSystem.instance.playData.navMap;
-                LoadMap();
-            }
-
-            if (spawn173)
-            {
-                npcObjects[(int)npc.scp173] = Instantiate(orig173, place173.position, Quaternion.identity);
-                npcTable[(int)npc.scp173] = npcObjects[(int)npc.scp173].GetComponent<SCP_173>();
-            }
-
-            if (spawn106)
-            {
-                npcObjects[(int)npc.scp106] = Instantiate(orig106, new Vector3(0, 0, 0), Quaternion.identity);
-                npcTable[(int)npc.scp106] = npcObjects[(int)npc.scp106].GetComponent<SCP_106>();
-            }
-
-            if (!GlobalValues.isNew)
-            {
-                SeriVector[] pos = SaveSystem.instance.playData.npcPos;
-                bool[] actives = SaveSystem.instance.playData.Activenpc;
-                for (int v = 0; v < npcObjects.Length; v++)
-                {
-                    npcTable[v].Spawn(actives[v], new Vector3(pos[v].x, pos[v].y, pos[v].z));
-                }
-            }
-
-
-
-            if (ShowMap)
-                isStart = true;
-
-            LightTrigger = Instantiate(LightTrigger);
-
-            RenderMap();
-
-
-
-            
-        }
+        GL_Spawning();
+        GL_AfterPost();
 
         CullerFlag = true;
     }
@@ -1232,5 +992,236 @@ public class GameController : MonoBehaviour
         yield return null;
         CullerOn = false;
     }
+
+    //////////////////////////////////GAME LOADING AND STARTUP///////////////////////////////////
+    /// <summary>
+    /// 
+    /// </summary>
+    /// 
+
+    void GL_PreStart()
+    {
+        depth = HorrorVol.sharedProfile.GetSetting<DepthOfField>();
+        depth.focusDistance.Override(2f);
+        CullerFlag = false;
+        CullerOn = false;
+
+        Zone3limit = mapCreate.zone3_limit;
+        Zone2limit = mapCreate.zone2_limit;
+    }
+
+
+    void GL_PostStart()
+    {
+        if (CreateMap)
+        {
+            if (ShowMap)
+            {
+                mapSize = mapCreate.mapSize;
+                roomsize = mapCreate.roomsize;
+                roomsize = mapCreate.roomsize;
+
+                roomLookup = mapCreate.roomTable;
+                rooms = mapCreate.mapobjects;
+
+                mapCreate.MostrarMundo();
+                SCP_Map = mapCreate.DameMundo();
+                Binary_Map = mapCreate.MapaBinario();
+
+                culllookup = new int[mapSize.xSize, mapSize.ySize, 2];
+                int i, j;
+                for (i = 0; i < mapSize.xSize; i++)
+                {
+                    for (j = 0; j < mapSize.ySize; j++)
+                    {
+                        culllookup[i, j, 0] = 0;
+                        culllookup[i, j, 1] = 0;
+                    }
+                }
+                StartCoroutine(HidAfterProbeRendering());
+            }
+        }
+
+        itemData = new ItemList[100];
+    }
+
+    void GL_NewStart()
+    {
+        zoneAmbiance = -1;
+        zoneMusic = -1;
+
+        if (CreateMap)
+        {
+            mapCreate.CreaMundo();
+        }
+    }
+
+    void GL_LoadStart()
+    {
+        AmbianceLibrary = Z1;
+        GL_Loading();
+
+        zoneAmbiance = 3;
+        zoneMusic = 3;
+
+        mapCreate.mapfil = SaveSystem.instance.playData.savedMap;
+        mapCreate.mapSize = SaveSystem.instance.playData.savedSize;
+
+        mapCreate.LoadingSave();
+
+    }
+
+
+
+
+    void GL_Loading()
+    {
+        SaveSystem.instance.LoadState();
+
+        itemData = SaveSystem.instance.playData.worldItems;
+        mapCreate.mapfil = SaveSystem.instance.playData.savedMap;
+        doorTable = SaveSystem.instance.playData.doorState;
+        SCP_Map = mapCreate.DameMundo();
+        ItemController.instance.EmptyItems();
+        ItemController.instance.LoadItems(SaveSystem.instance.playData.items);
+
+        LoadItems();
+    }
+
+
+    void GL_AfterPost()
+    {
+        if (ShowMap)
+        {
+            if (GlobalValues.isNew == true && spawnHere)
+            {
+                MusicPlayer.instance.StartMusic(MusIntro);
+                StopTimer = false;
+                doGameplay = false;
+            }
+            else
+            {
+                if (GlobalValues.isNew)
+                    SetMapPos(0, 10);
+                else
+                    SetMapPos(SaveSystem.instance.playData.mapX, SaveSystem.instance.playData.mapY);
+
+                canSave = true;
+                RenderSettings.fog = true;
+                DefMusic();
+                DefaultAmbiance();
+                doGameplay = true;
+                StopTimer = true;
+            }
+
+            isStart = true;
+            HorrorFov = Camera.main;
+            HorrorBlur = HorrorFov.gameObject.GetComponent<SmokeBlur>();
+            PlayHorror(Z1[0], player.transform, npc.none);
+
+            LightTrigger = Instantiate(LightTrigger);
+        }
+    }
+
+    void GL_Spawning()
+    {
+        Vector3 here = playerSpawn.position;
+        bool origSpawn = spawnHere; 
+        if (!GlobalValues.isNew)
+        {
+            spawnHere = true;
+            here = new Vector3(SaveSystem.instance.playData.pX, SaveSystem.instance.playData.pY, SaveSystem.instance.playData.pZ);
+        }
+
+
+        if (spawnPlayer)
+        {
+            if (!spawnHere)
+            {
+                player = Instantiate(origplayer, WorldAnchor.transform.position, Quaternion.identity);
+            }
+            else
+            {
+                player = Instantiate(origplayer, here, Quaternion.identity);
+            }
+        }
+
+
+        if (spawn173)
+        {
+            npcObjects[(int)npc.scp173] = Instantiate(orig173, place173.position, Quaternion.identity);
+            npcTable[(int)npc.scp173] = npcObjects[(int)npc.scp173].GetComponent<SCP_173>();
+        }
+
+        if (spawn106)
+        {
+            npcObjects[(int)npc.scp106] = Instantiate(orig106, new Vector3(0, 0, 0), Quaternion.identity);
+            npcTable[(int)npc.scp106] = npcObjects[(int)npc.scp106].GetComponent<SCP_106>();
+        }
+
+        if (!GlobalValues.isNew)
+        {
+            SeriVector[] pos = SaveSystem.instance.playData.npcPos;
+            bool[] actives = SaveSystem.instance.playData.Activenpc;
+            for (int v = 0; v < npcObjects.Length; v++)
+            {
+                npcTable[v].Spawn(actives[v], new Vector3(pos[v].x, pos[v].y, pos[v].z));
+            }
+        }
+
+        spawnHere = origSpawn;
+
+        RenderMap();
+
+        if (!GlobalValues.isNew)
+        {
+            nav_Map = SaveSystem.instance.playData.navMap;
+            LoadMap();
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ////////////////////////////CONSOLE COMMANDS/////////////////////////////////////
+    ///
+    public void TeleportCoord(int x, int y)
+    {
+        SetMapPos(x, y);
+        player.GetComponent<Player_Control>().playerWarp(new Vector3(roomsize * x, 1, roomsize * y), 0);
+    }
+
+    public bool TeleportRoom(string room)
+    {
+        for (int x = 0; x < mapSize.xSize; x++)
+        {
+            for (int y = 0; y < mapSize.ySize; y++)
+            {
+                if (Binary_Map[x, y] != 0)
+                {
+                    if (SCP_Map[x, y].roomName.Equals(room))
+                    {
+                        TeleportCoord(x, y);
+                        return(true);
+                    }
+                }
+            }
+        }
+        return (false);
+    }
+
+
 
 }

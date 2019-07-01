@@ -37,5 +37,7 @@ public class Object_Elevator : MonoBehaviour
     {
         GameObject objPlayer = GameController.instance.player;
         objPlayer.GetComponent<Player_Control>().playerWarp((end.transform.position + ((end.transform.rotation) * (objPlayer.transform.position - start.position))), end.transform.eulerAngles.y - start.transform.eulerAngles.y);
+        Debug.Log("Diferencia de Rotacion: " + (end.transform.eulerAngles.y - start.transform.eulerAngles.y));
+
     }
 }

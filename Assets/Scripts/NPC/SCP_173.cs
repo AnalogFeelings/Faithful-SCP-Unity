@@ -359,7 +359,6 @@ public class SCP_173 : Roam_NPC
             other.gameObject.GetComponent<Player_Control>().Death(1);
             isActive = false;
         }
-
     }
 
 
