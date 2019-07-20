@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class SCP_StartMenu : MonoBehaviour
 {
-    public Canvas mainMenu, playMenu, newMenu, currMenu, loadMenu;
+    public Canvas mainMenu, playMenu, newMenu, currMenu, loadMenu, optionMenu;
     public GameObject saveList;
     public GameObject saveSlot;
     public AudioSource player;
@@ -15,7 +15,7 @@ public class SCP_StartMenu : MonoBehaviour
     public AudioClip Menu;
 
     public static SCP_StartMenu instance = null;
-    public bool forceEnglish;
+    //public bool forceEnglish;
     // Start is called before the first frame update
     void Awake()
     {
@@ -27,11 +27,29 @@ public class SCP_StartMenu : MonoBehaviour
 
         GlobalValues.uiStrings = GlobalValues.uiStrings_EN;
 
-        if (Application.systemLanguage == SystemLanguage.Spanish && !forceEnglish)
-            GlobalValues.uiStrings = GlobalValues.uiStrings_ES;
+        switch(PlayerPrefs.GetInt("Lang", 0))
+        {
+            default:
+                {
+                    GlobalValues.SetLanguage(Application.systemLanguage);
+                    break;
+                }
+            case 1:
+                {
+                    GlobalValues.SetLanguage(SystemLanguage.English);
+                    break;
+                }
+            case 2:
+                {
+                    GlobalValues.SetLanguage(SystemLanguage.Spanish);
+                    break;
+                }
+        }
 
         currMenu = mainMenu;
     }
+
+
 
     private void Start()
     {
@@ -93,10 +111,19 @@ public class SCP_StartMenu : MonoBehaviour
         player.PlayOneShot(click);
     }
 
+    public void OpenOption()
+    {
+        currMenu.enabled = false;
+        optionMenu.enabled = true;
+        currMenu = optionMenu;
+        player.PlayOneShot(click);
+    }
+
     public void StartGame()
     {
         player.PlayOneShot(click);
         GlobalValues.isNew = true;
+        GlobalValues.LoadType = LoadType.newgame;
         Load_CB();
     }
 
@@ -123,7 +150,16 @@ public class SCP_StartMenu : MonoBehaviour
     public void Load_CB()
     {
         GlobalValues.debug = false;
-        SceneManager.LoadScene("SampleScene");
+        if (GlobalValues.playIntro)
+            LoadingSystem.instance.LoadLevelHalf(1, true, 1, 255, 255, 255);
+        else
+            LoadingSystem.instance.LoadLevelHalf(1, true, 1, 0, 0, 0);
+    }
+
+    public void PlayIntro(bool value)
+    {
+        GlobalValues.playIntro = value;
+
     }
 
 

@@ -61,8 +61,12 @@ public class ConsoleController
         registerCommand("help", help, "Print this help.");
         registerCommand("hide", hide, "Hide the console.");
         registerCommand("noclip", noclip, "Toggles No Clip");
-        registerCommand("teleportcoord", teleportCoord, "Teleports to the x and y coordinate");
-        registerCommand("teleportroom", teleportRoom, "Teleports to room with this name");
+        registerCommand("safeplace", safeplace, "Tests the world change function");
+        registerCommand("safereturn", safereturn, "Tests the world return function");
+        registerCommand("goto", teleportCoord, "Teleports to the x and y coordinate");
+        registerCommand("teleport", teleportRoom, "Teleports to room with this name");
+        registerCommand("spawn106", spawn106, "Spawns SCP-106 at the center of the current room");
+        registerCommand("health", sethealth, "Sets the player current health [0 - 100]");
         registerCommand(repeatCmdName, repeatCommand, "Repeat last command.");
     }
 
@@ -190,6 +194,27 @@ public class ConsoleController
         }
     }
 
+    void sethealth(string[] args)
+    {
+        if (args.Length < 1)
+        {
+            appendLogLine("Expected 1 argument.");
+            return;
+        }
+        else
+        {
+            float value = 0;
+            if (!float.TryParse(args[0], out value))
+            {
+                appendLogLine("Expected an integer for arg2.");
+            }
+            else
+            {
+                GameController.instance.player.GetComponent<Player_Control>().Health = value;
+            }
+        }
+    }
+
     void teleportRoom(string[] args)
     {
         if (args.Length < 1)
@@ -254,7 +279,13 @@ public class ConsoleController
         GameController.instance.player.GetComponent<Player_Control>().SwitchNoClip();
     }
 
-    void help(string[] args)
+    void spawn106(string[] args)
+    {
+        GameController.instance.CL_spawn106();
+    }
+
+
+        void help(string[] args)
     {
         if (args.Length == 1)
         {
@@ -292,6 +323,15 @@ public class ConsoleController
         }
     }
 
+    void safeplace(string[] args)
+    {
+        GameController.instance.GoSafePlace();
+    }
+    void safereturn(string[] args)
+    {
+        GameController.instance.WorldReturn();
+    }
+
     void repeatCommand(string[] args)
     {
         for (int cmdIdx = commandHistory.Count - 1; cmdIdx >= 0; --cmdIdx)
@@ -306,10 +346,6 @@ public class ConsoleController
         }
     }
 
-    void reload(string[] args)
-    {
-        Application.LoadLevel(Application.loadedLevel);
-    }
 
     void resetPrefs(string[] args)
     {

@@ -10,11 +10,12 @@ public class EV_Puppet_Controller : MonoBehaviour
     Vector3 movement;
     Quaternion toAngle;
     float fallSpeed;
-    int currentNode=0, currSeq=0;
-    bool isPath, isRotate, isLook, isSequence=false, isPursuit=false, hasDoor=false;
+    int currentNode = 0, currSeq = 0;
+    bool isPath, isRotate, isLook, isSequence = false, isPursuit = false, hasDoor = false;
     Transform[] ActualPath;
     Transform rotaAt, lookAt, Location;
     int pathNodes, audSeq;
+    public CharacterController _controller;
     public GameObject Puppet_Mesh, Def_LookAt;
     Animator Puppet_Anim;
     HeadLookController Head;
@@ -30,8 +31,9 @@ public class EV_Puppet_Controller : MonoBehaviour
     AudioSource Audio;
 
     // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
+        _controller = GetComponent<CharacterController>();
         Audio = GetComponent<AudioSource>();
         _navMeshagent = this.GetComponent<NavMeshAgent>();
 
@@ -39,6 +41,12 @@ public class EV_Puppet_Controller : MonoBehaviour
         Puppet_Anim.SetFloat("AnimOffset", animOffset);
         Head = Puppet_Mesh.GetComponent<HeadLookController>();
 
+
+    }
+
+    void Start()
+    {
+        
     }
 
     // Update is called once per frame
@@ -69,24 +77,15 @@ public class EV_Puppet_Controller : MonoBehaviour
             Head.target = Def_LookAt.transform.position;
         }
 
+        
         if (!isPursuit)
         {
-            _navMeshagent.autoTraverseOffMeshLink = false;
-            if (_navMeshagent.isOnOffMeshLink)
-            {
-                transform.position += movement;
-                Debug.Log("HELP");
-            }
-            else
-                _navMeshagent.Move(movement);
+            if (!_controller.isGrounded)
+                ACT_Gravity();
+            _controller.Move(movement);
             movement = Vector3.Lerp(movement, Vector3.zero, 4f * Time.deltaTime);
-            transform.rotation = Quaternion.Lerp(transform.rotation, toAngle, 4f*Time.deltaTime);
+            transform.rotation = Quaternion.Lerp(transform.rotation, toAngle, 4f * Time.deltaTime);
         }
-
-
-
-
-
     }
 
     void LateUpdate()
@@ -127,14 +126,16 @@ public class EV_Puppet_Controller : MonoBehaviour
     }
 
 
-        void ACT_Gravity()
-            {
-                fallSpeed -= Gravity * Time.deltaTime;
-                if (fallSpeed < maxfallspeed)
-                    fallSpeed = maxfallspeed;
+    void ACT_Gravity()
+    {
+        if (_controller.isGrounded)
+            fallSpeed = 0;
+        fallSpeed -= Gravity * Time.deltaTime;
+        if (fallSpeed < maxfallspeed)
+            fallSpeed = maxfallspeed;
 
-                movement.y = fallSpeed;
-            }
+        movement.y = fallSpeed;
+    }
 
 
     public void SetPath(Transform[] NewPath)
@@ -195,7 +196,6 @@ public class EV_Puppet_Controller : MonoBehaviour
 
     void FindPath()
     {
-        _navMeshagent.autoTraverseOffMeshLink = true;
         Vector3 targetVector = Location.transform.position;
         _navMeshagent.SetDestination(targetVector);
     }
@@ -207,6 +207,10 @@ public class EV_Puppet_Controller : MonoBehaviour
         currAudio = toPlay;
         Audio.clip = currAudio;
         Audio.Play();
+    }
+    public void StopSound()
+    {
+        Audio.Stop();
     }
 
     public void PlaySFX(AudioClip toPlay)
@@ -227,6 +231,11 @@ public class EV_Puppet_Controller : MonoBehaviour
     {
         switch(Number)
         {
+            case 2:
+                {
+                    Puppet_Anim.SetBool("param2", value);
+                    break;
+                }
             case 1:
                 {
                     Puppet_Anim.SetBool("param1", value);

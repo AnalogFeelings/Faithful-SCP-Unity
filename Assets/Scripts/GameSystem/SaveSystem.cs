@@ -39,6 +39,7 @@ public class SaveData
     public room[,] savedMap;
     public int[,] navMap;
     public float angle;
+    public float Health;
     public MapSize savedSize;
     public float pX, pY, pZ;
     public int mapX, mapY;
@@ -46,6 +47,11 @@ public class SaveData
     public ItemList[] worldItems;
     public SeriVector[] npcPos;
     public bool[] Activenpc;
+    public bool holdRoom;
+
+    public List<int> globalInts;
+    public List<bool> globalBools;
+    public List<float> globalFloats;
 }
 
 

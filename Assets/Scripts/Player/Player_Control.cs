@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.Rendering.PostProcessing;
 
 public enum bodyPart { Head, Body, Hand, Any };
-public enum Ailment { Eyes, Sprint};
+public enum Ailment { Eyes, Sprint, Health};
 
 [System.Serializable]
 public class effects
@@ -14,6 +14,7 @@ public class effects
     public float time;
     public float max;
     public float min;
+    public float value;
     public float multiplier;
 }
 
@@ -47,12 +48,12 @@ public class Player_Control : MonoBehaviour
     Vector3 holdCam, fallSpeed, movement, HoldPos, OriPos, totalmove, headPos, forceLook;
     Quaternion toAngle;
     private CharacterController _controller;
-    public float GroundDistance = 0.2f, baseAmplitude, bobSpeed, Gravity = -9.81f, maxfallspeed, Basespeed = 3, crouchspeed = 2, runSpeed = 4, BlinkingTimerBase, ClosedEyes, AsfixiaTimer, RunningTimerBase, lookingForce = 3f, Camplitude, Cspeed, OpenMulti, Health = 100;
-    bool Grounded = true, isGameplay = true, isSmoke = false, Crouch = false, fakeBlink, isRunning, isTired = false, isLooking=false, cognitoEffect, onBlink;
+    public float HurtDivisor = 3, GroundDistance = 0.2f, baseAmplitude, bobSpeed, headBobmult = 20, Gravity = -9.81f, maxfallspeed, Basespeed = 3, crouchspeed = 2, runSpeed = 4, BlinkingTimerBase, ClosedEyes, AsfixiaTimer, RunningTimerBase, lookingForce = 3f, Camplitude, Cspeed, hamplitude, OpenMulti, Health = 100, CollisionSphere;
+    bool Grounded = true, isSmoke = false, fakeBlink, isRunning, isTired = false, isLooking=false, cognitoEffect, onBlink;
     Camera PlayerCam;
     Image eyes, blinkbar, runbar, batbar, overlay, handEquip;
     RectTransform hand_rect, hud_rect;
-    public bool Freeze = false;
+    public bool Freeze = false, isGameplay = false, Crouch = false;
 
 
 
@@ -153,14 +154,14 @@ public class Player_Control : MonoBehaviour
                     ACT_Move();
                     ACT_Gravity();
                     ACT_Running();
+                    ACT_Walk();
+
+                    CollisionDetection();
                     if (isPath)
                         ACT_ForceWalk();
                     _controller.Move(movement * Time.deltaTime);
                 }
-
-
-
-                
+                ACT_Camera();
 
                 if (Health <= 0)
                     Death(0);
@@ -170,12 +171,10 @@ public class Player_Control : MonoBehaviour
                 ACT_SimpleMove();
                 ACT_NoClipCamera();
                 transform.position += movement * Time.deltaTime;
+                if (Input.GetKeyDown(KeyCode.Space))
+                    movementMode = !movementMode;
             }
         }
-
-        if (Input.GetKeyDown(KeyCode.Space))
-            movementMode = !movementMode;
-
     }
 
     private void LateUpdate()
@@ -185,8 +184,6 @@ public class Player_Control : MonoBehaviour
             if (!IsNoClip)
             {
                 ACT_HUD();
-                ACT_Camera();
-                ACT_Walk();
                 if (isLooking)
                     ACT_ForceLook();
 
@@ -226,6 +223,11 @@ public class Player_Control : MonoBehaviour
         if (isRunning)
             speed = runSpeed;
 
+        if (GameController.instance.isPocket)
+        {
+            speed = crouchspeed+0.5f;
+        }
+
         movement *= speed;
     }
 
@@ -247,7 +249,7 @@ public class Player_Control : MonoBehaviour
             speed = crouchspeed;
 
         if (isRunning)
-            speed = runSpeed;
+            speed = runSpeed+2;
 
         movement *= speed;
 
@@ -341,8 +343,21 @@ public class Player_Control : MonoBehaviour
 
         hand_rect.localPosition = pos;
 
-        if (Input.GetButtonDown("Unequip") && equipment[(int)bodyPart.Hand] != null)
-            ACT_UnEquip(bodyPart.Hand);
+        if (Input.GetButtonDown("Unequip"))
+        {
+            if (equipment[(int)bodyPart.Hand] != null)
+            {
+                ACT_UnEquip(bodyPart.Hand);
+                return;
+            }
+            if(equipment[(int)bodyPart.Head] != null)
+            {
+                ACT_UnEquip(bodyPart.Head);
+                return;
+            }
+
+        }
+            
 
 
     }
@@ -368,7 +383,7 @@ public class Player_Control : MonoBehaviour
 
             if (Vector3.Distance(headPos, CrouchHead.transform.position) > 0.005f)
                 headPos.y = Mathf.Lerp(headPos.y, CrouchHead.transform.position.y, 15.0f * Time.deltaTime);
-            else
+            if (Vector3.Distance(headPos, CrouchHead.transform.position) > 2)
                 headPos.y = CrouchHead.transform.position.y;
         }
         else
@@ -380,6 +395,9 @@ public class Player_Control : MonoBehaviour
                 headPos.y = Mathf.Lerp(headPos.y, DefHead.transform.position.y, 15.0f * Time.deltaTime);
             else
                 headPos.y = DefHead.transform.position.y;
+
+            if (Vector3.Distance(headPos, DefHead.transform.position) > 2)
+                headPos.y = DefHead.transform.position.y;
         }
 
         if (cognitoEffect)
@@ -387,22 +405,32 @@ public class Player_Control : MonoBehaviour
             PlayerCam.fieldOfView =  60 + (Camplitude * Mathf.Sin(Cspeed * Time.time));
         }
 
+        if ((((InputX != 0 || InputY != 0))|| walkAnim) && !Freeze )
+        {
 
-        if (((InputX != 0 || InputY != 0)&& RunningTimer > 0.3f)|| walkAnim)
-        {
-            amplitude = baseAmplitude;
+            headBob = baseAmplitude * Mathf.Sin((speed * bobSpeed) * Time.time);
             HoldPos = headPos;
-            headBob = (amplitude * Mathf.Sin((bobSpeed * (speed) / 3) * Time.time));
-            HoldPos.y += headBob * Time.deltaTime;
+            HoldPos.y = Mathf.Lerp(HoldPos.y, HoldPos.y+  headBob, headBobmult);
             CameraObj.transform.position = HoldPos;
+            float z = CameraObj.transform.eulerAngles.z;
+            z = (z > 180) ? z - 360 : z;
+
+            if (Health < 80 && !GameController.instance.isPocket)
+                CameraObj.transform.rotation = Quaternion.Euler(CameraObj.transform.eulerAngles.x, CameraObj.transform.eulerAngles.y, Mathf.Lerp(z, 0 + (hamplitude * Mathf.Sin( (((101 - Health) / HurtDivisor) * (speed/2)) * Time.time)), 10 * Time.deltaTime));
+            if(GameController.instance.isPocket)
+                CameraObj.transform.rotation = Quaternion.Euler(CameraObj.transform.eulerAngles.x, CameraObj.transform.eulerAngles.y, Mathf.Lerp(z, 0 + (hamplitude * Mathf.Sin((((101 - 50) / HurtDivisor) * 0.5f) * Time.time)), 10 * Time.deltaTime));
         }
-        else
+        else 
         {
-            amplitude = 0;
-            if (Vector3.Distance(CameraObj.transform.position, headPos) > 0.005f)
-                CameraObj.transform.position = new Vector3(headPos.x, Mathf.Lerp(CameraObj.transform.position.y, headPos.y, 15.0f * Time.deltaTime), headPos.z);//headPos;
-            else
-                CameraObj.transform.position = headPos;
+            {
+                if (Vector3.Distance(CameraObj.transform.position, headPos) > 0.005f)
+                    CameraObj.transform.position = new Vector3(headPos.x, Mathf.Lerp(CameraObj.transform.position.y, headPos.y, 15.0f * Time.deltaTime), headPos.z);
+                else
+                    CameraObj.transform.position = headPos;
+
+                if (Vector3.Distance(CameraObj.transform.position, headPos) > 2)
+                    CameraObj.transform.position = headPos;
+            }
         }
 
     }
@@ -424,9 +452,9 @@ public class Player_Control : MonoBehaviour
         if (fallSpeed.y < maxfallspeed)
             fallSpeed.y = maxfallspeed;
 
-        if (Grounded && fallSpeed.y < 0)
+        if (Grounded)
         {
-            fallSpeed.y = 0f;
+            fallSpeed.y = -_controller.stepOffset / Time.deltaTime;
         }
 
         movement.y = fallSpeed.y;
@@ -624,6 +652,35 @@ public class Player_Control : MonoBehaviour
 
             switch (cause)
             {
+                case 1:
+                    {
+                        sfx.PlayOneShot(Conch[Random.Range(0, Conch.Length)]);
+                        break;
+                    }
+                default:
+                    {
+                        sfx.PlayOneShot(Deaths[cause]);
+                        break;
+                    }
+            }
+        }
+    }
+
+    public void FakeDeath(int cause)
+    {
+        if (isGameplay)
+        {
+            GameController.instance.FakeDeath();
+            _controller.enabled = false;
+            DeathCol.SetActive(true);
+            CameraObj.transform.parent = DeathCol.transform;
+            CameraObj.GetComponent<Player_MouseLook>().enabled = false;
+            isGameplay = false;
+            eyes.color = Color.clear;
+            Destroy(handPos);
+
+            switch (cause)
+            {
                 case 0:
                     {
                         sfx.PlayOneShot(Deaths[0]);
@@ -662,16 +719,42 @@ public class Player_Control : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.CompareTag("Smoke"))
-            isSmoke = true;
-        else
+            isSmoke = true;    
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Smoke"))
             isSmoke = false;
     }
 
     void OnControllerColliderHit(ControllerColliderHit hit)
     {
+        if (hit.gameObject.CompareTag("Death"))
+            Death(0);
+        if (hit.gameObject.CompareTag("DeathFall"))
+            Death(3);
+
         Rigidbody body = hit.collider.attachedRigidbody;
         if (body != null && !body.isKinematic)
             body.velocity += hit.controller.velocity;
+    }
+
+    void CollisionDetection()
+    {
+        Collider[] collisions = Physics.OverlapSphere(transform.position, CollisionSphere, Ground, QueryTriggerInteraction.Ignore);
+
+        if (collisions.Length != 0)
+        {
+            for (int i = 0; i < collisions.Length; i++)
+            {
+                if (collisions[i].gameObject.CompareTag("Death"))
+                    Death(0);
+                if (collisions[i].gameObject.CompareTag("DeathFall"))
+                    Death(3);
+
+
+            }
+        }
     }
 
 
@@ -769,11 +852,18 @@ public class Player_Control : MonoBehaviour
                         case Ailment.Eyes:
                             {
                                 BlinkMult = playerEffects[i].multiplier;
+                                if (playerEffects[i].value != -1)
+                                    BlinkingTimer = playerEffects[i].value;
                                 break;
                             }
                         case Ailment.Sprint:
                             {
                                 sprintMin = playerEffects[i].min;
+                                break;
+                            }
+                        case Ailment.Health:
+                            {
+                                Health += playerEffects[i].value;
                                 break;
                             }
                     }
@@ -923,7 +1013,8 @@ public class Player_Control : MonoBehaviour
         _controller.enabled = false;
         transform.position = here;
         Vector3 rota = CameraObj.GetComponent<Player_MouseLook>().rotation;
-        CameraObj.GetComponent<Player_MouseLook>().rotation = new Vector3(0, rota.y + rotation, 0);
+        CameraObj.GetComponent<Player_MouseLook>().rotation = new Vector3(rota.x, rota.y + rotation, 0);
+        CameraObj.transform.position = here;
         _controller.enabled = true;
     }
 

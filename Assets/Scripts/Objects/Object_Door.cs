@@ -82,6 +82,8 @@ public class Object_Door : MonoBehaviour
             Door01.transform.position += Door01.transform.right * OpenSpeed * Time.deltaTime;
             if (tempdis > LastPos1)
             {
+                Door01.transform.position = Pos1 + (Door01.transform.right * DoorEndPos);
+                Door02.transform.position = Pos2 + (Door02.transform.right * DoorEndPos);
                 IsOpen = true;
                 if (!ignoreSave)
                     GameController.instance.SetDoorState(true, id);
@@ -116,6 +118,9 @@ public class Object_Door : MonoBehaviour
             Door01.transform.position += Door01.transform.right * -OpenSpeed * Time.deltaTime;
             if (tempdis > LastPos1)
             {
+                Door01.transform.position = Pos1;
+                Door02.transform.position = Pos2;
+
                 IsOpen = false;
                 if (!ignoreSave)
                     GameController.instance.SetDoorState(false, id);

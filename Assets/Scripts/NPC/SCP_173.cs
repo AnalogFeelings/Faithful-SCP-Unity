@@ -20,7 +20,7 @@ public class SCP_173 : Roam_NPC
     AudioSource sfx;
     public Transform DoorSpot;
     Vector3 Destination;
-    int MoveAttempts, TeleAttempts, frameInterval=15;
+    int MoveAttempts, TeleAttempts, frameInterval=10;
     public AudioClip[] farHorror, closeHorror;
     public AudioClip teleport;
 
@@ -325,9 +325,7 @@ public class SCP_173 : Roam_NPC
 
     public override void Spawn(bool beActive, Vector3 warppoint)
     {
-        NavMeshHit here;
-
-        if (NavMesh.SamplePosition(warppoint, out here, 0.2f, NavMesh.AllAreas))
+        if (!beActive)
         {
             _navMeshagent.Warp(warppoint);
             isActive = beActive;
@@ -336,21 +334,47 @@ public class SCP_173 : Roam_NPC
             hasDoor = false;
             hasPatrol = false;
         }
-        else if (NavMesh.SamplePosition(warppoint, out here, 10f, NavMesh.AllAreas))
+        else 
+        if (PlayerDistance > 20)
         {
-            _navMeshagent.Warp(here.position);
-            isActive = beActive;
-            playedNear = false;
-            playedHorror = false;
-            hasDoor = false;
-            hasPatrol = false;
-        }
+            NavMeshHit here;
 
-        if (isActive)
-        {
-            GameController.instance.GlobalSFX.PlayOneShot(teleport);
+            if (NavMesh.SamplePosition(warppoint, out here, 0.2f, NavMesh.AllAreas))
+            {
+                _navMeshagent.Warp(warppoint);
+                isActive = beActive;
+                playedNear = false;
+                playedHorror = false;
+                hasDoor = false;
+                hasPatrol = false;
+            }
+            else if (NavMesh.SamplePosition(warppoint, out here, 10f, NavMesh.AllAreas))
+            {
+                _navMeshagent.Warp(here.position);
+                isActive = beActive;
+                playedNear = false;
+                playedHorror = false;
+                hasDoor = false;
+                hasPatrol = false;
+            }
+
+            if (isActive)
+            {
+                GameController.instance.GlobalSFX.PlayOneShot(teleport);
+            }
         }
     }
+    public override void Event_Spawn(bool instant, Vector3 here)
+    {
+        _navMeshagent.Warp(here);
+        isActive = true;
+        playedNear = false;
+        playedHorror = false;
+        hasDoor = false;
+        hasPatrol = false;
+    }
+
+
 
     private void OnTriggerStay(Collider other)
     {

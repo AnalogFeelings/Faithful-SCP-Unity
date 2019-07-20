@@ -15,9 +15,10 @@ public class EV_Intro : MonoBehaviour
 
     int EventState = 0;
     int EventState2 = 0;
+    int LastState = -1;
 
-    public float Timer1, Timer1_5, Timer2, Timer3, Timer, TimerSecondary, LastTimer,Refuse1,Refuse2,Refuse3;
-    bool StopTimer = false, StopTimer2 = false, ActiveTimer = true, ActiveTimer2 = true, Check1 = false, Check2 = false, Check3 = false, Check4 = false;
+    public float Timer1, Timer1_5, Timer2, Timer3, Timer, TimerSecondary, LastTimer,Refuse1,Refuse2,Refuse3, RunawayTimer;
+    bool StopTimer = false, StopTimer2 = false, ActiveTimer = true, ActiveTimer2 = true, Check1 = false, Check2 = false, Check3 = false, Check4 = false, runningAway, back1 = false;
 
 
 
@@ -33,10 +34,36 @@ public class EV_Intro : MonoBehaviour
     }
     void Update()
     {
-            if (ActiveTimer)
-                Timer -= Time.deltaTime;
-            if (Timer <= 0.0f && StopTimer == false)
-            {
+        if (ActiveTimer)
+            Timer -= Time.deltaTime;
+        if (runningAway)
+            RunawayTimer -= Time.deltaTime;
+
+        if (RunawayTimer <= 0.0f && runningAway == true)
+        {
+            if (EventState == -5)
+                Escape5();
+            if (EventState == -4)
+                Escape4();
+            if (EventState == -3)
+                Escape3();
+            if (EventState == -2)
+                Escape2();
+            if (EventState == -1)
+                Escape1();
+        }
+
+        if (Timer <= 0.0f && StopTimer == false)
+        {
+
+            if (EventState == -13)
+                EVRefuse3();
+            if (EventState == -12)
+                EVRefuse2();
+            if (EventState == -11)
+                EVRefuse1();
+
+
             if (EventState == 3)
             {
                 Scene3();
@@ -50,28 +77,7 @@ public class EV_Intro : MonoBehaviour
                 Scene1_5();
 
             if (EventState == 0)
-                    Scene1();
-            if (EventState == -13)
-                EVRefuse3();
-            if (EventState == -12)
-                EVRefuse2();
-            if (EventState == -11)
-                EVRefuse1();
-
-
-
-            if (EventState == -5)
-                Escape5();
-            if (EventState == -4)
-                Escape4();
-            if (EventState == -3)
-                Escape3();
-            if (EventState == -2)
-                Escape2();
-            if (EventState == -1)
-                Escape1();
-
-
+                Scene1();
         }
 
 
@@ -113,30 +119,53 @@ public class EV_Intro : MonoBehaviour
         {
             if (Trigger3.GetComponent<BoxTrigger>().GetState())
             {
+                if (!back1)
+                {
+                    Guard1_con.PlaySound(Dialogs[5]);
+                    back1 = true;
+                }
                 Guard1_con.ResumePath();
                 Guard1_con.StopRota();
-                Guard1_con.PlaySound(Dialogs[5]);
+
+                Guard1_con.AnimTrigger(1, false);
+
+                Guard1_con.StopLookAt();
                 Guard2_con.ResumePath();
+
+                LastState = EventState;
+
                 Check3 = false;
+                Check2 = true;
                 ActiveTimer = true;
-                Timer = LastTimer;
+                runningAway = false;
                 EventState = 3;
             }
         }
 
         if (Check2 == true)
         {
-            if (!Trigger2.GetComponent<BoxTrigger>().GetState()&&EventState!=-1)
+            if (!Trigger2.GetComponent<BoxTrigger>().GetState() && EventState != -1)
             {
-                EventState = -1;
-                LastTimer = Timer;
-                Timer = 6;
+                Guard1_con.StopSound();
+                Guard2_con.StopSound();
+                EventState = LastState;
+                if (!back1)
+                {
+                    
+                    RunawayTimer = 6;
+                    Guard1_con.PlaySound(Dialogs[2]);
+                    
+                }
+                Guard1_con.SetLookAt(playerHead);
+                ActiveTimer = false;
+                ActiveTimer2 = false;
+                runningAway = true;
 
                 Guard1_con.SetRota(Player.transform);
                 Guard2_con.SetLookAt(playerHead);
                 Guard2_con.PausePath();
                 Guard1_con.PausePath();
-                Guard1_con.PlaySound(Dialogs[2]);
+                
                 Check2 = false;
                 Check3 = true;
             }
@@ -150,6 +179,9 @@ public class EV_Intro : MonoBehaviour
                 Guard1_con.PlaySound(Gunshot);
                 Player.GetComponent<Player_Control>().Death(0);
                 Check4 = false;
+                Check3 = false;
+                Check2 = false;
+                runningAway = false;
                 Guard1_con.AnimTrigger(-1, true);
             }
         }
@@ -241,7 +273,6 @@ public class EV_Intro : MonoBehaviour
         Guard1_con.StopLookAt();
         Guard1_con.StopRota();
         Guard2_con.StopRota();
-
     }
 
 
@@ -271,14 +302,14 @@ public class EV_Intro : MonoBehaviour
         Guard1_con.SetLookAt(playerHead);
         Guard1_con.PlaySound(Dialogs[3]);
         EventState = -2;
-        Timer = 5;
+        RunawayTimer = 5;
     }
 
     void Escape2()
     {
         Guard1_con.PlaySound(Dialogs[4]);
         EventState = -3;
-        Timer = 5;
+        RunawayTimer = 5;
     }
 
     void Escape3()
@@ -286,20 +317,22 @@ public class EV_Intro : MonoBehaviour
         Guard1_con.PlaySound(DI_Angry1[Random.Range(0, DI_Angry1.Length)]);
         Guard1_con.AnimTrigger(1,true);
         EventState = -4;
-        Timer = 12;
+        RunawayTimer = 12;
     }
 
     void Escape4()
     {
         Guard1_con.PlaySound(DI_Angry2[Random.Range(0, DI_Angry2.Length)]);
+        Guard1_con.AnimTrigger(1, true);
         EventState = -5;
-        Timer = 5;
+        RunawayTimer = 5;
     }
 
     void Escape5()
     {
         Guard1_con.SetPursuit(Player.transform);
-        StopTimer = true;
+        Guard1_con.AnimTrigger(1, true);
+        runningAway = false;
         Check3 = false;
         Check4 = true;
     }

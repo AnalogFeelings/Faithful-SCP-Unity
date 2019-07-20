@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public enum Menu { None, Pause, Inv , Death, Screen, Debug};
+public enum Menu { None, Pause, Inv , Death, Screen, Debug, Options};
 
 public class SCP_UI : MonoBehaviour
 {
@@ -13,12 +13,14 @@ public class SCP_UI : MonoBehaviour
     public Image eyes;
     public Canvas PauseM;
     public GameObject canvas, SNav;
-    public Canvas Inventory, Death, Screen;
+    public Canvas Inventory, Death, Screen, Options;
     public Image ScreenText;
     public Canvas HUD;
     public EventSystem menu;
     public AudioClip[] inventory;
     Menu currMenu = Menu.None;
+
+    bool canConsole;
 
     public Image blinkBar, Overlay, handEquip, runBar, navBar;
 
@@ -61,13 +63,40 @@ public class SCP_UI : MonoBehaviour
             AudioListener.pause = false;
             return;
         }
-        if (currMenu == Menu.None)
+        if (currMenu == Menu.None || currMenu == Menu.Options)
         {
             PauseM.enabled = true;
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             Time.timeScale = 0f;
             currMenu = Menu.Pause;
+            AudioListener.pause = true;
+            return;
+        }
+    }
+
+    public void ToggleOptionsMenu()
+    {
+        if (currMenu == Menu.Options)
+        {
+            Options.enabled = false;
+            PauseM.enabled = true;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            Time.timeScale = 0f;
+            currMenu = Menu.Pause;
+            AudioListener.pause = true;
+            GameController.instance.LoadUserValues();
+            return;
+        }
+        if (currMenu == Menu.None || currMenu == Menu.Pause)
+        {
+            PauseM.enabled = false;
+            Options.enabled = true;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            Time.timeScale = 0f;
+            currMenu = Menu.Options;
             AudioListener.pause = true;
             return;
         }
@@ -150,22 +179,31 @@ public class SCP_UI : MonoBehaviour
 
     public bool ToggleConsole()
     {
-        if (currMenu == Menu.Debug)
+        if (canConsole)
         {
-            Time.timeScale = 1.0f;
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-            currMenu = Menu.None;
-            return(false);
-        }
-        if (currMenu == Menu.None)
-        {
-            Time.timeScale = 0f;
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            currMenu = Menu.Debug;
-            return(true);
+            if (currMenu == Menu.Debug)
+            {
+                Time.timeScale = 1.0f;
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+                currMenu = Menu.None;
+                return (false);
+            }
+            if (currMenu == Menu.None)
+            {
+                Time.timeScale = 0f;
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                currMenu = Menu.Debug;
+                return (true);
+            }
         }
         return (false);
+    }
+
+
+    public void LoadValues()
+    {
+        canConsole = (PlayerPrefs.GetInt("Debug", 0) == 1);
     }
 }

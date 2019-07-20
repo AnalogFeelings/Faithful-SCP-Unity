@@ -8,10 +8,13 @@ public class Object_LeverV : Object_Interact
 {
     public bool On = false;
     public bool OnUp = false;
+    bool isUp = false;
     public GameObject Handle;
+    public AudioSource sfx;
+    public AudioClip Switch;
 
     float changing = 0;
-    bool start, change;
+    bool start, change, cooldown;
     // Start is called before the first frame update
     void Update()
     {
@@ -20,6 +23,15 @@ public class Object_LeverV : Object_Interact
     public void HandleUpdate(float value)
     {
         Handle.transform.localRotation = Quaternion.Euler(value, 0, 0);
+    }
+
+    private void Start()
+    {
+        if ((!On && !OnUp) || (On && OnUp))
+        {
+            Tween.Value(76.98701f, -80.399f, HandleUpdate, 0.6f, 0f, Tween.EaseInStrong, Tween.LoopType.None, null);
+            isUp = true;
+        }
     }
 
 
@@ -31,38 +43,61 @@ public class Object_LeverV : Object_Interact
             changing -= Time.deltaTime;
             if (changing <= 0)
             {
-                change = true;
-                start = false;
+                if (!cooldown)
+                {
+                    change = true;
+                    start = false;
+                }
+                else
+                {
+                    change = false;
+                    cooldown = false;
+                }
             }
 
-            if (change == true)
+            if (change == true && !cooldown)
             {
 
                 if (Input.GetAxis("Mouse Y") > 0)
                 {
-                    if (OnUp == false)
-                        On = true;
-                    else
-                        On = false;
+                    if (!isUp)
+                    {
+                        sfx.PlayOneShot(Switch);
+                        if (OnUp == true)
+                            On = true;
+                        else
+                            On = false;
 
-                    Tween.Value(76.98701f, -80.399f, HandleUpdate, 0.6f, 0f, Tween.EaseInStrong, Tween.LoopType.None, null);
+                        Tween.Value(76.98701f, -80.399f, HandleUpdate, 0.6f, 0f, Tween.EaseInStrong, Tween.LoopType.None, null);
+                        Debug.Log("GoingUp");
+                        cooldown = true;
+                        changing = 0.4f;
+                        isUp = true;
+                    }
                 }
                 if (Input.GetAxis("Mouse Y") < 0)
                 {
-                    if (OnUp == false)
-                        On = false;
-                    else
-                        On = true;
+                    if (isUp)
+                    {
+                        sfx.PlayOneShot(Switch);
+                        Debug.Log("GoingDown");
+                        if (OnUp == true)
+                            On = false;
+                        else
+                            On = true;
 
-                    Tween.Value(-80.399f, 76.98701f, HandleUpdate, 0.6f, 0, Tween.EaseInStrong, Tween.LoopType.None, null);
+                        Tween.Value(-80.399f, 76.98701f, HandleUpdate, 0.6f, 0, Tween.EaseInStrong, Tween.LoopType.None, null);
+                        cooldown = true;
+                        changing = 0.4f;
+                        isUp = false;
+                    }
                 }
-                change = false;
             }
         }
 
         if (start == false)
         {
-            changing = 0.4f;
+            changing = 0.3f;
             start = true;
         }
 

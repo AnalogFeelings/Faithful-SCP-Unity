@@ -25,7 +25,7 @@ public class EV_light_testroom : Event_Parent
             if (GameController.instance.player.GetComponent<Player_Control>().IsBlinking())
             {
                 GameController.instance.player.GetComponent<Player_Control>().FakeBlink(0.3f);
-                GameController.instance.Warp173(true, Anchor2.transform);
+                GameController.instance.npcTable[(int)npc.scp173].Event_Spawn(true, Anchor2.transform.position);
                 StopTimer = true;
                 Screen.SetActive(false);
                 GameController.instance.PlayHorror(SFX[0],Anchor2.transform, npc.none);
@@ -39,7 +39,7 @@ public class EV_light_testroom : Event_Parent
     public override void EventStart()
     {
         base.EventStart();
-        GameController.instance.Warp173(true, Anchor1.transform);
+        GameController.instance.npcTable[(int)npc.scp173].Event_Spawn(true, Anchor1.transform.position);
     }
 
     public override void EventFinished()
