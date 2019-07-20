@@ -9,7 +9,6 @@ public class EV_Spawn173 : Event_Parent
     {
         base.EventStart();
         GameController.instance.Warp173(true, transform);
-        GameController.instance.places_173.Add(transform.position);
 
         EventFinished();
     }

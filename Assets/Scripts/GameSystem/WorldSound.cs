@@ -7,7 +7,7 @@ public class WorldSound : MonoBehaviour
 
     public int SoundLevel;
 
-    float Timer = 1;
+    public float Timer = 2;
 
     // Start is called before the first frame update
     void Start()

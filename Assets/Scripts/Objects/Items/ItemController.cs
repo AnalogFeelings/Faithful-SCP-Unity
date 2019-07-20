@@ -24,13 +24,10 @@ public class ItemController : MonoBehaviour
             instance = this;
         else if (instance != null)
             Destroy(gameObject);
-    }
 
-    private void Start()
-    {
         invs = new List<Item[]>();
         equip = new List<bool[]>();
-        currentItem = new Item [10];
+        currentItem = new Item[10];
         currentEquip = new bool[10];
 
         invs.Add(currentItem);
@@ -39,8 +36,13 @@ public class ItemController : MonoBehaviour
 
         for (int i = 0; i < slots.Length; i++)
         {
-                slots[i].id = i;
+            slots[i].id = i;
         }
+    }
+
+    private void Start()
+    {
+        
     }
 
     // Update is called once per frame
@@ -138,7 +140,7 @@ public class ItemController : MonoBehaviour
                     newitem.valueFloat = List[j][i].vlFloat;
                     newitem.valueInt = List[j][i].vlInt;
                     temp_items[i] = newitem;
-                    Debug.Log("Cargando Item " + string.Concat("Items/", List[j][i]));
+                    Debug.Log("Cargando Item " + string.Concat("Items/", List[j][i].item));
                 }
                 else
                     temp_items[i] = null;

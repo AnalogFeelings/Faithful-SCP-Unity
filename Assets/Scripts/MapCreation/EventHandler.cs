@@ -54,16 +54,16 @@ public class EventHandler : MonoBehaviour
         return (SpecialName);
     }
 
-    public void EventLoad(int x, int y, int state, bool isDone)
+    public void EventLoad(int x, int y, bool isDone)
     {
         
         if (Spawned == false)
         {
             if (EventChosen == -2)
-                InternalLoad(UniqueHandler, x, y, UniquePos, state);
+                InternalLoad(UniqueHandler, x, y, UniquePos);
 
             if (EventChosen >= 0)
-                InternalLoad(EventList[EventChosen].EventHandler, x, y, EventList[EventChosen].pos, state);
+                InternalLoad(EventList[EventChosen].EventHandler, x, y, EventList[EventChosen].pos);
 
             if (isDone)
                 Event.GetComponent<Event_Parent>().EventFinished();
@@ -73,7 +73,7 @@ public class EventHandler : MonoBehaviour
         }
     }
 
-    void InternalLoad(string scp_event, int x, int y, Transform pos, int state)
+    void InternalLoad(string scp_event, int x, int y, Transform pos)
     {
         Event = Resources.Load<GameObject>(string.Concat("Events/", scp_event));
         
@@ -87,7 +87,6 @@ public class EventHandler : MonoBehaviour
 
         Event.GetComponent<Event_Parent>().x = x;
         Event.GetComponent<Event_Parent>().y = y;
-        Event.GetComponent<Event_Parent>().state = state;
     }
 
     public void EventStart()

@@ -9,7 +9,7 @@ QualitySettings:
   - serializedVersion: 2
     name: Very Low
     pixelLightCount: 0
-    shadows: 1
+    shadows: 0
     shadowResolution: 0
     shadowProjection: 1
     shadowCascades: 1
@@ -78,7 +78,7 @@ QualitySettings:
     excludedTargetPlatforms: []
   - serializedVersion: 2
     name: Medium
-    pixelLightCount: 1
+    pixelLightCount: 0
     shadows: 1
     shadowResolution: 1
     shadowProjection: 1
@@ -88,7 +88,7 @@ QualitySettings:
     shadowCascade2Split: 0.33333334
     shadowCascade4Split: {x: 0.06666667, y: 0.2, z: 0.46666667}
     shadowmaskMode: 0
-    blendWeights: 2
+    blendWeights: 1
     textureQuality: 0
     anisotropicTextures: 2
     antiAliasing: 0
@@ -96,7 +96,7 @@ QualitySettings:
     softVegetation: 0
     realtimeReflectionProbes: 1
     billboardsFaceCameraPosition: 0
-    vSyncCount: 1
+    vSyncCount: 0
     lodBias: 0.7
     maximumLODLevel: 0
     streamingMipmapsActive: 0
@@ -113,7 +113,7 @@ QualitySettings:
     excludedTargetPlatforms: []
   - serializedVersion: 2
     name: High
-    pixelLightCount: 1
+    pixelLightCount: 0
     shadows: 2
     shadowResolution: 1
     shadowProjection: 0
@@ -121,7 +121,7 @@ QualitySettings:
     shadowDistance: 20
     shadowNearPlaneOffset: 3
     shadowCascade2Split: 0.33333334
-    shadowCascade4Split: {x: 0.09352618, y: 0.22479343, z: 0.45840245}
+    shadowCascade4Split: {x: 0.161708, y: 0.32603297, z: 0.63608825}
     shadowmaskMode: 1
     blendWeights: 2
     textureQuality: 0
@@ -151,17 +151,17 @@ QualitySettings:
     pixelLightCount: 1
     shadows: 2
     shadowResolution: 2
-    shadowProjection: 0
+    shadowProjection: 1
     shadowCascades: 4
     shadowDistance: 25
     shadowNearPlaneOffset: 3
     shadowCascade2Split: 0.33333334
-    shadowCascade4Split: {x: 0.050137706, y: 0.20000023, z: 0.42327827}
+    shadowCascade4Split: {x: 0.14931124, y: 0.32603326, z: 0.67327815}
     shadowmaskMode: 1
     blendWeights: 4
     textureQuality: 0
     anisotropicTextures: 2
-    antiAliasing: 2
+    antiAliasing: 0
     softParticles: 1
     softVegetation: 1
     realtimeReflectionProbes: 1
@@ -191,7 +191,7 @@ QualitySettings:
     shadowDistance: 25
     shadowNearPlaneOffset: 3
     shadowCascade2Split: 0.33333334
-    shadowCascade4Split: {x: 0.060468342, y: 0.21033053, z: 0.47079915}
+    shadowCascade4Split: {x: 0.1658403, y: 0.34462804, z: 0.6794768}
     shadowmaskMode: 1
     blendWeights: 4
     textureQuality: 0
@@ -201,7 +201,7 @@ QualitySettings:
     softVegetation: 1
     realtimeReflectionProbes: 1
     billboardsFaceCameraPosition: 0
-    vSyncCount: 1
+    vSyncCount: 0
     lodBias: 2
     maximumLODLevel: 0
     streamingMipmapsActive: 0
@@ -216,4 +216,6 @@ QualitySettings:
     asyncUploadPersistentBuffer: 1
     resolutionScalingFixedDPIFactor: 1
     excludedTargetPlatforms: []
-  m_PerPlatformDefaultQuality: {}
+  m_PerPlatformDefaultQuality:
+    Android: 0
+    Standalone: 0

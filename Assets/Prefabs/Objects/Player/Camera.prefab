@@ -99,6 +99,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e4092e1c7d9f4c439e1a7cb5b705bcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rotation: {x: 0, y: 0, z: 0}
+  addedRota: {x: 0, y: 0, z: 0, w: 1}
   speed: 3
 --- !u!124 &6038720004902448183
 Behaviour:
@@ -204,8 +206,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shader: {fileID: 4800000, guid: 9dba5f43d9ecc6d468903079908c4855, type: 3}
   debugMode: 0
-  accum: 1
+  accum: 0.2
   atten: 1
   blurSigma: 0.3
   blurIter: 2
-  smokeDepth: 1
+  smokeDepth: 0.5

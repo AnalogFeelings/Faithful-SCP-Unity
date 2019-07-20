@@ -11,12 +11,20 @@ public class SubtitleEngine : MonoBehaviour
     public float subtitle_hold_timer, subtitle_add_timer;
     bool foundSub;
     bool Moved;
+    bool VoiceSubsEnabled = true;
 
     public Text [] line = new Text [3];
     List<string> pending = new List<string>();
     string [] current = new string [3];
 
     // Start is called before the first frame update
+
+    public void LoadValues()
+    {
+        VoiceSubsEnabled = (PlayerPrefs.GetInt("Sub", 1) == 1);
+    }
+
+
     private void Awake()
     {
         if (instance == null)
@@ -30,10 +38,23 @@ public class SubtitleEngine : MonoBehaviour
 
 
     }
-
-    public void playSub(string sub)
+    /// <summary>
+    /// Sends a subtitle to the subtitle system
+    /// </summary>
+    /// <param name="sub"> The subtitle. Is the caller resposability to get the right subtitle for the right language</param>
+    /// <param name="IsVoice"> If the subtitle is a voice or flavor text</param>
+    public void playSub(string sub, bool IsVoice = false)
     {
-        pending.Add(sub);
+        if (IsVoice)
+        {
+            if (VoiceSubsEnabled)
+            pending.Add(sub);
+        } 
+        else
+        {
+            pending.Insert(0, sub);
+            subtitle_add = -1;
+        }
     }
 
     // Update is called once per frame
@@ -77,8 +98,6 @@ public class SubtitleEngine : MonoBehaviour
 
     void addSubtitles()
     {
-        /*for (int i = 0; i < 3; i++)
-        {*/
             if (current[0] == null)
             {
                 current[0] = pending[0];
@@ -87,7 +106,6 @@ public class SubtitleEngine : MonoBehaviour
                 foundSub = true;
                 return;
             }
-        /*}*/
     }
 
     void updateSubtitles()

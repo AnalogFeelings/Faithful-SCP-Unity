@@ -167,7 +167,6 @@ public class EV_Intro2 : MonoBehaviour
                         lightmana.SetActive(true);
                         Timer = Timer5;
                         eventstat = 11;
-                        GameController.instance.ChangeAmbiance(NewAmbiance, 1);
                         break;
                     }
                 case 11:
@@ -179,7 +178,6 @@ public class EV_Intro2 : MonoBehaviour
                         GameController.instance.npcObjects[(int)npc.scp173].transform.rotation = Quaternion.Euler(0, -90, 0);
                         GameController.instance.Warp173(false, ata3);
                         guard_.SetRota(GameController.instance.npcObjects[(int)npc.scp173].transform);
-                        //guard_.AnimTrigger(-2, true);
                         sci_.PlaySFX(GeneralSFX[5]);
                         break;
                     }
@@ -214,17 +212,22 @@ public class EV_Intro2 : MonoBehaviour
 
                 case 14:
                     {
+                        objPlayer.GetComponent<Player_Control>().FakeBlink(0.6f);
                         sci_.SetSeq(Alarm);
-                        objPlayer.GetComponent<Player_Control>().playerWarp((GameController.instance.WorldAnchor.transform.position +((GameController.instance.WorldAnchor.transform.rotation) * (objPlayer.transform.position - TeleportAnchor.position))), GameController.instance.WorldAnchor.transform.eulerAngles.y - TeleportAnchor.transform.eulerAngles.y);
-                        d1_.puppetWarp(GameController.instance.WorldAnchor.transform.position + ((GameController.instance.WorldAnchor.transform.rotation) * (d1.transform.position - TeleportAnchor.position)));
-                        d2_.puppetWarp(GameController.instance.WorldAnchor.transform.position + ((GameController.instance.WorldAnchor.transform.rotation) * (d2.transform.position - TeleportAnchor.position)));
-                        guard_.puppetWarp(GameController.instance.WorldAnchor.transform.position + ((GameController.instance.WorldAnchor.transform.rotation) * (guard.transform.position - TeleportAnchor.position)));
+
+
+                        objPlayer.GetComponent<Player_Control>().playerWarp((GameController.instance.WorldAnchor.transform.position + ((GameController.instance.WorldAnchor.transform.rotation * Quaternion.Inverse(TeleportAnchor.transform.rotation)) * (objPlayer.transform.position - TeleportAnchor.position))), GameController.instance.WorldAnchor.transform.eulerAngles.y - TeleportAnchor.transform.eulerAngles.y);
+                        d1_.puppetWarp(GameController.instance.WorldAnchor.transform.position + ((GameController.instance.WorldAnchor.transform.rotation * Quaternion.Inverse(TeleportAnchor.transform.rotation)) * (d1.transform.position - TeleportAnchor.position)));
+                        d2_.puppetWarp(GameController.instance.WorldAnchor.transform.position + ((GameController.instance.WorldAnchor.transform.rotation * Quaternion.Inverse(TeleportAnchor.transform.rotation)) * (d2.transform.position - TeleportAnchor.position)));
+                        guard_.puppetWarp(GameController.instance.WorldAnchor.transform.position + ((GameController.instance.WorldAnchor.transform.rotation * Quaternion.Inverse(TeleportAnchor.transform.rotation)) * (guard.transform.position - TeleportAnchor.position)));
                         GameController.instance.canSave = true;
+                        RenderSettings.fog = true;
 
                         StopTimer = true;
 
-                        objPlayer.GetComponent<Player_Control>().FakeBlink(0.5f);
+                        
                         GameController.instance.SetMapPos(0, 10);
+                        GameController.instance.startEv.GetComponent<EV_Intro>().End();
                         GameController.instance.doGameplay = true;
                         break;
                     }
