@@ -242,6 +242,7 @@ ModelImporter:
     7400020: electrodead
     7400022: falldead
     7400024: dead_getup
+    7400026: sitting
     9500000: //RootNode
     13700000: classd
   externalObjects:
@@ -309,7 +310,7 @@ ModelImporter:
       name: idle
       takeName: classd_skeleton|classd_anim
       firstFrame: 210
-      lastFrame: 234
+      lastFrame: 232
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -364,15 +365,15 @@ ModelImporter:
     - serializedVersion: 16
       name: run
       takeName: classd_skeleton|classd_anim
-      firstFrame: 301
-      lastFrame: 319
+      firstFrame: 300
+      lastFrame: 318
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
-      hasAdditiveReferencePose: 0
-      loopTime: 1
+      hasAdditiveReferencePose: 1
+      loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -393,7 +394,7 @@ ModelImporter:
       name: crouch
       takeName: classd_skeleton|classd_anim
       firstFrame: 357
-      lastFrame: 380
+      lastFrame: 379
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -448,15 +449,15 @@ ModelImporter:
     - serializedVersion: 16
       name: lying
       takeName: classd_skeleton|classd_anim
-      firstFrame: 502
-      lastFrame: 502
+      firstFrame: 38
+      lastFrame: 39
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
-      hasAdditiveReferencePose: 0
-      loopTime: 1
+      hasAdditiveReferencePose: 1
+      loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -477,7 +478,7 @@ ModelImporter:
       name: getup
       takeName: classd_skeleton|classd_anim
       firstFrame: 502
-      lastFrame: 523
+      lastFrame: 521
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -561,7 +562,7 @@ ModelImporter:
       name: electrodead
       takeName: classd_skeleton|classd_anim
       firstFrame: 22
-      lastFrame: 40
+      lastFrame: 38
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -589,7 +590,7 @@ ModelImporter:
       name: falldead
       takeName: classd_skeleton|classd_anim
       firstFrame: 41
-      lastFrame: 60
+      lastFrame: 58
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -618,6 +619,34 @@ ModelImporter:
       takeName: classd_skeleton|classd_anim
       firstFrame: 524
       lastFrame: 552
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: sitting
+      takeName: classd_skeleton|classd_anim
+      firstFrame: 165
+      lastFrame: 166
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

@@ -3284,6 +3284,7 @@ GameObject:
   - component: {fileID: 2966795941245645299}
   - component: {fileID: 5456879702631888619}
   - component: {fileID: 5324466816466756989}
+  - component: {fileID: 1795211195521787222}
   m_Layer: 0
   m_Name: Puppet_Human
   m_TagString: Untagged
@@ -3324,6 +3325,7 @@ MonoBehaviour:
   maxfallspeed: -20
   animOffset: 0.2
   stopDistance: 1
+  _controller: {fileID: 0}
   Puppet_Mesh: {fileID: 4016409505061493114}
   Def_LookAt: {fileID: 3125282852900979479}
   DoorLay:
@@ -3360,7 +3362,8 @@ AudioSource:
   m_GameObject: {fileID: 8237749848068822969}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 243951847441598684, guid: 4cdd06a97de31484aa0429062392c9f2,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -3447,6 +3450,24 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!143 &1795211195521787222
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8237749848068822969}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Height: 1.8
+  m_Radius: 0.3
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &8277224038837495844
 GameObject:
   m_ObjectHideFlags: 0

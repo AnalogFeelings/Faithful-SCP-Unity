@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 8805559852631668101}
   - component: {fileID: 9194301488807307008}
   - component: {fileID: 1869867857004760299}
-  - component: {fileID: 3514837735887854137}
   m_Layer: 14
   m_Name: npc_scp939
   m_TagString: Untagged
@@ -45,7 +44,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 3400218257497486907}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 2.5
+  m_Radius: 1.8
   m_Speed: 3.5
   m_Acceleration: 3
   avoidancePriority: 50
@@ -78,7 +77,10 @@ MonoBehaviour:
   Found: []
   Attack: []
   Hit: {fileID: 8300000, guid: 36037171635ebe34eb620f8d4606df38, type: 3}
-  ListeningRange: 15
+  groundlayer:
+    serializedVersion: 2
+    m_Bits: 1536
+  ListeningRange: 13
   closeRange: 8
   walkSpeed: 1.5
   runSpeed: 3
@@ -87,9 +89,10 @@ MonoBehaviour:
   defIdle: 3
   defWalk: 5
   foundPlayer: 8
-  foundPlayerRun: 10
+  foundPlayerRun: 12
   AttackCool: 1
-  frame: 0
+  AttackDistance: 3
+  frame: 10
   Animator: {fileID: 8902592724620025253}
   SoundLayer:
     serializedVersion: 2
@@ -202,28 +205,27 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3400218257497486907}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 2.7
+  m_Radius: 2.2
   m_Height: 20
   m_Direction: 1
-  m_Center: {x: 0, y: 0.3, z: 0.3}
---- !u!54 &3514837735887854137
-Rigidbody:
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3486269369822034837
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3400218257497486907}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
+  m_GameObject: {fileID: 8902592724610674229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 705968b60b528b14f8f5165a796b1865, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  subsurfaceColor: {r: 1, g: 0.15115502, b: 0, a: 0}
+  maskSource: 2
+  maskTex: {fileID: 0}
 --- !u!82 &2218049017679834908
 AudioSource:
   m_ObjectHideFlags: 0
@@ -407,22 +409,6 @@ PrefabInstance:
     - target: {fileID: 400000, guid: d83842388a8534248aef66da15ab3712, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9500000, guid: d83842388a8534248aef66da15ab3712, type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: c24fabb52d70f744baf9eb15b3b1241e, type: 2}
-    - target: {fileID: 400082, guid: d83842388a8534248aef66da15ab3712, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: -89.98021
-      objectReference: {fileID: 0}
-    - target: {fileID: 100076, guid: d83842388a8534248aef66da15ab3712, type: 3}
-      propertyPath: m_Layer
-      value: 14
-      objectReference: {fileID: 0}
-    - target: {fileID: 100078, guid: d83842388a8534248aef66da15ab3712, type: 3}
-      propertyPath: m_Layer
-      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: d83842388a8534248aef66da15ab3712, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -748,6 +734,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 172.09364
       objectReference: {fileID: 0}
+    - target: {fileID: 400082, guid: d83842388a8534248aef66da15ab3712, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -89.98021
+      objectReference: {fileID: 0}
+    - target: {fileID: 9500000, guid: d83842388a8534248aef66da15ab3712, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: c24fabb52d70f744baf9eb15b3b1241e, type: 2}
+    - target: {fileID: 100076, guid: d83842388a8534248aef66da15ab3712, type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 100078, guid: d83842388a8534248aef66da15ab3712, type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: d83842388a8534248aef66da15ab3712, type: 3}
       propertyPath: m_Layer
       value: 14
@@ -913,6 +915,12 @@ Transform:
 --- !u!95 &8902592724620025253 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 9500000, guid: d83842388a8534248aef66da15ab3712,
+    type: 3}
+  m_PrefabInstance: {fileID: 8902592724610640069}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8902592724610674229 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100080, guid: d83842388a8534248aef66da15ab3712,
     type: 3}
   m_PrefabInstance: {fileID: 8902592724610640069}
   m_PrefabAsset: {fileID: 0}

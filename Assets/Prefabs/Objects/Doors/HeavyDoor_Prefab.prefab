@@ -96,6 +96,8 @@ MonoBehaviour:
   Accepted: {fileID: 8300000, guid: f2b769f32ea8bfe40a75eaaa735ecc93, type: 3}
   Rejected: {fileID: 8300000, guid: 06f79da5457a6e441b6b7321f48dc4aa, type: 3}
   soundsource: {fileID: 877004987511272491}
+  WaitForBool: 0
+  ThisValue: 0
 --- !u!82 &877004987511272491
 AudioSource:
   m_ObjectHideFlags: 0
@@ -203,6 +205,7 @@ GameObject:
   - component: {fileID: 5863948201455519085}
   - component: {fileID: 5863948201455519082}
   - component: {fileID: 2603059192173719544}
+  - component: {fileID: 7665388318881149601}
   m_Layer: 9
   m_Name: HeavyDoor
   m_TagString: Untagged
@@ -244,6 +247,7 @@ MonoBehaviour:
   OpenSpeed: 1.5
   DoorEndPos: 1.9
   DoorTime: 0
+  id: 0
   Open_AUD:
   - {fileID: 8300000, guid: ccbadd3ee1642064eac9b7871940ca1f, type: 3}
   - {fileID: 8300000, guid: dcdde9929c9971c43a413ba62dcc3109, type: 3}
@@ -253,8 +257,10 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 487f8a794e4210b4f9aaa20fe055680d, type: 3}
   - {fileID: 8300000, guid: 17c25f44a47503f45805ec6f92a99da4, type: 3}
   - {fileID: 8300000, guid: f73f645dc3c28ed4c904395edc821963, type: 3}
+  AUD: {fileID: 0}
   switchOpen: 0
-  scp173: 1
+  scp173: 0
+  ignoreSave: 0
 --- !u!82 &2603059192173719544
 AudioSource:
   m_ObjectHideFlags: 0
@@ -264,7 +270,8 @@ AudioSource:
   m_GameObject: {fileID: 5863948201455519083}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 243188032471989292, guid: 4cdd06a97de31484aa0429062392c9f2,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -351,6 +358,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!65 &7665388318881149601
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5863948201455519083}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 4.737178, y: 2.7550774, z: 0.31743252}
+  m_Center: {x: 0.28254366, y: 1.327539, z: -0.0044704825}
 --- !u!1 &5863948201746583253
 GameObject:
   m_ObjectHideFlags: 0
@@ -416,6 +436,8 @@ MonoBehaviour:
   Accepted: {fileID: 8300000, guid: f2b769f32ea8bfe40a75eaaa735ecc93, type: 3}
   Rejected: {fileID: 8300000, guid: 06f79da5457a6e441b6b7321f48dc4aa, type: 3}
   soundsource: {fileID: 998394752788958851}
+  WaitForBool: 0
+  ThisValue: 0
 --- !u!82 &998394752788958851
 AudioSource:
   m_ObjectHideFlags: 0
@@ -524,7 +546,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.046042893, y: 0.06269597, z: 0.009033783}
-  m_Center: {x: -0.02352687, y: 0.029498154, z: -0.00033134577}
+  m_Center: {x: -0.02352687, y: 0.029498154, z: 0.0003313458}
 --- !u!1 &5863948202406834431
 GameObject:
   m_ObjectHideFlags: 0
@@ -736,6 +758,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ContDoorLeft
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 6cce436875cfcd649beb3177aafe92ee, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 6cce436875cfcd649beb3177aafe92ee, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.022
@@ -820,6 +846,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: b698c2539e8325540947f756f5823964, type: 3}
       propertyPath: m_Name
       value: ContDoorRight
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: b698c2539e8325540947f756f5823964, type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: b698c2539e8325540947f756f5823964, type: 3}
       propertyPath: m_LocalPosition.x
