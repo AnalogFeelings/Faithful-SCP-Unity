@@ -12,7 +12,7 @@ public class SCP_UI : MonoBehaviour
     public static SCP_UI instance = null;
     public Image eyes;
     public Canvas PauseM;
-    public GameObject canvas, SNav;
+    public GameObject canvas, SNav, notifprefab;
     public Canvas Inventory, Death, Screen, Options;
     public Image ScreenText;
     public Canvas HUD;
@@ -20,7 +20,7 @@ public class SCP_UI : MonoBehaviour
     public AudioClip[] inventory;
     Menu currMenu = Menu.None;
 
-    bool canConsole;
+    bool canConsole, canTuto;
 
     public Image blinkBar, Overlay, handEquip, runBar, navBar;
 
@@ -63,7 +63,7 @@ public class SCP_UI : MonoBehaviour
             AudioListener.pause = false;
             return;
         }
-        if (currMenu == Menu.None || currMenu == Menu.Options)
+        if (currMenu == Menu.None)
         {
             PauseM.enabled = true;
             Cursor.lockState = CursorLockMode.None;
@@ -205,5 +205,19 @@ public class SCP_UI : MonoBehaviour
     public void LoadValues()
     {
         canConsole = (PlayerPrefs.GetInt("Debug", 0) == 1);
+        canTuto = (PlayerPrefs.GetInt("Tutorials", 0) == 1);
+    }
+
+
+
+    public void ShowTutorial(string tuto)
+    {
+        if (canTuto)
+        {
+            GameObject notif = Instantiate(notifprefab, canvas.transform);
+            NotifSystem notifval = notif.GetComponent<NotifSystem>();
+            notifval.image.sprite = Resources.Load<Sprite>("Tutorials/" + tuto);
+            notifval.body.text = GlobalValues.tutoStrings[tuto];
+        }
     }
 }

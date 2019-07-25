@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class EV_BreachStart : Event_Parent
 {
-    public GameObject trigger2, Sci, Gua, Anchor1;
+    public GameObject trigger2, Sci, Gua, Anchor1, Anchor2;
     EV_Puppet_Controller Sci_, Gua_;
+    public EV_Puppet_Controller ded;
     public Transform[] Path;
-    bool check2 = true, StopTimer =true;
+    bool check2 = true, StopTimer =true, step = false;
     float Timer;
-    public AudioClip Dialog;
+    public AudioClip Dialog, blackout;
     public AudioClip[] NewAmbiance;
 
     // Update is called once per frame
@@ -17,12 +18,21 @@ public class EV_BreachStart : Event_Parent
     {
         Sci_ = Sci.GetComponent<EV_Puppet_Controller>();
         Gua_ = Gua.GetComponent<EV_Puppet_Controller>();
+        
+    }
+
+    public override void EventStart()
+    {
+        base.EventStart();
+        ded.AnimTrigger(-3, true);
+        GameController.instance.QuickSave();
     }
 
     void Update()
     {
         if (isStarted == true)
             EventUpdate();
+        
     }
 
     public override void EventUpdate()
@@ -31,11 +41,21 @@ public class EV_BreachStart : Event_Parent
 
         if (Timer <= 0.0f && StopTimer == false)
         {
-            GameController.instance.player.GetComponent<Player_Control>().FakeBlink(0.5f);
+            GameController.instance.player.GetComponent<Player_Control>().FakeBlink(1f);
             GameController.instance.ChangeAmbiance(NewAmbiance, 3);
+            GameController.instance.GlobalSFX.PlayOneShot(blackout);
             GameController.instance.Warp173(false, GameController.instance.transform);
             StopTimer = true;
+            SCP_UI.instance.ShowTutorial("tutorun");
             EventFinished();
+        }
+
+        if (Timer <= 7f && step == false && StopTimer == false)
+        {
+            GameController.instance.player.GetComponent<Player_Control>().FakeBlink(1f);
+            GameController.instance.GlobalSFX.PlayOneShot(blackout);
+            GameController.instance.Warp173(false, Anchor2.transform);
+            step = true;
         }
 
 
@@ -53,9 +73,13 @@ public class EV_BreachStart : Event_Parent
                 SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["scene_BreachStart_5"], GlobalValues.charaStrings["chara_franklin"]), true);
 
                 GameController.instance.Warp173(false, Anchor1.transform);
+                GameController.instance.player.GetComponent<Player_Control>().FakeBlink(1f);
+                
+                GameController.instance.npcObjects[(int)npc.scp173].transform.rotation = Anchor1.transform.rotation;
                 check2 = false;
                 StopTimer = false;
                 Timer = 14;
+                SCP_UI.instance.ShowTutorial("tutodead");
             }
         }
     }
@@ -64,6 +88,7 @@ public class EV_BreachStart : Event_Parent
     {
         Destroy(Sci);
         Destroy(Gua);
+        ded.AnimTrigger(-3, true);
 
         base.EventFinished();
     }

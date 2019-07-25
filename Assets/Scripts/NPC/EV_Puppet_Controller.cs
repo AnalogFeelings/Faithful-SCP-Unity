@@ -11,7 +11,7 @@ public class EV_Puppet_Controller : MonoBehaviour
     Quaternion toAngle;
     float fallSpeed;
     int currentNode = 0, currSeq = 0;
-    bool isPath, isRotate, isLook, isSequence = false, isPursuit = false, hasDoor = false;
+    bool isPath, isRotate, isLook, isSequence = false, isPursuit = false, hasDoor = false, hasSubs;
     Transform[] ActualPath;
     Transform rotaAt, lookAt, Location;
     int pathNodes, audSeq;
@@ -21,6 +21,7 @@ public class EV_Puppet_Controller : MonoBehaviour
     HeadLookController Head;
     NavMeshAgent _navMeshagent;
     public LayerMask DoorLay;
+    public string charName;
 
     /// <summary>
     /// Audio Values
@@ -202,11 +203,13 @@ public class EV_Puppet_Controller : MonoBehaviour
 
 
 
-    public void PlaySound(AudioClip toPlay)
+    public void PlaySound(AudioClip toPlay, bool _playSubs = false)
     {
         currAudio = toPlay;
         Audio.clip = currAudio;
         Audio.Play();
+        if (_playSubs)
+            SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings[currAudio.name], GlobalValues.charaStrings[charName]), true);
     }
     public void StopSound()
     {
@@ -218,13 +221,14 @@ public class EV_Puppet_Controller : MonoBehaviour
         Audio.PlayOneShot(toPlay);
     }
 
-    public void SetSeq(AudioClip[] newSeq)
+    public void SetSeq(AudioClip[] newSeq, bool _hasSubs = false)
     {
         audioSeq = newSeq;
         audSeq = newSeq.Length - 1;
         isSequence = true;
         currSeq = 0;
-        PlaySound(audioSeq[0]);
+        PlaySound(audioSeq[0], _hasSubs);
+        hasSubs = _hasSubs;
     }
 
     public void AnimTrigger(int Number, bool value)
@@ -251,6 +255,11 @@ public class EV_Puppet_Controller : MonoBehaviour
                     Puppet_Anim.SetTrigger("param-2");
                     break;
                 }
+            case -3:
+                {
+                    Puppet_Anim.SetTrigger("param-3");
+                    break;
+                }
         }
 
     }
@@ -263,7 +272,7 @@ public class EV_Puppet_Controller : MonoBehaviour
             if (currSeq != audSeq)
             {
                 currSeq += 1;
-                PlaySound(audioSeq[currSeq]);
+                PlaySound(audioSeq[currSeq], hasSubs);
             }
             else
                 isSequence = false;

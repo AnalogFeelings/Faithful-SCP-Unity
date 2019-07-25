@@ -16,8 +16,8 @@ public class Equipable_Nav : Equipable_Elec
 
         if (player.equipment[(int)this.part] == null || player.equipment[(int)this.part].itemName != this.itemName)
         {
-            SCP_UI.instance.SNav.SetActive(true);
             player.ACT_Equip(this);
+            SCP_UI.instance.SNav.SetActive(true);
         }
         else
         {

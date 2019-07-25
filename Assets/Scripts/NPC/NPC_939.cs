@@ -20,12 +20,13 @@ public class NPC_939 : MonoBehaviour
     public AudioClip[] Found;
     public AudioClip[] Attack;
     public AudioClip Hit;
+    public AudioClip AttackTheme;
     Vector3 lookAt;
     public LayerMask groundlayer;
 
 
-    public float ListeningRange, closeRange, walkSpeed, runSpeed, HearingTimer, Hearing2Timer, defIdle, defWalk, foundPlayer, foundPlayerRun, AttackCool = 1, AttackDistance;
-    float Timer = 0, AttackTimer = 0, playerDistance, playerCheck;
+    public float ListeningRange, closeRange, walkSpeed, runSpeed, HearingTimer, Hearing2Timer, defIdle, defWalk, foundPlayer, foundPlayerRun, AttackCool = 1, AttackDistance, WaitTimerBase;
+    float Timer = 0, AttackTimer = 0, playerDistance, playerCheck, WaitTimer;
     public int frame;
     public Animator Animator;
     public LayerMask SoundLayer;
@@ -77,7 +78,7 @@ public class NPC_939 : MonoBehaviour
                             Agent.isStopped = true;
                             destSet = false;
                             stateSet = true;
-                            Timer = Random.Range(defIdle, 3);
+                            Timer = Random.Range(defIdle, defIdle + 3);
                             if (isDebuggin)
                                 Debug.Log("Volviendo a Idle");
                         }
@@ -99,7 +100,20 @@ public class NPC_939 : MonoBehaviour
                             Agent.isStopped = false;
                             Agent.speed = runSpeed;
                             if (CheckPlayer())
+                            {
                                 Agent.SetDestination(Player.transform.position);
+                                WaitTimer = WaitTimerBase;
+                            }
+                            else
+                            {
+                                WaitTimer -= Time.deltaTime;
+                                if (WaitTimer <= 0)
+                                {
+                                    stateSet = false;
+                                    state = state_939.idle;
+                                    GameController.instance.DefMusic();
+                                }
+                            }
                         }
                         break;
                     }
@@ -112,7 +126,7 @@ public class NPC_939 : MonoBehaviour
                             Agent.isStopped = false;
                             Agent.speed = walkSpeed;
                             Agent.SetDestination(patrol[currentNode].position);
-                            Timer = Random.Range(defWalk, 3);
+                            Timer = Random.Range(defWalk, defWalk + 3);
                             stateSet = true;
                             if (isDebuggin)
                                 Debug.Log("Caminata");
@@ -338,9 +352,11 @@ public class NPC_939 : MonoBehaviour
             {
                 if (state != state_939.attack && Vector3.Dot(transform.forward, lookAt.normalized) > 0.5f && CheckPlayer())
                 {
+                    WaitTimer = WaitTimerBase;
                     foundTarget = false;
                     stateSet = false;
                     PlayVoice(4);
+                    GameController.instance.GlobalSFX.PlayOneShot(AttackTheme);
 
                     if (state == state_939.run)
                         Animator.SetTrigger("leap");
@@ -442,11 +458,11 @@ public class NPC_939 : MonoBehaviour
                 AttackTimer = AttackCool;
                 Audio.PlayOneShot(Hit);
             }
-            else
+            else if (checkPlayer)
             {
                 checkPlayer = false;
                 playerDistance = 100;
-                debugGameLoaded = false;
+                stateSet = false;
                 state = state_939.patrol;
             }
         }

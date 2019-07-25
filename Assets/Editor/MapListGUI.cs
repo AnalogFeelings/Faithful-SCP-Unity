@@ -81,7 +81,7 @@ public class MapListGUI : Editor
             SerializedProperty hasSpecial = MyListRef.FindPropertyRelative("hasSpecial");
             SerializedProperty Zone = MyListRef.FindPropertyRelative("Zone");
             SerializedProperty Music = MyListRef.FindPropertyRelative("music");
-
+            SerializedProperty hasAmbiance = MyListRef.FindPropertyRelative("hasAmbiance");
 
 
             // Display the property fields in two ways.
@@ -90,28 +90,29 @@ public class MapListGUI : Editor
             // Choose to display automatic or custom field types. This is only for example to help display automatic and custom fields.
             //1. Automatic, No customization <-- Choose me I'm automatic and easy to setup
             Texture2D myTexture = AssetPreview.GetAssetPreview(Room.objectReferenceValue);
-                EditorGUILayout.BeginHorizontal();
-                GUILayout.Label(myTexture);
-                EditorGUILayout.BeginVertical();
-                EditorGUIUtility.labelWidth = 60;
-                Room.objectReferenceValue = EditorGUILayout.ObjectField("Room ", Room.objectReferenceValue, typeof(GameObject), true);
-                EditorGUILayout.PropertyField(Chance);
-                EditorGUILayout.PropertyField(isSpecial);
-                EditorGUILayout.PropertyField(Zone);
-                EditorGUILayout.PropertyField(hasEvent);
-                EditorGUILayout.PropertyField(hasSpecial);
-                EditorGUILayout.PropertyField(hasItem);
-                EditorGUILayout.PropertyField(Music);
-                EditorGUILayout.Space();
-                EditorGUILayout.Space();
-                if (GUILayout.Button("Remove This Index (" + i.ToString() + ")"))
-                {
-                    t.Remove(i, choiceList);
-                }
-                EditorGUILayout.EndVertical();
-                EditorGUILayout.EndHorizontal();
-
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Label(myTexture);
+            EditorGUILayout.BeginVertical();
+            EditorGUIUtility.labelWidth = 60;
+            Room.objectReferenceValue = EditorGUILayout.ObjectField("Room ", Room.objectReferenceValue, typeof(GameObject), true);
+            EditorGUILayout.PropertyField(Chance);
+            EditorGUILayout.PropertyField(isSpecial);
+            EditorGUILayout.PropertyField(Zone);
+            EditorGUILayout.PropertyField(hasEvent);
+            EditorGUILayout.PropertyField(hasSpecial);
+            EditorGUILayout.PropertyField(hasItem);
+            EditorGUILayout.PropertyField(hasAmbiance);
+            EditorGUILayout.PropertyField(Music);
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+            if (GUILayout.Button("Remove This Index (" + i.ToString() + ")"))
+            {
+                t.Remove(i, choiceList);
             }
+            EditorGUILayout.EndVertical();
+            EditorGUILayout.EndHorizontal();
+
+        }
 
             //Remove this index from the List
             EditorGUILayout.Space();

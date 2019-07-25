@@ -7,7 +7,7 @@ public class RoomChance
 {
     public GameObject Room;
     public int Chance;
-    public bool isSpecial, hasEvent, hasSpecial, hasItem = false;
+    public bool isSpecial, hasEvent, hasSpecial, hasItem = false, hasAmbiance=false;
     public RoomType type;
     public int Zone;
     public int music = -1;

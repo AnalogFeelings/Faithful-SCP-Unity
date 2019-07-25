@@ -38,7 +38,7 @@ public enum RoomType { TwoWay, FourWay, CornerWay, TWay, EndWay };
 public class room_dat
 {
     public RoomType type;
-    public bool isSpecial, hasEvents = false, hasSpecial = false, hasItems = false;
+    public bool isSpecial, hasEvents = false, hasSpecial = false, hasItems = false, hasAmbiance = false;
     public GameObject RoomHolder;
     public int music = -1, Zone = 1;
 };
@@ -49,7 +49,7 @@ public class room
 {
     public RoomType type;
     public int angle, Event=-1, Zone, items=0, EventState=0;
-    public bool empty=true, eventDone=false, isSpecial=false;
+    public bool empty=true, eventDone=false, isSpecial=false, hasAmbiance=false;
     public int[] neighbours = new int[4];
     public int[] values = new int[5] { 0, 0, 0, 0, 0};
     public string roomName;
@@ -129,9 +129,10 @@ public class NewMapGen : MonoBehaviour
     public int extrawalker;
     bool IsNew = false;
     public bool CreationDone;
+    public bool spawnspecial, useAlternateSpawn;
 
     int walker_count;
-    public bool forceConnect, carving;
+    public bool forceConnect, carving, carvtype1, carvtype2;
     readonly int[,] dirs = { { 1, 0 }, { 0, -1 }, { -1, 0 }, { 0, 1 } };
 
     GameObject twoway;
@@ -191,7 +192,6 @@ public class NewMapGen : MonoBehaviour
             if (roomlist[i].isSpecial == true)
             {
                 speciallist.Add(roomlist[i]);
-                //Debug.Log("Cuarto Especial " + roomlist[i].Room.name + " Tipo " + roomlist[i].type);
             }
         }
         RoomCompare rc = new RoomCompare();
@@ -214,8 +214,7 @@ public class NewMapGen : MonoBehaviour
             temp.hasItems = roomlist[i].hasItem;
             temp.Zone = roomlist[i].Zone;
             temp.type = roomlist[i].type;
-
-            //Debug.Log("Cuarto " + roomlist[i].Room.name + " Tipo " + roomlist[i].type);
+            temp.hasAmbiance = roomlist[i].hasAmbiance;
 
             roomTable.Add(temp.RoomHolder.name, temp);
         }
@@ -263,13 +262,21 @@ public class NewMapGen : MonoBehaviour
         walker_list.Add(new walker_dat(mapSize.xSize / 2, mapSize.ySize - 2, mapSize.xSize, maxHall, 0, true));
         walker_list.Add(new walker_dat(mapSize.xSize / 2, mapSize.ySize - 2, mapSize.xSize, maxHall, 2, true));*/
 
-        walker_list.Add(new walker_dat(mapSize.xSize / 2, 0+3, mapSize.xSize, maxHall, 3, true));
-        walker_list.Add(new walker_dat(mapSize.xSize / 2, zone3_limit - 1, mapSize.xSize, minHall, 1, true));
-        walker_list.Add(new walker_dat(mapSize.xSize / 2, zone2_limit + 1, mapSize.xSize, minHall, 3, true));
-        walker_list.Add(new walker_dat(mapSize.xSize / 2, mapSize.ySize-3, mapSize.xSize, minHall, 1, true));
+        if (!useAlternateSpawn)
+        {
+            walker_list.Add(new walker_dat(mapSize.xSize / 2, 0 + 1, mapSize.xSize, maxHall, 3, true));
+            walker_list.Add(new walker_dat(mapSize.xSize / 2, zone3_limit - 1, mapSize.xSize, minHall, 1, true));
+            walker_list.Add(new walker_dat(mapSize.xSize / 2, zone2_limit + 1, mapSize.xSize, minHall, 3, true));
+            walker_list.Add(new walker_dat(mapSize.xSize / 2, mapSize.ySize - 1, mapSize.xSize, minHall, 1, true));
 
-        walker_list.Add(new walker_dat(1, mapSize.ySize / 2, (mapSize.xSize / 2) * 3, minHall, 0, true));
-        walker_list.Add(new walker_dat(mapSize.xSize, mapSize.ySize / 2, (mapSize.xSize / 2) * 3, minHall, 2, true));
+            walker_list.Add(new walker_dat(1, mapSize.ySize / 2, (mapSize.xSize / 2) * 3, minHall, 0, true));
+            walker_list.Add(new walker_dat(mapSize.xSize, mapSize.ySize / 2, (mapSize.xSize / 2) * 3, minHall, 2, true));
+        }
+        else
+        {
+            walker_list.Add(new walker_dat(1, mapSize.ySize / 2, mapSize.xSize + mapSize.ySize, maxHall, 0, true));
+        }
+
 
 
 
@@ -291,9 +298,10 @@ public class NewMapGen : MonoBehaviour
         mapfil[0, mapSize.ySize /2].isSpecial = true;
         mapfil[0, mapSize.ySize / 2].items = 1;
         mapfil[0, mapSize.ySize /2].angle = 90;
-        mapfil[0, mapSize.ySize /2].Zone = 3;
+        mapfil[0, mapSize.ySize /2].Zone = 2;
         mapfil[0, mapSize.ySize /2].type = RoomType.EndWay;
 
+        if (spawnspecial)
         SpecialRoomSpawn();
 
 
@@ -342,28 +350,20 @@ public class NewMapGen : MonoBehaviour
 
             temp.lifespan -= 1;
 
-            if (temp.y == zone3_limit || temp.y == zone2_limit)
+            if (!useAlternateSpawn)
             {
-                if (temp.lifespan <= 2)
+                if (temp.y == zone3_limit)
                 {
-                    temp.lifespan = 0;
-                    temp.steps = 0;
+                    temp.lifespan += 2;
+                    temp.steps += 2;
+                    temp.dir = 3;
+
                 }
-                else
-                switch (temp.dir)
+                if (temp.y == zone2_limit)
                 {
-                    case 1:
-                        temp.steps += 1;
-                        temp.lifespan += 1;
-                        break;
-                    case 3:
-                        temp.steps += 1;
-                        temp.lifespan += 1;
-                        break;
-                    default:
-                        temp.steps = 1;
-                        temp.dir = 3;
-                        break;
+                    temp.lifespan += 2;
+                    temp.steps += 2;
+                    temp.dir = 1;
                 }
             }
 
@@ -377,8 +377,11 @@ public class NewMapGen : MonoBehaviour
                 {
                     newpath = countryroad(tempNum, temp.dir);
                     walker_list.Add(new walker_dat(temp.x, temp.y, (temp.lifespan / 2), minHall, newpath, false));
+                    if (useAlternateSpawn && pathchance < 3)
+                    {
+                        walker_list.Add(new walker_dat(temp.x, temp.y, (temp.lifespan / 4), minHall, noatras(newpath), false));
+                    }
                 }
-
             }
 
             temp.dir = tempNum;
@@ -471,9 +474,9 @@ public class NewMapGen : MonoBehaviour
         int i;
         for (i = zone3_limit-1; i < zone2_limit+1; i++)
         {
-            if (mapgen[mapSize.xSize / 2, i] == 1)
+            /*if (mapgen[mapSize.xSize / 2, i] == 1)
                 break;
-            else
+            else*/
                 mapgen[mapSize.xSize / 2, i] = 1;
         }
 
@@ -501,7 +504,7 @@ public class NewMapGen : MonoBehaviour
         if (mapgen[0, (mapSize.ySize / 2) + 1] == 1)
         {
             mapgen[0, (mapSize.ySize / 2) + 1] = 0;
-            mapgen[0+1, (mapSize.ySize / 2) + 2] = 1;
+            mapgen[0 + 1, (mapSize.ySize / 2) + 2] = 1;
         }
 
         if (mapgen[0, (mapSize.ySize / 2) + 2] == 1)
@@ -509,6 +512,7 @@ public class NewMapGen : MonoBehaviour
             mapgen[0, (mapSize.ySize / 2) + 2] = 0;
             mapgen[0 + 1, (mapSize.ySize / 2) + 3] = 1;
         }
+
 
         /*if (mapgen[(mapSize.xSize / 2) - 1, mapSize.ySize - 1] == 1)
         /*{
@@ -535,51 +539,77 @@ public class NewMapGen : MonoBehaviour
         {
             for (j = 0; j < mapSize.ySize - 1; j++)
             {
-                if (mapgen[i, j] == 1)
+                if (mapgen[i, j] == 1 && carvtype1 == true)
                 {
-                    if ((mapgen[i + 1, j] == 1) && (mapgen[i + 1, j + 1] == 1) && (mapgen[i, j + 1] == 1)  && (mapgen[i - 1, j + 1] == 1) && (mapgen[i - 1, j] == 1))
+                    if ((mapgen[i + 1, j] == 1) && (mapgen[i + 1, j + 1] == 1) && (mapgen[i, j + 1] == 1) && (mapgen[i - 1, j + 1] == 1) && (mapgen[i - 1, j] == 1))
                     {
-                        if (j != 0 && mapgen[i, j-1] == 0 )
+                        if (j != 0 && mapgen[i, j - 1] == 0)
                             mapgen[i, j] = 0;
                         else
-                        if (j + 2 != mapSize.ySize && mapgen[i, j+2] == 0)
-                            mapgen[i, j+1] = 0;
+                        if (j + 2 != mapSize.ySize && mapgen[i, j + 2] == 0)
+                            mapgen[i, j + 1] = 0;
                     }
-                    if (j != 0 && ((mapgen[i + 1, j] == 1) && (mapgen[i + 1, j + 1] == 1) && (mapgen[i, j + 1] == 1) && (mapgen[i, j - 1] == 1) && (mapgen[i+1, j - 1] == 1)))
+                    if (j != 0 && ((mapgen[i + 1, j] == 1) && (mapgen[i + 1, j + 1] == 1) && (mapgen[i, j + 1] == 1) && (mapgen[i, j - 1] == 1) && (mapgen[i + 1, j - 1] == 1)))
                     {
                         if (mapgen[i - 1, j] == 0)
                             mapgen[i, j] = 0;
-                        else 
-                            if (i + 2 != mapSize.xSize && mapgen[i +2, j] == 0)
-                            mapgen[i+1, j] = 0;
+                        else
+                            if (i + 2 != mapSize.xSize && mapgen[i + 2, j] == 0)
+                            mapgen[i + 1, j] = 0;
                     }
-                    if (j != 0 && i != mapSize.xSize-1 && j != mapSize.ySize)
+                }
+            }
+        }
+
+        for (i = 1; i < mapSize.xSize - 1; i++)
+        {
+            for (j = 0; j < mapSize.ySize - 1; j++)
+            {
+                if (mapgen[i, j] == 1)
+                {
+                    if (j != 0 && i != mapSize.xSize - 1 && j != mapSize.ySize && carvtype2 == true)
                     {
-                        if ((mapgen[i + 1, j] == 1) && (mapgen[i + 1, j+1] == 1) && (mapgen[i, j+1] == 1))
+                        if ((mapgen[i + 1, j] == 1) && (mapgen[i + 1, j + 1] == 1) && (mapgen[i, j + 1] == 1))
                         {
                             if (mapgen[i - 1, j] != 1 && mapgen[i, j - 1] != 1)
                             {
                                 mapgen[i, j] = 0;
                             }
-                            if (i != mapSize.xSize-2 && (mapgen[i + 2, j] != 1 && mapgen[i + 1, j - 1] != 1))
+                            if (i != mapSize.xSize - 2 && (mapgen[i + 2, j] != 1 && mapgen[i + 1, j - 1] != 1))
                             {
-                                mapgen[i+1, j] = 0;
+                                mapgen[i + 1, j] = 0;
                             }
-                            if (j != mapSize.ySize - 2 && (mapgen[i, j+2] != 1 && mapgen[i - 1, j +1] != 1))
+                            if (j != mapSize.ySize - 2 && (mapgen[i, j + 2] != 1 && mapgen[i - 1, j + 1] != 1))
                             {
-                                mapgen[i, j+1] = 0;
+                                mapgen[i, j + 1] = 0;
                             }
-                            if (j != mapSize.ySize - 2 && i != mapSize.xSize - 2 && (mapgen[i + 2, j+1] != 1 && mapgen[i + 1, j + 2] != 1))
+                            if (j != mapSize.ySize - 2 && i != mapSize.xSize - 2 && (mapgen[i + 2, j + 1] != 1 && mapgen[i + 1, j + 2] != 1))
                             {
-                                mapgen[i + 1, j+1] = 0;
+                                mapgen[i + 1, j + 1] = 0;
                             }
                         }
-      
+
                     }
 
                 }
             }
         }
+
+        for (i = 1; i < mapSize.xSize - 1; i++)
+        {
+            for (j = 1; j < mapSize.ySize; j++)
+            {
+                if (mapgen[i, j] == 1 && mapgen[i - 1, j] == 1 && mapgen[i + 1, j] == 1 && mapgen[i, j - 1] == 0 && mapgen[i - 1, j - 1] == 0 && mapgen[i + 1, j - 1] == 0)
+                {
+                    int rand = Random.Range(0, 2);
+                    mapgen[i, j - 1] = rand;
+                }
+
+            }
+
+        }
+
+
     }
 
     void ZoneCarving()          //Llena el laberinto con habitaciones aleatorias con objetos, enemigos, etc. Tambien le dice que cuartos tiene como vecinos
@@ -666,10 +696,10 @@ public class NewMapGen : MonoBehaviour
                     RoomInstance(i, j);
                 roomsprocessed += 1;
                 //Debug.Log("Rooms " + roomsprocessed + " Total " + mapSize.xSize * mapSize.ySize + " percent " + ((0.5f / (mapSize.xSize * mapSize.ySize)) * roomsprocessed));
+                if (!GlobalValues.debug)
                 LoadingSystem.instance.loadbar = 0.5f + (0.5f / (mapSize.xSize * mapSize.ySize)) * roomsprocessed;
-                
-                yield return null;
             }
+            yield return null;
         }
 
         //DecalSystem.instance.CombineDecals();
@@ -948,13 +978,19 @@ public class NewMapGen : MonoBehaviour
         {
             if (gend < roomlist[z].Chance)
             {
-                mapfil[i, j].roomName = roomlist[z].Room.name;
+                /*mapfil[i, j].roomName = roomlist[z].Room.name;
                 mapfil[i, j].angle = angle;
                 mapfil[i, j].type = type;
 
                 if (roomlist[z].hasItem)
                     mapfil[i, j].items = 1;
 
+                if (roomlist[z].hasAmbiance)
+                    mapfil[i, j].hasAmbiance= true;*/
+
+                mapfil[i, j].angle = angle;
+
+                mapfil[i, j] = SetRoomValues(roomlist[z], mapfil[i, j]);
 
 
                 switch (type)
@@ -981,6 +1017,19 @@ public class NewMapGen : MonoBehaviour
             else
                 gend -= roomlist[z].Chance;
         }
+    }
+
+    room SetRoomValues(RoomChance data, room temp)
+    {
+        temp.roomName = data.Room.name;
+        temp.type = data.type;
+        temp.hasAmbiance = data.hasAmbiance;
+
+        if (data.hasItem)
+            temp.items = 1;
+
+
+        return (temp);
     }
 
     void SpecialRoomSpawn()
@@ -1028,14 +1077,23 @@ public class NewMapGen : MonoBehaviour
             do
             {
                 tries -= 1;
+
+                if (currtype.Count == 0)
+                    throw new System.Exception("EMPTY LOOKUP TABLE AT " + speciallist[i].type);
+
                 chance = Random.Range(0, currtype.Count);
                 if ((mapfil[currtype[chance].xPos, currtype[chance].yPos].isSpecial == false) && mapfil[currtype[chance].xPos, currtype[chance].yPos].Zone == speciallist[i].Zone)
                 {
-                    mapfil[currtype[chance].xPos, currtype[chance].yPos].roomName = speciallist[i].Room.name;
+                    /*mapfil[currtype[chance].xPos, currtype[chance].yPos].roomName = speciallist[i].Room.name;
                     mapfil[currtype[chance].xPos, currtype[chance].yPos].isSpecial = true;
 
                     if (speciallist[i].hasItem)
                         mapfil[currtype[chance].xPos, currtype[chance].yPos].items = 1;
+
+                    if (speciallist[i].hasAmbiance)
+                        mapfil[currtype[chance].xPos, currtype[chance].yPos].hasAmbiance = true;*/
+
+                    mapfil[currtype[chance].xPos, currtype[chance].yPos] = SetRoomValues(speciallist[i], mapfil[currtype[chance].xPos, currtype[chance].yPos]);
 
                     spawned = true;
                     break;

@@ -31,6 +31,11 @@ public class EV_Storage939 : Event_Parent
             {
                 audio.SetActive(true);
                 GameController.instance.holdRoom = true;
+                if (GameController.instance.getValue(x, y, 4) == 0)
+                {
+                    SCP_UI.instance.ShowTutorial("tutohide2");
+                    GameController.instance.setValue(x, y, 4, 1);
+                }
             }
             else
             {
@@ -49,6 +54,11 @@ public class EV_Storage939 : Event_Parent
             {
                 audio.SetActive(true);
                 GameController.instance.holdRoom = true;
+                if (GameController.instance.getValue(x, y, 4) == 0)
+                {
+                    SCP_UI.instance.ShowTutorial("tutohide2");
+                    GameController.instance.setValue(x, y, 4, 1);
+                }
             }
             else
             {
@@ -92,7 +102,7 @@ public class EV_Storage939 : Event_Parent
     {
         base.EventFinished();
         up_ele1 = (GameController.instance.getValue(x, y, 0) == 1);
-        up_ele2 = (GameController.instance.getValue(x, y, 2) == 1);
+        up_ele2 = (GameController.instance.getValue(x, y, 1) == 1);
         active_lev1 = (GameController.instance.getValue(x, y, 3) == 1);
         active_lev2 = (GameController.instance.getValue(x, y, 4) == 1);
 
@@ -101,11 +111,6 @@ public class EV_Storage939 : Event_Parent
 
         lever1.On = active_lev1;
         lever2.On = active_lev2;
-
-        /*if(up_ele1 == false || up_ele2)
-                audio.SetActive(true);
-            else
-                audio.SetActive(false);*/
 
         if (lever1.On || lever2.On)
         {

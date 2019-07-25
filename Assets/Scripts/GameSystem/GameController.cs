@@ -45,11 +45,11 @@ public class GameController : MonoBehaviour
     DepthOfField depth;
     TweenBase HorrorTween;
 
-    int xPlayer, yPlayer;
+    public int xPlayer, yPlayer;
     SmokeBlur HorrorBlur;
     Camera HorrorFov;
 
-    public GameObject origplayer, player, MapCamera, MapTarget;
+    public GameObject origplayer, player, roomAmbiance_obj;
     public Player_Control playercache;
     public GameObject orig173, startEv, orig106, itemSpawner, npcCam;
 
@@ -101,6 +101,7 @@ public class GameController : MonoBehaviour
     public AudioSource Horror;
     public AudioSource GlobalSFX;
 
+    AudioSource roomAmbiance_src;
 
     public AudioClip[] AmbianceLibrary;
     public AudioClip[] PreBreach;
@@ -109,9 +110,13 @@ public class GameController : MonoBehaviour
     public AudioClip[] Z2;
     public AudioClip[] Z3;
     public AudioClip[] RoomMusic;
+    public AudioClip[] roomAmbiance_clips;
     public AudioClip Mus1, Mus2, Mus3, MusIntro, savedSFX;
 
     bool RoomMusicChange = false;
+    bool roomAmbiance_chg = false;
+    Ambiances roomAmbiance_amb = Ambiances.drip;
+
     bool StartupDone = false;
 
     public CameraPool[] cameraPool;
@@ -150,7 +155,6 @@ public class GameController : MonoBehaviour
     /// </summary>
     /// 
     public Tilemap mapFull;
-    public Tilemap mapFill;
     public TileBase tile;
 
     public PostProcessProfile LowQ;
@@ -187,6 +191,10 @@ public class GameController : MonoBehaviour
 
     private void Start()
     {
+        roomAmbiance_obj = Instantiate(roomAmbiance_obj);
+        roomAmbiance_src = roomAmbiance_obj.GetComponent<AudioSource>();
+
+
         Time.timeScale = 0;
         AmbianceLibrary = PreBreach;
         npcCam.SetActive(false);
@@ -349,6 +357,7 @@ public class GameController : MonoBehaviour
 
             itemParent = new GameObject("itemParent");
             eventParent = new GameObject("eventParent");
+            npcParent = new GameObject("npcParent");
 
             SaveSystem.instance.LoadState();
 
@@ -577,7 +586,14 @@ public class GameController : MonoBehaviour
 
     public void DefMusic()
     {
-        zoneMusic = 3;
+        if (roomLookup[SCP_Map[xPlayer, yPlayer].roomName].music != -1)
+        {
+            ChangeMusic(RoomMusic[roomLookup[SCP_Map[xPlayer, yPlayer].roomName].music]);
+            currentMusic = roomLookup[SCP_Map[xPlayer, yPlayer].roomName].music;
+            RoomMusicChange = true;
+        }
+        else
+            zoneMusic = 3;
     }
 
 
@@ -640,7 +656,7 @@ public class GameController : MonoBehaviour
             LightTrigger.transform.position = new Vector3(xPlayer * roomsize, 0f, yPlayer * roomsize);
         }
 
-        if (Input.GetKeyDown(KeyCode.F1))
+        /*if (Input.GetKeyDown(KeyCode.F1))
         {
             if (npcPanel == false)
             {
@@ -652,7 +668,7 @@ public class GameController : MonoBehaviour
                 npcPanel = false;
                 npcCam.SetActive(false);
             }
-        }
+        }*/
 
         if (Input.GetKeyDown(KeyCode.F2))
         {
@@ -660,10 +676,6 @@ public class GameController : MonoBehaviour
         }
 
         NPCManager();
-
-        MapCamera.transform.position = new Vector3(xPlayer, yPlayer, MapCamera.transform.position.z);
-        MapTarget.transform.position = new Vector3(xPlayer + 0.5f, yPlayer + 0.5f, MapTarget.transform.position.z);
-        MapTarget.transform.rotation = Quaternion.Euler(0.0f, 0.0f, -player.transform.eulerAngles.y);
 
         AmbianceManager();
         MusicManager();
@@ -686,7 +698,7 @@ public class GameController : MonoBehaviour
         {
             rooms[x, y].GetComponent<EventHandler>().EventLoad(x, y, SCP_Map[x, y].eventDone);
         }
-
+        PlayerReveal(x, y);
         PlayerEvents();
     }
 
@@ -771,6 +783,40 @@ public class GameController : MonoBehaviour
                     DefMusic();
 
                 RoomMusicChange = false;
+            }
+
+
+            if (roomLookup[SCP_Map[xPlayer, yPlayer].roomName].hasAmbiance)
+            {
+                AmbianceHandler handler = rooms[xPlayer, yPlayer].GetComponent<AmbianceHandler>();
+                {
+                    if (roomAmbiance_chg == false || roomAmbiance_amb != handler.Ambiance)
+
+                    roomAmbiance_src.Stop();
+                    roomAmbiance_chg = true;
+                    roomAmbiance_src.clip = roomAmbiance_clips[(int)handler.Ambiance];
+                    roomAmbiance_src.volume = handler.Volume;
+                    roomAmbiance_src.spread = handler.spread;
+                    roomAmbiance_src.minDistance = handler.closeDistance;
+
+                    if (handler.hasOrigin)
+                    {
+                        roomAmbiance_src.spatialBlend = handler.spatial;
+                        roomAmbiance_obj.transform.position = handler.origin.position;
+                    }
+                    else
+                        roomAmbiance_src.spatialBlend = 0;
+
+                    roomAmbiance_amb = handler.Ambiance;
+                    roomAmbiance_src.Play();
+                }
+            }
+            else
+            {
+                /*if (roomAmbiance_chg == true)
+                    DefMusic();*/
+                roomAmbiance_src.Stop();
+                roomAmbiance_chg = false;
             }
 
         }
@@ -878,12 +924,24 @@ public class GameController : MonoBehaviour
     /// <summary>
     ///////////////////////////////////////////////////////// SNavCode
     /// </summary>
-    public void RenderMap()
+    /// 
+    public void Map_Prepare()
     {
         nav_Map = new int[mapSize.xSize, mapSize.ySize];
+        for (int x = 0; x < mapSize.xSize; x++)
+        {
+            //Loop through the height of the map
+            for (int y = 0; y < mapSize.ySize; y++)
+            {
+                nav_Map[x, y] = 0;
+            }
+        }
+    }
+
+    public void Map_RenderFull()
+    {
         //Clear the map (ensures we dont overlap)
         mapFull.ClearAllTiles();
-        mapFill.ClearAllTiles();
         //Loop through the width of the map
         for (int x = 0; x < mapSize.xSize; x++)
         {
@@ -893,13 +951,26 @@ public class GameController : MonoBehaviour
                 if (Binary_Map[x, y] == 1)
                 {
                     mapFull.SetTile(new Vector3Int(x, y, 0), tile);
-                    mapFill.SetTile(new Vector3Int(x, y, 0), tile);
-
                 }
-                mapFill.SetTileFlags(new Vector3Int(x, y, 0), TileFlags.None);
-                mapFill.SetColor(new Vector3Int(x, y, 0), Color.clear);
             }
+        }
+    }
 
+    public void Map_RenderHalf()
+    {
+        //Clear the map (ensures we dont overlap)
+        mapFull.ClearAllTiles();
+        //Loop through the width of the map
+        for (int x = 0; x < mapSize.xSize; x++)
+        {
+            //Loop through the height of the map
+            for (int y = 0; y < mapSize.ySize; y++)
+            {
+                if (Binary_Map[x, y] == 1)
+                {
+                    mapFull.SetTile(new Vector3Int(x, y, 0), tile);
+                }
+            }
         }
 
         for (int x = 0; x < mapSize.xSize; x++)
@@ -907,14 +978,21 @@ public class GameController : MonoBehaviour
             //Loop through the height of the map
             for (int y = 0; y < mapSize.ySize; y++)
             {
-                nav_Map[x, y] = 0;
-                mapFill.SetTileFlags(new Vector3Int(x, y, 0), TileFlags.None);
-                mapFill.SetColor(new Vector3Int(x, y, 0), Color.clear);
+                if (nav_Map[x, y] == 0)
+                {
+                    mapFull.SetColor(new Vector3Int(x, y, 0), Color.clear);
+                }
+                else
+                {
+                    mapFull.SetColor(new Vector3Int(x, y, 0), Color.white);
+                }
             }
         }
     }
 
-    public void LoadMap()
+
+
+    /*public void LoadMap()
     {
         for (int x = 0; x < mapSize.xSize; x++)
         {
@@ -925,11 +1003,11 @@ public class GameController : MonoBehaviour
                     mapFill.SetColor(new Vector3Int(x, y, 0), Color.white);
             }
         }
-    }
+    }*/
 
     public void PlayerReveal(int x, int y)
     {
-        mapFill.SetColor(new Vector3Int(x, y, 0), Color.white);
+        mapFull.SetColor(new Vector3Int(x, y, 0), Color.white);
         nav_Map[x, y] = 1;
     }
 
@@ -1332,12 +1410,11 @@ public class GameController : MonoBehaviour
 
         spawnHere = origSpawn;
 
-        RenderMap();
+        Map_Prepare();
 
         if (!GlobalValues.isNew)
         {
             nav_Map = SaveSystem.instance.playData.navMap;
-            LoadMap();
             SetMapPos(SaveSystem.instance.playData.mapX, SaveSystem.instance.playData.mapY);
         }
 
@@ -1405,14 +1482,17 @@ public class GameController : MonoBehaviour
         }
 
         GL_Spawning();
-        LoadingSystem.instance.loadbar = 1f;
-        LoadingSystem.instance.canClick = true;
 
         if (!GlobalValues.debug)
+        {
+            LoadingSystem.instance.loadbar = 1f;
+            LoadingSystem.instance.canClick = true;
+
             while (!LoadingSystem.instance.isLoadingDone)
             {
                 yield return null;
             }
+        }
         GL_Start();
         GL_AfterPost();
     }

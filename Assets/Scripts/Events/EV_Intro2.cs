@@ -215,7 +215,7 @@ public class EV_Intro2 : MonoBehaviour
                         objPlayer.GetComponent<Player_Control>().FakeBlink(0.6f);
                         sci_.SetSeq(Alarm);
 
-
+                        guard_.StopRota();
                         objPlayer.GetComponent<Player_Control>().playerWarp((GameController.instance.WorldAnchor.transform.position + ((GameController.instance.WorldAnchor.transform.rotation * Quaternion.Inverse(TeleportAnchor.transform.rotation)) * (objPlayer.transform.position - TeleportAnchor.position))), GameController.instance.WorldAnchor.transform.eulerAngles.y - TeleportAnchor.transform.eulerAngles.y);
                         d1_.puppetWarp(GameController.instance.WorldAnchor.transform.position + ((GameController.instance.WorldAnchor.transform.rotation * Quaternion.Inverse(TeleportAnchor.transform.rotation)) * (d1.transform.position - TeleportAnchor.position)));
                         d2_.puppetWarp(GameController.instance.WorldAnchor.transform.position + ((GameController.instance.WorldAnchor.transform.rotation * Quaternion.Inverse(TeleportAnchor.transform.rotation)) * (d2.transform.position - TeleportAnchor.position)));

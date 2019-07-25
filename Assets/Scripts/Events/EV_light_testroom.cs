@@ -30,6 +30,7 @@ public class EV_light_testroom : Event_Parent
                 Screen.SetActive(false);
                 GameController.instance.PlayHorror(SFX[0],Anchor2.transform, npc.none);
                 GameController.instance.PlayHorror(SFX[1],Anchor2.transform, npc.none);
+                SCP_UI.instance.ShowTutorial("tutoinv2");
                 EventFinished();
             }
         }

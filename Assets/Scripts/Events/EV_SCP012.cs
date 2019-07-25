@@ -23,7 +23,16 @@ public class EV_SCP012 : Event_Parent
     {
         
     }
+    public override void EventStart()
+    {
+        base.EventStart();
+        if (GameController.instance.getValue(x,y,0)== 0)
+        {
+            SCP_UI.instance.ShowTutorial("tutoinv3");
+            GameController.instance.setValue(x, y, 0, 1);
 
+        }
+    }
 
     public override void EventUpdate()
     {

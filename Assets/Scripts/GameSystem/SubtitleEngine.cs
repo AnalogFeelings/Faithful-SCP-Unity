@@ -8,14 +8,26 @@ public class SubtitleEngine : MonoBehaviour
     public static SubtitleEngine instance = null;
     float subtitle_add;
     float[] subtitle_hold = new float [3];
+    float[] flavortext_hold = new float[3];
     public float subtitle_hold_timer, subtitle_add_timer;
-    bool foundSub;
-    bool Moved;
+    bool foundSub, foundFlavortext;
+    bool Moved, MoverFlavorText;
     bool VoiceSubsEnabled = true;
+    Color boxcol;
 
+    [Header ("Subtitles")]
     public Text [] line = new Text [3];
+    public Image[] bg = new Image[3];
+    public RectTransform[] bgsize = new RectTransform[3];
     List<string> pending = new List<string>();
     string [] current = new string [3];
+
+    [Header("FlavorText")]
+    public Text[] ft_line = new Text[3];
+    public Image[] ft_bg = new Image[3];
+    public RectTransform[] ft_bgsize = new RectTransform[3];
+    List<string> ft_pending = new List<string>();
+    string[] ft_current = new string[3];
 
     // Start is called before the first frame update
 
@@ -31,6 +43,7 @@ public class SubtitleEngine : MonoBehaviour
             instance = this;
         else if (instance != null)
             Destroy(gameObject);
+        boxcol = bg[0].color;
     }
 
     void Start()
@@ -48,12 +61,25 @@ public class SubtitleEngine : MonoBehaviour
         if (IsVoice)
         {
             if (VoiceSubsEnabled)
-            pending.Add(sub);
+            {
+                if (sub.Length > 80)
+                {
+                    int firstspace=sub.IndexOf(" ", 80);
+                    if (firstspace != -1)
+                    {
+                        pending.Add(sub.Substring(0, firstspace+1));
+                        playSub(sub.Substring(firstspace), true);
+                    }
+
+                }
+                else
+                pending.Add(sub);
+
+            }
         } 
         else
         {
-            pending.Insert(0, sub);
-            subtitle_add = -1;
+            ft_pending.Add(sub);
         }
     }
 
@@ -79,6 +105,35 @@ public class SubtitleEngine : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
             line[i].text = current[i];
+            if (string.IsNullOrEmpty(current[i]))
+                bg[i].color = Color.clear;
+            else
+            {
+                bg[i].color = boxcol;
+                bgsize[i].sizeDelta = new Vector2(line[i].preferredWidth+20, bgsize[i].sizeDelta.y);
+            }
+        }
+
+
+        if (ft_pending.Count > 0)
+        {
+            moveFlavorText();
+            addFlavorText();
+        }
+
+        if (foundFlavortext)
+            updateFlavorText();
+
+        for (int i = 0; i< 3; i++)
+        {
+            ft_line[i].text = ft_current[i];
+            if (string.IsNullOrEmpty(ft_current[i]))
+                ft_bg[i].color = Color.clear;
+            else
+            {
+                ft_bg[i].color = boxcol;
+                ft_bgsize[i].sizeDelta = new Vector2(ft_line[i].preferredWidth+20, ft_bgsize[i].sizeDelta.y);
+}
         }
 
     }
@@ -121,6 +176,48 @@ public class SubtitleEngine : MonoBehaviour
             else
             {
                 current[i] = null;
+            }
+        }
+    }
+
+    void moveFlavorText()
+    {
+        for (int i = 1; i >= 0; i--)
+        {
+            if (ft_current[i + 1] == null)
+            {
+                ft_current[i + 1] = ft_current[i];
+                ft_current[i] = null;
+                flavortext_hold[i + 1] = flavortext_hold[i];
+            }
+        }
+    }
+
+    void addFlavorText()
+    {
+        if (ft_current[0] == null)
+        {
+            ft_current[0] = ft_pending[0];
+            flavortext_hold[0] = subtitle_hold_timer;
+            ft_pending.RemoveAt(0);
+            foundFlavortext = true;
+            return;
+        }
+    }
+
+    void updateFlavorText()
+    {
+        foundFlavortext = false;
+        for (int i = 0; i < 3; i++)
+        {
+            if (flavortext_hold[i] >= 0)
+            {
+                flavortext_hold[i] -= Time.deltaTime;
+                foundFlavortext = true;
+            }
+            else
+            {
+                ft_current[i] = null;
             }
         }
     }

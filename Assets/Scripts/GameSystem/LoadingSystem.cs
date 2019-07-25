@@ -19,7 +19,7 @@ public class LoadingSystem : MonoBehaviour
 {
 
     public LoadingScreen[] screens;
-
+    int screenshots=0;
     Vector3Int fadecolor;
     int loading = 0;
     public AudioClip done;
@@ -79,9 +79,9 @@ public class LoadingSystem : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.F1))
+        if(Input.GetKeyDown(KeyCode.F7))
         {
-            DoHeavyLoading();
+            DoScreenShot();
         }
         if (isLoading)
         {
@@ -241,4 +241,13 @@ public class LoadingSystem : MonoBehaviour
             FadeIn(duration, newcolor);
         }
     }
+
+
+    void DoScreenShot()
+    {
+        Debug.Log("saycheese4");
+        ScreenCapture.CaptureScreenshot("C:/Users/Daniel/Documents/STEAMSCREENS/screen" + screenshots + ".png", 2);
+        screenshots += 1;
+    }
+
 }

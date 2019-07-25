@@ -458,6 +458,7 @@ GameObject:
   - component: {fileID: 121734794177573467}
   - component: {fileID: 121734794177573468}
   - component: {fileID: 8417083114758215886}
+  - component: {fileID: 6841548918284278347}
   m_Layer: 9
   m_Name: HeavyDoor
   m_TagString: Untagged
@@ -608,6 +609,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!65 &6841548918284278347
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 121734794177573469}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 5.9057164, y: 3.0333676, z: 1}
+  m_Center: {x: -0.04973483, y: 1.0166838, z: 0}
 --- !u!1 &954536395637951087
 GameObject:
   m_ObjectHideFlags: 0
@@ -2638,7 +2652,7 @@ MonoBehaviour:
       Rate: 30
     _Fine:
     - Spawn: {fileID: 11400000, guid: f298cfa323b7c9349a1a26932d24c0fb, type: 2}
-      Rate: 100
+      Rate: 80
     _VeryFine:
     - Spawn: {fileID: 11400000, guid: d02ef263b8f3f5644a6f2e829bd4954e, type: 2}
       Rate: 20
@@ -2653,12 +2667,12 @@ MonoBehaviour:
       Rate: 100
     _11:
     - Spawn: {fileID: 11400000, guid: d68bd58e8715013468aad9d947b760e0, type: 2}
+      Rate: 40
+    - Spawn: {fileID: 11400000, guid: 728da1ce7f2a81c4f9babab3cd6fc009, type: 2}
       Rate: 20
-    - Spawn: {fileID: 11400000, guid: c8f91b847d30b314e92e0f7d7c0f72fa, type: 2}
-      Rate: 30
     _Fine:
-    - Spawn: {fileID: 11400000, guid: c8f91b847d30b314e92e0f7d7c0f72fa, type: 2}
-      Rate: 100
+    - Spawn: {fileID: 11400000, guid: cf50739faa4cd0a43ac504519ccdd824, type: 2}
+      Rate: 30
     _VeryFine:
     - Spawn: {fileID: 11400000, guid: d02ef263b8f3f5644a6f2e829bd4954e, type: 2}
       Rate: 20
@@ -2682,8 +2696,6 @@ MonoBehaviour:
     _VeryFine:
     - Spawn: {fileID: 11400000, guid: d02ef263b8f3f5644a6f2e829bd4954e, type: 2}
       Rate: 20
-    - Spawn: {fileID: 11400000, guid: cf50739faa4cd0a43ac504519ccdd824, type: 2}
-      Rate: 100
   - Original: {fileID: 11400000, guid: 6c1753c031d23684ea206f24c1c1cb39, type: 2}
     _Coarse:
     - Spawn: {fileID: 11400000, guid: 969628d9d5f0a1e40a7e467cd91b82f4, type: 2}
@@ -2702,8 +2714,6 @@ MonoBehaviour:
     _VeryFine:
     - Spawn: {fileID: 11400000, guid: d02ef263b8f3f5644a6f2e829bd4954e, type: 2}
       Rate: 80
-    - Spawn: {fileID: 11400000, guid: cf50739faa4cd0a43ac504519ccdd824, type: 2}
-      Rate: 100
   - Original: {fileID: 11400000, guid: d02ef263b8f3f5644a6f2e829bd4954e, type: 2}
     _Coarse:
     - Spawn: {fileID: 11400000, guid: 728da1ce7f2a81c4f9babab3cd6fc009, type: 2}
@@ -2763,6 +2773,16 @@ MonoBehaviour:
       Rate: 100
     _VeryFine:
     - Spawn: {fileID: 11400000, guid: 4f178a204615891468379df10b0dc7dd, type: 2}
+      Rate: 100
+  - Original: {fileID: 11400000, guid: 375f6a1ef6ad03a41ab36a43972d74e4, type: 2}
+    _Coarse: []
+    _Rough: []
+    _11: []
+    _Fine:
+    - Spawn: {fileID: 11400000, guid: a63c260d8786af84a9c3d82112b5dbf4, type: 2}
+      Rate: 100
+    _VeryFine:
+    - Spawn: {fileID: 11400000, guid: a63c260d8786af84a9c3d82112b5dbf4, type: 2}
       Rate: 100
 --- !u!135 &6371723710723492931
 SphereCollider:
@@ -10157,15 +10177,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 683df47c0e23a7845b941da0e957b917, type: 3}
---- !u!1 &1522109143421925704 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 100000, guid: 683df47c0e23a7845b941da0e957b917,
-    type: 3}
-  m_PrefabInstance: {fileID: 1522109143421829096}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1522109143422215528 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 683df47c0e23a7845b941da0e957b917,
+    type: 3}
+  m_PrefabInstance: {fileID: 1522109143421829096}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1522109143421925704 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100000, guid: 683df47c0e23a7845b941da0e957b917,
     type: 3}
   m_PrefabInstance: {fileID: 1522109143421829096}
   m_PrefabAsset: {fileID: 0}

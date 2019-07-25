@@ -44,7 +44,10 @@ public class slotController : MonoBehaviour, IDragHandler, IEndDragHandler
         else
         {
             if (ItemController.instance.currhover != -1 && ItemController.instance.currentItem[ItemController.instance.currhover] == null && ItemController.instance.currentEquip[ItemController.instance.currhover] != true && ItemController.instance.currentEquip[id] != true)
+            {
                 slotMove();
+                return;
+            }
             if (ItemController.instance.currentItem[ItemController.instance.currhover] != null && ItemController.instance.currentEquip[ItemController.instance.currhover] != true && ItemController.instance.currentEquip[id] != true)
             {
                 if (ItemController.instance.currentItem[ItemController.instance.currhover].Mix(ItemController.instance.currentItem[id]))

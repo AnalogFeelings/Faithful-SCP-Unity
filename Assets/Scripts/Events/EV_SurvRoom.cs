@@ -75,7 +75,7 @@ public class EV_SurvRoom : Event_Parent
                     }
                 case 2:
                     {
-                        
+                        SCP_UI.instance.ShowTutorial("tutohide1");
                         Timer = HowLong;
                         status = 3;
                         break;

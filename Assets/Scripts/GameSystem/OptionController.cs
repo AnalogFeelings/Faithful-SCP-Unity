@@ -43,6 +43,7 @@ public class OptionController : MonoBehaviour
 
     [Header("Debug")]
     public Toggle debug;
+    public Toggle tuto;
 
     // Start is called before the first frame update
     void Awake()
@@ -60,12 +61,6 @@ public class OptionController : MonoBehaviour
         ///
 
         subtitles.isOn = (PlayerPrefs.GetInt("Sub", 1) == 1);
-        music.value = PlayerPrefs.GetFloat("MusicVolume", 1);
-        ambiance.value = PlayerPrefs.GetFloat("AmbianceVolume", 1);
-        sfx.value = PlayerPrefs.GetFloat("SFXVolume", 1);
-        voice.value = PlayerPrefs.GetFloat("VoiceVolume", 1);
-        master.value = PlayerPrefs.GetFloat("MainVolume", 1);
-
         ////////////////////////////////INPUT SETUP
         ///
         invert.isOn = (PlayerPrefs.GetInt("Invert", 0) == 1);
@@ -74,10 +69,17 @@ public class OptionController : MonoBehaviour
         /////////////////////////////////////MISC SETUP
         ///
         debug.isOn = (PlayerPrefs.GetInt("Debug", 0) == 1);
+        tuto.isOn = (PlayerPrefs.GetInt("Tutorials", 1) == 1);
     }
 
     private void Start()
     {
+        music.value = PlayerPrefs.GetFloat("MusicVolume", 1);
+        ambiance.value = PlayerPrefs.GetFloat("AmbianceVolume", 1);
+        sfx.value = PlayerPrefs.GetFloat("SFXVolume", 1);
+        voice.value = PlayerPrefs.GetFloat("VoiceVolume", 1);
+        master.value = PlayerPrefs.GetFloat("MainVolume", 1);
+
         startupdone = true;
     }
 
@@ -279,6 +281,14 @@ public class OptionController : MonoBehaviour
     {
         GlobalValues.debugconsole = Value;
         PlayerPrefs.SetInt("Debug", Value ? 1 : 0);
+
+        if (startupdone)
+            player.PlayOneShot(click);
+    }
+
+    public void ShowTuto(bool Value)
+    {
+        PlayerPrefs.SetInt("Tutorials", Value ? 1 : 0);
 
         if (startupdone)
             player.PlayOneShot(click);

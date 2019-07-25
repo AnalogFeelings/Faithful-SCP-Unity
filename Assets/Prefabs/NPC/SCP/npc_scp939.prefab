@@ -77,11 +77,12 @@ MonoBehaviour:
   Found: []
   Attack: []
   Hit: {fileID: 8300000, guid: 36037171635ebe34eb620f8d4606df38, type: 3}
+  AttackTheme: {fileID: 8300000, guid: 841d65f7829f57c45be12e3a14352526, type: 3}
   groundlayer:
     serializedVersion: 2
-    m_Bits: 1536
-  ListeningRange: 13
-  closeRange: 8
+    m_Bits: 1024
+  ListeningRange: 15
+  closeRange: 10
   walkSpeed: 1.5
   runSpeed: 3
   HearingTimer: 4
@@ -92,6 +93,7 @@ MonoBehaviour:
   foundPlayerRun: 12
   AttackCool: 1
   AttackDistance: 3
+  WaitTimerBase: 5
   frame: 10
   Animator: {fileID: 8902592724620025253}
   SoundLayer:
@@ -109,7 +111,7 @@ AudioSource:
   m_GameObject: {fileID: 3400218257497486907}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 243188032471989292, guid: 4cdd06a97de31484aa0429062392c9f2,
+  OutputAudioMixerGroup: {fileID: 243951847441598684, guid: 4cdd06a97de31484aa0429062392c9f2,
     type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
@@ -121,7 +123,7 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 8
+  MinDistance: 10
   MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0
@@ -235,7 +237,8 @@ AudioSource:
   m_GameObject: {fileID: 8902592724610674277}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 243188032471989292, guid: 4cdd06a97de31484aa0429062392c9f2,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -246,7 +249,7 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 3
+  MinDistance: 1
   MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0
