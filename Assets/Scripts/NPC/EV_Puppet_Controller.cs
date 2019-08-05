@@ -203,13 +203,13 @@ public class EV_Puppet_Controller : MonoBehaviour
 
 
 
-    public void PlaySound(AudioClip toPlay, bool _playSubs = false)
+    public void PlaySound(AudioClip toPlay, bool _playSubs = false, bool Force = false)
     {
         currAudio = toPlay;
         Audio.clip = currAudio;
         Audio.Play();
         if (_playSubs)
-            SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings[currAudio.name], GlobalValues.charaStrings[charName]), true);
+            SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings[currAudio.name], GlobalValues.charaStrings[charName]), true, Force);
     }
     public void StopSound()
     {
@@ -283,10 +283,10 @@ public class EV_Puppet_Controller : MonoBehaviour
     void CheckDoor()
     {
             Collider[] Interact;
-            Interact = Interact = Physics.OverlapSphere(transform.position, 1.9f, DoorLay);
+            Interact = Interact = Physics.OverlapSphere(transform.position + (transform.forward * 1.5f), 1.9f, DoorLay);
             if (Interact.Length != 0)
             {
-                Debug.DrawRay(transform.position, Interact[0].transform.position - transform.position);
+                Debug.DrawRay(transform.position+(transform.forward*1.5f), Interact[0].transform.position - transform.position);
                 Interact[0].transform.gameObject.GetComponent<Object_Door>().ForceOpen(1.5f);
             }
     }

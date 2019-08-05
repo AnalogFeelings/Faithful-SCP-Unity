@@ -38,6 +38,8 @@ public class SCP_914 : MonoBehaviour
 
     public Table914 [] itemtable;
 
+    public Table914 document;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -75,7 +77,7 @@ public class SCP_914 : MonoBehaviour
                     break;
                 }
         }
-        if (key.Activated == true && Activated == false)
+        if (key.Activated == true && Activated == false && Refining <= 0)
         {
             Activated = true;
             GameController.instance.GlobalSFX.PlayOneShot(refine);
@@ -86,15 +88,17 @@ public class SCP_914 : MonoBehaviour
 
         if (Activated == true)
         {
-            Refining -= Time.deltaTime;
-            if (Refining <= 0)
+            
+            if (Refining <= 1)
             {
                 Refine();
                 door1.DoorSwitch();
                 door2.DoorSwitch();
                 Activated = false;
             }
+                
         }
+        Refining -= Time.deltaTime;
 
 
 
@@ -124,87 +128,95 @@ public class SCP_914 : MonoBehaviour
 
     public Item TransformItem (Item item)
     {
-        int gend;
+        if (item is Document_Equipable)
+            return getItem(document, item);
+
         for (int i = 0; i < itemtable.Length; i++)
         {
             if (item.name == itemtable[i].Original.name)
             {
-                switch (dial.Option)
-                {
-                    case 0:
-                        {
-                            for (int j = 0; j < itemtable[i]._Coarse.Length; j++)
-                            {
-                                gend = Random.Range(0, 100);
-                                if (gend < itemtable[i]._Coarse[j].Rate)
-                                {
-                                    return (itemtable[i]._Coarse[j].Spawn);
-                                }
-                            }
-                            break;
-                        }
-                    case 1:
-                        {
-                            for (int j = 0; j < itemtable[i]._Rough.Length; j++)
-                            {
-                                gend = Random.Range(0, 100);
-                                if (gend < itemtable[i]._Rough[j].Rate)
-                                {
-                                    return (itemtable[i]._Rough[j].Spawn);
-                                }
-                            }
-                            break;
-                        }
-                    case 2:
-                        {
-                            for (int j = 0; j < itemtable[i]._11.Length; j++)
-                            {
-                                gend = Random.Range(0, 100);
-                                if (gend < itemtable[i]._11[j].Rate)
-                                {
-                                    return (itemtable[i]._11[j].Spawn);
-                                }
-                            }
-                            break;
-                        }
-                    case 3:
-                        {
-                            for (int j = 0; j < itemtable[i]._Fine.Length; j++)
-                            {
-                                gend = Random.Range(0, 100);
-                                if (gend < itemtable[i]._Fine[j].Rate)
-                                {
-                                    return (itemtable[i]._Fine[j].Spawn);
-                                }
-                            }
-                            break;
-                        }
-                    case 4:
-                        {
-                            for (int j = 0; j < itemtable[i]._VeryFine.Length; j++)
-                            {
-                                gend = Random.Range(0, 100);
-                                if (gend < itemtable[i]._VeryFine[j].Rate)
-                                {
-                                    return (itemtable[i]._VeryFine[j].Spawn);
-                                }
-                            }
-                            break;
-                        }
-
-                }
-
-
-
-                return (item);
+                return (getItem(itemtable[i], item));
             }
 
 
 
         }
+        return (item);
+    }
+
+
+
+    Item getItem(Table914 table, Item item)
+    {
+        int gend;
+
+        switch (dial.Option)
+        {
+            case 0:
+                {
+                    for (int j = 0; j < table._Coarse.Length; j++)
+                    {
+                        gend = Random.Range(0, 100);
+                        if (gend < table._Coarse[j].Rate)
+                        {
+                            return (table._Coarse[j].Spawn);
+                        }
+                    }
+                    break;
+                }
+            case 1:
+                {
+                    for (int j = 0; j < table._Rough.Length; j++)
+                    {
+                        gend = Random.Range(0, 100);
+                        if (gend < table._Rough[j].Rate)
+                        {
+                            return (table._Rough[j].Spawn);
+                        }
+                    }
+                    break;
+                }
+            case 2:
+                {
+                    for (int j = 0; j < table._11.Length; j++)
+                    {
+                        gend = Random.Range(0, 100);
+                        if (gend < table._11[j].Rate)
+                        {
+                            return (table._11[j].Spawn);
+                        }
+                    }
+                    break;
+                }
+            case 3:
+                {
+                    for (int j = 0; j < table._Fine.Length; j++)
+                    {
+                        gend = Random.Range(0, 100);
+                        if (gend < table._Fine[j].Rate)
+                        {
+                            return (table._Fine[j].Spawn);
+                        }
+                    }
+                    break;
+                }
+            case 4:
+                {
+                    for (int j = 0; j < table._VeryFine.Length; j++)
+                    {
+                        gend = Random.Range(0, 100);
+                        if (gend < table._VeryFine[j].Rate)
+                        {
+                            return (table._VeryFine[j].Spawn);
+                        }
+                    }
+                    break;
+                }
+
+        }
+
+
 
         return (item);
-
-
     }
 }

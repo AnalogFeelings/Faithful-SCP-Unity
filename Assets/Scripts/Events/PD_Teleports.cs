@@ -8,8 +8,9 @@ public class PD_Teleports : MonoBehaviour
     public Transform[] spawners;
     public Transform[] zones;
     public AudioClip music, enter, escape;
-    public GameObject teleporter, zone1Fog;
+    public GameObject teleporter, zone1Fog, objectSpawn;
     public bool IsTesting;
+    bool WorldActive = true;
     int currentZone = 0;
     public Color fadecolor;
     public static PD_Teleports instance = null;
@@ -25,7 +26,17 @@ public class PD_Teleports : MonoBehaviour
     void Start()
     {
         int hall = Random.Range(0, teleporters.Length);
+
+        if (GameController.instance.globalBools[5] == false)
+        {
+            objectSpawn.transform.position = spawners[hall].transform.position;
+            GameController.instance.globalBools[5] = true;
+        }
+        
         teleporter.transform.position = teleporters[hall].transform.position;
+        
+
+
         if (!IsTesting)
             GameController.instance.ChangeMusic(music);
         if (!IsTesting)
@@ -47,53 +58,56 @@ public class PD_Teleports : MonoBehaviour
 
     public void Teleport()
     {
-        int place = 0;
-        do
+        if (WorldActive)
         {
-            int chance = Random.Range(0, 100);
-
-            if (chance > 0 && chance < 25)
+            int place = 0;
+            do
             {
-                place = 0;
-            }
-            if (chance > 25 && chance < 50)
-            {
-                place = 1;
-            }
-            if (chance > 50 && chance < 75)
-            {
-                place = 2;
-            }
-            if (chance > 75 && chance < 100)
-            {
-                place = 3;
-            }
-        }
-        while (place == currentZone);
+                int chance = Random.Range(0, 100);
 
-        if (place == 3)
-        {
-            Debug.Log("Wow good job you are out");
+                if (chance > 0 && chance < 25)
+                {
+                    place = 0;
+                }
+                if (chance > 25 && chance < 50)
+                {
+                    place = 1;
+                }
+                if (chance > 50 && chance < 75)
+                {
+                    place = 2;
+                }
+                if (chance > 75 && chance < 100)
+                {
+                    place = 3;
+                }
+            }
+            while (place == currentZone);
 
-            if (!IsTesting)
-                StartCoroutine(Escape());
-                
-        }
-        else
-        {
-            GameController.instance.player.GetComponent<Player_Control>().playerWarp(zones[place].transform.position, 0);
-            currentZone = place;
-        }
+            if (place == 3)
+            {
+                Debug.Log("Wow good job you are out");
+                WorldActive = false;
+                if (!IsTesting)
+                    StartCoroutine(Escape());
 
-        if (place == 0)
-        {
-            zone1Fog.SetActive(true);
-        }
-        else
-        {
-            zone1Fog.SetActive(false);
-            RenderSettings.fogEndDistance = 15;
-            Camera.main.farClipPlane = 30;
+            }
+            else
+            {
+                GameController.instance.player.GetComponent<Player_Control>().playerWarp(zones[place].transform.position, 0);
+                currentZone = place;
+            }
+
+            if (place == 0)
+            {
+                zone1Fog.SetActive(true);
+            }
+            else
+            {
+                zone1Fog.SetActive(false);
+                RenderSettings.fogEndDistance = 15;
+                Camera.main.farClipPlane = 30;
+            }
         }
     }
 
@@ -105,6 +119,8 @@ public class PD_Teleports : MonoBehaviour
 
         yield return new WaitForSeconds(4);
         Debug.Log("CoroutineDone");
+
+        GlobalValues.worldState.items = ItemController.instance.GetItems();
 
         GlobalValues.isNew = false;
         GlobalValues.LoadType = LoadType.otherworld;

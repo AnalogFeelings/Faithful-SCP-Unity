@@ -53,6 +53,7 @@ public class OptionController : MonoBehaviour
         postsettings.value = PlayerPrefs.GetInt("Post", 1);
         Gamma.value = PlayerPrefs.GetFloat("Gamma", 0);
 
+        
         framelimit.text = PlayerPrefs.GetInt("Framerate", 60).ToString();
         frame.isOn = (PlayerPrefs.GetInt("Frame", 0) == 1);
         vsync.isOn = (PlayerPrefs.GetInt("Vsync", 1) == 1);

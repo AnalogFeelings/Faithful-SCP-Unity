@@ -79,10 +79,10 @@ public class LoadingSystem : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.F7))
+        /*if(Input.GetKeyDown(KeyCode.F7))
         {
             DoScreenShot();
-        }
+        }*/
         if (isLoading)
         {
             if (loadbar > 0.3f && loadbar < 0.6f && screens[loading].hasInfo2)
@@ -103,12 +103,12 @@ public class LoadingSystem : MonoBehaviour
     public void FadeIn(float duration, Vector3Int newcolors)
     {
         fadecolor = newcolors;
-        Tween.Value(1f, 0f, FadeUpdate, duration, 0, Tween.EaseInOut, Tween.LoopType.None);
+        Tween.Value(1f, 0f, FadeUpdate, duration, 0, Tween.EaseInOut, Tween.LoopType.None, null, null, false);
     }
     public void FadeOut(float duration, Vector3Int newcolors)
     {
         fadecolor = newcolors;
-        Tween.Value(0f, 1f, FadeUpdate, duration, 0, Tween.EaseInOut, Tween.LoopType.None);
+        Tween.Value(0f, 1f, FadeUpdate, duration, 0, Tween.EaseInOut, Tween.LoopType.None, null, null, false);
     }
 
     void FadeUpdate(float value)
@@ -132,7 +132,10 @@ public class LoadingSystem : MonoBehaviour
     IEnumerator LoadAsync(int sceneIndex)
     {
         isLoadingDone = false;
-        
+        isLoading = true;
+        canClick = false;
+        _isClicked = false;
+
         AsyncOperation operation = SceneManager.LoadSceneAsync(sceneIndex);
         operation.allowSceneActivation = false;
 
@@ -189,8 +192,10 @@ public class LoadingSystem : MonoBehaviour
 
     IEnumerator LoadAsyncHalf(int sceneIndex, bool dofade, Vector3Int newcolor, float duration)
     {
+        isLoading = true;
         isLoadingDone = false;
         canClick = false;
+        _isClicked = false;
 
         AsyncOperation operation = SceneManager.LoadSceneAsync(sceneIndex);
         operation.allowSceneActivation = false;
@@ -227,6 +232,9 @@ public class LoadingSystem : MonoBehaviour
             yield return null;
         }
 
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
         isLoadingDone = true;
         isLoading = false;
 
@@ -245,7 +253,7 @@ public class LoadingSystem : MonoBehaviour
 
     void DoScreenShot()
     {
-        Debug.Log("saycheese4");
+        Debug.Log("saycheese" + screenshots);
         ScreenCapture.CaptureScreenshot("C:/Users/Daniel/Documents/STEAMSCREENS/screen" + screenshots + ".png", 2);
         screenshots += 1;
     }

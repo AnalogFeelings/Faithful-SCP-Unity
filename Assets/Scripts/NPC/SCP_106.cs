@@ -50,7 +50,8 @@ public class SCP_106 : Roam_NPC
             {
                 if (Time.frameCount % 10 == 0)
                 {
-                    PlayerDistance = (Vector3.Distance(new Vector3(Player.transform.position.x, transform.position.y, Player.transform.position.z), transform.position));
+                    PlayerDistance = (Vector3.Distance(Player.transform.position, transform.position));
+
                     isOut = !NavMesh.SamplePosition(transform.position, out shit, 0.2f, NavMesh.AllAreas);
 
                     isBlocked = (Physics.CheckSphere(transform.position + (Vector3.up * 0.5f), 0.3f, Ground, QueryTriggerInteraction.Ignore));
@@ -207,6 +208,8 @@ public class SCP_106 : Roam_NPC
             _navMeshagent.enabled = true;
             _navMeshagent.Warp(here);
             isActive = true;
+            isPath = false;
+            isEvent = false;
             isSpawn = false;
             sfx.PlayOneShot(Sfx[0]);
 
@@ -251,14 +254,18 @@ public class SCP_106 : Roam_NPC
             Debug.Log("Nodo " + currentNode + " de " + ActualPath.Length);
         }
 
-        Vector3 Point = new Vector3(ActualPath[currentNode].position.x, transform.position.y, ActualPath[currentNode].position.z) - transform.position;
+        Vector3 FakePoint = new Vector3(ActualPath[currentNode].position.x, transform.position.y, ActualPath[currentNode].position.z) - transform.position;
 
-        toAngle = Quaternion.LookRotation(Point);
+        Vector3 Point = ActualPath[currentNode].transform.position - transform.position;
 
-        transform.position += (transform.forward * speed) * Time.deltaTime;
-        transform.rotation = Quaternion.Lerp(transform.rotation, toAngle, 4f * Time.deltaTime);
+  
 
-        if ((Vector3.Distance(new Vector3(ActualPath[currentNode].position.x, transform.position.y, ActualPath[currentNode].position.z), transform.position) < Distance) && currentNode == ActualPath.Length-1)
+        Quaternion lookangle = Quaternion.LookRotation(FakePoint);
+
+        transform.position += (Point.normalized * speed) * Time.deltaTime;
+        transform.rotation = Quaternion.Lerp(transform.rotation, lookangle, 4f * Time.deltaTime);
+
+        if ((Vector3.Distance(ActualPath[currentNode].transform.position, transform.position) < Distance) && currentNode == ActualPath.Length - 1)
         {
             isPath = false;
             Debug.Log("Path Terminado");
@@ -320,13 +327,17 @@ public class SCP_106 : Roam_NPC
 
     private void OnTriggerStay(Collider other)
     {
-        if ((isSpawn) && (other.gameObject.CompareTag("Player")) && !isEvent)
+        if ((isSpawn) && (other.gameObject.CompareTag("Player")) && !isEvent && GameController.instance.isAlive)
         {
-            _navMeshagent.enabled = false;
-            GameController.instance.Death = DeathEvent.pocketDimension;
-            other.gameObject.GetComponent<Player_Control>().FakeDeath(2);
-            isEvent = true;
-            Debug.Log("You are ded ded ded");
+            GameController.instance.playercache.Health -= 25;
+            if (GameController.instance.playercache.Health > 0)
+            {
+                _navMeshagent.enabled = false;
+                GameController.instance.Death = DeathEvent.pocketDimension;
+                other.gameObject.GetComponent<Player_Control>().FakeDeath(2);
+                isEvent = true;
+                Debug.Log("You are ded ded ded");
+            }
         }
     }
 

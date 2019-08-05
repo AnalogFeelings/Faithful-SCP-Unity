@@ -43,6 +43,7 @@ public class Item_Spawner : MonoBehaviour
     {
         newObject.GetComponent<Object_Item>().item = item;
         newObject.GetComponent<Object_Item>().id = GameController.instance.AddItem(position, item);
+        Debug.Log(newObject.GetComponent<Object_Item>().id);
         newObject.GetComponent<Object_Item>().Spawn();
     }
 }

@@ -10,7 +10,7 @@ public class SCP_UI : MonoBehaviour
 {
 
     public static SCP_UI instance = null;
-    public Image eyes;
+    public Image eyes, eyegraphics;
     public Canvas PauseM;
     public GameObject canvas, SNav, notifprefab;
     public Canvas Inventory, Death, Screen, Options;
@@ -18,6 +18,9 @@ public class SCP_UI : MonoBehaviour
     public Canvas HUD;
     public EventSystem menu;
     public AudioClip[] inventory;
+    public AudioClip menublip;
+    public Text Info1, Info2, DeathMSG;
+    public Button save;
     Menu currMenu = Menu.None;
 
     bool canConsole, canTuto;
@@ -37,7 +40,7 @@ public class SCP_UI : MonoBehaviour
 
     void Start()
     {
-    }
+        }
 
     // Update is called once per frame
     void Update()
@@ -47,13 +50,15 @@ public class SCP_UI : MonoBehaviour
 
     public void ItemSFX(int sfx)
     {
-        GameController.instance.GlobalSFX.PlayOneShot(inventory[sfx]);
+        GameController.instance.MenuSFX.PlayOneShot(inventory[sfx]);
     }
 
     public void TogglePauseMenu()
     {
         if (currMenu == Menu.Pause)
         {
+            
+            GameController.instance.MenuSFX.PlayOneShot(menublip);
             Debug.Log("Quitando pausa");
             PauseM.enabled = false;
             Cursor.lockState = CursorLockMode.Locked;
@@ -65,6 +70,9 @@ public class SCP_UI : MonoBehaviour
         }
         if (currMenu == Menu.None)
         {
+            Info1.text = string.Format(GlobalValues.uiStrings["ui_in_info"], GlobalValues.design, GlobalValues.playername, GlobalValues.mapname, GlobalValues.mapseed);
+
+
             PauseM.enabled = true;
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
@@ -79,6 +87,7 @@ public class SCP_UI : MonoBehaviour
     {
         if (currMenu == Menu.Options)
         {
+            GameController.instance.MenuSFX.PlayOneShot(menublip);
             Options.enabled = false;
             PauseM.enabled = true;
             Cursor.lockState = CursorLockMode.None;
@@ -91,6 +100,7 @@ public class SCP_UI : MonoBehaviour
         }
         if (currMenu == Menu.None || currMenu == Menu.Pause)
         {
+            GameController.instance.MenuSFX.PlayOneShot(menublip);
             PauseM.enabled = false;
             Options.enabled = true;
             Cursor.lockState = CursorLockMode.None;
@@ -135,6 +145,7 @@ public class SCP_UI : MonoBehaviour
     {
         if (currMenu == Menu.Death)
         {
+            DeathMSG.text = GameController.instance.deathmsg;
             Death.enabled = false;
             Time.timeScale = 1.0f;
 
@@ -145,6 +156,12 @@ public class SCP_UI : MonoBehaviour
         }
         else
         {
+            if (!GlobalValues.hasSaved)
+                save.interactable = false;
+            else
+                save.interactable = true;
+            Info2.text = string.Format(GlobalValues.uiStrings["ui_in_info"], GlobalValues.design, GlobalValues.playername, GlobalValues.mapname, GlobalValues.mapseed);
+            DeathMSG.text = GameController.instance.deathmsg;
             Death.enabled = true;
             Time.timeScale = 1.0f;
             Cursor.lockState = CursorLockMode.None;
@@ -160,19 +177,18 @@ public class SCP_UI : MonoBehaviour
         {
             Screen.enabled = false;
 
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            GameController.instance.MenuSFX.PlayOneShot(menublip);
+            /*Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;*/
             currMenu = Menu.None;
-            AudioListener.pause = false;
             return;
         }
         if (currMenu == Menu.None)
         {
             Screen.enabled = true;
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            /*Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;*/
             currMenu = Menu.Screen;
-            AudioListener.pause = true;
             return;
         }
     }

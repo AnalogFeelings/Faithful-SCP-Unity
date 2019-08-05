@@ -7,7 +7,7 @@ public class Item : ScriptableObject
 {
     public string itemName;
     public Sprite icon;
-    public bool deleteUse, hasEffect, isFem = false;
+    public bool deleteUse, hasEffect, isFem = false, isUnique=false;
     public efecttable Effects;
     public GameObject ItemModel;
     public float valueFloat;

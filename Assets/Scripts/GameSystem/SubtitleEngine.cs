@@ -56,19 +56,31 @@ public class SubtitleEngine : MonoBehaviour
     /// </summary>
     /// <param name="sub"> The subtitle. Is the caller resposability to get the right subtitle for the right language</param>
     /// <param name="IsVoice"> If the subtitle is a voice or flavor text</param>
-    public void playSub(string sub, bool IsVoice = false)
+    /// <param name="Force"> If the subtitle will push itself into the list</param>
+
+
+
+    public void playSub(string sub, bool IsVoice = false, bool Force = false)
     {
         if (IsVoice)
         {
             if (VoiceSubsEnabled)
             {
-                if (sub.Length > 80)
+                if (Force)
                 {
-                    int firstspace=sub.IndexOf(" ", 80);
+                    pending = new List<string>();
+                    subtitle_hold[2] = 0;
+                    Debug.Log(" FORCE SUB ");
+                }
+
+
+                if (sub.Length > 60)
+                {
+                    int firstspace=sub.IndexOf(" ", 60);
                     if (firstspace != -1)
                     {
-                        pending.Add(sub.Substring(0, firstspace+1));
-                        playSub(sub.Substring(firstspace), true);
+                        pending.Add(sub.Substring(0, firstspace));
+                        playSub(sub.Substring(firstspace+1), true);
                     }
 
                 }
@@ -79,6 +91,7 @@ public class SubtitleEngine : MonoBehaviour
         } 
         else
         {
+            flavortext_hold[2] = 0;
             ft_pending.Add(sub);
         }
     }

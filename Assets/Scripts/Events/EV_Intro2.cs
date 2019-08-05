@@ -51,7 +51,7 @@ public class EV_Intro2 : MonoBehaviour
             {
                 door1.GetComponent<Object_Door>().DoorSwitch();
                 d1_.AnimTrigger(1, true);
-                sci_.PlaySound(Dialogs[1]);
+                sci_.PlaySound(Dialogs[1], true);
                 check2 = false;
                 Timer = 4f;
                 eventstat = 5;
@@ -74,7 +74,7 @@ public class EV_Intro2 : MonoBehaviour
                         d1_.StopLookAt();
                         d2_.StopLookAt();
                         door1.GetComponent<Object_Door>().DoorSwitch();
-                        sci_.PlaySound(Dialogs[0]);
+                        sci_.PlaySound(Dialogs[0],true);
                         Timer = Timer2;
                         eventstat = 2;
                         break;
@@ -116,7 +116,7 @@ public class EV_Intro2 : MonoBehaviour
                 case 6:
                     {
                         door1.GetComponent<Object_Door>().DoorSwitch();
-                        sci_.PlaySound(Dialogs[2]);
+                        sci_.PlaySound(Dialogs[2], true);
                         d2_.SetRota(door1.transform);
                         d2_.StopLookAt();
                         eventstat = 7;
@@ -162,7 +162,7 @@ public class EV_Intro2 : MonoBehaviour
                     }
                 case 10:
                     {
-                        GameController.instance.Warp173(true, ata2);
+                        GameController.instance.npcTable[(int)npc.scp173].Event_Spawn(true, ata2.transform.position);
                         sci_.PlaySFX(GeneralSFX[1]);
                         lightmana.SetActive(true);
                         Timer = Timer5;
@@ -228,7 +228,12 @@ public class EV_Intro2 : MonoBehaviour
                         
                         GameController.instance.SetMapPos(0, 10);
                         GameController.instance.startEv.GetComponent<EV_Intro>().End();
-                        GameController.instance.doGameplay = true;
+
+                        if (GameController.instance.isAlive)
+                        {
+                            GameController.instance.doGameplay = true;
+                            GameController.instance.Action_QuickSave();
+                        }
                         break;
                     }
 

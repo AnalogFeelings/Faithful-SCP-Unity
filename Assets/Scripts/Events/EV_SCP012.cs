@@ -65,12 +65,15 @@ public class EV_SCP012 : Event_Parent
             if (audio1 == false)
             {
                 GameController.instance.GlobalSFX.PlayOneShot(Dvoice[0]);
+                SubtitleEngine.instance.playSub(GlobalValues.sceneStrings["scene_012_1"], true);
                 audio1 = true;
             }
 
             if (audio2 == false && Timer < StartTimer-12)
             {
                 GameController.instance.GlobalSFX.PlayOneShot(Dvoice[1]);
+                SubtitleEngine.instance.playSub(GlobalValues.sceneStrings["scene_012_2"], true);
+                SubtitleEngine.instance.playSub(GlobalValues.playStrings["play_012_1"]);
                 DecalSystem.instance.Decal(new Vector3(blood.transform.position.x + 0.3f, blood.transform.position.y, blood.transform.position.z - 0.15f), new Vector3(90f, 0f, 0f), 1.0f, false, 0.5f, 0, 1);
                 audio2 = true;
                 
@@ -78,7 +81,10 @@ public class EV_SCP012 : Event_Parent
             }
             if (audio3 == false && Timer < StartTimer - 30)
             {
+                GameController.instance.playercache.bloodloss += 1;
                 GameController.instance.GlobalSFX.PlayOneShot(Dvoice[2]);
+                SubtitleEngine.instance.playSub(GlobalValues.sceneStrings["scene_012_3"], true);
+                SubtitleEngine.instance.playSub(GlobalValues.playStrings["play_012_2"]);
                 audio3 = true;
                 DecalSystem.instance.Decal(new Vector3(blood.transform.position.x - 0.1f, blood.transform.position.y, blood.transform.position.z + 0.25f), new Vector3(90f, 0f, 0f), 2.0f, false, 0.5f, 0, 0);
                 Pages.material.mainTexture = bloodPages[0];
@@ -86,20 +92,27 @@ public class EV_SCP012 : Event_Parent
 
             if (audio4 == false && Timer < StartTimer - 48)
             {
+                SubtitleEngine.instance.playSub(GlobalValues.playStrings["play_012_3"]);
                 GameController.instance.GlobalSFX.PlayOneShot(Dvoice[3]);
+                SubtitleEngine.instance.playSub(GlobalValues.sceneStrings["scene_012_4"], true);
                 Pages.material.mainTexture = bloodPages[1];
                 audio4 = true;
             }
             if (audio5 == false && Timer < StartTimer - 60)
             {
                 GameController.instance.GlobalSFX.PlayOneShot(Dvoice[4]);
+                GameController.instance.playercache.bloodloss = 2;
+                SubtitleEngine.instance.playSub(GlobalValues.sceneStrings["scene_012_5"], true);
                 DecalSystem.instance.Decal(new Vector3(blood.transform.position.x + 0.1f, blood.transform.position.y, blood.transform.position.z - 0.15f), new Vector3(90f, 0f, 0f), 2.0f, false, 0.5f, 0, 1);
                 audio5 = true;
             }
 
             if (audio6 == false && Timer < StartTimer - 74)
             {
+                GameController.instance.playercache.bloodloss += 1;
+                SubtitleEngine.instance.playSub(GlobalValues.playStrings["play_012_4"]);
                 GameController.instance.GlobalSFX.PlayOneShot(Dvoice[5]);
+                SubtitleEngine.instance.playSub(GlobalValues.sceneStrings["scene_012_6"], true);
                 DecalSystem.instance.Decal(new Vector3(blood.transform.position.x + 0.2f, blood.transform.position.y, blood.transform.position.z - 0.1f), new Vector3(90f, 0f, 0f), 2.0f, false, 0.5f, 0, 2);
                 audio6 = true;
                 Pages.material.mainTexture = bloodPages[2];
@@ -107,11 +120,13 @@ public class EV_SCP012 : Event_Parent
             if (audio7 == false && Timer < StartTimer - 86)
             {
                 GameController.instance.GlobalSFX.PlayOneShot(Dvoice[6]);
+                SubtitleEngine.instance.playSub(GlobalValues.sceneStrings["scene_012_7"], true);
                 audio7 = true;
             }
 
             if (Timer <= 0)
             {
+                GameController.instance.deathmsg = GlobalValues.deathStrings["death_012"];
                 GameController.instance.player.GetComponent<Player_Control>().Death(0);
                 DecalSystem.instance.Decal(new Vector3(blood.transform.position.x - 0.03f, blood.transform.position.y, blood.transform.position.z + 0.02f), new Vector3(90f, 0f, 0f), 3.0f, false, 3.0f, 1, 2);
                 check3 = false;

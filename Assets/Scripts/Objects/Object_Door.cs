@@ -14,6 +14,8 @@ public class Object_Door : MonoBehaviour
     public AudioClip[] Close_AUD;
     public AudioSource AUD;
 
+    public bool UseParticle = false;
+
     float LastPos1;
 
     Vector3 Pos1, Pos2;
@@ -113,13 +115,19 @@ public class Object_Door : MonoBehaviour
     void DoorClose()
     {
         float tempdis = Vector3.Distance(Door01.transform.position, Pos1);
-        if (tempdis >= 0.02)
+        if (tempdis >= 0.00002)
         {
             Door01.transform.position += Door01.transform.right * -OpenSpeed * Time.deltaTime;
             if (tempdis > LastPos1)
             {
                 Door01.transform.position = Pos1;
                 Door02.transform.position = Pos2;
+
+                if (UseParticle)
+                {
+                    Instantiate(GameController.instance.doorVacuumParticle, transform.position, transform.rotation);
+                    Instantiate(GameController.instance.doorVacuumParticle, transform.position, transform.rotation*Quaternion.Inverse(transform.rotation));
+                }
 
                 IsOpen = false;
                 if (!ignoreSave)

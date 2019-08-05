@@ -38,7 +38,7 @@ public class Timers
 
 public class Player_Control : MonoBehaviour
 {
-    float InputX, InputY, BlinkingTimer, BlinkMult = 1, currentBlinkMult = 1, RunMult = 1, CloseTimer, AsfixTimer, speed, lastBob=0, headBob, RunningTimer, OpenTimer=1, lookingForce = 3f;
+    float InputX, InputY, BlinkingTimer, BlinkMult = 1, currentBlinkMult = 1, RunMult = 1, CloseTimer, AsfixTimer, speed, lastBob=0, headBob, RunningTimer, OpenTimer=1, lookingForce = 3f, InternalTimer;
 
     private GameObject hand, CinemaLoaded;
     private Transform _groundChecker;
@@ -49,9 +49,9 @@ public class Player_Control : MonoBehaviour
     private CharacterController _controller;
     bool Grounded = true, isSmoke = false, fakeBlink, isRunning, isTired = false, isLooking=false, cognitoEffect, onBlink, cameraNextFrame;
     Camera PlayerCam;
-    Image eyes, blinkbar, runbar, batbar, overlay, handEquip;
+    Image eyes, blinkbar, runbar, batbar, overlay, handEquip, eyeIcon;
     RectTransform hand_rect, hud_rect;
-    public bool Freeze = false, isGameplay = false, Crouch = false;
+    public bool Freeze = false, isGameplay = false, Crouch = false, onCam = false;
 
     [Header("Movement")]
     public float GroundDistance = 0.2f;
@@ -61,7 +61,7 @@ public class Player_Control : MonoBehaviour
     public float baseAmplitude, bobSpeed, headBobmult = 20, Camplitude, Cspeed, hamplitude;
     [Header("Gimmicks")]
     public float BlinkingTimerBase;
-    public float ClosedEyes, BaseBlinkMult = 0.75f, AsfixiaTimer, RunningTimerBase, OpenMulti, CollisionSphere, Health = 100;
+    public float ClosedEyes, BaseBlinkMult = 0.75f, AsfixiaTimer, RunningTimerBase, OpenMulti, CollisionSphere, Health = 100, bloodloss = 0;
     public LayerMask Ground, InteractiveLayer;
     [Header("Object References")]
     public Transform DefHead;
@@ -77,9 +77,11 @@ public class Player_Control : MonoBehaviour
     Collider[] Interact;
 
     //Iteeemssss
-    [HideInInspector]
+    [System.NonSerialized]
     public Equipable_Wear[] equipment = new Equipable_Wear[4];
+    [System.NonSerialized]
     public effects[] playerEffects = new effects[4];
+    [System.NonSerialized]
     public Timers[] effecTimers = new Timers[4];
     int headSlot = 0;
     int bodySlot = 0;
@@ -133,14 +135,17 @@ public class Player_Control : MonoBehaviour
         hand = SCP_UI.instance.hand;
         overlay = SCP_UI.instance.Overlay;
         handEquip = SCP_UI.instance.handEquip;
+        eyeIcon = SCP_UI.instance.eyegraphics;
 
         hand_rect = hand.GetComponent<RectTransform>();
         hud_rect = SCP_UI.instance.HUD.GetComponent<RectTransform>();
 
         playerEffects[0] = null;
         playerEffects[1] = null;
+        playerEffects[2] = null;
         effecTimers[0] = new Timers();
         effecTimers[1] = new Timers();
+        effecTimers[2] = new Timers();
     }
 
     private void Start()
@@ -230,7 +235,10 @@ public class Player_Control : MonoBehaviour
         if (Input.GetButtonDown("Crouch") && !isRunning)
             Crouch = !Crouch;
 
-        isRunning = (Input.GetButton("Run") && !Crouch && RunningTimer > 0.2f);
+        if (Health <= 30)
+            Crouch = true;
+
+        isRunning = (Input.GetButton("Run") && !Crouch && RunningTimer > 0.2f && !GameController.instance.isPocket);
 
         speed = Basespeed;
         if (Crouch)
@@ -325,55 +333,57 @@ public class Player_Control : MonoBehaviour
 
     void ACT_HUD()
     {
-        int blinkPercent = ((int)Mathf.Ceil((BlinkingTimer / (BlinkingTimerBase / 100)) / 5));
-
-        blinkbar.rectTransform.sizeDelta = new Vector2(blinkPercent * 8, 14);
-
-        int runPercent = ((int)Mathf.Floor((RunningTimer / (RunningTimerBase / 100)) / 5));
-
-        runbar.rectTransform.sizeDelta = new Vector2(runPercent * 8, 14);
-
-        if (InterHold != null)
+        if (!cameraNextFrame)
         {
-            hand.SetActive(true);
-            Vector3 screen = PlayerCam.WorldToScreenPoint(InterHold.transform.position);
+            int blinkPercent = ((int)Mathf.Ceil((BlinkingTimer / (BlinkingTimerBase / 100)) / 5));
 
-            Vector3 heading = InterHold.transform.position - CameraObj.transform.position;
-            if (Vector3.Dot(CameraObj.transform.forward, heading) < 0)
+            blinkbar.rectTransform.sizeDelta = new Vector2(blinkPercent * 8, 14);
+
+            int runPercent = ((int)Mathf.Floor((RunningTimer / (RunningTimerBase / 100)) / 5));
+
+            runbar.rectTransform.sizeDelta = new Vector2(runPercent * 8, 14);
+
+            if (InterHold != null)
             {
-                screen.y = 0f;
-            }
+                hand.SetActive(true);
+                Vector3 screen = PlayerCam.WorldToScreenPoint(InterHold.transform.position);
 
-            hand.transform.position = screen;
+                Vector3 heading = InterHold.transform.position - CameraObj.transform.position;
+                if (Vector3.Dot(CameraObj.transform.forward, heading) < 0)
+                {
+                    screen.y = 0f;
+                }
+
+                hand.transform.position = screen;
+            }
+            else
+                hand.SetActive(false);
+
+            Vector3 pos = hand_rect.localPosition;
+
+            Vector3 minPosition = hud_rect.rect.min - hand_rect.rect.min;
+            Vector3 maxPosition = hud_rect.rect.max - hand_rect.rect.max;
+
+            pos.x = Mathf.Clamp(hand_rect.localPosition.x, minPosition.x, maxPosition.x);
+            pos.y = Mathf.Clamp(hand_rect.localPosition.y, minPosition.y, maxPosition.y);
+
+            hand_rect.localPosition = pos;
+
+            if (Input.GetButtonDown("Unequip"))
+            {
+                if (equipment[(int)bodyPart.Hand] != null)
+                {
+                    ACT_UnEquip(bodyPart.Hand);
+                    return;
+                }
+                if (equipment[(int)bodyPart.Head] != null)
+                {
+                    ACT_UnEquip(bodyPart.Head);
+                    return;
+                }
+
+            }
         }
-        else
-            hand.SetActive(false);
-
-        Vector3 pos = hand_rect.localPosition;
-
-        Vector3 minPosition = hud_rect.rect.min - hand_rect.rect.min;
-        Vector3 maxPosition = hud_rect.rect.max - hand_rect.rect.max;
-
-        pos.x = Mathf.Clamp(hand_rect.localPosition.x, minPosition.x, maxPosition.x);
-        pos.y = Mathf.Clamp(hand_rect.localPosition.y, minPosition.y, maxPosition.y);
-
-        hand_rect.localPosition = pos;
-
-        if (Input.GetButtonDown("Unequip"))
-        {
-            if (equipment[(int)bodyPart.Hand] != null)
-            {
-                ACT_UnEquip(bodyPart.Hand);
-                return;
-            }
-            if(equipment[(int)bodyPart.Head] != null)
-            {
-                ACT_UnEquip(bodyPart.Head);
-                return;
-            }
-
-        }
-            
 
 
     }
@@ -425,8 +435,9 @@ public class Player_Control : MonoBehaviour
 
             if ((((InputX != 0 || InputY != 0)) || walkAnim) && !Freeze)
             {
+                InternalTimer += Time.deltaTime;
 
-                headBob = baseAmplitude * Mathf.Sin((speed * bobSpeed) * Time.time);
+                headBob = baseAmplitude * Mathf.Sin((speed * bobSpeed) * InternalTimer);
                 HoldPos = headPos;
                 HoldPos.y = Mathf.Lerp(HoldPos.y, HoldPos.y + headBob, headBobmult);
                 if (Vector3.Distance(CameraObj.transform.position, headPos) > 2)
@@ -436,10 +447,16 @@ public class Player_Control : MonoBehaviour
                 float z = CameraObj.transform.eulerAngles.z;
                 z = (z > 180) ? z - 360 : z;
 
-                if (Health < 80 && !GameController.instance.isPocket)
-                    CameraObj.transform.rotation = Quaternion.Euler(CameraObj.transform.eulerAngles.x, CameraObj.transform.eulerAngles.y, Mathf.Lerp(z, 0 + (hamplitude * Mathf.Sin((((101 - Health) / HurtDivisor) * (speed / 2)) * Time.time)), 10 * Time.deltaTime));
-                if (GameController.instance.isPocket)
-                    CameraObj.transform.rotation = Quaternion.Euler(CameraObj.transform.eulerAngles.x, CameraObj.transform.eulerAngles.y, Mathf.Lerp(z, 0 + (hamplitude * Mathf.Sin((((101 - 50) / HurtDivisor) * 0.5f) * Time.time)), 10 * Time.deltaTime));
+                if (Health < 80)
+                {
+                    if (!GameController.instance.isPocket)
+                        CameraObj.transform.rotation = Quaternion.Euler(CameraObj.transform.eulerAngles.x, CameraObj.transform.eulerAngles.y, Mathf.Lerp(z, 0 + (hamplitude * Mathf.Sin((((101 - Health) / HurtDivisor) * (speed / 2)) * InternalTimer)), 10 * Time.deltaTime));
+                    else
+                        CameraObj.transform.rotation = Quaternion.Euler(CameraObj.transform.eulerAngles.x, CameraObj.transform.eulerAngles.y, Mathf.Lerp(z, 0 + (hamplitude * Mathf.Sin((((101 - 50) / HurtDivisor) * 0.5f) * InternalTimer)), 10 * Time.deltaTime));
+                }
+                else
+                    if (CameraObj.transform.eulerAngles.z > 0.0001f)
+                    CameraObj.transform.rotation = Quaternion.Euler(CameraObj.transform.eulerAngles.x, CameraObj.transform.eulerAngles.y, Mathf.Lerp(z, 0, 10 * Time.deltaTime));
 
 
             }
@@ -635,6 +652,7 @@ public class Player_Control : MonoBehaviour
 
         if (isSmoke && !protectSmoke)
         {
+            eyeIcon.color = Color.red;
             BlinkMult = 4;
             AsfixTimer -= (Time.deltaTime);
             {
@@ -647,6 +665,7 @@ public class Player_Control : MonoBehaviour
         }
         else
         {
+            eyeIcon.color = Color.white;
             AsfixTimer = AsfixiaTimer;
             BlinkMult = currentBlinkMult;
         }
@@ -682,6 +701,12 @@ public class Player_Control : MonoBehaviour
 
             switch (cause)
             {
+                case 3:
+                    {
+                        sfx.PlayOneShot(Deaths[cause]);
+                        GameController.instance.deathmsg = GlobalValues.deathStrings["death_106_stone"];
+                        break;
+                    }
                 case 1:
                     {
                         sfx.PlayOneShot(Conch[Random.Range(0, Conch.Length)]);
@@ -749,12 +774,16 @@ public class Player_Control : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.CompareTag("Smoke"))
-            isSmoke = true;    
+            isSmoke = true;
+        if (other.gameObject.CompareTag("Camera"))
+            onCam = true;
     }
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.CompareTag("Smoke"))
             isSmoke = false;
+        if (other.gameObject.CompareTag("Camera"))
+            onCam = false;
     }
 
     void OnControllerColliderHit(ControllerColliderHit hit)
@@ -870,6 +899,12 @@ public class Player_Control : MonoBehaviour
 
     void ACT_Effects()
     {
+        Health -= (bloodloss * 0.125f) * Time.deltaTime;
+        if (Health >= 100)
+            Health = 100;
+
+
+
         for(int i = 0; i < playerEffects.Length; i++)
         {
             if (playerEffects[i] != null)
@@ -896,7 +931,21 @@ public class Player_Control : MonoBehaviour
                             }
                         case Ailment.Health:
                             {
-                                Health += playerEffects[i].value;
+                                if (playerEffects[i].value != -1)
+                                    Health += playerEffects[i].value;
+                                if (playerEffects[i].multiplier != -1)
+                                {
+                                    if (bloodloss == 1)
+                                        SubtitleEngine.instance.playSub(GlobalValues.playStrings["play_cureblood"]);
+                                    if (bloodloss > 1)
+                                        SubtitleEngine.instance.playSub(GlobalValues.playStrings["play_cureblood2"]);
+                                    bloodloss -= playerEffects[i].multiplier;
+                                    
+                                }
+                                else
+                                    SubtitleEngine.instance.playSub(GlobalValues.playStrings["play_cure"]);
+
+
                                 break;
                             }
                     }
@@ -959,18 +1008,9 @@ public class Player_Control : MonoBehaviour
         if (where != bodyPart.Hand)
         {
             if (equipment[(int)where].isFem)
-                SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_equip_fem"], GlobalValues.itemStrings[equipment[(int)where].itemName]));
+                SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_dequip_fem"], GlobalValues.itemStrings[equipment[(int)where].itemName]));
             else
-                SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_equip_male"], GlobalValues.itemStrings[equipment[(int)where].itemName]));
-        }
-
-        if (where != bodyPart.Hand)
-        {
-            if (equipment[(int)where].isFem)
-                SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_equip_fem"], GlobalValues.itemStrings[equipment[(int)where].itemName]));
-            else
-                SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_equip_male"], GlobalValues.itemStrings[equipment[(int)where].itemName]));
-
+                SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_dequip_male"], GlobalValues.itemStrings[equipment[(int)where].itemName]));
         }
         switch (where)
         {
@@ -1036,6 +1076,7 @@ public class Player_Control : MonoBehaviour
         newObject = Instantiate(GameController.instance.itemSpawner, handPos.transform.position, Quaternion.identity, GameController.instance.itemParent.transform);
         newObject.GetComponent<Object_Item>().item = item;
         newObject.GetComponent<Object_Item>().id = GameController.instance.AddItem(handPos.transform.position, item);
+        Debug.Log("dROPPED " + newObject.GetComponent<Object_Item>().id);
         newObject.GetComponent<Object_Item>().Spawn();
     }
 

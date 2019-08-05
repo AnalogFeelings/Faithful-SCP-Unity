@@ -254,6 +254,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48d9b6f05e105f24785aad16e0d9ddc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Freeze: 0
+  isGameplay: 0
+  Crouch: 0
+  onCam: 0
+  GroundDistance: 0.4
+  Gravity: 9.8
+  maxfallspeed: -20
+  Basespeed: 2
+  crouchspeed: 0.5
+  runSpeed: 4
+  HurtDivisor: 60
+  baseAmplitude: 0.0325
+  bobSpeed: 4
+  headBobmult: 0.5
+  Camplitude: 1
+  Cspeed: 2
+  hamplitude: 2
+  BlinkingTimerBase: 8
+  ClosedEyes: 0.2
+  BaseBlinkMult: 0.75
+  AsfixiaTimer: 10
+  RunningTimerBase: 6
+  OpenMulti: 4
+  CollisionSphere: 0.7
+  Health: 100
+  bloodloss: 0
+  Ground:
+    serializedVersion: 2
+    m_Bits: 1024
+  InteractiveLayer:
+    serializedVersion: 2
+    m_Bits: 2048
+  DefHead: {fileID: 252651301}
+  CrouchHead: {fileID: 998635334}
   CameraObj: {fileID: 0}
   InterHold: {fileID: 0}
   DeathCol: {fileID: 1169660964460360198}
@@ -263,38 +297,7 @@ MonoBehaviour:
     type: 3}
   SoundPrefab: {fileID: 4724110933692066486, guid: 7c450e383ae0ae6498926236b88e015f,
     type: 3}
-  DefHead: {fileID: 252651301}
-  CrouchHead: {fileID: 998635334}
-  Ground:
-    serializedVersion: 2
-    m_Bits: 1024
-  InteractiveLayer:
-    serializedVersion: 2
-    m_Bits: 2048
-  HurtDivisor: 10
-  GroundDistance: 0.4
-  baseAmplitude: 0.0325
-  bobSpeed: 6
-  headBobmult: 0.5
-  Gravity: 9.8
-  maxfallspeed: -20
-  Basespeed: 2
-  crouchspeed: 0.5
-  runSpeed: 4
-  BlinkingTimerBase: 8
-  ClosedEyes: 0.2
-  AsfixiaTimer: 10
-  RunningTimerBase: 6
-  lookingForce: 3
-  Camplitude: 1
-  Cspeed: 2
-  hamplitude: 5
-  OpenMulti: 4
-  Health: 100
-  CollisionSphere: 0.7
-  Freeze: 0
-  isGameplay: 0
-  Crouch: 0
+  Reverb: {fileID: 0}
   Conch:
   - {fileID: 8300000, guid: 2860677fb146c9840b169287e4cbd0a5, type: 3}
   - {fileID: 8300000, guid: 131b79b90af63984cbdf94d8e2cb28ef, type: 3}
@@ -339,23 +342,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 009f98fd0c0c3cb418aefe99d3ed193c, type: 3}
   sfx: {fileID: 393827807079942417}
   va: {fileID: 4757049399036591918}
-  Reverb: {fileID: 0}
-  equipment:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  playerEffects:
-  - permanent: 0
-    time: 0
-    max: 0
-    min: 0
-    multiplier: 0
-  - permanent: 0
-    time: 0
-    max: 0
-    min: 0
-    multiplier: 0
   NodeDistance: 0.3
 --- !u!82 &393827807079942417
 AudioSource:
@@ -366,7 +352,8 @@ AudioSource:
   m_GameObject: {fileID: 1341638972000247816}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 243188032471989292, guid: 4cdd06a97de31484aa0429062392c9f2,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -462,7 +449,8 @@ AudioSource:
   m_GameObject: {fileID: 1341638972000247816}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 243951847441598684, guid: 4cdd06a97de31484aa0429062392c9f2,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1

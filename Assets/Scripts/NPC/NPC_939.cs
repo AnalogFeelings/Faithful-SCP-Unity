@@ -457,6 +457,15 @@ public class NPC_939 : MonoBehaviour
                 other.gameObject.GetComponent<Player_Control>().Health -= 25;
                 AttackTimer = AttackCool;
                 Audio.PlayOneShot(Hit);
+
+                if (other.gameObject.GetComponent<Player_Control>().Health <= 0)
+                {
+                    GameController.instance.deathmsg = GlobalValues.deathStrings["death_939"];
+                    checkPlayer = false;
+                    playerDistance = 100;
+                    stateSet = false;
+                    state = state_939.patrol;
+                }
             }
             else if (checkPlayer)
             {

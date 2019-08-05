@@ -172,7 +172,7 @@ public class EV_Intro : MonoBehaviour
                 {
                     
                     RunawayTimer = 6;
-                    Guard1_con.PlaySound(Dialogs[2],true);
+                    Guard1_con.PlaySound(Dialogs[2],true, true);
                     
                 }
                 Guard1_con.SetLookAt(playerHead);
@@ -197,6 +197,7 @@ public class EV_Intro : MonoBehaviour
                 Guard1_con.StopPursuit();
                 Guard1_con.PlaySound(Gunshot);
                 Player.GetComponent<Player_Control>().Death(0);
+                GameController.instance.deathmsg = GlobalValues.deathStrings["death_intro"];
                 Check4 = false;
                 Check3 = false;
                 Check2 = false;
@@ -249,7 +250,7 @@ public class EV_Intro : MonoBehaviour
 
     void Scene1_6()
     {
-        Guard1_con.PlaySound(DI_Escort[Random.Range(0, DI_Escort.Length)],true);
+        Guard1_con.PlaySound(DI_Escort[Random.Range(0, DI_Escort.Length)],true, true);
         Timer = Timer2;
         EventState = 2;
     }
@@ -384,9 +385,6 @@ public class EV_Intro : MonoBehaviour
     {
         SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["Intro_Convo4_1"], GlobalValues.charaStrings["chara_ulgrin"]), true);
         yield return new WaitForSeconds(3);
-        SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["Intro_Convo4_2"], GlobalValues.charaStrings["chara_guard"]), true);
-        yield return new WaitForSeconds(3);
-        SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["Intro_Convo4_3"], GlobalValues.charaStrings["chara_ulgrin"]), true);
         SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["Intro_Convo4_4"], GlobalValues.charaStrings["chara_guard"]), true);
         yield return new WaitForSeconds(2);
         SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["Intro_Convo4_5"], GlobalValues.charaStrings["chara_ulgrin"]), true);
@@ -434,21 +432,21 @@ public class EV_Intro : MonoBehaviour
     {
         Guard1_con.StopRota();
         Guard1_con.SetLookAt(playerHead);
-        Guard1_con.PlaySound(Dialogs[3],true);
+        Guard1_con.PlaySound(Dialogs[3],true, true);
         EventState = -2;
         RunawayTimer = 5;
     }
 
     void Escape2()
     {
-        Guard1_con.PlaySound(Dialogs[4],true);
+        Guard1_con.PlaySound(Dialogs[4],true, true);
         EventState = -3;
         RunawayTimer = 5;
     }
 
     void Escape3()
     {
-        Guard1_con.PlaySound(DI_Angry1[Random.Range(0, DI_Angry1.Length)],true);
+        Guard1_con.PlaySound(DI_Angry1[Random.Range(0, DI_Angry1.Length)],true, true);
         Guard1_con.AnimTrigger(1,true);
         EventState = -4;
         RunawayTimer = 12;
@@ -456,7 +454,7 @@ public class EV_Intro : MonoBehaviour
 
     void Escape4()
     {
-        Guard1_con.PlaySound(DI_Angry2[Random.Range(0, DI_Angry2.Length)],true);
+        Guard1_con.PlaySound(DI_Angry2[Random.Range(0, DI_Angry2.Length)],true, true);
         Guard1_con.AnimTrigger(1, true);
         EventState = -5;
         RunawayTimer = 5;

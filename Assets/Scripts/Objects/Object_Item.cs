@@ -16,20 +16,28 @@ public class Object_Item : Object_Interact
     // Update is called once per frame
     public override void Pressed()
     {
-        Debug.Log(item.name);
         Item newitem = Object.Instantiate(item);
         newitem.name = item.name;
 
-        if (item.isFem)
-            SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_picked_fem"], GlobalValues.itemStrings[item.itemName]));
+        if (ItemController.instance.AddItem(newitem, 0))
+        {
+            GameController.instance.DeleteItem(id);
+            DestroyImmediate(this.gameObject);
+
+            if (item.isUnique)
+                SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_picked_uni"], GlobalValues.itemStrings[item.itemName]));
+            else
+            {
+                if (item.isFem)
+                    SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_picked_fem"], GlobalValues.itemStrings[item.itemName]));
+                else
+                    SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_picked_male"], GlobalValues.itemStrings[item.itemName]));
+
+            }
+        }
         else
-            SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_picked_male"], GlobalValues.itemStrings[item.itemName]));
+            SubtitleEngine.instance.playSub(GlobalValues.playStrings["play_fullinv"]);
 
-
-
-        ItemController.instance.AddItem(newitem, 0);
-        GameController.instance.DeleteItem(id);
-        DestroyImmediate(this.gameObject);
     }
 
     public override void Hold()

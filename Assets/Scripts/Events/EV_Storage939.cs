@@ -103,8 +103,8 @@ public class EV_Storage939 : Event_Parent
         base.EventFinished();
         up_ele1 = (GameController.instance.getValue(x, y, 0) == 1);
         up_ele2 = (GameController.instance.getValue(x, y, 1) == 1);
-        active_lev1 = (GameController.instance.getValue(x, y, 3) == 1);
-        active_lev2 = (GameController.instance.getValue(x, y, 4) == 1);
+        active_lev1 = (GameController.instance.getValue(x, y, 2) == 1);
+        active_lev2 = (GameController.instance.getValue(x, y, 3) == 1);
 
         ele1.FloorUp = up_ele1;
         ele2.FloorUp = up_ele2;

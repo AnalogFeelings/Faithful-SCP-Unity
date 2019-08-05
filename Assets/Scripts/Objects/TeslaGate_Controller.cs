@@ -33,6 +33,7 @@ public class TeslaGate_Controller : Event_Parent
 
                 if (Timer >= 0.5 && !shocked && !endshock)
                 {
+                    GameController.instance.deathmsg = GlobalValues.deathStrings["death_tesla"];
                     shocked = true;
                     audio.PlayOneShot(shock);
                     Shock.SetActive(true);
@@ -50,6 +51,8 @@ public class TeslaGate_Controller : Event_Parent
                 }
                 if (Timer >= 3)
                 {
+                    if (GameController.instance.isAlive)
+                        GameController.instance.deathmsg = "";
                     endshock = false;
                     shocked = false;
                     started = false;

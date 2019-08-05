@@ -7,7 +7,7 @@ using Pixelplacement;
 using Pixelplacement.TweenSystem;
 using UnityEngine.Tilemaps;
 
-public enum DeathEvent { pocketDimension };
+public enum DeathEvent {none, pocketDimension };
 
 [System.Serializable]
 public class CameraPool
@@ -49,7 +49,7 @@ public class GameController : MonoBehaviour
     SmokeBlur HorrorBlur;
     Camera HorrorFov;
 
-    public GameObject origplayer, player, roomAmbiance_obj;
+    public GameObject origplayer, player, roomAmbiance_obj, doorVacuumParticle;
     public Player_Control playercache;
     public GameObject orig173, startEv, orig106, itemSpawner, npcCam;
 
@@ -100,6 +100,7 @@ public class GameController : MonoBehaviour
     public AudioSource MixAmbiance;
     public AudioSource Horror;
     public AudioSource GlobalSFX;
+    public AudioSource MenuSFX;
 
     AudioSource roomAmbiance_src;
 
@@ -161,6 +162,8 @@ public class GameController : MonoBehaviour
     public PostProcessProfile MediumQ;
     public PostProcessProfile HighQ;
 
+    public string deathmsg = "";
+    public string currentRoom;
 
 
     /// <summary>
@@ -185,14 +188,17 @@ public class GameController : MonoBehaviour
         doorParent = new GameObject();
         doorParent.name = "doorParent";
 
+
         //Define globals into dictionary
 
     }
 
     private void Start()
     {
+        itemData = new ItemList[100];
         roomAmbiance_obj = Instantiate(roomAmbiance_obj);
         roomAmbiance_src = roomAmbiance_obj.GetComponent<AudioSource>();
+        MenuSFX.ignoreListenerPause = true;
 
 
         Time.timeScale = 0;
@@ -234,6 +240,10 @@ public class GameController : MonoBehaviour
 
                         ItemController.instance.EmptyItems();
                         ItemController.instance.LoadItems(SaveSystem.instance.playData.items);
+                        globalInts = SaveSystem.instance.playData.globalInts;
+                        globalFloats = SaveSystem.instance.playData.globalFloats;
+                        globalBools = SaveSystem.instance.playData.globalBools;
+
 
                         GL_SpawnPlayer(playerSpawn.position);
                         GL_Start();
@@ -348,7 +358,7 @@ public class GameController : MonoBehaviour
     {
         if (GlobalValues.LoadType != LoadType.mapless)
         {
-
+            LoadingSystem.instance.FadeOut(0.1f, new Vector3Int(0, 0, 0));
             GlobalValues.isNew = false;
             SCP_UI.instance.ToggleDeath();
 
@@ -441,7 +451,14 @@ public class GameController : MonoBehaviour
     /// <summary>
     /// /////////////////////////////////////////////////////////////////////////////////////////////////GAMEPLAY
     /// </summary>
-
+    public void Action_QuickSave()
+    {
+        SaveSystem.instance.playData = QuickSave();
+        SaveSystem.instance.SaveState();
+        GlobalSFX.PlayOneShot(savedSFX);
+        GlobalValues.hasSaved = true;
+        SubtitleEngine.instance.playSub(GlobalValues.uiStrings["ui_in_saved"]);
+    }
 
     void Update()
     {
@@ -461,10 +478,7 @@ public class GameController : MonoBehaviour
             {
                 if (canSave)
                 {
-                    SaveSystem.instance.playData = QuickSave();
-                    SaveSystem.instance.SaveState();
-                    GlobalSFX.PlayOneShot(savedSFX);
-                    SubtitleEngine.instance.playSub(GlobalValues.uiStrings["ui_in_saved"]);
+                    Action_QuickSave();
                 }
                 else
                 {
@@ -670,7 +684,7 @@ public class GameController : MonoBehaviour
             }
         }*/
 
-        if (Input.GetKeyDown(KeyCode.F2))
+        if (Input.GetKeyDown(KeyCode.F1))
         {
             DebugFlag = !DebugFlag;
         }
@@ -717,7 +731,7 @@ public class GameController : MonoBehaviour
     {
         for (int i = 0; i < itemData.Length; i++)
         {
-            if (itemData[i] == null)
+            if (itemData[i] == null || itemData[i].item == null || itemData[i].item == "Null" || itemData[i].item == "")
             {
                 itemData[i] = new ItemList();
                 itemData[i].X = pos.x;
@@ -759,6 +773,8 @@ public class GameController : MonoBehaviour
     {
         if (Binary_Map[xPlayer, yPlayer] != 0)
         {
+            currentRoom = SCP_Map[xPlayer, yPlayer].roomName;
+
             if (SCP_Map[xPlayer, yPlayer].Event != -1)
             {
                 if (SCP_Map[xPlayer, yPlayer].eventDone != true)
@@ -766,6 +782,7 @@ public class GameController : MonoBehaviour
             }
             if (SCP_Map[xPlayer, yPlayer].items == 1)
             {
+                Debug.Log("Spawning Items");
                 rooms[xPlayer, yPlayer].GetComponent<Item_Spawner>().Spawn();
                 SCP_Map[xPlayer, yPlayer].items = 2;
             }
@@ -1093,9 +1110,11 @@ public class GameController : MonoBehaviour
     }
     public void WorldReturn()
     {
+        GlobalValues.worldState.items = ItemController.instance.GetItems();
+
         GlobalValues.isNew = false;
         GlobalValues.LoadType = LoadType.otherworld;
-        SceneManager.LoadScene(GlobalValues.sceneReturn);
+        LoadingSystem.instance.LoadLevelHalf(1);
     }
 
 
@@ -1110,9 +1129,31 @@ public class GameController : MonoBehaviour
         SubtitleEngine.instance.LoadValues();
         SCP_UI.instance.LoadValues();
         HorrorFov.gameObject.GetComponent<Player_MouseLook>().LoadValues();
+        
         Debug.Log(MainVol.profile.GetSetting<ColorGrading>().gamma.value);
         MainVol.profile.GetSetting<ColorGrading>().gamma.value = new Vector4(1, 1, 1, PlayerPrefs.GetFloat("Gamma", 0));
         Debug.Log(PlayerPrefs.GetFloat("Gamma", 0));
+
+        switch (PlayerPrefs.GetInt("Post",1))
+        {
+            case 0:
+                {
+                    HorrorFov.gameObject.GetComponent<PostProcessLayer>().antialiasingMode = PostProcessLayer.Antialiasing.None;
+                    break;
+                }
+            case 1:
+                {
+                    HorrorFov.gameObject.GetComponent<PostProcessLayer>().antialiasingMode = PostProcessLayer.Antialiasing.FastApproximateAntialiasing;
+                    break;
+                }
+            case 2:
+                {
+                    HorrorFov.gameObject.GetComponent<PostProcessLayer>().antialiasingMode = PostProcessLayer.Antialiasing.FastApproximateAntialiasing;
+                    break;
+                }
+        }
+
+
     }
 
     void LoadItems()
@@ -1146,7 +1187,9 @@ public class GameController : MonoBehaviour
     {
         SaveData playData = new SaveData();
         Debug.Log("Salvando");
-        playData.savedMap = mapCreate.mapfil;
+        playData.savedMap = SCP_Map;
+        playData.saveName = GlobalValues.mapname;
+        playData.saveSeed = GlobalValues.mapseed;
         playData.doorState = doorTable;
         playData.savedSize = mapSize;
         playData.pX = player.transform.position.x;
@@ -1162,6 +1205,7 @@ public class GameController : MonoBehaviour
         playData.globalFloats = globalFloats;
         playData.globalInts = globalInts;
         playData.Health = playercache.Health;
+        playData.bloodLoss = playercache.bloodloss;
 
         SeriVector[] pos = new SeriVector[npcObjects.Length];
         bool[] active = new bool[npcObjects.Length];
@@ -1258,8 +1302,6 @@ public class GameController : MonoBehaviour
 
     void GL_NewStart()
     {
-        itemData = new ItemList[100];
-
         zoneAmbiance = -1;
         zoneMusic = -1;
 
@@ -1279,6 +1321,9 @@ public class GameController : MonoBehaviour
 
         mapCreate.mapfil = SaveSystem.instance.playData.savedMap;
         mapCreate.mapSize = SaveSystem.instance.playData.savedSize;
+
+        GlobalValues.mapseed = SaveSystem.instance.playData.saveSeed;
+        GlobalValues.mapname = SaveSystem.instance.playData.saveName;
 
         mapCreate.LoadingSave();
 
@@ -1347,6 +1392,7 @@ public class GameController : MonoBehaviour
     void GL_SpawnPlayer(Vector3 here)
     {
         Time.timeScale = 1;
+        deathmsg = "";
         if (spawnPlayer)
         {
             if (!spawnHere)
@@ -1361,7 +1407,10 @@ public class GameController : MonoBehaviour
 
         playercache = player.GetComponent<Player_Control>();
         if (!GlobalValues.isNew || GlobalValues.LoadType == LoadType.mapless)
+        {
             playercache.Health = SaveSystem.instance.playData.Health;
+            playercache.bloodloss = SaveSystem.instance.playData.bloodLoss;
+        }
     }
 
     void GL_Start()
@@ -1481,8 +1530,6 @@ public class GameController : MonoBehaviour
             }
         }
 
-        GL_Spawning();
-
         if (!GlobalValues.debug)
         {
             LoadingSystem.instance.loadbar = 1f;
@@ -1493,6 +1540,7 @@ public class GameController : MonoBehaviour
                 yield return null;
             }
         }
+        GL_Spawning();
         GL_Start();
         GL_AfterPost();
     }
@@ -1521,6 +1569,7 @@ public class GameController : MonoBehaviour
         }
         GL_Spawning();
         GL_Start();
+        LoadingSystem.instance.FadeIn(0.5f, new Vector3Int(0, 0, 0));
 
         canSave = true;
         doGameplay = true;

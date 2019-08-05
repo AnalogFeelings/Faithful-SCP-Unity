@@ -39,7 +39,7 @@ public class EV_Storeroom : Event_Parent
                 case 0:
                     {
                         sci.SetPath(Path1);
-                        guard.PlaySound(Voice1);
+                        guard.PlaySound(Voice1,true);
                         guard.SetRota(sci.gameObject.transform);
                         timer = time1;
                         status = 1;
@@ -48,7 +48,7 @@ public class EV_Storeroom : Event_Parent
                 case 1:
                     {
                         GameController.instance.GlobalSFX.PlayOneShot(vent);
-                        sci.PlaySound(Voice2);
+                        sci.PlaySound(Voice2,true);
                         guard.SetRota(lookat);
                         sci.SetRota(lookat);
                         timer = time2;

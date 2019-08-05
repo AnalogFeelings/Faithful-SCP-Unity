@@ -118,8 +118,11 @@ public class testpath_ : MonoBehaviour
 
                         transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(lookAt), 5 * Time.deltaTime);
                         playerCheck = foundPlayerRun;
-                        if (playerDistance < AttackDistance)
+                        if (playerDistance < AttackDistance && GameController.instance.isAlive)
                         {
+                            Audio.PlayOneShot(Hit);
+                            GameController.instance.playercache.Death(0);
+                            GameController.instance.deathmsg = GlobalValues.deathStrings["death_mtf"];
                             Agent.isStopped = true;
                             Animator.SetTrigger("attack" + Random.Range(1, 3));
 
@@ -283,7 +286,10 @@ public class testpath_ : MonoBehaviour
             }
             if (state == state_fakeagent.run || state == state_fakeagent.walk || state == state_fakeagent.patrol || state == state_fakeagent.attack || state == state_fakeagent.dopath)
             {
-                Animator.SetFloat("speed", Agent.velocity.magnitude);
+                if (Agent.isOnOffMeshLink)
+                    Animator.SetFloat("speed", 2);
+                else
+                    Animator.SetFloat("speed", Agent.velocity.magnitude);
 
                 if (debugSpeed)
                     Debug.Log(Agent.velocity.magnitude);
@@ -462,6 +468,8 @@ public class testpath_ : MonoBehaviour
     public void StopThis()
     {
         Debug.Log("Stopping Path", this);
+        currentTarget = transform.position;
+        foundTarget = false;
         stateSet = false;
         state = state_fakeagent.idle;
     }
@@ -505,7 +513,7 @@ public class testpath_ : MonoBehaviour
     }
 
 
-    private void OnTriggerStay(Collider other)
+    /*private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.CompareTag("Player") && AttackTimer <= 0)
         {
@@ -522,7 +530,7 @@ public class testpath_ : MonoBehaviour
                 debugGameLoaded = false;
             }
         }
-    }
+    }*/
 
 
 }

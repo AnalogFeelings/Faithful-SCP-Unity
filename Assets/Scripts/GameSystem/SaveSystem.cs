@@ -36,10 +36,11 @@ public class SaveData
 {
     public List<savedDoor> doorState;
     public string saveName;
+    public string saveSeed;
     public room[,] savedMap;
     public int[,] navMap;
     public float angle;
-    public float Health;
+    public float Health, bloodLoss;
     public MapSize savedSize;
     public float pX, pY, pZ;
     public int mapX, mapY;
@@ -48,6 +49,7 @@ public class SaveData
     public SeriVector[] npcPos;
     public bool[] Activenpc;
     public bool holdRoom;
+    
 
     public List<int> globalInts;
     public List<bool> globalBools;

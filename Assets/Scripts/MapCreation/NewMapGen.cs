@@ -49,7 +49,7 @@ public class room
 {
     public RoomType type;
     public int angle, Event=-1, Zone, items=0, EventState=0;
-    public bool empty=true, eventDone=false, isSpecial=false, hasAmbiance=false;
+    public bool empty=true, eventDone=false, isSpecial=false;
     public int[] neighbours = new int[4];
     public int[] values = new int[5] { 0, 0, 0, 0, 0};
     public string roomName;
@@ -264,17 +264,17 @@ public class NewMapGen : MonoBehaviour
 
         if (!useAlternateSpawn)
         {
-            walker_list.Add(new walker_dat(mapSize.xSize / 2, 0 + 1, mapSize.xSize, maxHall, 3, true));
-            walker_list.Add(new walker_dat(mapSize.xSize / 2, zone3_limit - 1, mapSize.xSize, minHall, 1, true));
-            walker_list.Add(new walker_dat(mapSize.xSize / 2, zone2_limit + 1, mapSize.xSize, minHall, 3, true));
-            walker_list.Add(new walker_dat(mapSize.xSize / 2, mapSize.ySize - 1, mapSize.xSize, minHall, 1, true));
+            //walker_list.Add(new walker_dat(mapSize.xSize / 2, 0, (mapSize.xSize / 2) * 3, maxHall, 3, true));
+            walker_list.Add(new walker_dat(mapSize.xSize / 2, zone3_limit - 1, (mapSize.xSize / 2) * 3, minHall, 1, true));
+            walker_list.Add(new walker_dat(mapSize.xSize / 2, zone2_limit + 1, (mapSize.xSize / 2) * 3, minHall, 3, true));
+            //walker_list.Add(new walker_dat(mapSize.xSize / 2, mapSize.ySize - 1, (mapSize.xSize / 2) * 3, minHall, 1, true));
 
-            walker_list.Add(new walker_dat(1, mapSize.ySize / 2, (mapSize.xSize / 2) * 3, minHall, 0, true));
-            walker_list.Add(new walker_dat(mapSize.xSize, mapSize.ySize / 2, (mapSize.xSize / 2) * 3, minHall, 2, true));
+            walker_list.Add(new walker_dat(1, mapSize.ySize / 2, (mapSize.xSize / 2) * 2, minHall, 0, true));
+            //walker_list.Add(new walker_dat(mapSize.xSize, mapSize.ySize / 2, (mapSize.xSize / 2) * 3, minHall, 2, true));
         }
         else
         {
-            walker_list.Add(new walker_dat(1, mapSize.ySize / 2, mapSize.xSize + mapSize.ySize, maxHall, 0, true));
+            walker_list.Add(new walker_dat(mapSize.xSize / 2, mapSize.ySize-1, mapSize.xSize + mapSize.ySize, maxHall, 1, true));
         }
 
 
@@ -377,10 +377,10 @@ public class NewMapGen : MonoBehaviour
                 {
                     newpath = countryroad(tempNum, temp.dir);
                     walker_list.Add(new walker_dat(temp.x, temp.y, (temp.lifespan / 2), minHall, newpath, false));
-                    if (useAlternateSpawn && pathchance < 3)
+                    /*if (useAlternateSpawn && pathchance < 3)
                     {
                         walker_list.Add(new walker_dat(temp.x, temp.y, (temp.lifespan / 4), minHall, noatras(newpath), false));
-                    }
+                    }*/
                 }
             }
 
@@ -606,6 +606,19 @@ public class NewMapGen : MonoBehaviour
                 }
 
             }
+        }
+
+        for (i = 1; i < mapSize.xSize - 1; i++)
+        {
+            for (j = 0; j < mapSize.ySize-1; j++)
+            {
+                if (mapgen[i, j] == 1 && mapgen[i - 1, j] == 1 && mapgen[i + 1, j] == 1 && mapgen[i, j + 1] == 0 && mapgen[i - 1, j + 1] == 0 && mapgen[i + 1, j + 1] == 0)
+                {
+                    int rand = Random.Range(0, 2);
+                    mapgen[i, j + 1] = rand;
+                }
+
+            }
 
         }
 
@@ -749,7 +762,7 @@ public class NewMapGen : MonoBehaviour
 
         if (j == zone3_limit && mapfil[i, j].neighbours[1] == 0 && mapfil[i, j].neighbours[3] == 1)
         {
-            RoomSpawn(zEntrance.endWay_List, 0, RoomType.EndWay, i, j);
+            RoomSpawn(zHeavy.endWay_List, 0, RoomType.EndWay, i, j);
             mapfil[i, j].Zone = 2;
             cantSpawn = false;
             return;
@@ -1023,7 +1036,6 @@ public class NewMapGen : MonoBehaviour
     {
         temp.roomName = data.Room.name;
         temp.type = data.type;
-        temp.hasAmbiance = data.hasAmbiance;
 
         if (data.hasItem)
             temp.items = 1;
@@ -1079,7 +1091,8 @@ public class NewMapGen : MonoBehaviour
                 tries -= 1;
 
                 if (currtype.Count == 0)
-                    throw new System.Exception("EMPTY LOOKUP TABLE AT " + speciallist[i].type);
+                    return;
+                    //throw new System.Exception("EMPTY LOOKUP TABLE AT " + speciallist[i].type);
 
                 chance = Random.Range(0, currtype.Count);
                 if ((mapfil[currtype[chance].xPos, currtype[chance].yPos].isSpecial == false) && mapfil[currtype[chance].xPos, currtype[chance].yPos].Zone == speciallist[i].Zone)
@@ -1209,7 +1222,7 @@ public class NewMapGen : MonoBehaviour
             DecalSystem.instance.SpawnDecal(new Vector3((roomsize * i) + xDecal, 0.05f, (roomsize * j) + yDecal));
 
 
-        if (mapfil[i, j].Event == -1)
+        if (mapfil[i, j].Event == -1 && GlobalValues.isNew)
         {
             if (room_.hasEvents)
             {
@@ -1242,7 +1255,8 @@ public class NewMapGen : MonoBehaviour
         }
         else
         {
-            mapobjects[i, j].GetComponent<EventHandler>().ForceEvent(mapfil[i, j].Event);
+            if (room_.hasEvents || room_.hasSpecial)
+                mapobjects[i, j].GetComponent<EventHandler>().ForceEvent(mapfil[i, j].Event);
         }
     }
 

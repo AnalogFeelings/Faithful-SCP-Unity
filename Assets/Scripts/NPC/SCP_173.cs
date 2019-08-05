@@ -11,7 +11,9 @@ public class SCP_173 : Roam_NPC
     public float DoorFiddle, DoorCoolDown, TeleCoolDown;
     float DoorTimer, DoorCool, PlayerDistance= 20, DoorDistance;
     Object_Door DoorObj;
-    public GameObject Player;
+    GameObject Player;
+    Player_Control playercache;
+
     Camera mainCamera;
     Plane[] frustum;
     Collider col_173;
@@ -30,6 +32,7 @@ public class SCP_173 : Roam_NPC
         mainCamera = Camera.main;
         col_173 = GetComponent<Collider>();
         Player = GameController.instance.player;
+        playercache = GameController.instance.playercache;
         Destination = transform.position;
 
 
@@ -205,7 +208,7 @@ public class SCP_173 : Roam_NPC
                     TeleWait = true;
                 }
 
-                if (TeleCoolDown <= 0)
+                if (TeleCoolDown <= 0 && !hasDoor)
                 {
                     TeleWait = false;
                     hasPatrol = false;
@@ -258,7 +261,7 @@ public class SCP_173 : Roam_NPC
             Debug.DrawRay(transform.position, transform.forward);
             if (Physics.Raycast(transform.position, transform.forward, out hit, 6f, DoorLay, QueryTriggerInteraction.Collide))
             {
-                if (PlayerDistance < hit.distance)
+                if (PlayerDistance < Vector3.Distance(transform.position, hit.point))
                     closeDoor = false;
                 else
                 {
@@ -378,8 +381,16 @@ public class SCP_173 : Roam_NPC
 
     private void OnTriggerStay(Collider other)
     {
-        if ((!IsSeen())&&(other.gameObject.CompareTag("Player")))
+        if ((!IsSeen())&&(other.gameObject.CompareTag("Player"))&&GameController.instance.isAlive)
         {
+            GameController.instance.deathmsg = GlobalValues.deathStrings["death_173"];
+            if (GameController.instance.currentRoom.Equals("Light_2-Way_Doors"))
+                GameController.instance.deathmsg = GlobalValues.deathStrings["death_173_doors"];
+            if (playercache.onCam)
+                GameController.instance.deathmsg = GlobalValues.deathStrings["death_173_surv"];
+            if (!GameController.instance.doGameplay)
+                GameController.instance.deathmsg = GlobalValues.deathStrings["death_173_intro"];
+
             other.gameObject.GetComponent<Player_Control>().Death(1);
             isActive = false;
         }

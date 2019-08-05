@@ -59,8 +59,11 @@ public class ConsoleController
         /*registerCommand("babble", babble, "Example command that demonstrates how to parse arguments. babble [word] [# of times to repeat]");
         registerCommand("echo", echo, "echoes arguments back as array (for testing argument parser)");*/
         registerCommand("help", help, "Print this help.");
-        registerCommand("hide", hide, "Hide the console.");
         registerCommand("noclip", noclip, "Toggles No Clip");
+        registerCommand("playsub", playsub, "Plays the specified subtitle from the specified table. Usage: playsub [identifier] [table]   (WITHOUT THE BRACKETS)");
+        registerCommand("playvoicesub", playvoicesub, "Plays the specified voice subtitle from the specified character. Usage: playsub [character] [identifier]   (WITHOUT THE BRACKETS)");
+        registerCommand("playtuto", playtuto, "Shows the specified tutorial card. Usage: playtuto [identifier] (NO BRACKETS)");
+        registerCommand("give", give, "Gives you the specified item.");
         registerCommand("safeplace", safeplace, "Tests the world change function");
         registerCommand("safereturn", safereturn, "Tests the world return function");
         registerCommand("goto", teleportCoord, "Teleports to the x and y coordinate");
@@ -191,6 +194,154 @@ public class ConsoleController
                     appendLogLine(string.Format("{0} {1}", text, i));
                 }
             }
+        }
+    }
+
+    void give(string[] args)
+    {
+        string item = args[0];
+
+        if (args.Length > 1)
+        {
+            for (int i = 1; i < args.Length; i++)
+            {
+                item = item + " " + args[i];
+            }
+        }
+
+        if (string.IsNullOrEmpty(item))
+        {
+            appendLogLine("Expected arg1 to be text.");
+        }
+        else
+        {
+            appendLogLine("Spawning Item " + item);
+            Item newitem = UnityEngine.Object.Instantiate(Resources.Load<Item>(string.Concat("Items/", item)));
+            newitem.name = item;
+
+            if (!ItemController.instance.AddItem(newitem, 0))
+                appendLogLine("Inventory full");
+        }
+    }
+
+
+    void playtuto(string[] args)
+    {
+        if (args.Length < 1)
+        {
+            appendLogLine("Expected 1 arguments.");
+            return;
+        }
+        string id = args[0];
+        if (string.IsNullOrEmpty(id))
+        {
+            appendLogLine("Expected arg1 to be text.");
+        }
+        else
+        {
+            if (GlobalValues.tutoStrings.ContainsKey(id))
+                SCP_UI.instance.ShowTutorial(id);
+            else
+                appendLogLine("Tutorial not found");
+        }
+    }
+
+    void playsub(string[] args)
+    {
+        if (args.Length < 2)
+        {
+            appendLogLine("Expected 2 arguments.");
+            return;
+        }
+        string id = args[0];
+        if (string.IsNullOrEmpty(id))
+        {
+            appendLogLine("Expected arg1 to be text.");
+        }
+        else
+        {
+            string table = args[1];
+            if (string.IsNullOrEmpty(table))
+            {
+                appendLogLine("Expected arg2 to be text.");
+            }
+            else
+            {
+                switch(table)
+                {
+                    case "uiStrings":
+                        {
+                            if (GlobalValues.uiStrings.ContainsKey(id))
+                                SubtitleEngine.instance.playSub(GlobalValues.uiStrings[id]);
+                            else
+                                appendLogLine("Subtitle not found");
+                            break;
+                        }
+                    case "playStrings":
+                        {
+                            if (GlobalValues.playStrings.ContainsKey(id))
+                                SubtitleEngine.instance.playSub(GlobalValues.playStrings[id]);
+                            else
+                                appendLogLine("Subtitle not found");
+                            break;
+                        }
+                    case "itemStrings":
+                        {
+                            if (GlobalValues.itemStrings.ContainsKey(id))
+                                SubtitleEngine.instance.playSub(GlobalValues.itemStrings[id]);
+                            else
+                                appendLogLine("Subtitle not found");
+                            break;
+                        }
+                    case "tutoStrings":
+                        {
+                            if (GlobalValues.tutoStrings.ContainsKey(id))
+                                SubtitleEngine.instance.playSub(GlobalValues.tutoStrings[id]);
+                            else
+                                appendLogLine("Subtitle not found");
+                            break;
+                        }
+                    default:
+                        {
+                            appendLogLine("Table not found");
+                            break;
+                        }
+                }
+            }
+        }
+    }
+
+    void playvoicesub(string[] args)
+    {
+        if (args.Length < 2)
+        {
+            appendLogLine("Expected 2 arguments.");
+            return;
+        }
+        string chara = args[0];
+        if (string.IsNullOrEmpty(chara))
+        {
+            appendLogLine("Expected arg1 to be text.");
+        }
+        else
+        {
+            string voice = args[1];
+            if (string.IsNullOrEmpty(voice))
+            {
+                appendLogLine("Expected arg2 to be text.");
+            }
+            else
+            {
+                if (GlobalValues.charaStrings.ContainsKey(chara))
+                {
+                    if (GlobalValues.sceneStrings.ContainsKey(voice))
+                    SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings[voice],GlobalValues.charaStrings[chara]), true);
+                    else
+                        appendLogLine("Subtitle not found");
+                }
+                else
+                    appendLogLine("Character not found");
+            }        
         }
     }
 
