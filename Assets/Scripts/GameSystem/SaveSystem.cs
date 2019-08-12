@@ -14,6 +14,8 @@ public class ItemList
 {
     public string item;
     public float X, Y, Z;
+    public float vlFloat;
+    public int vlInt;
 }
 [System.Serializable]
 public class svItem
@@ -27,6 +29,22 @@ public class svItem
 public class SeriVector
 {
     public float x, y, z;
+}
+
+public class saveMeta
+{
+    public string seed;
+    public string mapver;
+    public string gamever;
+    public string savepath;
+
+    public saveMeta(string _seed, string _path)
+    {
+        seed = _seed;
+        mapver = GlobalValues.saveFileVer;
+        gamever = Application.version;
+        savepath = _path;
+    }
 }
 
 
@@ -84,6 +102,15 @@ public class SaveSystem : MonoBehaviour
         string dataPath = Path.Combine(folderPath, playData.saveName + GlobalValues.fileExtension);
         GlobalValues.pathfile = dataPath;
         WriteSaveFile(playData, dataPath);
+
+        string metaPath = Path.Combine(folderPath, playData.saveName + ".meta");
+
+        string jsonString = JsonUtility.ToJson(new saveMeta(GlobalValues.mapseed, dataPath));
+
+        using (StreamWriter streamWriter = File.CreateText(metaPath))
+        {
+            streamWriter.Write(jsonString);
+        }
     }
 
     public void LoadState()

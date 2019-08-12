@@ -126,7 +126,7 @@ public class Object_Door : MonoBehaviour
                 if (UseParticle)
                 {
                     Instantiate(GameController.instance.doorVacuumParticle, transform.position, transform.rotation);
-                    Instantiate(GameController.instance.doorVacuumParticle, transform.position, transform.rotation*Quaternion.Inverse(transform.rotation));
+                    Instantiate(GameController.instance.doorVacuumParticle, transform.position, Quaternion.Inverse(transform.rotation));
                 }
 
                 IsOpen = false;
@@ -176,11 +176,11 @@ public class Object_Door : MonoBehaviour
         if (switchOpen != true)
             DoorSwitch();
         DoorTime -= (Time.deltaTime);
-            if (DoorTime <= 0.0f)
-            {
+        if (DoorTime <= 0.0f)
+        {
             isForcing = false;
-            switchOpen = false;
-            }
+            DoorSwitch();
+        }
     }
 
 

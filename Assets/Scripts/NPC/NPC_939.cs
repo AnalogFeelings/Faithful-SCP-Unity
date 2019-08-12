@@ -356,7 +356,7 @@ public class NPC_939 : MonoBehaviour
                     foundTarget = false;
                     stateSet = false;
                     PlayVoice(4);
-                    GameController.instance.GlobalSFX.PlayOneShot(AttackTheme);
+                    MusicPlayer.instance.Music.PlayOneShot(AttackTheme);
 
                     if (state == state_939.run)
                         Animator.SetTrigger("leap");

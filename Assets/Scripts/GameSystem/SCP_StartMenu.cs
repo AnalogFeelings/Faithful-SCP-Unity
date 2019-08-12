@@ -31,7 +31,9 @@ public class SCP_StartMenu : MonoBehaviour
 
         GlobalValues.uiStrings = GlobalValues.uiStrings_EN;
 
-        switch(PlayerPrefs.GetInt("Lang", 0))
+        Debug.Log("Language was " + PlayerPrefs.GetInt("Lang", 0));
+
+        switch (PlayerPrefs.GetInt("Lang", 0))
         {
             default:
                 {
@@ -51,6 +53,12 @@ public class SCP_StartMenu : MonoBehaviour
             case 3:
                 {
                     GlobalValues.SetLanguage(SystemLanguage.German);
+                    break;
+                }
+            case 4:
+                {
+                    
+                    GlobalValues.SetLanguage(SystemLanguage.ChineseSimplified);
                     break;
                 }
         }
@@ -178,7 +186,7 @@ public class SCP_StartMenu : MonoBehaviour
         folderPath = folderPath.Replace("/", @"\");
         Debug.Log(folderPath);
 
-        return Directory.GetFiles(folderPath, "*" + GlobalValues.fileExtension).OrderByDescending(d => new FileInfo(d).CreationTime); ;
+        return Directory.GetFiles(folderPath, "*" + ".meta").OrderByDescending(d => new FileInfo(d).CreationTime); ;
     }
 
     public void Load_CB()

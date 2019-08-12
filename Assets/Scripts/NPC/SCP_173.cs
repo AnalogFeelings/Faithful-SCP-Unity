@@ -22,6 +22,7 @@ public class SCP_173 : Roam_NPC
     AudioSource sfx;
     public Transform DoorSpot;
     Vector3 Destination;
+    bool Rotationmode = false;
     int MoveAttempts, TeleAttempts, frameInterval=10;
     public AudioClip[] farHorror, closeHorror;
     public AudioClip teleport;
@@ -46,9 +47,16 @@ public class SCP_173 : Roam_NPC
         _navMeshagent.Warp(transform.position);
         sfx.Pause();
     }
+    private void FixedUpdate()
+    {
+        CheckDoor();
+    }
 
     void Update()
     {
+        /*if (Input.GetKeyDown(KeyCode.Alpha0))
+            Rotationmode = !Rotationmode;*/
+
         if (Time.frameCount % frameInterval == 0)
             PlayerDistance = (Vector3.Distance(Player.transform.position, transform.position));
 
@@ -60,7 +68,9 @@ public class SCP_173 : Roam_NPC
 
         canSee = IsSeen();
 
-        CheckDoor();
+        Debug.DrawRay(transform.position + (Vector3.up * 1.5f), (transform.forward)*1.5f);
+        Debug.DrawRay(transform.position + (Vector3.up * 1.5f), (Quaternion.Euler(0, 10, 0) * transform.forward)*1.5f);
+        Debug.DrawRay(transform.position + (Vector3.up * 1.5f), (Quaternion.Euler(0, -10, 0) * transform.forward) * 1.5f);
 
         DoorCool -= Time.deltaTime;
 
@@ -77,21 +87,34 @@ public class SCP_173 : Roam_NPC
 
                 if (_navMeshagent.velocity.sqrMagnitude > Mathf.Epsilon)
                 {
-                    transform.rotation = Quaternion.LookRotation(_navMeshagent.velocity.normalized);
+                    if (Rotationmode)
+                        transform.rotation = Quaternion.LookRotation(_navMeshagent.velocity.normalized);
+                    else
+                        transform.rotation = Quaternion.LookRotation(_navMeshagent.steeringTarget - transform.position);
                 }
 
+                if (_navMeshagent.hasPath)
+                {
+                    for (int i = 0; i < _navMeshagent.path.corners.Length; i++)
+                    {
+                        Debug.DrawRay(_navMeshagent.path.corners[i], Vector3.up, Color.magenta, 1.5f);
+
+                    }
+
+                }
 
                 DoorTimer -= Time.deltaTime;
-                if (canMove)
+
+                if (canMove && DoorCool <= 0)
                 {
                     if (PlayerDistance < 20f && !closeDoor)
-                        _navMeshagent.speed = 18;
+                        _navMeshagent.speed = 24;
                     if (PlayerDistance >= 20f && !closeDoor)
-                        _navMeshagent.speed = 10;
+                        _navMeshagent.speed = 15;
 
                     if (closeDoor)
                     {
-                        _navMeshagent.speed = 5;
+                        _navMeshagent.speed = 10;
                     }
 
                     
@@ -155,7 +178,7 @@ public class SCP_173 : Roam_NPC
 
     bool CheckPlayer()
     {
-        Debug.DrawRay(Player.transform.position, (transform.position + new Vector3(0, 0.4f, 0)) - Player.transform.position);
+        Debug.DrawRay(Player.transform.position, (transform.position + new Vector3(0, 0.4f, 0)) - Player.transform.position, Color.red);
         
         if (Time.frameCount % frameInterval == 0)
         {
@@ -258,8 +281,7 @@ public class SCP_173 : Roam_NPC
         if (hasDoor == false)
         {
             RaycastHit hit;
-            Debug.DrawRay(transform.position, transform.forward);
-            if (Physics.Raycast(transform.position, transform.forward, out hit, 6f, DoorLay, QueryTriggerInteraction.Collide))
+            if (Physics.Raycast(transform.position+(Vector3.up*1.5f), transform.forward, out hit, 3f, DoorLay, QueryTriggerInteraction.Collide))
             {
                 if (PlayerDistance < Vector3.Distance(transform.position, hit.point))
                     closeDoor = false;
@@ -272,19 +294,41 @@ public class SCP_173 : Roam_NPC
             else
                 closeDoor = false;
 
-            if (Physics.Raycast(transform.position, transform.forward, out hit, 1.5f, DoorLay, QueryTriggerInteraction.Collide))
+            canMove = true;
+            hasDoor = false;
+
+            if (Physics.Raycast(transform.position + (Vector3.up * 1.5f), transform.forward, out hit, 1f, DoorLay, QueryTriggerInteraction.Collide))
             {
                 DoorObj = hit.transform.gameObject.GetComponent<Object_Door>();
                 DoorTimer = DoorFiddle;
                 hasDoor = true;
             }
-            else
+
+            if (Physics.Raycast(transform.position + (Vector3.up * 1f), (Quaternion.Euler(0, -10, 0) * transform.forward), out hit, 1.5f, DoorLay, QueryTriggerInteraction.Collide))
             {
-                canMove = true;
-                hasDoor = false;
+                DoorObj = hit.transform.gameObject.GetComponent<Object_Door>();
+                DoorTimer = DoorFiddle;
+                hasDoor = true;
             }
+
+            if (Physics.Raycast(transform.position + (Vector3.up * 1f), (Quaternion.Euler(0, 10, 0) * transform.forward), out hit, 1.5f, DoorLay, QueryTriggerInteraction.Collide))
+            {
+                DoorObj = hit.transform.gameObject.GetComponent<Object_Door>();
+                DoorTimer = DoorFiddle;
+                hasDoor = true;
+            }
+
+            if (_navMeshagent.hasPath && (Vector3.Dot(transform.forward, (_navMeshagent.pathEndPosition - transform.position)) <= 0) && (Physics.Raycast(transform.position + (Vector3.up * 1.5f), -transform.forward, out hit, 1.5f, DoorLay, QueryTriggerInteraction.Collide)))
+            {
+                DoorObj = hit.transform.gameObject.GetComponent<Object_Door>();
+                DoorTimer = DoorFiddle;
+                hasDoor = true;
+                Debug.Log(" OH GOD HE IS BEHIND ME ");
+            }
+
         }
-        else
+
+       if (hasDoor == true)
         {
             if (DoorObj.GetState())
             {
@@ -293,7 +337,12 @@ public class SCP_173 : Roam_NPC
             }
             else
             {
+                if (canMove == true)
+                    _navMeshagent.isStopped = true;
                 canMove = false;
+
+
+
                 if (DoorTimer <= 0)
                 {
                     DidOpen = DoorObj.Door173();
@@ -304,12 +353,12 @@ public class SCP_173 : Roam_NPC
                         hasDoor = false;
                         canMove = true;
                         Vector3 here;
-                        do
-                        {
+                        /*do
+                        {*/
                             here = GameController.instance.GetPatrol(Player.transform.position, 2, 1);
 
-                        }
-                        while (!GameController.instance.PlayerNotHere(here));
+                        /*}
+                        while (!GameController.instance.PlayerNotHere(here));*/
                         Spawn(true, here);
                         MoveAttempts = 0;
                     }
@@ -350,6 +399,7 @@ public class SCP_173 : Roam_NPC
                 playedHorror = false;
                 hasDoor = false;
                 hasPatrol = false;
+                Debug.Log("I tried to spawn and it worked");
             }
             else if (NavMesh.SamplePosition(warppoint, out here, 10f, NavMesh.AllAreas))
             {
@@ -359,7 +409,10 @@ public class SCP_173 : Roam_NPC
                 playedHorror = false;
                 hasDoor = false;
                 hasPatrol = false;
+                Debug.Log("I tried to spawn and it worked kinda");
             }
+            else
+                Debug.Log("I failed to spawn :C ");
 
             if (isActive)
             {
@@ -381,7 +434,7 @@ public class SCP_173 : Roam_NPC
 
     private void OnTriggerStay(Collider other)
     {
-        if ((!IsSeen())&&(other.gameObject.CompareTag("Player"))&&GameController.instance.isAlive)
+        if ((!IsSeen())&&(other.gameObject.CompareTag("Player"))&&GameController.instance.isAlive&&!GameController.instance.playercache.godmode)
         {
             GameController.instance.deathmsg = GlobalValues.deathStrings["death_173"];
             if (GameController.instance.currentRoom.Equals("Light_2-Way_Doors"))

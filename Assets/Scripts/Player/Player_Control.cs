@@ -51,7 +51,7 @@ public class Player_Control : MonoBehaviour
     Camera PlayerCam;
     Image eyes, blinkbar, runbar, batbar, overlay, handEquip, eyeIcon;
     RectTransform hand_rect, hud_rect;
-    public bool Freeze = false, isGameplay = false, Crouch = false, onCam = false;
+    public bool Freeze = false, isGameplay = false, Crouch = false, onCam = false, godmode = false;
 
     [Header("Movement")]
     public float GroundDistance = 0.2f;
@@ -688,7 +688,7 @@ public class Player_Control : MonoBehaviour
 
     public void Death(int cause)
     {
-        if (isGameplay)
+        if (isGameplay && !godmode)
         {
             GameController.instance.PlayerDeath();
             _controller.enabled = false;
@@ -698,6 +698,11 @@ public class Player_Control : MonoBehaviour
             isGameplay = false;
             eyes.color = Color.clear;
             Destroy(handPos);
+
+            overlay.sprite = null;
+            handEquip.color = Color.clear;
+            SCP_UI.instance.SNav.SetActive(false);
+            SCP_UI.instance.radio.StopRadio();
 
             switch (cause)
             {
@@ -723,8 +728,9 @@ public class Player_Control : MonoBehaviour
 
     public void FakeDeath(int cause)
     {
-        if (isGameplay)
+        if (isGameplay && !godmode)
         {
+
             GameController.instance.FakeDeath();
             _controller.enabled = false;
             DeathCol.SetActive(true);
@@ -733,6 +739,10 @@ public class Player_Control : MonoBehaviour
             isGameplay = false;
             eyes.color = Color.clear;
             Destroy(handPos);
+
+            overlay.sprite = null;
+            handEquip.color = Color.clear;
+            SCP_UI.instance.SNav.SetActive(false);
 
             switch (cause)
             {
@@ -822,6 +832,11 @@ public class Player_Control : MonoBehaviour
         if (equipment[(int)item.part] is Equipable_Nav)
         {
             SCP_UI.instance.SNav.SetActive(false);
+        }
+
+        if (equipment[(int)item.part] is Equipable_Radio)
+        {
+            SCP_UI.instance.radio.StopRadio();
         }
 
         switch (item.part)
@@ -961,9 +976,9 @@ public class Player_Control : MonoBehaviour
             }
         }
 
-        if (equipment[(int)bodyPart.Hand] is Equipable_Elec)
+        if (equipment[(int)bodyPart.Hand] is Equipable_Elec && equipment[(int)bodyPart.Hand].valueFloat >= 0)
         {
-            (equipment[(int)bodyPart.Hand]).valueFloat -= 0.6f * Time.deltaTime;
+            (equipment[(int)bodyPart.Hand]).valueFloat -= ((Equipable_Elec)equipment[(int)bodyPart.Hand]).SpendFactor * Time.deltaTime;
         }
 
 
@@ -989,8 +1004,6 @@ public class Player_Control : MonoBehaviour
         playerEffects[(int)what] = null;
     }
 
-
-
     public void ACT_UnEquip(bodyPart where)
     {
         SCP_UI.instance.ItemSFX(equipment[(int)where].SFX);
@@ -1003,6 +1016,11 @@ public class Player_Control : MonoBehaviour
         if (equipment[(int)where] is Equipable_Nav)
         {
             SCP_UI.instance.SNav.SetActive(false);
+        }
+
+        if (equipment[(int)where] is Equipable_Radio)
+        {
+            SCP_UI.instance.radio.StopRadio();
         }
 
         if (where != bodyPart.Hand)
@@ -1039,6 +1057,7 @@ public class Player_Control : MonoBehaviour
         ReloadEquipment();
 
     }
+        
 
     void ReloadEquipment()
     {
@@ -1056,7 +1075,7 @@ public class Player_Control : MonoBehaviour
             overlay.sprite = null;
         }
 
-        if (equipment[(int)bodyPart.Hand] != null)
+        if (equipment[(int)bodyPart.Hand] != null && !((equipment[(int)bodyPart.Hand] is Equipable_Radio) || (equipment[(int)bodyPart.Hand] is Equipable_Nav)))
         {
             handEquip.sprite = equipment[(int)bodyPart.Hand].Overlay;
             handEquip.color = Color.white;
@@ -1075,9 +1094,11 @@ public class Player_Control : MonoBehaviour
         GameObject newObject;
         newObject = Instantiate(GameController.instance.itemSpawner, handPos.transform.position, Quaternion.identity, GameController.instance.itemParent.transform);
         newObject.GetComponent<Object_Item>().item = item;
+        newObject.GetComponent<Object_Item>().isNew = false;
         newObject.GetComponent<Object_Item>().id = GameController.instance.AddItem(handPos.transform.position, item);
         Debug.Log("dROPPED " + newObject.GetComponent<Object_Item>().id);
         newObject.GetComponent<Object_Item>().Spawn();
+        newObject.GetComponent<Rigidbody>().AddForce(transform.forward * 5f);
     }
 
     public void playerWarp(Vector3 here, float rotation)

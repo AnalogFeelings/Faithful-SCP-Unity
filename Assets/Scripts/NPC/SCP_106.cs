@@ -44,6 +44,17 @@ public class SCP_106 : Roam_NPC
 
     void Update()
     {
+        if (PlayerDistance > 8 && eyesActive != true)
+        {
+            Eyes.SetActive(true);
+            eyesActive = true;
+        }
+        if (PlayerDistance < 8 && eyesActive != false)
+        {
+            Eyes.SetActive(false);
+            eyesActive = false;
+        }
+
         if (isActive)
         {
             if (!isEvent)
@@ -145,16 +156,7 @@ public class SCP_106 : Roam_NPC
             }
         }
 
-        if (PlayerDistance > 8 && eyesActive != true)
-        {
-            Eyes.SetActive(true);
-            eyesActive = true;
-        }
-        if (PlayerDistance < 8 && eyesActive != false)
-        {
-            Eyes.SetActive(false);
-            eyesActive = false;
-        }
+        
     }
 
 

@@ -25,6 +25,7 @@ public static class GlobalValues
     public const string folderName = "CBSaves";
     public const string fileExtension = ".scp";
     static public int sceneReturn = -1;
+    static public string saveFileVer = "0.1.1";
 
     //Localization
     //static public Dictionary<string, string> uiStrings;
@@ -153,7 +154,7 @@ public static class GlobalValues
         {"tutograb", "Click the Interact button when the Hand icon shows up to interact with different objects. Grab Items, move lever, etc."},
         {"tutoinv1", "Press the Inventory key to see your collected items. Click on the to equip them or use them"},
         {"tutoinv2", "Drop items into the slots of other items to combine them for different results. You can also drop them outside"},
-        {"tutoinv3", "Keypads around the facility require a keycard with the appropiate clearance. Some doors may be locked remotely. Find ways to unlock them"},
+        {"tutoinv3", "Card Readers around the facility require a keycard with the appropiate clearance. Some doors may be locked remotely. Find ways to unlock them"},
         {"tutodead", "You may find interesting items in the pockets of the victims of the breach"},
         {"tutorun", "Hold the sprint button to Sprint. Be aware your footsteps may attract creatures aware of their enviroment"},
         {"tutohide1", "Crouching and hiding behind objects can deter Enemies aware of their enviroment"},
@@ -212,6 +213,10 @@ public static class GlobalValues
 
         {"docL1", "Dr. L Note"},
 
+        {"doc500", "SCP-500 Document"},
+        {"docSC", "Security Clearance Document"},
+        {"docRAND3", "173 Procedures Revision"},
+
 
         {"deadpaper", "Shreded paper"},
         {"origami", "Origami"},
@@ -228,6 +233,7 @@ public static class GlobalValues
         {"key3", "Researcher Keycard LVL 3"},
         {"key4", "Agent Keycard LVL 4"},
         {"key5", "Agent Keycard LVL 5"},
+        {"badge", "Badge"},
         {"keycredit", "Master Card"},
         {"keyj", "Playing Card"},
         {"keyomni", "OmniCard"},
@@ -235,7 +241,11 @@ public static class GlobalValues
         {"ring", "SCP-714"},
         {"snav", "S-Nav 300"},
         {"snav2", "S-Nav 310"},
+        {"snav3", "S-Nav Ultimate"},
         {"radio", "Radio"},
+
+
+
 
     };
 
@@ -312,6 +322,11 @@ public static class GlobalValues
         {"EnterChamber","<b>{0}</b> : Attention all Class D Personel, Please enter the Containment Chamber" },
         {"Approach173","<b>{0}</b> : Please approach <color=yellow>SCP-173</color> for testing" },
         { "Problem","<b>{0}</b> : Uh, there seems to be a problem with the door control system,  the doors aren't responding to any of our attempts to close it, so Uhm, Please maintain direct eye contact with SCP-173 and-" },
+        { "Refuse1", "<b>{0}</b> : Subject D-9341, enter the containment chamber or you will be terminated."  },
+        { "Refuse2", "<b>{0}</b> : This is your last warning. You have five seconds to comply." },
+        { "Refuse3", "<b>{0}</b> : Subject D-9341 designated for termination. Fire at will." },
+
+
 
         { "Escape1","<b>{0}</b> : I think the shortest way out, is through the South-east wing, follow me!" },
         { "Escape2","<b>{0}</b> : Did you hear that? I hope it wasnt-" },
@@ -335,6 +350,8 @@ public static class GlobalValues
         {"scene_012_5", "<i>Balloons... This....this makes...no sense!</i>"},
         {"scene_012_6", "<i>No... this... this is... impossible!</i>"},
         {"scene_012_7", "<i>It can't... It can't be completed!</i>"},
+
+        { "kneel106", "KNEEL"},
     };
 
     public static Dictionary<string, string> charaStrings_EN = new Dictionary<string, string>()
@@ -463,17 +480,17 @@ public static class GlobalValues
 
         {"title_106", "SCP-106" },
         {"body1_106","SCP-106 tiene la apariencia de un humanoide anciano, demostrando un estado de descomposicion avanzada. Puede variar, pero su \"putrefaccion\" esta presente en todas ellas." },
-        {"body2_106", "SCP-106 causa un efecto de \"corrocion\" en toda la materia que toca, Descomponiendo los materiales al tocarlos. Eso se observa como oxido, putrefaccion, y agrietacion de los materiales, y la aparicion de una sustancia viscosa parecida a la que recubre al SCP-106." },
+        {"body2_106", "SCP-106 causa un efecto de \"corrosion\" en toda la materia que toca, Descomponiendo los materiales al tocarlos. Eso se observa como oxido, putrefaccion, y agrietacion de los materiales, y la aparicion de una sustancia viscosa parecida a la que recubre al SCP-106." },
         {"body3_106","SCP-106 puede atravezar matera solida, y capturara a su victima llevandola a lo que se asume es una \"Dimension de Bolsillo\"."},
 
         {"title_294","SCP-294" },
-        {"body1_294", "SCP-294 aparenta ser una simple maquina expendedora de cafe, con la principal diferencia siendo un teclado de entrada formato QWETY americano" },
+        {"body1_294", "SCP-294 aparenta ser una simple maquina expendedora de cafe, con la principal diferencia siendo un teclado de entrada formato QWERTY americano" },
         {"body2_294", "Al entrar el nombre de cualquier liquido en el teclado, la maquina dispensa un vaso de papel de 12 onzas, y empezara a servir el liquido solicitado" },
-        {"body3_294", "97 pruebas iniciales se hicieron (incluyendo agua, cafe, soda, licor, liquido no consumible como acido sulfurico, liquido limpiador, y aceite de motor, e incluso sustancias que no existen estado liquido, como nitrogeno, hierro, o vidrio) todas exitosas." },
+        {"body3_294", "97 pruebas iniciales se hicieron (incluyendo agua, cafe, soda, licor, liquido no consumible como acido sulfurico, liquido limpiador, y aceite de motor, e incluso sustancias que no existen estado liquido, como hierro o vidrio) todas exitosas." },
 
         {"title_914", "SCP-914" },
         {"body1_914" , "SCP-914 es un dispositivo de relojeria que pesa bastantes tnoeladas, y cubre un area de 18 metros cuadrados, formado por engranajes, poleas, cintas, resortes y demas relojeria." },
-        {"body2_914","Cuando se pone un objeto en el area de \nEntrada\n y se le da cuerda a la llave, SCP-914 \"refinara\" el objeto, basandose en la opcion seleccionada en el panel frontal de la Maquina" },
+        {"body2_914","Cuando se pone un objeto en el area de \"Entrada\" y se le da cuerda a la llave, SCP-914 \"refinara\" el objeto, basandose en la opcion seleccionada en el panel frontal de la Maquina" },
         {"body3_914","No se debe introducir materia organica al SCP-914." },
 
         {"title_939", "SCP-939" },
@@ -494,7 +511,7 @@ public static class GlobalValues
         {"tutorun", "Sosten el boton de Sprint para correr. Ten cuidado, ya que tus pasos podrian atraer a ciertas criaturas"},
         {"tutohide1", "Crouching and hiding behind objects can deter Enemies aware of their enviroment"},
         {"tutohide2", "Hay criaturas que pueden oir tus pasos. Agachate o camina despacio para que no se enteren de tu presencia"},
-        {"tutoradio", "Press keys 1 to 5 to change the Radio Channel"},
+        {"tutoradio", "Presiona las teclas 1~5 para cambiar de estacion"},
 
         };
 
@@ -511,7 +528,7 @@ public static class GlobalValues
         {"play_dequip_fem", "Te quitaste la {0}" },
         {"play_dequip_male", "Te quitaste el {0}" },
         {"play_used_fem", "Usaste la {0}" },
-        {"play_used_male", "usaste el {0}" },
+        {"play_used_male", "Usaste el {0}" },
         {"play_picked_uni", "Recogiste {0}" },
         {"play_picked_fem", "Recogiste una {0}" },
         {"play_picked_male", "Recogiste un {0}" },
@@ -543,6 +560,10 @@ public static class GlobalValues
         {"doc372", "Procedimientos para SCP-372"},
         {"doc914", "Informacion de SCP-914"},
 
+        {"doc500", "Informacion de SCP-500"},
+        {"docSC", "Panfleto de Niveles de Seguridad"},
+        {"docRAND3", "Revision de Procedimientos-173"},
+
         {"docAC", "Papel Calcinado"},
 
         {"docL1", "Nota del Dr. L"},
@@ -563,6 +584,7 @@ public static class GlobalValues
         {"key3", "Acceso Investigador NVL 3"},
         {"key4", "Acceso Agente NVL 4"},
         {"key5", "Acceso Agente NVL 5"},
+        {"badge", "Identificacion"},
         {"keycredit", "Master Card"},
         {"keyj", "Naipe"},
         {"keyomni", "Acceso Omni"},
@@ -570,13 +592,14 @@ public static class GlobalValues
         {"ring", "SCP-714"},
         {"snav", "S-Nav 300"},
         {"snav2", "S-Nav 310"},
+        {"snav3", "S-Nav Ultimate"},
         {"radio", "Radio"},
 
     };
 
     public static Dictionary<string, string> sceneStrings_ES = new Dictionary<string, string>()
     {
-        {"BeforeDoorOpen", "<b>{0}</b> : Control, aqui el Agent Ulgrin. Solicito apertura de la celda 3-11."},
+        {"BeforeDoorOpen", "<b>{0}</b> : Control, aqui el Agente Ulgrin. Solicito apertura de la celda 3-11."},
         {"ExitCell", "<b>{0}</b> : Hey, tenemos trabajo para ti. Sal de la celda"},
         {"ExitCellRefuse1", "<b>{0}</b> : Tienes retraso? Dije que salgas de la celda. Si no lo haces te sacare a la fuerza"},
         {"ExitCellRefuse2", "<b>{0}</b> : Amigo no tengo todo el dia. Intento ser amable al respecto, pero si no sales, te sacare a la fuerza."},
@@ -647,9 +670,14 @@ public static class GlobalValues
         {"EnterChamber","<b>{0}</b> : Atencion Personal Clase-D, entren a la camara de contencion" },
         {"Approach173","<b>{0}</b> : Acerquense al <color=yellow>SCP-173</color> para las pruebas" },
         { "Problem","<b>{0}</b> : Uh, parece haber un problema con el control de la puerta, no responden a nuestros intentos de cerrarla, asi que, Uhm, No rompan el contacto visual con el SCP-173 y esperen ma-" },
+        { "Refuse1", "<b>{0}</b> : Sujeto D-9341, Entre a la camara de Contencion, o sera neutralizado"  },
+        { "Refuse2", "<b>{0}</b> : Esta es su ultima advertencia, tiene 5 segundos para cumplir" },
+        { "Refuse3", "<b>{0}</b> : Sujeto D-9341, designadao para neutralizacion." },
+
 
         { "Escape1","<b>{0}</b> : Creo que la salida mas rapida, es por el ala sur-este, ¡Sigueme!" },
         { "Escape2","<b>{0}</b> : ¿Escuchaste eso? Ojala no sea -" },
+        { "kneel106", "INCLINATE"},
 
 
 
@@ -886,6 +914,10 @@ public static class GlobalValues
 
         {"docL1", "Dr. Ls Notiz"},
 
+        {"doc500", "SCP-500 Dokument"},
+        {"docSC", "Sicherheitsfreigabe Dokument"},
+        {"docRAND3", "173 Sicherheitsmaßnahmenrevision"},
+
 
         {"deadpaper", "Geschreddertes Papier"},
         {"origami", "Origami"},
@@ -902,6 +934,7 @@ public static class GlobalValues
         {"key3", "Forscher Schlüsselkarte LVL 3"},
         {"key4", "Agenten Schlüsselkarte LVL 4"},
         {"key5", "Agenten Schlüsselkarte LVL 5"},
+        {"badge", "Ausweis"},
         {"keycredit", "Master Card"},
         {"keyj", "Spielkarte"},
         {"keyomni", "Omni Karte"},
@@ -909,135 +942,486 @@ public static class GlobalValues
         {"ring", "SCP-714"},
         {"snav", "S-Nav 300"},
         {"snav2", "S-Nav 310"},
+        {"snav3", "S-Nav ULTIMATE"},
         {"radio", "Radio"},
     };
 
     public static Dictionary<string, string> sceneStrings_DE = new Dictionary<string, string>()
     {
-        {"BeforeDoorOpen", "<b>{0}</b> : Control, this is Agent Ulgrin. I need to request open up Cell 3-11."},
-        {"ExitCell", "<b>{0}</b> : Hey, they've got some work for ya. Do me a favor, and step out of your cell"},
-        {"ExitCellRefuse1", "<b>{0}</b> : What are you stupid or something? I said step out of the cell. If you don't step out of the cell I'm gonna kick your ass."},
-        {"ExitCellRefuse2", "<b>{0}</b> : Look buddy I don't have all day. I'm trying to be polite about this. If you don't step out of the cell I'm gonna kick your ass."},
-        {"CellGas1", "<b>{0}</b> : Huh, you have got to be the dumbest test subject we've ever had. Oh well, shut the doors and open the gas valves."},
-        {"CellGas2", "<b>{0}</b> : Huh, I'm actually kinda disappointed you didn't put up a fight. I was looking forward to punching you in the face."},
-        {"EscortRun", "<b>{0}</b> : Hey, dumbass! You're going the wrong way. Get the hell over here right now!"},
-        {"EscortRefuse1", "<b>{0}</b> : Hurry up! They're waiting for you."},
-        {"EscortRefuse2", "<b>{0}</b> : Look dude, I already hate my job. Why are you making it more difficult for me?"},
-        {"EscortPissedOff1", "<b>{0}</b> : I ain't in the mood for this shit, I have no problem putting a bullet in your brain if you don't start cooperating."},
-        {"EscortPissedOff2", "<b>{0}</b> : I ain't in the mood for this shit, I have no problem putting a bullet in your brain if you don't start cooperating."},
-        {"EscortKill1", "<b>{0}</b> : Alright, you know what? Fine, be that way. We'll just get somebody else then"},
-        {"EscortKill2", "<b>{0}</b> : Alright fine, be that way. We'll just get somebody else then."},
+        {"BeforeDoorOpen", "<b>{0}</b> : Kontrolle, hier spricht Agent Ulgrin. Ich ersuche das Öffnen der Zelle 3-11."},
+        {"ExitCell", "<b>{0}</b> : Hey, die haben ein bisschen Arbeit für dich. Tu mir 'nen Gefallen und tret aus deiner Zelle."},
+        {"ExitCellRefuse1", "<b>{0}</b> : Bist du irgendwie dumm oder so? Ich habe gesagt tret aus deiner Zelle. Wenn du nichts aus deiner Zelle tritts kriegst du auf's Maul."},
+        {"ExitCellRefuse2", "<b>{0}</b> : Komm schon Kumpel, wir haben nicht den ganzen Tag. Ich versuche hier höflich zu sein. Wenn du nichts aus deiner Zelle tritts kriegst du auf's Maul."},
+        {"CellGas1", "<b>{0}</b> : Huh, du musst echt das dümmste Testsubjekt sein das wir jemals hatten. Auch egal, schließt die Tür und öffnet das Gasventil."},
+        {"CellGas2", "<b>{0}</b> : Huh, ich bin irgendwie enttäuscht, dass du keinen Stress gemacht hast. Ich hatte gehofft ich könnte dir ins Gesicht schlagen."},
+        {"EscortRun", "<b>{0}</b> : Hey, Spast! Das ist der falsche Weg. Komm augenblicklich hier her!"},
+        {"EscortRefuse1", "<b>{0}</b> : Beeil dich! Die warten auf dich."},
+        {"EscortRefuse2", "<b>{0}</b> : Komm schon Kumpel, ich hasse meinen Job jetzt schon. Wieso machst du ihn mir noch schwerer?"},
+        {"EscortPissedOff1", "<b>{0}</b> : Ich hab keinen Bock auf diesen Scheiß, ich habe absolut kein Problem damit dir 'ne Kugel in den Kopf zu jagen wenn du nicht anfängst mitzuarbeiten."},
+        {"EscortPissedOff2", "<b>{0}</b> : Ich hab keinen Bock auf diesen Scheiß, ich habe absolut kein Problem damit dir 'ne Kugel in den Kopf zu jagen wenn du nicht anfängst mitzuarbeiten."},
+        {"EscortKill1", "<b>{0}</b> : Okay, weißt du was? Dann sei so. Wir werden uns einfach jemand anderen holen."},
+        {"EscortKill2", "<b>{0}</b> : Okay, weißt du was? Dann sei so. Wir werden uns einfach jemand anderen holen."},
 
 
-        {"Intro_Convo1_1", "<b>{0}</b> : So, uh, how's it going?"},
-        {"Intro_Convo1_2", "<b>{0}</b> : Uh, a-are you talking to me?"},
-        {"Intro_Convo1_3", "<b>{0}</b> : Well yeah, who do you think I'm talking to, this guy with the punchable face? Course I'm talking to you."},
-        {"Intro_Convo1_4", "<b>{0}</b> : Oh, I'm just a little surprised. I think this is the first time you've ever spoken to me."},
-        {"Intro_Convo1_5", "<b>{0}</b> : Well yeah, it's your first day working here."},
-        {"Intro_Convo1_6", "<b>{0}</b> : Uh, actually, we've worked together now for about 5 months."},
-        {"Intro_Convo1_7", "<b>{0}</b> : Really? Wow. That's weird."},
+        {"Intro_Convo1_1", "<b>{0}</b> : Also, uh, wie geht's?"},
+        {"Intro_Convo1_2", "<b>{0}</b> : Uh, r-redest du mit mir?"},
+        {"Intro_Convo1_3", "<b>{0}</b> : Nunja, mit wem denkst du rede ich, dem D-Klasse Fuzzi hier? Klar red ich mit dir."},
+        {"Intro_Convo1_4", "<b>{0}</b> : Oh, ich bin nur ein wenig überrascht. Ich denke, dass ist das erste Mal, das du mit mir redest."},
+        {"Intro_Convo1_5", "<b>{0}</b> : Naja, es ist dein erster Arbeitstag hier."},
+        {"Intro_Convo1_6", "<b>{0}</b> : Uh, eigentlich arbeiten wir seit fünf Monaten zusammen."},
+        {"Intro_Convo1_7", "<b>{0}</b> : Wirklich? Wow. Das ist seltsam."},
 
-        {"Intro_Convo2_1", "<b>{0}</b> : Uh, so you see any good movies lately?"},
-        {"Intro_Convo2_2", "<b>{0}</b> : Uh, I don't really watch movies. I mostly read books."},
-        {"Intro_Convo2_3", "<b>{0}</b> : Yeah? What kind of books?"},
-        {"Intro_Convo2_4", "<b>{0}</b> : Uh, horror, science fiction, anything like that?"},
-        {"Intro_Convo2_5", "<b>{0}</b> : You're kidding me."},
-        {"Intro_Convo2_6", "<b>{0}</b> : What?"},
-        {"Intro_Convo2_7", "<b>{0}</b> : Your whole job revolves around horror and science fiction, except, you know, it's not actually fiction."},
-        {"Intro_Convo2_8", "<b>{0}</b> : Well, actually, I'm planning on writing a book about my exper-"},
-        {"Intro_Convo2_9", "<b>{0}</b> : Yeah, look, no offense, but I've already lost interest in what you're talking about."},
+        {"Intro_Convo2_1", "<b>{0}</b> : Uh, hast du in letzter Zeit irgendwelche guten Filme gesehen?"},
+        {"Intro_Convo2_2", "<b>{0}</b> : Uh, ich schaue nicht wirklich viele Filme, ich lese Bücher."},
+        {"Intro_Convo2_3", "<b>{0}</b> : Ja? Was für Bücher?"},
+        {"Intro_Convo2_4", "<b>{0}</b> : Uh, Horror, Science-Fiction, sowas halt."},
+        {"Intro_Convo2_5", "<b>{0}</b> : Du machst Witze."},
+        {"Intro_Convo2_6", "<b>{0}</b> : Wie?"},
+        {"Intro_Convo2_7", "<b>{0}</b> : Dein ganzer Job dreht sich um Horror und Science-Fiction, außer, dass es tatsächlich keine Fiktion ist."},
+        {"Intro_Convo2_8", "<b>{0}</b> : Also, eigentlich plane ich ein Buch über meine Erfahr-"},
+        {"Intro_Convo2_9", "<b>{0}</b> : Ok, nimm's mir nicht übel, aber ich hab jetzt schon jegliches Interesse an dem verloren was du sagen wolltest."},
 
-        {"Intro_Convo3_1", "<b>{0}</b> : Man, I'm hungry. Hey, today's pizza day down at the cafeteria, right?"},
-        {"Intro_Convo3_2", "<b>{0}</b> : Uh, a-actually, I think it's tuna casserole."},
-        {"Intro_Convo3_3", "<b>{0}</b> : Oh, god dammit. Well, my day's ruined. The only reason I still come here is for the pizza. I don't know what it is about that pizza, but it's delicious. Tuna casserole, on the other hand, is a disgusting abomination and it should be locked up in here with the rest of these freaks."},
+        {"Intro_Convo3_1", "<b>{0}</b> : Mann, bin ich hungrig. Hey, heute ist Pizzatag in der Cafeteria, stimmt's?"},
+        {"Intro_Convo3_2", "<b>{0}</b> : Uh, e-eigentlich ist es Thunfischauflauf, denke ich."},
+        {"Intro_Convo3_3", "<b>{0}</b> : Oh, Gott verdammt. Also mein Tag ist ruiniert. Der einzige Grund wieso ich immer noch hier her komme ist wegen der Pizza. Ich weiß nicht was es mit dieser Pizza auf sich hat, aber sie ist echt lecker. Thunfischauflauf andererseits ist eine grausame Abscheulichkeit die mit dem Rest von diesen Missgeburten hier eingesperrt sein sollte."},
         {"Intro_Convo3_4", "<b>{0}</b> : Uh, okay.."},
 
-        {"Intro_Convo4_1", "<b>{0}</b> : Let me guess. You don't have a girlfriend, do you?"},
-        {"Intro_Convo4_2", "<b>{0}</b> : Uh, a-are you talking to me?"},
-        {"Intro_Convo4_3", "<b>{0}</b> : Course I'm talking to you."},
-        {"Intro_Convo4_4", "<b>{0}</b> : Is it that obvious?"},
-        {"Intro_Convo4_5", "<b>{0}</b> : Well I'm definitely not a mind reader, otherwise I'd be locked up in this place, so, yeah, I'd say it's pretty damn obvious"},
-        {"Intro_Convo4_6", "<b>{0}</b> : Well, how am I supposed to get a girlfriend anyway when I have this job? I mean, I can't tell her about it, so what am I supposed to do?"},
-        {"Intro_Convo4_7", "<b>{0}</b> : Just lie to her. Tell her you work at some coffee shop or something."},
-        {"Intro_Convo4_8", "<b>{0}</b> : Well, what if I accidentally forgot to wash my hands here at work, and I came home and there was blood on my hands? What would I say to her then?"},
-        {"Intro_Convo4_9", "<b>{0}</b> : Uh, I don't know, tell her it's, uh... ketchup."},
-        {"Intro_Convo4_10", "<b>{0}</b> : Ketchup? Why would I have ketchup on my hands if I worked at a coffee shop?"},
-        {"Intro_Convo4_11", "<b>{0}</b> : Ugh, j-just forget it."},
+        {"Intro_Convo4_1", "<b>{0}</b> : Lass mich raten, du hast keine Freundin, oder?"},
+        {"Intro_Convo4_2", "<b>{0}</b> : Uh, s-sprichst du mit mir?"},
+        {"Intro_Convo4_3", "<b>{0}</b> : Klar sprech ich mit dir."},
+        {"Intro_Convo4_4", "<b>{0}</b> : Ist es so offensichtlich?"},
+        {"Intro_Convo4_5", "<b>{0}</b> : Also ich bin ja kein Gedankenleser, sonst wäre ich auch hier eingesperrt, also ja, es ist ziemlich offensichtlich."},
+        {"Intro_Convo4_6", "<b>{0}</b> : Wie soll ich denn mit diesem Job eine Freundin finden? Ich meine, ich kann ihr davon ja nichts erzählen, also was soll ich tun?"},
+        {"Intro_Convo4_7", "<b>{0}</b> : Lüg sie doch einfach an. Sag ihr du arbeitest in irgendeinem Café oder so."},
+        {"Intro_Convo4_8", "<b>{0}</b> : Aber, was wenn ich aus Versehen vergesse hier meine Hände zu waschen und mit Blut an ihnen nach Hause komme? Was sollte ich ihr dann sagen?"},
+        {"Intro_Convo4_9", "<b>{0}</b> : Uh, keine Ahnung, sag einfach es wäre, uh... Ketchup oder so."},
+        {"Intro_Convo4_10", "<b>{0}</b> : Ketchup? Wieso sollte ich Ketchup an meinen Händen haben wenn ich in einem Café arbeite?"},
+        {"Intro_Convo4_11", "<b>{0}</b> : Ugh, v-vergiss es einfach."},
 
-        {"Intro_Convo5_1", "<b>{0}</b> : Uh, so you see any good movies lately?"},
-        {"Intro_Convo5_2", "<b>{0}</b> : Uh, I don't really watch movies."},
-        {"Intro_Convo5_3", "<b>{0}</b> : Oh ok. Well what about video games? You know that reminds me, someone should make a video game based on this place."},
-        {"Intro_Convo5_4", "<b>{0}</b> : Why would anyone do that?"},
-        {"Intro_Convo5_5", "<b>{0}</b> : I don't know, just thought it was kind of a cool idea."},
-        {"Intro_Convo5_6", "<b>{0}</b> : Well, I don't play video games either."},
-
-
-
-        {"Escort1", "<b>{0}</b> : Just follow me. Oh and by the way, we're authorized to kill any disobedient test subjects, so don't try anything stupid."},
-        {"Escort2", "<b>{0}</b> : Just follow me. Oh and by the way, we're authorized to kill any disobedient test subjects, so don't try anything stupid."},
-        {"EscortDone1", "<b>{0}</b> : Well, we're here. Just get in there and follow all the instructions and uh, you'll probably be fine."},
-        {"EscortDone2", "<b>{0}</b> : Well, we're here. I'm still disappointed I didn't get to punch you, but whatever."},
-        {"EscortDone3", "<b>{0}</b> : Well, we're here. I'm still disappointed I didn't get to punch you in the face, but *sigh* whatever."},
-        {"EscortDone4", "<b>{0}</b> : Just get in there and follow all the instructions and uh, you'll probably be fine. Or maybe you won't be. Either way, I don't really care."},
-        {"EscortDone5", "<b>{0}</b> : Well anyway, let's not waste anymore time. They're waiting for you down in the chamber."},
-
-
-        {"EnterChamber","<b>{0}</b> : Attention all Class D Personel, Please enter the Containment Chamber" },
-        {"Approach173","<b>{0}</b> : Please approach <color=yellow>SCP-173</color> for testing" },
-        { "Problem","<b>{0}</b> : Uh, there seems to be a problem with the door control system,  the doors aren't responding to any of our attempts to close it, so Uhm, Please maintain direct eye contact with SCP-173 and-" },
-
-        { "Escape1","<b>{0}</b> : I think the shortest way out, is through the South-east wing, follow me!" },
-        { "Escape2","<b>{0}</b> : Did you hear that? I hope it wasnt-" },
+        {"Intro_Convo5_1", "<b>{0}</b> : Uh, hast du in letzter Zeit irgendwelche guten Filme gesehen?"},
+        {"Intro_Convo5_2", "<b>{0}</b> : Uh, ich schaue nicht wirklich viele Filme."},
+        {"Intro_Convo5_3", "<b>{0}</b> : Oh ok. Wie sieht es mit Videospielen aus? Weißt du was, das gibt mir eine Idee, jemand sollte ein Videospiel über diesen Ort machen."},
+        {"Intro_Convo5_4", "<b>{0}</b> : Wieso sollte das irgendjemand tun?"},
+        {"Intro_Convo5_5", "<b>{0}</b> : Ich weiß nicht, ich dachte einfach es wäre eine coole Idee."},
+        {"Intro_Convo5_6", "<b>{0}</b> : Nun, ich spiele auch keine Videospiele."},
 
 
 
+        {"Escort1", "<b>{0}</b> : Folge mir. Ach und übrigens, wir sind dazu autorisiert unfolgsame Testsubjekte zu neutralisieren, also versuch besser nichts Dummes."},
+        {"Escort2", "<b>{0}</b> : Folge mir. Ach und übrigens, wir sind dazu autorisiert unfolgsame Testsubjekte zu neutralisieren, also versuch besser nichts Dummes."},
+        {"EscortDone1", "<b>{0}</b> : Also, hier sind wir. Geh einfach da rein und befolge alle Anweisungen, dann wirst du uh, wahrscheinlich lebend da rauskommen."},
+        {"EscortDone2", "<b>{0}</b> : Also, hier sind wir. Ich bin immer noch enttäuscht, dass ich dir nicht Eine reinhauen konnte, aber egal."},
+        {"EscortDone3", "<b>{0}</b> : Also, hier sind wir. Ich bin immer noch enttäuscht, dass ich dir nicht ins Gesicht schlagen durfte, aber *seufz* egal."},
+        {"EscortDone4", "<b>{0}</b> : Geh einfach da rein und befolge alle Anweisungen, dann wirst du uh, wahrscheinlich lebend da rauskommen. Vielleicht aber auch nicht, ist mir eigentlich auch egal."},
+        {"EscortDone5", "<b>{0}</b> : Naja, jedenfalls, lass uns keine Zeit mehr verschwenden. Die Anderen warten auf dich in der Kammer."},
+
+
+        {"EnterChamber","<b>{0}</b> : Achtung an alle D-Klasse Mitarbeiter, bitte betreten Sie die Isolierungszelle." },
+        {"Approach173","<b>{0}</b> : Bitte nähern sie sich <color=yellow>SCP-173</color> für einen Versuch." },
+        { "Problem","<b>{0}</b> : Uh, es scheint ein Problem mit dem Türenkontrollsystem zu geben, die Türen reagieren nicht auf unsere Versuche sie zu schließen, also uhm, bitte halten sie mit Blickkontakt mit SCP-173 und-" },
+        { "Refuse1", "<b>{0}</b> : Subjekt D-9341, betreten sie die Isolierungszelle oder sie werden neutralisiert."  },
+        { "Refuse2", "<b>{0}</b> : Dies ist ihre letzte Warnung. Sie haben fünf Sekunden um den Anweisungen zu folgen." },
+        { "Refuse3", "<b>{0}</b> : Subjekt D-9341 zum Abschuss freigegeben. Feuer frei." },
+
+
+        { "Escape1","<b>{0}</b> : Ich denke der kürzeste Weg nach draußen ist durch den Südost-Flügel, folgen Sie mir!" },
+        { "Escape2","<b>{0}</b> : Haben Sie das gehört? Ich hoffe es war nicht-" },
 
 
 
-        {"scene_BreachStart_1", "<b>{0}</b> : Agent, Behind You!"},
-        {"scene_BreachStart_2", "<b>{0}</b> : Oh, shit!"},
-        {"scene_BreachStart_3", "<b>{0}</b> : Keep your eyes on Him!"},
-        {"scene_BreachStart_4", "<b>{0}</b> : Okay, I'm going to blink, just keep on watching him"},
-        {"scene_BreachStart_5", "<b>{0}</b> : Alright, got it"},
 
 
-        {"scene_012_1", "<i>I have to... I have to finish it...</i>"},
-        {"scene_012_2", "<i>Do you really wanna do it... I don't... think... I can do this.</i>"},
-        {"scene_012_3", "<i>I... I... must... do it.</i>"},
-        {"scene_012_4", "<i>I-I... have... no... ch-choice!</i>"},
-        {"scene_012_5", "<i>Balloons... This....this makes...no sense!</i>"},
-        {"scene_012_6", "<i>No... this... this is... impossible!</i>"},
-        {"scene_012_7", "<i>It can't... It can't be completed!</i>"},
+
+        {"scene_BreachStart_1", "<b>{0}</b> : Agent, hinter dir!"},
+        {"scene_BreachStart_2", "<b>{0}</b> : Oh, Scheiße!"},
+        {"scene_BreachStart_3", "<b>{0}</b> : Behalt ihn im Auge!"},
+        {"scene_BreachStart_4", "<b>{0}</b> : Okay, ich werde blinzeln, schau ihn einfach weiter an"},
+        {"scene_BreachStart_5", "<b>{0}</b> : Okay, Alles klar"},
+
+
+        {"scene_012_1", "<i>Ich muss... Ich muss es fertig stellen...</i>"},
+        {"scene_012_2", "<i>Möchtest du das wirklich tun... Ich schaffe... das... nicht.</i>"},
+        {"scene_012_3", "<i>Ich... Ich... muss... es schaffen.</i>"},
+        {"scene_012_4", "<i>I-Ich... habe... keine... W-Wahl!</i>"},
+        {"scene_012_5", "<i>Luftballons... Das....das macht...keinen Sinn!</i>"},
+        {"scene_012_6", "<i>Nein... das... das kann... nicht sein!</i>"},
+        {"scene_012_7", "<i>Es ist... Es ist unmöglich!</i>"},
+
+        { "kneel106", "KNIE NIEDER"},
     };
 
     public static Dictionary<string, string> charaStrings_DE = new Dictionary<string, string>()
     {
         {"chara_franklin", "S.C. Franklin"},
         {"chara_ulgrin", "Agent Ulgrin"},
-        {"chara_guard", "Guard"},
-        {"chara_sci", "Doctor"},
+        {"chara_guard", "Wache"},
+        {"chara_sci", "Doktor"},
     };
 
     public static Dictionary<string, string> deathStrings_DE = new Dictionary<string, string>()
     {
-        {"death_173", "Subject D-9341: \nFatal cervical fracture. Assumed to be attacked by SCP-173."},
-        {"death_173_doors", "\"<i>If I'm not mistaken, one of the main purposes of these rooms was to stop SCP-173 from moving further in the event of a containment breach. So, whose brilliant idea was it to put <b>A GODDAMN MAN-SIZED VENTILATION DUCT</b> in there?</i>\""},
-        {"death_173_surv", "Subject: D-9341. \nCause of Death: Fatal cervical fracture. The surveillance tapes confirm that the subject was killed by SCP-173." },
-        {"death_173_intro" , "Subject: D-9341. \nCause of death: Fatal cervical fracture. According to Security Chief Franklin who was present at SCP-173's containment chamber during the breach, the subject was killed by SCP-173 as soon as the disruptions in the electrical network started."},
+        {"death_173", "Subjekt D-9341: \nTödlicher Halswirbelsäulenbruch. Angriff von SCP-173 wird angenommen."},
+        {"death_173_doors", "\"<i>Wenn ich mich nicht irre war einer der Hauptgründe für diese Räume SCP-173 im Falle eines Eindämmungsbruchs am Weiterentkommen zu hindern. Also wessen brilliante Idee war es <b>EINEN GOTT VERDAMMTEN MANNSGROẞEN LÜFTUNGSKANAL</b> da drin zu installieren?</i>\""},
+        {"death_173_surv", "Subjekt: D-9341. \nTodesursache: Tödlicher Halswirbelsäulenbruch. Die Überwachungaufnahmen zeigen, dass das Subjekt von SCP-173 getötet wurde." },
+        {"death_173_intro" , "Subjekt: D-9341. \nTodesursache: Tödlicher Halswirbelsäulenbruch. Laut Sicherheitschef Franklin, welcher sich während dem Eindämmungsbruch bei SCP-173s Kammer aufhielt, wurde das Subjekt von SCP-173 getötet als die Störungen im Stromnetz begannen."},
 
-        {"death_106_stone", "\" [...]<i>In addition to the decomposed appearance typical of the victims of SCP-106, the body exhibits injuries that have not been observed before: massive skull fracture, three broken ribs, fractured shoulder and heavy lacerations.</i>\"" },
-        {"death_939" ,"\"[...] <i>All four escaped SCP-939 (4) specimens have been captured and recontained successfully. Three (3) of them made quite a mess at Storage Area 6. A cleaning team has been dispatched.</i> \""},
-        {"death_012", "<i>Subject D-9341 found in a pool of blood next to SCP-012. Subject seems to have ripped open his wrists and written three extra lines to the composition before dying of blood loss.</i>" },
-
-
-        {"death_intro",  "\"[...] <i>What an annoying piece of shit </i>\""},
-
-        {"death_gas", "<i>Subject D-9341 found dead in [DATA REDACTED]. Cause of death: suffocation due to decontamination gas.</i>" },
-        {"death_tesla", "Subject D-9341 killed by the Tesla Gate at [REDACTED]" },
+        {"death_106_stone", "\" [...]<i>In Verbindung mit der verrotteten Erscheinung die typisch für Opfer von SCP-106 ist, weißt der Körper zusätzliche Verletzungen welche zuvor noch nicht beobachtet wurden: massive Schädelfraktur, drei gebrochene Rippen, eine gebrochene Schulter und schwere Blutergüsse.</i>\"" },
+        {"death_939" ,"\"[...] <i>Alle vier (4) entflohenen SCP-939 Exemplare wurden erfolgreich gefangen und reisoliert. Drei (3) von ihnen haben eine ziemliche Sauerei in Lagergebiet 6 verrichtet. Eine Säuberungsmannschaft wurde entsendet.</i> \""},
+        {"death_012", "<i>Subjekt D-9341, gefunden in einer Blutpfütze neben SCP-012. Das Subjekt scheint seine Hauptschlagadern aufgerissen und die Komposition um drei Zeilen weitergeschrieben zu haben, bevor er an Blutverlust verstarb.</i>" },
 
 
-        {"death_mtf", "Subject: D-9341. \nTerminated by Nine-Tailed Fox." },
+        {"death_intro",  "\"[...] <i>Was ein nerviges Stück Scheiße </i>\""},
 
+        {"death_gas", "<i>Subjekt D-9341 tot gefunden in [DATA REDACTED]. Todesursache: Ersticken durch Dekontaminationsgas.</i>" },
+        {"death_tesla", "Subjekt D-9341 getötet durch Stromtor bei [REDACTED]" },
+
+
+        {"death_mtf", "Subjekt: D-9341. \nNeutralisiert von Nine-Tailed Fox." },
+
+    };
+
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~UI DEUTSCH STRINGS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    public static Dictionary<string, string> uiStrings_CH = new Dictionary<string, string>()
+    {
+        {"ui_generic_back", "返回"},
+        {"ui_main_play", "开始游戏"},
+        {"ui_main_extras", "额外内容"},
+        {"ui_main_options", "设置"},
+        {"ui_main_exit", "退出"},
+
+        {"ui_main_play_pro", "序幕"},
+        {"ui_main_play_chap", "章节"},
+
+        {"ui_main_play_new", "新游戏"},
+        {"ui_main_play_load", "载入游戏"},
+        {"ui_main_play_start", "开始"},
+        {"ui_main_play_seed", "地图种子"},
+        {"ui_main_play_sname", "保存名"},
+        {"ui_main_play_intro", "游戏介绍"},
+        {"ui_main_play_sload", "加载"},
+        {"ui_main_play_sdelete", "删除"},
+
+        {"ui_in_anykey", "按任何按键以开始"},
+        {"ui_in_pause", "暂停"},
+        {"ui_in_info", "记录编号: {0} \n名称: {1} \n\n保存名: {2}\n地图种子: {3}"},
+        {"ui_in_resume", "继续"},
+        {"ui_in_save", "保存并退出"},
+        {"ui_in_quit", "关闭游戏"},
+        {"ui_in_death", "你死了"},
+        {"ui_in_load", "加载存档"},
+        {"ui_in_saved", "游戏保存" },
+        {"ui_in_nosave", "不能在这里保存" },
+
+
+        {"ui_op_gfx", "图像"},
+        {"ui_op_sfx", "音频"},
+        {"ui_op_input", "输出"},
+        {"ui_op_misc", "高级"},
+
+        {"ui_gfx_quality", "画质"},
+        {"ui_gfx_post", "后处理"},
+        {"ui_gfx_lang", "语言"},
+        {"ui_gfx_vsync", "垂直同步"},
+        {"ui_gfx_frame", "设置帧率"},
+        {"ui_gfx_gamma", "屏幕亮度"},
+
+        {"ui_sfx_master", "主音量"},
+        {"ui_sfx_music", "音乐音量"},
+        {"ui_sfx_ambiance", "环境音量"},
+        {"ui_sfx_sfx", "音效音量"},
+        {"ui_sfx_voice", "对话音量"},
+        {"ui_sfx_sub", "显示字幕"},
+
+        {"ui_input_invert", "鼠标Y轴反转"},
+        {"ui_input_acc", "鼠标加速"},
+
+        {"ui_misc_debug", "调试控制台"},
+        {"ui_misc_tuto", "在游戏中显示教程"},
+
+        {"ui_demo_end", "感谢你玩我们的试玩版" },
+        {"ui_demo_end_body", "我们重做的第一个目标就是复原和 <color=white><i>SCP收容失效</i></color> 原版一样的氛围和感觉，用一个更细致而且更加可靠的引擎（希望如此！）\n\n我们将不负众望！\n\n我们离和现在版本一样的感觉还有很长的路要走, 作为一个创作者就有义务不仅要把这些做到完美, 而且还要让玩家享受这个游戏。 我相信我有足够的经验用这个引擎来制作SCP:CB这款游戏，并且又快又好\n\n你可以加载保存的游戏来探索我们在重收容区所做的一切。\n\n持续关注下一次的主要更新 希望你能感受到游戏中新的想法和特色玩法" },
+
+        {"ui_map_noconnect", "无法连接地图数据库" },
+        {"ui_map_lock", "地区上锁：" },
+        {"ui_map_heavy", "重收容区 " },
+        {"ui_map_entrance", "入口区 " },
+
+        {"ui_radio_channel2", " 警告 - 收容失效 " },
+        {"ui_radio_channel3", " SCP基金会站点内无线电 " },
+        {"ui_radio_channel4", " 紧急频道-在收容失效后仍能保持联系 " },
+    };
+
+    public static Dictionary<string, string> loadStrings_CH = new Dictionary<string, string>()
+    {
+        {"title_173", "SCP-173"},
+        {"body1_173", "SCP—173是由混凝土和钢筋制成的，带有Krurn品牌喷漆的痕迹。它有生命力并且充满敌意."},
+        {"body2_173", "项目在受到直视时无法移动，与173待在一起时的任何时候都不能移开视线。进入收容室的人在眨眼前应当互相提醒。"},
+
+        {"title_scp", "SCP基金会"},
+        {"body1_scp", "SCP基金会致力于调查和管控异常的人造物和反常的生命形式."},
+        {"body2_scp", "''SCP''代表''特殊收容措施''（和基金会的官方箴言。''安全，收容，保护''.）- 这两条总结了基金会的行动纲领和目标。"},
+
+        {"title_dclass", "D级人员"},
+        {"body1_dclass", "D级人员是处理Keter级的主要人员。"},
+        {"body2_dclass", "D级人员从监狱囚犯中招募。死刑犯优先；在受到威胁时，允许启用十二号方案，允许招募无辜者或是因较轻罪行而被监禁的人。"},
+        {"body3_dclass", "所有D级人员都将在每月一号结束试验，必须有新的D级来替换他们"},
+
+        {"title_012", "SCP-012" },
+        {"body1_012" , "SCP-012被考古学家K.M.于意大利北部一座名为桑多瓦尔的坟墓里发现。这是一篇名为\"On Mount Golgotha\"的不完整的手写乐谱"},
+        {"body2_012" , "那个红黑相间的墨水，最初被认为是某种浆果或天然染料墨水，后来被发现是来自多个人类受试者的血液。" },
+        {"body3_012" , "允许多个测试者进行多次测试。在每一种情况下，受试者都会用自己的血液来完成这一部分，从而导致随后的精神病症状和巨大的心理创伤。" },
+
+        {"title_106", "SCP-106" },
+        {"body1_106","SCP-106是一个老年人型且高度腐烂的外貌。这种腐烂的外观会变化，但是不管以什么形式看都是\"腐烂\"的感觉" },
+        {"body2_106", "SCP-106能\"腐蚀\"任何它碰到的非中空的物体，接触几秒后物体就会发生物理性损坏。观察到的是材料生锈、腐烂和开裂，产生一种类似于覆盖在SCP-106表面的的黑色粘液状物质。" },
+        {"body3_106","SCP-106能穿过固体物质，并且将猎物拉入其\"口袋空间\"，捕捉并且杀死猎物"},
+
+        {"title_294","SCP-294" },
+        {"body1_294", "项目SCP-294看起来是一台标准的自动咖啡售卖机，唯一值得注意的区别是输入触摸板上的按钮与英文QWERTY键盘相对应。" },
+        {"body2_294", "在使用触摸板输入任何液体的名称时，一个标准的12盎司纸杯被放置，所输入的液体名称就会流入纸杯" },
+        {"body3_294", "进行了九十七次试验（包括对水、咖啡、啤酒和苏打的要求，非消耗性液体，如硫酸、雨刷液和机油，以及通常不是液体状态的物质，如氮、铁和玻璃），每一次试验都成功。" },
+
+        {"title_914", "SCP-914" },
+        {"body1_914" , "SCP-914是一种重达数吨，占地面积18平方米的大型钟表装置，由螺杆传动装置、皮带、滑轮、齿轮、弹簧等其他的机械组成。" },
+        {"body2_914","当一个物体被放置在输入口并且转动钥匙，SCP-914将\"重炼\"该物体。整个过程中没有能量丢失，并且根据914前面板的设置对物体进行重炼" },
+        {"body3_914","任何时候都不得将有机物输入SCP-914。" },
+
+        {"title_939", "SCP-939" },
+        {"body1_939","SCP-939是恒温的群居动物全身看起来是有机体的结合，SCP-939身长2.2米平均体重250公斤，但体重差别很大" },
+        {"body2_939","SCP-939诱捕猎物的主要方法是模仿先前人类受害者的声音及语言，并且也有模仿其他物种和夜间狩猎的记录。" },
+        {"body3_939","猎物通常是被一口咬到头盖骨或颈部杀死的；咬合力的测量值超过35兆帕。" },
+    };
+
+    public static Dictionary<string, string> tutoStrings_CH = new Dictionary<string, string>()
+    {
+        {"tutograb", "当出现了手的图标时点击交互按钮以抓取物品拉动杆子等"},
+        {"tutoinv1", "单击清单按钮以打开你收集的物品，单击装备或者使用他们"},
+        {"tutoinv2", "拉取物品到其他的物品框中，可以移动或者是将他们结合获得新物品，你也可以将他们扔掉"},
+        {"tutoinv3", "打开部分设施的门需要不同等级的钥匙卡，有一些门被远程上锁了，找到解锁的方式"},
+        {"tutodead", "你可能在收容失效后的受害者的口袋里面找到有用的东西"},
+        {"tutorun", "按住冲刺键以冲刺，你的脚步声会吸引周围的生物"},
+        {"tutohide1", "躲藏在物体后面可以防止你的敌人发现你"},
+        {"tutohide2", "生物可以听到你的脚步声。如果你觉得他们知道你的存在，蹲下或慢慢走。"},
+        {"tutoradio", "从一到五按按键以改变无线电频道"},
+
+        };
+
+    public static Dictionary<string, string> playStrings_CH = new Dictionary<string, string>()
+    {
+        {"play_button_nocard", "你需要一张钥匙卡来开这扇门"},
+        {"play_button_lowcard", "你需要一张更高等级的钥匙卡"},
+        {"play_button_card", "你刷了一下钥匙卡"},
+        {"play_button_failcard", "你刷了一下卡但是什么都没有发生"},
+        {"play_button_elev", "你呼叫了电梯"},
+        {"play_button", "你按下了按钮"},
+        {"play_equip_fem", "你穿上了{0}" },
+        {"play_equip_male", "你穿上了{0}" },
+        {"play_dequip_fem", "你移除了{0}" },
+        {"play_dequip_male", "你移除了{0}" },
+        {"play_used_fem", "你使用了{0}" },
+        {"play_used_male", "你使用了{0}" },
+        {"play_picked_uni", "捡起{0}" },
+        {"play_picked_fem", "捡起了一个{0}" },
+        {"play_picked_male", "捡起了一个{0}" },
+        {"play_equiped", "使用{0}" },
+        {"play_fullinv", "不能携带更多了" },
+        {"play_cure", "你给自己打了一下绷带" },
+        {"play_cureblood", "你给自己打了一下绷带止住了血" },
+        {"play_cureblood2", "你给自己打了绷带但是并没有完全止血" },
+
+        {"play_012_1", "你把指甲插进手腕里面，用血作画" },
+        {"play_012_2", "你撕开你的左手腕，开始用你的血在文档上面写着" },
+        {"play_012_3", "你将你的手指插入伤口的更深处" },
+        {"play_012_4", "你将伤口撕的更大，倾泻了一勺血" },
+    };
+
+    public static Dictionary<string, string> itemStrings_CH = new Dictionary<string, string>()
+    {
+        {"bat_nor", "9V电池"},
+        {"doc_ori", "培训传单"},
+        {"doc_173", "173的收容程序"},
+        {"doc012", "SCP-012收容程序"},
+        {"doc079", "SCP-079收容程序"},
+        {"doc096", "SCP-096收容程序"},
+        {"doc682", "SCP-682收容程序"},
+        {"doc939", "SCP-939收容程序"},
+        {"doc966", "SCP-966收容程序"},
+        {"doc1048", "SCP-1048收容程序"},
+        {"doc1123", "SCP-1123收容程序"},
+        {"doc372", "SCP-372收容程序"},
+        {"doc914", "SCP-914文件"},
+
+        {"doc008", "SCP-008文件"},
+        {"docSC", "安全许可文件"},
+        {"docRAND3", "173程序修改"},
+
+        {"docAC", "烧掉的笔记"},
+
+        {"docL1", "L博士的笔记"},
+
+
+        {"deadpaper", "碎纸"},
+        {"origami", "折纸"},
+        {"clipboard", "文件夹"},
+        {"elec", "损坏的电子设备"},
+
+
+
+        {"gasmask1", "防毒面具"},
+        {"gasmask2", "防毒面具"},
+        {"eye", "眼药水"},
+        {"vest", "防弹背心"},
+        {"key0", "看门人钥匙卡"},
+        {"key1", "研究员钥匙卡LVL 1"},
+        {"key2", "研究员钥匙卡LVL 2"},
+        {"key3", "研究员钥匙卡LVL 3"},
+        {"key4", "特工钥匙卡LVL 4"},
+        {"key5", "特工钥匙卡LVL 5"},
+        {"badge", "徽章"},
+        {"keycredit", "万事达卡"},
+        {"keyj", "扑克牌"},
+        {"keyomni", "万能卡"},
+        {"medkit1", "轻型医疗设施"},
+        {"ring", "SCP-714"},
+        {"snav", "超级导航300"},
+        {"snav2", "超级导航310"},
+        {"snav3", "超级导航ULTIMATE"},
+        {"radio", "无线电"},
+    };
+
+    public static Dictionary<string, string> sceneStrings_CH = new Dictionary<string, string>()
+    {
+         {"BeforeDoorOpen", "<b>{0}</b> : 管理中心，我是尤格林探员。我需要打开3-11号房间。"},
+        {"ExitCell", "<b>{0}</b> : 嘿，他们为你找了些工作。帮个忙，离开你的房间"},
+        {"ExitCellRefuse1", "<b>{0}</b> : 你是傻瓜还是怎么了？我说离开你的房间。如果你不离开我就会踢你的屁股"},
+        {"ExitCellRefuse2", "<b>{0}</b> : 听着，伙计，我不是一整天都有时间。我想礼貌一点。如果你不离开房间，我就踢你屁股。"},
+        {"CellGas1", "<b>{0}</b> : 啊，你是这里有史以来最笨的测试对象了。哦，好吧，关上门，打开气阀。"},
+        {"CellGas2", "<b>{0}</b> : 啊，我真的有点失望，你没被打。我还期待着打你的脸。"},
+        {"EscortRun", "<b>{0}</b> : 嘿，笨蛋！你走错了路。马上过来！"},
+        {"EscortRefuse1", "<b>{0}</b> : 快点！他们在等你。"},
+        {"EscortRefuse2", "<b>{0}</b> : 听着，伙计，我已经讨厌我的工作了。你为什么让我更难做？"},
+        {"EscortPissedOff1", "<b>{0}</b> : 我没心情和你胡扯，如果你不合作的话，我会对着你的脑子开一枪。"},
+        {"EscortPissedOff2", "<b>{0}</b> : 我没心情和你胡扯，如果你不合作的话，我会对着你的脑子开一枪。"},
+        {"EscortKill1", "<b>{0}</b> : 好吧，听我说。好吧，就这样吧。我们得去找其他人了"},
+        {"EscortKill2", "<b>{0}</b> : 好吧，就这样。那我们就去找别人吧。"},
+
+
+        {"Intro_Convo1_1", "<b>{0}</b> : 那么，呃，最近怎么样？"},
+        {"Intro_Convo1_2", "<b>{0}</b> : 呃，你-你在和我说话吗？"},
+        {"Intro_Convo1_3", "<b>{0}</b> : 嗯，是的，你觉得我在跟谁说话，这个长着要挨打的脸的家伙？我当然在和你说话。"},
+        {"Intro_Convo1_4", "<b>{0}</b> : 哦，我只是有点惊讶。我想这是你第一次和我说话。"},
+        {"Intro_Convo1_5", "<b>{0}</b> : 是的，这是你在这里工作的第一天。"},
+        {"Intro_Convo1_6", "<b>{0}</b> : 实际上，我们已经在一起工作了5个月了。"},
+        {"Intro_Convo1_7", "<b>{0}</b> : 真的吗？好奇怪啊。"},
+
+        {"Intro_Convo2_1", "<b>{0}</b> : 呃，你最近看了什么好电影吗？"},
+        {"Intro_Convo2_2", "<b>{0}</b> : 呃，我真的不看电影。我主要看书。"},
+        {"Intro_Convo2_3", "<b>{0}</b> : 是吗？那看的是什么书？"},
+        {"Intro_Convo2_4", "<b>{0}</b> : 呃，恐怖小说，科幻小说之类的？"},
+        {"Intro_Convo2_5", "<b>{0}</b> : 你在开玩笑吧。"},
+        {"Intro_Convo2_6", "<b>{0}</b> : 什么？"},
+        {"Intro_Convo2_7", "<b>{0}</b> : 你的整个工作都围绕着恐怖和科幻小说展开，其实，你知道，这不是虚构的。"},
+        {"Intro_Convo2_8", "<b>{0}</b> : 实际上，我正计划写一本关于我的经验的书-"},
+        {"Intro_Convo2_9", "<b>{0}</b> : 是的，听着，没有冒犯的意思，但我已经对你所说的失去了兴趣。"},
+
+        {"Intro_Convo3_1", "<b>{0}</b> : 伙计，我饿了。嘿，今天的披萨日在自助餐厅，对吧？"},
+        {"Intro_Convo3_2", "<b>{0}</b> : 嗯，事实上，我想是金枪鱼砂锅。"},
+        {"Intro_Convo3_3", "<b>{0}</b> : 哦，天哪。好吧，我的一天被毁了。我来这里的唯一原因是吃披萨。我不知道那比萨为什么那么美味。另一方面，金枪鱼砂锅是一种恶心的可憎的食物，它应该和其他的怪物一起关在这里。"},
+        {"Intro_Convo3_4", "<b>{0}</b> : 好吧.."},
+
+        {"Intro_Convo4_1", "<b>{0}</b> : 让我猜猜。你没有女朋友，对吧？"},
+        {"Intro_Convo4_2", "<b>{0}</b> : 呃，你-你在和我说话吗？"},
+        {"Intro_Convo4_3", "<b>{0}</b> : 我当然在和你讲话。"},
+        {"Intro_Convo4_4", "<b>{0}</b> : 那很明显吗？"},
+        {"Intro_Convo4_5", "<b>{0}</b> : 嗯哼，我绝对不是一个读心术的人，否则我会被关在这个地方，所以，是的，我会说这很明显。"},
+        {"Intro_Convo4_6", "<b>{0}</b> : 好吧，当我有这份工作的时候，我该怎么找女朋友呢？我是说，我不能告诉她，那我该怎么办？"},
+        {"Intro_Convo4_7", "<b>{0}</b> : 对她撒谎。告诉她你在咖啡店或别的什么地方工作。"},
+        {"Intro_Convo4_8", "<b>{0}</b> : 好吧，如果我在工作时不小心忘了洗手，然后我回到家，手上沾满了血怎么办？那我对她说什么？"},
+        {"Intro_Convo4_9", "<b>{0}</b> : 呃，我不知道，告诉她，呃…番茄酱。"},
+        {"Intro_Convo4_10", "<b>{0}</b> : 番茄酱？如果我在咖啡店工作，为什么我会手上会有番茄酱？"},
+        {"Intro_Convo4_11", "<b>{0}</b> : 呃，忘-忘了它吧。"},
+
+        {"Intro_Convo5_1", "<b>{0}</b> : 呃，你最近看了什么好电影吗？"},
+        {"Intro_Convo5_2", "<b>{0}</b> : 呃，我真的不看电影。"},
+        {"Intro_Convo5_3", "<b>{0}</b> : 哦，好的。那么电子游戏呢？你知道这提醒了我，有人应该在这个地方做一个电子游戏。"},
+        {"Intro_Convo5_4", "<b>{0}</b> : 为什么会有人这么做？"},
+        {"Intro_Convo5_5", "<b>{0}</b> : 我不知道，只是觉得这个主意很酷。"},
+        {"Intro_Convo5_6", "<b>{0}</b> : 嗯，我也不玩电子游戏。"},
+
+
+
+        {"Escort1", "<b>{0}</b> : 跟着我。哦，顺便说一下，我们可以杀死任何不听话的测试对象，所以不要尝试任何愚蠢的事情。"},
+        {"Escort2", "<b>{0}</b> : 跟着我。哦，顺便说一下，我们可以杀死任何不听话的测试对象，所以不要尝试任何愚蠢的事情。"},
+        {"EscortDone1", "<b>{0}</b> : 好吧，我们到了。你只要进去按照指示去做，嗯，你可能会没事的。"},
+        {"EscortDone2", "<b>{0}</b> : 好吧，我们到了。我还是很失望我没打你，但不管怎样。"},
+        {"EscortDone3", "<b>{0}</b> : 好吧，我们到了。我还是很失望没能打你的脸，但*叹气*不管怎么样。"},
+        {"EscortDone4", "<b>{0}</b> : 你只要进去按照指示去做，嗯，你可能会好起来的。或许你不会。不管怎样，我真的不在乎。"},
+        {"EscortDone5", "<b>{0}</b> : 不管怎样，我们不要再浪费时间了。他们在房间里等你。"},
+
+
+        {"EnterChamber","<b>{0}</b> : 所有D级人员注意，请进入收容室" },
+        {"Approach173","<b>{0}</b> : 请接近<color=yellow>SCP-173</color>来进行测试" },
+        { "Problem","<b>{0}</b> : 呃，看起来门控系统有点问题，我们关闭门的尝试都没有奏效，所以呃，请继续保持直视SCP-173并且-" },
+
+        { "Escape1","<b>{0}</b> : 我猜最短的出口，就是通过东南门，跟我来！" },
+        { "Escape2","<b>{0}</b> : 你听到了吗？我希望那不是-" },
+
+        { "Refuse1", "<b>{0}</b> : 项目D-9341,进入收容间或你被消灭"  },
+        { "Refuse2", "<b>{0}</b> : 这是你最后的警告。你有五秒钟的时间。" },
+        { "Refuse3", "<b>{0}</b> : 项目D-9341任务结束，随意开火" },
+
+        { "kneel106", "跪下"},
+
+
+
+
+
+
+        {"scene_BreachStart_1", "<b>{0}</b> : 特工！在你后面"},
+        {"scene_BreachStart_2", "<b>{0}</b> : 卧槽！"},
+        {"scene_BreachStart_3", "<b>{0}</b> : 盯着他！"},
+        {"scene_BreachStart_4", "<b>{0}</b> : 好了，我要眨眼了，盯着他"},
+        {"scene_BreachStart_5", "<b>{0}</b> : 好的，明白了"},
+
+
+        {"scene_012_1", "<i>我必须...我必须完成它...</i>"},
+        {"scene_012_2", "<i>你真的想这样做吗…我不...想...我能做到。</i>"},
+        {"scene_012_3", "<i>我...我...必须…做。</i>"},
+        {"scene_012_4", "<i>我-我...没...有...选-选择！</i>"},
+        {"scene_012_5", "<i>脑袋疼...这...说...不通!</i>"},
+        {"scene_012_6", "<i>不...这...这是...不可能的</i>"},
+        {"scene_012_7", "<i>这不可能...这不可能被完成</i>"},
+    };
+
+    public static Dictionary<string, string> charaStrings_CH = new Dictionary<string, string>()
+    {
+        {"chara_franklin", "S.C.富兰克林"},
+        {"chara_ulgrin", "尤格林探员"},
+        {"chara_guard", "警卫"},
+        {"chara_sci", "博士"},
+    };
+
+    public static Dictionary<string, string> deathStrings_CH = new Dictionary<string, string>()
+    {
+        {"death_173", "项目D-9341: \n颈椎受到致命性骨折。猜测被SCP-173攻击."},
+        {"death_173_doors", "\"<i>如果我没弄错的话，这些房间最主要的用处就是防止SCP-173进一步移动。但是在这儿造<b>能让成人爬的该死的通风管道</b>是谁的坏主意？</i>\""},
+        {"death_173_surv", "受试者：D-9341. \n死亡原因：颈椎致命性骨折。监控摄像头证明了该实验对象是被SCP-173杀死的" },
+        {"death_173_intro" , "受试者：D-9341. \n死亡原因：颈椎致命性骨折。据当时在安全室的安全主管富兰克林说，该名受试者是在收容失效后的电网启动前的那段混乱时间被SCP-173杀死的。"},
+
+        {"death_106_stone", "\" [...]<i>除了SCP-106受害者典型的外观腐烂外，尸体显示出以前从未观察到的损伤：严重的颅骨骨折，三根肋骨断裂，肩膀骨折并且严重撕裂。</i>\"" },
+        {"death_939" ,"\"[...] <i>四个逃逸的SCP-939（4）样本均已成功捕获并重新收容。其中三（3）个将6号储藏区弄得一团糟。已经派出了一支清洁队。</i> \""},
+        {"death_012", "<i>在SCP-012旁边的血泊中发现的项目D-9341。这名受试者似乎在失血死亡前撕开了手腕，并在倒在血泊前在乐章中多写了三行。</i>" },
+
+
+        {"death_intro",  "\"[...] <i>多让人讨厌的东西啊 </i>\""},
+
+        {"death_gas", "<i>项目D-9341被发现死在[数据删除]。死亡原因：吸入过多消毒气体窒息死亡</i>" },
+        {"death_tesla", "项目D-9341在[数据删除]被特斯拉门电死" },
+
+
+        {"death_mtf", "受试者：D-9341. \n被九尾狐小队消灭。" },
     };
 
 
@@ -1130,6 +1514,45 @@ public static class GlobalValues
                     loadStrings = loadStrings_DE;
                     tutoStrings = tutoStrings_DE;
                     deathStrings = deathStrings_DE;
+                    break;
+                }
+
+            case SystemLanguage.ChineseSimplified:
+                {
+                    uiStrings = uiStrings_CH;
+                    playStrings = playStrings_CH;
+                    itemStrings = itemStrings_CH;
+                    sceneStrings = sceneStrings_CH;
+                    charaStrings = charaStrings_CH;
+                    loadStrings = loadStrings_CH;
+                    tutoStrings = tutoStrings_CH;
+                    deathStrings = deathStrings_CH;
+                    break;
+                }
+
+            case SystemLanguage.Chinese:
+                {
+                    uiStrings = uiStrings_CH;
+                    playStrings = playStrings_CH;
+                    itemStrings = itemStrings_CH;
+                    sceneStrings = sceneStrings_CH;
+                    charaStrings = charaStrings_CH;
+                    loadStrings = loadStrings_CH;
+                    tutoStrings = tutoStrings_CH;
+                    deathStrings = deathStrings_CH;
+                    break;
+                }
+
+            case SystemLanguage.ChineseTraditional:
+                {
+                    uiStrings = uiStrings_CH;
+                    playStrings = playStrings_CH;
+                    itemStrings = itemStrings_CH;
+                    sceneStrings = sceneStrings_CH;
+                    charaStrings = charaStrings_CH;
+                    loadStrings = loadStrings_CH;
+                    tutoStrings = tutoStrings_CH;
+                    deathStrings = deathStrings_CH;
                     break;
                 }
 

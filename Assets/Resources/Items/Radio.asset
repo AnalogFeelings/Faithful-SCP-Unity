@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c57386a160ab2e541893d65f49ad28d0, type: 3}
+  m_Script: {fileID: 11500000, guid: 332e401254c407d4691d61ca0882cacc, type: 3}
   m_Name: Radio
   m_EditorClassIdentifier: 
   itemName: radio
@@ -18,6 +18,7 @@ MonoBehaviour:
   hasEffect: 0
   isFem: 1
   isUnique: 0
+  keepInv: 0
   Effects:
     Affected: 0
     effect:
@@ -28,9 +29,11 @@ MonoBehaviour:
       value: -1
       multiplier: -1
   ItemModel: {fileID: 100002, guid: c43f17eb738350346a6a7646a8ec4ba0, type: 3}
-  valueFloat: 0
+  valueFloat: 10
   valueInt: 0
-  SFX: 0
-  Overlay: {fileID: 21300000, guid: 51887916ac616f04daafab9ba8799e28, type: 3}
+  SFX: 1
+  Overlay: {fileID: 0}
   protectGas: 0
   part: 2
+  SpendBattery: 1
+  SpendFactor: 0.3

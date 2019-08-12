@@ -34,6 +34,8 @@ public class Decal : MonoBehaviour
             plane.transform.localScale = Vector3.zero;
             Tween.LocalScale(plane.transform, new Vector3(Scale, Scale, Scale), Duration, 0, Tween.EaseOut);
         }
+        else
+            transform.localScale = new Vector3(Scale, Scale, Scale);
 
         Vector2[] uvs;
         Renderer render = plane.GetComponent<Renderer>();

@@ -23,7 +23,7 @@ public class DecalSystem : MonoBehaviour
 
     void Start()
     {
-        DecalPool = new Decal[50];
+        DecalPool = new Decal[100];
 
         /*for (int j = 0; j < 10; j++)
         {
@@ -54,7 +54,7 @@ public class DecalSystem : MonoBehaviour
         DecalPool[currDecal].SetDecal();
 
         currDecal++;
-        if (currDecal == 50)
+        if (currDecal == 100)
             currDecal = 0;
     }
 

@@ -211,6 +211,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4972258604126658513}
   - component: {fileID: 4972258604126658512}
+  - component: {fileID: 4000836619492285856}
   m_Layer: 0
   m_Name: Reflection Probe
   m_TagString: Untagged
@@ -265,6 +266,19 @@ ReflectionProbe:
   m_UseOcclusionCulling: 1
   m_Importance: 1
   m_CustomBakedTexture: {fileID: 0}
+--- !u!114 &4000836619492285856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4972258604126658514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecff7081915771c499a1aebc0ba57a2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  angle: -2
 --- !u!1 &4972258604140255921
 GameObject:
   m_ObjectHideFlags: 0
@@ -956,14 +970,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1175281945176205146, guid: 799e81dfd5ed4e343a51830ce60b73da,
-        type: 3}
-      propertyPath: Contains
-      value: 
-      objectReference: {fileID: 4972258604140255921}
     - target: {fileID: 3763680437886187124, guid: 799e81dfd5ed4e343a51830ce60b73da,
         type: 3}
       propertyPath: contains
+      value: 
+      objectReference: {fileID: 4972258604140255921}
+    - target: {fileID: 1175281945176205146, guid: 799e81dfd5ed4e343a51830ce60b73da,
+        type: 3}
+      propertyPath: Contains
       value: 
       objectReference: {fileID: 4972258604140255921}
     m_RemovedComponents: []

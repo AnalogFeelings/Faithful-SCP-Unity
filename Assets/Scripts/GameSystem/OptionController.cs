@@ -49,7 +49,9 @@ public class OptionController : MonoBehaviour
     void Awake()
     {
         quality.value = QualitySettings.GetQualityLevel();
+        Debug.Log("Language loaded was " + PlayerPrefs.GetInt("Lang", 0));
         language.value = PlayerPrefs.GetInt("Lang", 0);
+
         postsettings.value = PlayerPrefs.GetInt("Post", 1);
         Gamma.value = PlayerPrefs.GetFloat("Gamma", 0);
 
@@ -160,12 +162,19 @@ public class OptionController : MonoBehaviour
 
     public void SetLanguage (int Value)
     {
+        Debug.Log("Language changed to " + Value);
         PlayerPrefs.SetInt("Lang", Value);
         if (startupdone)
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
         if (startupdone)
             player.PlayOneShot(click);
+    }
+
+    public void Reset()
+    {
+        PlayerPrefs.DeleteAll();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void SetVsync (bool Value)

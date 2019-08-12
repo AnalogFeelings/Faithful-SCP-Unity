@@ -21,6 +21,7 @@ public class SCP_UI : MonoBehaviour
     public AudioClip menublip;
     public Text Info1, Info2, DeathMSG;
     public Button save;
+    public RadioController radio;
     Menu currMenu = Menu.None;
 
     bool canConsole, canTuto;
@@ -221,7 +222,7 @@ public class SCP_UI : MonoBehaviour
     public void LoadValues()
     {
         canConsole = (PlayerPrefs.GetInt("Debug", 0) == 1);
-        canTuto = (PlayerPrefs.GetInt("Tutorials", 0) == 1);
+        canTuto = (PlayerPrefs.GetInt("Tutorials", 1) == 1);
     }
 
 

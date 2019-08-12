@@ -7,7 +7,7 @@ public class EV_106Victim : Event_Parent
     public Transform decal;
     public EV_Puppet_Controller victim;
     public AudioClip hit, corrosion, horror;
-    bool Hit;
+    bool Hit, readyforhit ;
 
 
     // Start is called before the first frame update
@@ -19,7 +19,7 @@ public class EV_106Victim : Event_Parent
     // Update is called once per frame
     void Update()
     {
-        if(isStarted && !Hit)
+        if(isStarted && readyforhit && !Hit)
         {
             if (victim._controller.isGrounded)
             {
@@ -27,6 +27,7 @@ public class EV_106Victim : Event_Parent
                 victim.PlaySFX(hit);
                 GameController.instance.PlayHorror(horror, victim.transform, npc.none);
                 Hit = true;
+                
             }
         }
     }
@@ -37,7 +38,7 @@ public class EV_106Victim : Event_Parent
         {
             DecalSystem.instance.Decal(decal.position, decal.rotation.eulerAngles, 8f, false, 5f, 2, 0);
             GameController.instance.GlobalSFX.PlayOneShot(corrosion);
-            EventFinished();
+            StartCoroutine(Spawning());
             isStarted = true;
         }
     }
@@ -45,8 +46,22 @@ public class EV_106Victim : Event_Parent
     public override void EventFinished()
     {
         base.EventFinished();
+        StartCoroutine(waittodeactivate());
         victim.gameObject.SetActive(true);
         victim.AnimTrigger(-1, true);
+    }
+
+    IEnumerator Spawning()
+    {
+        yield return new WaitForSeconds(4);
+        EventFinished();
+        readyforhit = true;
+    }
+
+    IEnumerator waittodeactivate()
+    {
+        yield return new WaitForSeconds(3);
+        victim.DeactivateCollision();
     }
 
 

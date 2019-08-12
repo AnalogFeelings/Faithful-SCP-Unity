@@ -59,7 +59,9 @@ public class ConsoleController
         /*registerCommand("babble", babble, "Example command that demonstrates how to parse arguments. babble [word] [# of times to repeat]");
         registerCommand("echo", echo, "echoes arguments back as array (for testing argument parser)");*/
         registerCommand("help", help, "Print this help.");
+        registerCommand("resetoptions", resetPrefs, "Reset player options");
         registerCommand("noclip", noclip, "Toggles No Clip");
+        registerCommand("godmode", godmode, "Switches godmode");
         registerCommand("playsub", playsub, "Plays the specified subtitle from the specified table. Usage: playsub [identifier] [table]   (WITHOUT THE BRACKETS)");
         registerCommand("playvoicesub", playvoicesub, "Plays the specified voice subtitle from the specified character. Usage: playsub [character] [identifier]   (WITHOUT THE BRACKETS)");
         registerCommand("playtuto", playtuto, "Shows the specified tutorial card. Usage: playtuto [identifier] (NO BRACKETS)");
@@ -69,6 +71,7 @@ public class ConsoleController
         registerCommand("goto", teleportCoord, "Teleports to the x and y coordinate");
         registerCommand("teleport", teleportRoom, "Teleports to room with this name");
         registerCommand("spawn106", spawn106, "Spawns SCP-106 at the center of the current room");
+        registerCommand("spawn173", spawn173, "Spawns SCP-173 at the center of the current room");
         registerCommand("health", sethealth, "Sets the player current health [0 - 100]");
         registerCommand(repeatCmdName, repeatCommand, "Repeat last command.");
     }
@@ -357,7 +360,7 @@ public class ConsoleController
             float value = 0;
             if (!float.TryParse(args[0], out value))
             {
-                appendLogLine("Expected an integer for arg2.");
+                appendLogLine("Expected an integer for arg1.");
             }
             else
             {
@@ -430,13 +433,23 @@ public class ConsoleController
         GameController.instance.player.GetComponent<Player_Control>().SwitchNoClip();
     }
 
+    void godmode(string[] args)
+    {
+        GameController.instance.playercache.godmode = !GameController.instance.playercache.godmode;
+    }
+
     void spawn106(string[] args)
     {
         GameController.instance.CL_spawn106();
     }
 
+    void spawn173(string[] args)
+    {
+        GameController.instance.CL_spawn173();
+    }
 
-        void help(string[] args)
+
+    void help(string[] args)
     {
         if (args.Length == 1)
         {

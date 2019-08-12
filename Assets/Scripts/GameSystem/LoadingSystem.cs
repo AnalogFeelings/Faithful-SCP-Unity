@@ -47,6 +47,8 @@ public class LoadingSystem : MonoBehaviour
 
     private void Awake()
     {
+
+
         if (instance == null)
             instance = this;
         else if (instance != null)
@@ -65,7 +67,8 @@ public class LoadingSystem : MonoBehaviour
         loading = Random.Range(0, screens.Length);
 
         isLoading = true;
-        start.enabled = false; 
+        start.enabled = false;
+        start.text = GlobalValues.uiStrings["ui_in_anykey"];
         loadbar = 0;
         isLoadingDone = false;
         Loading.enabled = true;
