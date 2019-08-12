@@ -25,6 +25,7 @@ public class EV_BreachStart : Event_Parent
     {
         base.EventStart();
         ded.AnimTrigger(-3, true);
+        ded.DeactivateCollision();
         GameController.instance.QuickSave();
     }
 
@@ -42,7 +43,7 @@ public class EV_BreachStart : Event_Parent
         if (Timer <= 0.0f && StopTimer == false)
         {
             GameController.instance.player.GetComponent<Player_Control>().FakeBlink(1f);
-            GameController.instance.ChangeAmbiance(NewAmbiance, 3);
+            GameController.instance.ChangeAmbiance(NewAmbiance, 6);
             GameController.instance.GlobalSFX.PlayOneShot(blackout);
             GameController.instance.Warp173(false, GameController.instance.transform);
             StopTimer = true;

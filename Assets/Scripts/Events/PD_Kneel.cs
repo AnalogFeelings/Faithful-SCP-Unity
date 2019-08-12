@@ -40,7 +40,7 @@ public class PD_Kneel : MonoBehaviour
             {
                 GameController.instance.PlayHorror(kneel,spot106.transform, npc.none);
                 Played = true;
-                SubtitleEngine.instance.playSub("<color=red><i>Kneel</i></color>", true);
+                SubtitleEngine.instance.playSub("<color=red><i>"+GlobalValues.sceneStrings["kneel106"]+" </i></color>", true);
                 GameController.instance.playercache.ForceLook(spot106.transform.position, 2);
             }
             if (Played && !crouched)

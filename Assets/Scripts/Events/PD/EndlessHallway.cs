@@ -17,12 +17,18 @@ public class EndlessHallway : MonoBehaviour
     {
         if (Box1.GetState())
         {
-            Switch(Pos1, Pos2);
+            if (Random.Range(0,100) < 40)
+                PD_Teleports.instance.Teleport();
+            else
+                Switch(Pos1, Pos2);
         }
 
         if (Box2.GetState())
         {
-            Switch(Pos2, Pos1);
+            if (Random.Range(0, 100) < 40)
+                PD_Teleports.instance.Teleport();
+            else
+                Switch(Pos2, Pos1);
         }
     }
 

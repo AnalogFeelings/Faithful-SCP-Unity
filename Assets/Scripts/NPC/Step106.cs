@@ -16,6 +16,6 @@ public class Step106 : MonoBehaviour
     {
         foot.clip = steps[Random.Range(0, steps.Length)];
         foot.Play();
-        DecalSystem.instance.Decal(transform.position, new Vector3(90f, 0, 0), 1f, false, 0.4f, 2, 0);
+        DecalSystem.instance.Decal(transform.position, new Vector3(90f, 0, 0), 2f, false, 0.4f, 2, 0);
     }
 }

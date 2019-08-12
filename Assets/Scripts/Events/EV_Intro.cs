@@ -12,10 +12,12 @@ public class EV_Intro : MonoBehaviour
     GameObject Player;
     Transform playerHead;
     EV_Puppet_Controller Guard1_con, Guard2_con;
+    IEnumerator co;
 
     int EventState = 0;
     int EventState2 = 0;
     int LastState = -1;
+    int Conver = -1;
 
     public float Timer1, Timer1_5, Timer2, Timer3, Timer, TimerSecondary, LastTimer,Refuse1,Refuse2,Refuse3, RunawayTimer;
     bool StopTimer = false, StopTimer2 = false, ActiveTimer = true, ActiveTimer2 = true, Check1 = false, Check2 = false, Check3 = false, Check4 = false, runningAway, back1 = false, Start = false, grabbed = false;
@@ -56,7 +58,9 @@ public class EV_Intro : MonoBehaviour
 
             Timer = Timer1;
             Guard1_con.PlaySound(Dialogs[0],true);
-            SCP_UI.instance.ShowTutorial("tutograb");
+
+            if (grabbed == false)
+                SCP_UI.instance.ShowTutorial("tutograb");
             Start = true;
         }
 
@@ -169,12 +173,17 @@ public class EV_Intro : MonoBehaviour
                 Guard2_con.StopSound();
                 EventState = LastState;
                 if (!back1)
-                {
-                    
+                {   
                     RunawayTimer = 6;
                     Guard1_con.PlaySound(Dialogs[2],true, true);
-                    
                 }
+
+                if (Conver != -1)
+                {
+                    StopCoroutine(co);
+                    Conver = -1;
+                }
+
                 Guard1_con.SetLookAt(playerHead);
                 ActiveTimer = false;
                 ActiveTimer2 = false;
@@ -274,14 +283,19 @@ public class EV_Intro : MonoBehaviour
 
     void Scene3()
     {
-        FinalEmpty[1] = DI_Done2[Random.Range(0, DI_Done2.Length)];
-        FinalEmpty[0] = DI_Done1[Random.Range(0, DI_Done1.Length)];
+        if (back1)
+        {
+            FinalEmpty[1] = DI_Done2[Random.Range(0, DI_Done2.Length)];
+            FinalEmpty[0] = DI_Done1[Random.Range(1, DI_Done1.Length)];
+            Guard1_con.SetSeq(FinalEmpty, true);
+        }
+        else
+            Guard1_con.PlaySound(DI_Done1[0], true);
 
-        Door2.GetComponent<Object_Door>().DoorSwitch();
         Door3.GetComponent<Object_Door>().DoorSwitch();
         Guard1_con.SetLookAt(playerHead);
         Guard2_con.StopLookAt();
-        Guard1_con.SetSeq(FinalEmpty,true);
+        
         Check2 = false;
         NextScene.SetActive(true);
 
@@ -301,7 +315,7 @@ public class EV_Intro : MonoBehaviour
 
     void AsyncScene_1()
     {
-        int Conver = Random.Range(0, ConverA.Length);
+        Conver = Random.Range(0, ConverA.Length);
         Debug.Log(Conver);
         Guard2_con.PlaySound(ConverB[Conver]);
         Guard1_con.PlaySound(ConverA[Conver]);
@@ -309,24 +323,26 @@ public class EV_Intro : MonoBehaviour
 
         if (Conver == 0)
         {
-            StartCoroutine(Convo1());
+            co = Convo1();
         }
         if (Conver == 1)
         {
-            StartCoroutine(Convo2());
+            co = Convo2();
         }
         if (Conver == 2)
         {
-            StartCoroutine(Convo3());
+           co =Convo3();
         }
         if (Conver == 3)
         {
-            StartCoroutine(Convo4());
+            co = Convo4();
         }
         if (Conver == 4)
         {
-            StartCoroutine(Convo5());
+            co = Convo5();
         }
+
+        StartCoroutine(co);
         Guard1_con.SetLookAt(talktome);
         EventState2 = 2;
         TimerSecondary = 4.5f;
@@ -384,19 +400,19 @@ public class EV_Intro : MonoBehaviour
     IEnumerator Convo4()
     {
         SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["Intro_Convo4_1"], GlobalValues.charaStrings["chara_ulgrin"]), true);
-        yield return new WaitForSeconds(3);
-        SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["Intro_Convo4_4"], GlobalValues.charaStrings["chara_guard"]), true);
         yield return new WaitForSeconds(2);
-        SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["Intro_Convo4_5"], GlobalValues.charaStrings["chara_ulgrin"]), true);
-        yield return new WaitForSeconds(6);
+        SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["Intro_Convo4_4"], GlobalValues.charaStrings["chara_guard"]), true);
+        yield return new WaitForSeconds(1);
+        SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["Intro_Convo4_5"], GlobalValues.charaStrings["chara_ulgrin"]), true, true);
+        yield return new WaitForSeconds(8);
         SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["Intro_Convo4_6"], GlobalValues.charaStrings["chara_guard"]), true);
-        yield return new WaitForSeconds(8);
+        yield return new WaitForSeconds(5);
         SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["Intro_Convo4_7"], GlobalValues.charaStrings["chara_ulgrin"]), true);
-        yield return new WaitForSeconds(4);
+        yield return new WaitForSeconds(3);
         SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["Intro_Convo4_8"], GlobalValues.charaStrings["chara_guard"]), true);
-        yield return new WaitForSeconds(8);
+        yield return new WaitForSeconds(7);
         SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["Intro_Convo4_9"], GlobalValues.charaStrings["chara_ulgrin"]), true);
-        yield return new WaitForSeconds(4);
+        yield return new WaitForSeconds(3);
         SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["Intro_Convo4_10"], GlobalValues.charaStrings["chara_guard"]), true);
         SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["Intro_Convo4_11"], GlobalValues.charaStrings["chara_ulgrin"]), true);
     }
@@ -408,12 +424,11 @@ public class EV_Intro : MonoBehaviour
         SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["Intro_Convo5_2"], GlobalValues.charaStrings["chara_guard"]), true);
         yield return new WaitForSeconds(2);
         SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["Intro_Convo5_3"], GlobalValues.charaStrings["chara_ulgrin"]), true);
-        yield return new WaitForSeconds(7);
+        yield return new WaitForSeconds(6);
         SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["Intro_Convo5_4"], GlobalValues.charaStrings["chara_guard"]), true);
         SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["Intro_Convo5_5"], GlobalValues.charaStrings["chara_ulgrin"]), true);
         yield return new WaitForSeconds(4);
         SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["Intro_Convo5_6"], GlobalValues.charaStrings["chara_guard"]), true);
-
     }
 
 

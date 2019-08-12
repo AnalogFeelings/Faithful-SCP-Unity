@@ -111,6 +111,7 @@ public class slotController : MonoBehaviour, IDragHandler, IEndDragHandler
         {
             int cacheinv = ItemController.instance.currInv;
             SCP_UI.instance.ItemSFX(ItemController.instance.currentItem[id].SFX);
+            bool dontclose = ItemController.instance.currentItem[id].keepInv;
             ItemController.instance.currentItem[id].Use();
             if (ItemController.instance.currInv == cacheinv && ItemController.instance.currentItem[id].deleteUse == true)
             {
@@ -121,6 +122,9 @@ public class slotController : MonoBehaviour, IDragHandler, IEndDragHandler
 
                 ItemController.instance.currentItem[id] = null;
             }
+            if (!dontclose)
+                SCP_UI.instance.ToggleInventory();
+            
 
         }
         updateInfo();

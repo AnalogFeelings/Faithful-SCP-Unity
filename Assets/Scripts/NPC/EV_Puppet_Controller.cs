@@ -6,12 +6,12 @@ using UnityEngine.AI;
 
 public class EV_Puppet_Controller : MonoBehaviour
 {
-    public float Speed, Distance, Gravity, maxfallspeed, animOffset, stopDistance;
+    public float Speed, Distance, Gravity, maxfallspeed, animOffset, stopDistance, pushoverrange, pushSpeed = 0.125f;
     Vector3 movement;
     Quaternion toAngle;
     float fallSpeed;
     int currentNode = 0, currSeq = 0;
-    bool isPath, isRotate, isLook, isSequence = false, isPursuit = false, hasDoor = false, hasSubs;
+    bool isPath, isRotate, isLook, isSequence = false, isPursuit = false, hasDoor = false, hasSubs, isPushing = false, active=true;
     Transform[] ActualPath;
     Transform rotaAt, lookAt, Location;
     int pathNodes, audSeq;
@@ -20,8 +20,9 @@ public class EV_Puppet_Controller : MonoBehaviour
     Animator Puppet_Anim;
     HeadLookController Head;
     NavMeshAgent _navMeshagent;
-    public LayerMask DoorLay;
+    public LayerMask DoorLay, PlayerLay;
     public string charName;
+    public bool PushOver=false;
 
     /// <summary>
     /// Audio Values
@@ -47,45 +48,70 @@ public class EV_Puppet_Controller : MonoBehaviour
 
     void Start()
     {
-        
+        Head.effect = 0;
+    }
+
+    public void DeactivateCollision()
+    {
+        _controller.enabled = false;
+        active = false;
+    }
+    public void EnableCollision()
+    {
+        _controller.enabled = true;
+        active = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        CheckDoor();
-
-        if (isPath)
+        if (active)
         {
-            ACT_Path();
-        }
-        if (isRotate)
-        {
-            Vector3 Point = new Vector3(rotaAt.position.x, transform.position.y, rotaAt.position.z) - transform.position;
-            toAngle = Quaternion.LookRotation(Point);
-        }
-        if (isPursuit)
-            FindPath();
+            CheckDoor();
+
+            if (PushOver && !isPursuit && !isPath)
+                PlayerPush();
+
+            if (isPath)
+            {
+                ACT_Path();
+            }
+            if (isRotate)
+            {
+                Vector3 Point = new Vector3(rotaAt.position.x, transform.position.y, rotaAt.position.z) - transform.position;
+                toAngle = Quaternion.LookRotation(Point);
+            }
+            if (isPursuit)
+                FindPath();
 
 
 
-        if (isLook)
-        {
-            Head.target = lookAt.transform.position;
-        }
-        else
-        {
-            Head.target = Def_LookAt.transform.position;
-        }
+            if (isLook)
+            {
+                Head.target = lookAt.transform.position;
+            }
+            else
+            {
+                Head.target = Def_LookAt.transform.position;
+                if (Head.effect > 0.005)
+                    Head.effect = Mathf.Lerp(Head.effect, 0, 0.125f * Time.deltaTime);
+                else
+                    Head.effect = 0;
+            }
 
-        
-        if (!isPursuit)
-        {
-            if (!_controller.isGrounded)
-                ACT_Gravity();
-            _controller.Move(movement);
-            movement = Vector3.Lerp(movement, Vector3.zero, 4f * Time.deltaTime);
-            transform.rotation = Quaternion.Lerp(transform.rotation, toAngle, 4f * Time.deltaTime);
+
+            if (!isPursuit)
+            {
+                if (!_controller.isGrounded)
+                    ACT_Gravity();
+                if (Time.deltaTime != 0)
+                _controller.Move(movement);
+                movement = Vector3.Lerp(movement, Vector3.zero, 4f * Time.deltaTime);
+                if (isPath)
+                    transform.rotation = Quaternion.Lerp(transform.rotation, toAngle, 8f * Time.deltaTime);
+                else
+                    transform.rotation = Quaternion.Lerp(transform.rotation, toAngle, 3f * Time.deltaTime);
+            }
         }
     }
 
@@ -122,7 +148,7 @@ public class EV_Puppet_Controller : MonoBehaviour
     void ACT_Anim()
     {
 
-        Puppet_Anim.SetBool("move", (isPath||isPursuit));
+        Puppet_Anim.SetBool("move", (isPath||isPursuit||isPushing));
 
     }
 
@@ -163,6 +189,7 @@ public class EV_Puppet_Controller : MonoBehaviour
 
     public void SetLookAt(Transform LookAt)
     {
+        Head.effect = 1;
         lookAt = LookAt;
         isLook = true;
     }
@@ -283,7 +310,7 @@ public class EV_Puppet_Controller : MonoBehaviour
     void CheckDoor()
     {
             Collider[] Interact;
-            Interact = Interact = Physics.OverlapSphere(transform.position + (transform.forward * 1.5f), 1.9f, DoorLay);
+            Interact = Interact = Physics.OverlapSphere(transform.position + (transform.forward * 1.7f), 1.9f, DoorLay);
             if (Interact.Length != 0)
             {
                 Debug.DrawRay(transform.position+(transform.forward*1.5f), Interact[0].transform.position - transform.position);
@@ -291,9 +318,26 @@ public class EV_Puppet_Controller : MonoBehaviour
             }
     }
 
-    public void puppetWarp(Vector3 here)
+    void PlayerPush()
+    {
+        Collider[] Interact;
+        Interact = Interact = Physics.OverlapCapsule(transform.position+Vector3.up * 4, transform.position, pushoverrange, PlayerLay);
+
+        if (Interact.Length != 0)
+        {
+            Debug.DrawRay(transform.position + (transform.forward * 1.5f), Interact[0].transform.position - transform.position);
+            movement -= ((Interact[0].transform.position - transform.position).normalized * (pushSpeed/2) * Time.deltaTime);
+            isPushing = true;
+        }
+        else
+            isPushing = false;
+    }
+
+    public void puppetWarp(Vector3 here, float rotation)
     {
         _navMeshagent.Warp(here);
+        Vector3 rota = transform.eulerAngles;
+        transform.rotation = Quaternion.Euler(rota.x, rota.y + rotation, rota.z);
     }
 
 

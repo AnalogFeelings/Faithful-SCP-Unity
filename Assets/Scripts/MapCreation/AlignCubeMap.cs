@@ -30,19 +30,19 @@ public class AlignCubeMap : MonoBehaviour
         if (transform.eulerAngles.y == 90)
         {
             probeComponent.size = new Vector3(probeComponent.size.z, probeComponent.size.y, probeComponent.size.x);
-            probeComponent.center = new Vector3(probeComponent.center.z, probeComponent.center.y, probeComponent.center.x);
+            probeComponent.center = new Vector3(probeComponent.center.z, probeComponent.center.y, -probeComponent.center.x);
             angle = 90;
         }
         if (transform.eulerAngles.y == 180)
         {
-            probeComponent.size = new Vector3(-probeComponent.size.x, probeComponent.size.y, -probeComponent.size.z);
+            probeComponent.size = new Vector3(probeComponent.size.x, probeComponent.size.y, probeComponent.size.z);
             probeComponent.center = new Vector3(-probeComponent.center.x, probeComponent.center.y, -probeComponent.center.z);
             angle = 180;
         }
         if (transform.eulerAngles.y == -90 || transform.eulerAngles.y == 270)
         {
-            probeComponent.size = new Vector3(-probeComponent.size.z, probeComponent.size.y, -probeComponent.size.x);
-            probeComponent.center = new Vector3(-probeComponent.center.z, probeComponent.center.y, -probeComponent.center.x);
+            probeComponent.size = new Vector3(probeComponent.size.z, probeComponent.size.y, probeComponent.size.x);
+            probeComponent.center = new Vector3(-probeComponent.center.z, probeComponent.center.y, probeComponent.center.x);
             angle = -90;
         }
     }

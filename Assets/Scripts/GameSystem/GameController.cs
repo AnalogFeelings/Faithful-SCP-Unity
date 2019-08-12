@@ -740,6 +740,8 @@ public class GameController : MonoBehaviour
                 Debug.Log("Nuevoitem en: "+i);
 
                 itemData[i].item = item.name;
+                itemData[i].vlFloat = item.valueFloat;
+                itemData[i].vlInt = item.valueInt;
                 return (i);
             }
         }
@@ -1152,8 +1154,7 @@ public class GameController : MonoBehaviour
                     break;
                 }
         }
-
-
+        PlayerPrefs.Save();
     }
 
     void LoadItems()
@@ -1169,6 +1170,10 @@ public class GameController : MonoBehaviour
                 newObject.GetComponent<Object_Item>().item = Resources.Load<Item>(string.Concat("Items/", itemData[i].item));
                 newObject.GetComponent<Object_Item>().id = i;
                 newObject.transform.parent = itemParent.transform;
+                newObject.GetComponent<Object_Item>().vlFloat = itemData[i].vlFloat;
+                newObject.GetComponent<Object_Item>().vlInt = itemData[i].vlInt;
+                newObject.GetComponent<Object_Item>().isNew = false;
+
                 newObject.GetComponent<Object_Item>().Spawn();
             }
             else
@@ -1417,10 +1422,13 @@ public class GameController : MonoBehaviour
     {
         if (!GlobalValues.isNew && GlobalValues.LoadType != LoadType.mapless)
         {
+            Debug.Log("Spawning inplaces");
             SeriVector[] pos = SaveSystem.instance.playData.npcPos;
             bool[] actives = SaveSystem.instance.playData.Activenpc;
             for (int v = 0; v < npcObjects.Length; v++)
             {
+                Debug.Log("Enemigo " + v + " pos " + new Vector3(pos[v].x, pos[v].y, pos[v].z) + " Activo? " + actives[v]);
+
                 npcTable[v].Spawn(actives[v], new Vector3(pos[v].x, pos[v].y, pos[v].z));
             }
         }
@@ -1446,7 +1454,7 @@ public class GameController : MonoBehaviour
 
         if (spawn173)
         {
-            npcObjects[(int)npc.scp173] = Instantiate(orig173, place173.position, Quaternion.identity, npcParent.transform);
+            npcObjects[(int)npc.scp173] = Instantiate(orig173, place173.position, place173.rotation, npcParent.transform);
             npcTable[(int)npc.scp173] = npcObjects[(int)npc.scp173].GetComponent<SCP_173>();
         }
 
@@ -1530,6 +1538,8 @@ public class GameController : MonoBehaviour
             }
         }
 
+        GL_Spawning();
+
         if (!GlobalValues.debug)
         {
             LoadingSystem.instance.loadbar = 1f;
@@ -1540,7 +1550,7 @@ public class GameController : MonoBehaviour
                 yield return null;
             }
         }
-        GL_Spawning();
+       
         GL_Start();
         GL_AfterPost();
     }
@@ -1548,6 +1558,7 @@ public class GameController : MonoBehaviour
     IEnumerator ReloadLevel()
     {
         Time.timeScale = 1;
+        GL_Spawning();
         yield return new WaitForSeconds(5);
         int i, j;
         for (i = 0; i < mapSize.xSize; i++)
@@ -1567,7 +1578,7 @@ public class GameController : MonoBehaviour
                 }
             }
         }
-        GL_Spawning();
+        
         GL_Start();
         LoadingSystem.instance.FadeIn(0.5f, new Vector3Int(0, 0, 0));
 
@@ -1703,5 +1714,10 @@ public class GameController : MonoBehaviour
     {
         Vector3 here = new Vector3(xPlayer * roomsize, 0, yPlayer * roomsize);
         npcTable[(int)npc.scp106].Spawn(true, here);
+    }
+    public void CL_spawn173()
+    {
+        Vector3 here = new Vector3(xPlayer * roomsize, 0, yPlayer * roomsize);
+        npcTable[(int)npc.scp173].Event_Spawn(true, here);
     }
 }
