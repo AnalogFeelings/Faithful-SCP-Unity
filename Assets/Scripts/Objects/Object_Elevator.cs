@@ -78,9 +78,9 @@ public class Object_Elevator : MonoBehaviour
             if (insideElev)
             {
                 if (FloorUp)
-                    SwitchFloor(Floor2, Floor1);
+                    StartCoroutine(SwitchFloor(Floor2, Floor1));
                 else
-                    SwitchFloor(Floor1, Floor2);
+                    StartCoroutine(SwitchFloor(Floor1, Floor2));
             }
 
             if (FloorUp)
@@ -90,8 +90,6 @@ public class Object_Elevator : MonoBehaviour
 
             GameController.instance.GlobalSFX.PlayOneShot(ding);
             Ignoreinputs = false;
-
-
         }
 
 
@@ -100,8 +98,9 @@ public class Object_Elevator : MonoBehaviour
 
     }
 
-    void SwitchFloor(Transform start, Transform end)
+    IEnumerator SwitchFloor(Transform start, Transform end)
     {
+        yield return null;
         GameObject objPlayer = GameController.instance.player;
         objPlayer.GetComponent<Player_Control>().playerWarp((end.transform.position + ((end.transform.rotation * Quaternion.Inverse(start.transform.rotation)) * (objPlayer.transform.position - start.position))), end.transform.eulerAngles.y - start.transform.eulerAngles.y);
         Debug.Log("Diferencia de Rotacion: " + (end.transform.eulerAngles.y - start.transform.eulerAngles.y));

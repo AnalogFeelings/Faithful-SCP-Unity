@@ -71,9 +71,9 @@ public class slotController : MonoBehaviour, IDragHandler, IEndDragHandler
         if (ItemController.instance.currentItem[id])
         {
             if (!ItemController.instance.currentEquip[id])
-                displayText.text = GlobalValues.itemStrings[ItemController.instance.currentItem[id].itemName];
+                displayText.text = Localization.GetString("itemStrings", ItemController.instance.currentItem[id].itemName);
             else
-                displayText.text = string.Format(GlobalValues.playStrings["play_equiped"], GlobalValues.itemStrings[ItemController.instance.currentItem[id].itemName]);
+                displayText.text = string.Format(Localization.GetString("playStrings", "play_equiped"), Localization.GetString("itemStrings", ItemController.instance.currentItem[id].itemName));
             if (ItemController.instance.currentItem[id] is Item_Clipboard)
             {
                 if (ItemController.instance.currentItem[id].valueInt != -1)
@@ -115,17 +115,17 @@ public class slotController : MonoBehaviour, IDragHandler, IEndDragHandler
             ItemController.instance.currentItem[id].Use();
             if (ItemController.instance.currInv == cacheinv && ItemController.instance.currentItem[id].deleteUse == true)
             {
-                if (ItemController.instance.currentItem[id].isFem)
-                    SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_used_fem"], GlobalValues.itemStrings[ItemController.instance.currentItem[id].itemName]));
+                if (ItemController.instance.currentItem[id].isUnique)
+                    SubtitleEngine.instance.playFormatted("playStrings", "play_used_uni", "itemStrings", ItemController.instance.currentItem[id].itemName);
+                else if (ItemController.instance.currentItem[id].isFem)
+                    SubtitleEngine.instance.playFormatted("playStrings", "play_used_fem", "itemStrings", ItemController.instance.currentItem[id].itemName);
                 else
-                    SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_used_male"], GlobalValues.itemStrings[ItemController.instance.currentItem[id].itemName]));
+                    SubtitleEngine.instance.playFormatted("playStrings", "play_used_male", "itemStrings", ItemController.instance.currentItem[id].itemName);
 
                 ItemController.instance.currentItem[id] = null;
             }
             if (!dontclose)
                 SCP_UI.instance.ToggleInventory();
-            
-
         }
         updateInfo();
     }

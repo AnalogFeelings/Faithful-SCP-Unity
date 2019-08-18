@@ -202,7 +202,7 @@ public class RadioController : MonoBehaviour
                 }
             case 2:
                 {
-                    broadcast.text = GlobalValues.uiStrings["ui_radio_channel2"];
+                    broadcast.text = Localization.GetString("uiStrings", "ui_radio_channel2");
                     break;
                 }
 
@@ -212,12 +212,12 @@ public class RadioController : MonoBehaviour
                     {
                         case 3:
                             {
-                                broadcast.text = GlobalValues.uiStrings["ui_radio_channel3"];
+                                broadcast.text = Localization.GetString("uiStrings", "ui_radio_channel3");
                                 break;
                             }
                         case 4:
                             {
-                                broadcast.text = GlobalValues.uiStrings["ui_radio_channel4"];
+                                broadcast.text = Localization.GetString("uiStrings", "ui_radio_channel4");
                                 break;
                             }
                         case 5:
@@ -236,13 +236,13 @@ public class RadioController : MonoBehaviour
                         {
                             case 3:
                                 {
-                                    broadcast.text = GlobalValues.uiStrings["ui_radio_channel3"];
+                                    broadcast.text = Localization.GetString("uiStrings", "ui_radio_channel3");
                                     play = station3[ch_State[chn - 1]];
                                     break;
                                 }
                             case 4:
                                 {
-                                    broadcast.text = GlobalValues.uiStrings["ui_radio_channel4"];
+                                    broadcast.text = Localization.GetString("uiStrings", "ui_radio_channel4");
                                     play = station4[ch_State[chn - 1]];
                                     break;
                                 }

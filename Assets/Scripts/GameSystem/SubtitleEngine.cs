@@ -57,13 +57,27 @@ public class SubtitleEngine : MonoBehaviour
     /// <param name="sub"> The subtitle. Is the caller resposability to get the right subtitle for the right language</param>
     /// <param name="IsVoice"> If the subtitle is a voice or flavor text</param>
     /// <param name="Force"> If the subtitle will push itself into the list</param>
+    
 
-
-
-    public void playSub(string sub, bool IsVoice = false, bool Force = false)
+    public void playSub(string table, string id)
     {
-        if (IsVoice)
-        {
+        string sub = Localization.GetString(table, id);
+            flavortext_hold[2] = 0;
+            ft_pending.Add(sub);
+
+    }
+
+    public void playFormatted(string table, string id, string table2, string id2)
+    {
+        string format = Localization.GetString(table, id);
+        string sub = Localization.GetString(table2, id2);
+        flavortext_hold[2] = 0;
+        ft_pending.Add(string.Format(format, sub));
+    }
+
+    public void playVoice(string id, bool Force = false)
+    {
+        string sub = Localization.GetSubtitle(id);
             if (VoiceSubsEnabled)
             {
                 if (Force)
@@ -76,24 +90,19 @@ public class SubtitleEngine : MonoBehaviour
 
                 if (sub.Length > 60)
                 {
-                    int firstspace=sub.IndexOf(" ", 60);
+                    int firstspace = sub.IndexOf(" ", 60);
                     if (firstspace != -1)
                     {
                         pending.Add(sub.Substring(0, firstspace));
-                        playSub(sub.Substring(firstspace+1), true);
+                        playVoice(sub.Substring(firstspace + 1));
                     }
 
                 }
                 else
-                pending.Add(sub);
+                    pending.Add(sub);
 
             }
-        } 
-        else
-        {
-            flavortext_hold[2] = 0;
-            ft_pending.Add(sub);
-        }
+        
     }
 
     // Update is called once per frame

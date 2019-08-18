@@ -8,6 +8,7 @@ using System.Linq;
 
 public class SCP_StartMenu : MonoBehaviour
 {
+    Dictionary<int, Language> langs;
     public Canvas mainMenu, playMenu, newMenu, currMenu, loadMenu, optionMenu;
     public GameObject saveList;
     public GameObject saveSlot;
@@ -28,37 +29,22 @@ public class SCP_StartMenu : MonoBehaviour
             else if (instance != null)
                 Destroy(gameObject);
 
+        Localization.CheckLangs();
 
-        GlobalValues.uiStrings = GlobalValues.uiStrings_EN;
+        langs = Localization.GetLangs();
 
         Debug.Log("Language was " + PlayerPrefs.GetInt("Lang", 0));
 
         switch (PlayerPrefs.GetInt("Lang", 0))
         {
+            case 0:
+                {
+                    Localization.SetLanguage(-1);
+                    break;
+                }
             default:
                 {
-                    GlobalValues.SetLanguage(Application.systemLanguage);
-                    break;
-                }
-            case 1:
-                {
-                    GlobalValues.SetLanguage(SystemLanguage.English);
-                    break;
-                }
-            case 2:
-                {
-                    GlobalValues.SetLanguage(SystemLanguage.Spanish);
-                    break;
-                }
-            case 3:
-                {
-                    GlobalValues.SetLanguage(SystemLanguage.German);
-                    break;
-                }
-            case 4:
-                {
-                    
-                    GlobalValues.SetLanguage(SystemLanguage.ChineseSimplified);
+                    Localization.SetLanguage(langs[PlayerPrefs.GetInt("Lang", 0)].unitynumber);
                     break;
                 }
         }
@@ -72,6 +58,7 @@ public class SCP_StartMenu : MonoBehaviour
     {
         MusicPlayer.instance.StartMusic(Menu);
         GlobalValues.playIntro = true;
+        Time.timeScale = 1;
     }
 
 
@@ -213,6 +200,10 @@ public class SCP_StartMenu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.F1))
+        {
+            Debug.Log("Exportando Strings");
+            Localization.ExportDefault();
+        }
     }
 }

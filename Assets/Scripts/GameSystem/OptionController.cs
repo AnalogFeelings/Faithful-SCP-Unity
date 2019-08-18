@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class OptionController : MonoBehaviour
 {
+    Dictionary<int, Language> langs;
+
     [Header("Tabs")]
     public GameObject graphics;
     public GameObject audiotab;
@@ -48,6 +50,19 @@ public class OptionController : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        langs = Localization.GetLangs();
+
+        language.ClearOptions();
+        List<Dropdown.OptionData> options = new List<Dropdown.OptionData>();
+
+        foreach (var lang in langs)
+        {
+            options.Add(new Dropdown.OptionData(lang.Value.name));
+        }
+
+        language.AddOptions(options);
+
+
         quality.value = QualitySettings.GetQualityLevel();
         Debug.Log("Language loaded was " + PlayerPrefs.GetInt("Lang", 0));
         language.value = PlayerPrefs.GetInt("Lang", 0);

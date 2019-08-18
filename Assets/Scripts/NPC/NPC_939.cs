@@ -460,7 +460,7 @@ public class NPC_939 : MonoBehaviour
 
                 if (other.gameObject.GetComponent<Player_Control>().Health <= 0)
                 {
-                    GameController.instance.deathmsg = GlobalValues.deathStrings["death_939"];
+                    GameController.instance.deathmsg = Localization.GetString("deathStrings", "death_939");
                     checkPlayer = false;
                     playerDistance = 100;
                     stateSet = false;

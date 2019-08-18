@@ -122,7 +122,7 @@ public class testpath_ : MonoBehaviour
                         {
                             Audio.PlayOneShot(Hit);
                             GameController.instance.playercache.Death(0);
-                            GameController.instance.deathmsg = GlobalValues.deathStrings["death_mtf"];
+                            GameController.instance.deathmsg = Localization.GetString("deathStrings", "death_mtf");
                             Agent.isStopped = true;
                             Animator.SetTrigger("attack" + Random.Range(1, 3));
 

@@ -709,7 +709,7 @@ public class Player_Control : MonoBehaviour
                 case 3:
                     {
                         sfx.PlayOneShot(Deaths[cause]);
-                        GameController.instance.deathmsg = GlobalValues.deathStrings["death_106_stone"];
+                        GameController.instance.deathmsg = Localization.GetString("deathStrings", "death_106_stone");
                         break;
                     }
                 case 1:
@@ -844,11 +844,12 @@ public class Player_Control : MonoBehaviour
             case bodyPart.Head:
                 {
                     equipment[(int)item.part] = item;
-
-                    if (item.isFem)
-                        SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_equip_fem"], GlobalValues.itemStrings[item.itemName]));
+                    if (item.isUnique)
+                        SubtitleEngine.instance.playFormatted("playStrings", "play_equip_uni", "itemStrings", item.itemName);
+                    else if (item.isFem)
+                        SubtitleEngine.instance.playFormatted("playStrings", "play_equip_fem", "itemStrings", item.itemName);
                     else
-                        SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_equip_male"], GlobalValues.itemStrings[item.itemName]));
+                        SubtitleEngine.instance.playFormatted("playStrings", "play_equip_male", "itemStrings", item.itemName);
 
                     ItemController.instance.equip[headInv][headSlot] = false;
                     headSlot = ItemController.instance.currhover;
@@ -860,11 +861,12 @@ public class Player_Control : MonoBehaviour
                 {
                     equipment[(int)item.part] = item;
 
-                    if (item.isFem)
-                        SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_equip_fem"], GlobalValues.itemStrings[item.itemName]));
+                    if (item.isUnique)
+                        SubtitleEngine.instance.playFormatted("playStrings", "play_equip_uni", "itemStrings", item.itemName);
+                    else if (item.isFem)
+                        SubtitleEngine.instance.playFormatted("playStrings", "play_equip_fem", "itemStrings", item.itemName);
                     else
-                        SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_equip_male"], GlobalValues.itemStrings[item.itemName]));
-
+                        SubtitleEngine.instance.playFormatted("playStrings", "play_equip_male", "itemStrings", item.itemName);
 
                     ItemController.instance.equip[bodyInv][bodySlot] = false;
                     bodySlot = ItemController.instance.currhover;
@@ -879,10 +881,12 @@ public class Player_Control : MonoBehaviour
                 {
                     equipment[(int)item.part] = item;
 
-                    if (item.isFem)
-                        SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_equip_fem"], GlobalValues.itemStrings[item.itemName]));
+                    if (item.isUnique)
+                        SubtitleEngine.instance.playFormatted("playStrings", "play_equip_uni", "itemStrings", item.itemName);
+                    else if (item.isFem)
+                        SubtitleEngine.instance.playFormatted("playStrings", "play_equip_fem", "itemStrings", item.itemName);
                     else
-                        SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_equip_male"], GlobalValues.itemStrings[item.itemName]));
+                        SubtitleEngine.instance.playFormatted("playStrings", "play_equip_male", "itemStrings", item.itemName);
 
                     ItemController.instance.equip[anyInv][anySlot] = false;
                     anySlot = ItemController.instance.currhover;
@@ -951,14 +955,14 @@ public class Player_Control : MonoBehaviour
                                 if (playerEffects[i].multiplier != -1)
                                 {
                                     if (bloodloss == 1)
-                                        SubtitleEngine.instance.playSub(GlobalValues.playStrings["play_cureblood"]);
+                                        SubtitleEngine.instance.playSub("playStrings","play_cureblood");
                                     if (bloodloss > 1)
-                                        SubtitleEngine.instance.playSub(GlobalValues.playStrings["play_cureblood2"]);
+                                        SubtitleEngine.instance.playSub("playStrings","play_cureblood2");
                                     bloodloss -= playerEffects[i].multiplier;
                                     
                                 }
                                 else
-                                    SubtitleEngine.instance.playSub(GlobalValues.playStrings["play_cure"]);
+                                    SubtitleEngine.instance.playSub("playStrings","play_cure");
 
 
                                 break;
@@ -1025,10 +1029,12 @@ public class Player_Control : MonoBehaviour
 
         if (where != bodyPart.Hand)
         {
-            if (equipment[(int)where].isFem)
-                SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_dequip_fem"], GlobalValues.itemStrings[equipment[(int)where].itemName]));
+            if(equipment[(int)where].isUnique)
+                SubtitleEngine.instance.playFormatted("playStrings", "play_dequip_uni", "itemStrings", equipment[(int)where].itemName);
+            else if (equipment[(int)where].isFem)
+                SubtitleEngine.instance.playFormatted("playStrings", "play_dequip_fem", "itemStrings", equipment[(int)where].itemName);
             else
-                SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_dequip_male"], GlobalValues.itemStrings[equipment[(int)where].itemName]));
+                SubtitleEngine.instance.playFormatted("playStrings", "play_dequip_male", "itemStrings", equipment[(int)where].itemName);
         }
         switch (where)
         {

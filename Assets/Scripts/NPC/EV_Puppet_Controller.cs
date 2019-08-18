@@ -236,7 +236,7 @@ public class EV_Puppet_Controller : MonoBehaviour
         Audio.clip = currAudio;
         Audio.Play();
         if (_playSubs)
-            SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings[currAudio.name], GlobalValues.charaStrings[charName]), true, Force);
+            SubtitleEngine.instance.playVoice(currAudio.name, Force);
     }
     public void StopSound()
     {

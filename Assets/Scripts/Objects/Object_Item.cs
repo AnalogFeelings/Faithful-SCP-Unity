@@ -46,18 +46,17 @@ public class Object_Item : Object_Interact
             DestroyImmediate(this.gameObject);
 
             if (item.isUnique)
-                SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_picked_uni"], GlobalValues.itemStrings[item.itemName]));
+                SubtitleEngine.instance.playFormatted("playStrings", "play_picked_uni", "itemStrings", item.itemName);
             else
             {
                 if (item.isFem)
-                    SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_picked_fem"], GlobalValues.itemStrings[item.itemName]));
+                    SubtitleEngine.instance.playFormatted("playStrings", "play_picked_fem", "itemStrings", item.itemName);
                 else
-                    SubtitleEngine.instance.playSub(string.Format(GlobalValues.playStrings["play_picked_male"], GlobalValues.itemStrings[item.itemName]));
-
+                    SubtitleEngine.instance.playFormatted("playStrings", "play_picked_male", "itemStrings", item.itemName);
             }
         }
         else
-            SubtitleEngine.instance.playSub(GlobalValues.playStrings["play_fullinv"]);
+            SubtitleEngine.instance.playSub("playStrings", "play_fullinv");
 
     }
 

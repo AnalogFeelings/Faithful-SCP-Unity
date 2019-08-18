@@ -68,15 +68,15 @@ public class LoadingSystem : MonoBehaviour
 
         isLoading = true;
         start.enabled = false;
-        start.text = GlobalValues.uiStrings["ui_in_anykey"];
+        start.text = Localization.GetString("uiStrings", "ui_in_anykey");
         loadbar = 0;
         isLoadingDone = false;
         Loading.enabled = true;
         image.sprite = Resources.Load<Sprite>(string.Concat("LoadingManager/", screens[loading].imagefile));
         image.SetNativeSize();
         layout.childAlignment = screens[loading].position;
-        title.text = GlobalValues.loadStrings[string.Concat("title_", screens[loading].name)];
-        body.text = GlobalValues.loadStrings[string.Concat("body1_", screens[loading].name)];
+        title.text = Localization.GetString("loadStrings", string.Concat("title_", screens[loading].name));
+        body.text = Localization.GetString("loadStrings", string.Concat("body1_", screens[loading].name));
     }
 
     // Update is called once per frame
@@ -89,9 +89,9 @@ public class LoadingSystem : MonoBehaviour
         if (isLoading)
         {
             if (loadbar > 0.3f && loadbar < 0.6f && screens[loading].hasInfo2)
-                body.text = GlobalValues.loadStrings[string.Concat("body2_", screens[loading].name)];
+                body.text = Localization.GetString("loadStrings", string.Concat("body2_", screens[loading].name));
             if (loadbar > 0.6f && screens[loading].hasInfo3)
-                body.text = GlobalValues.loadStrings[string.Concat("body3_", screens[loading].name)];
+                body.text = Localization.GetString("loadStrings", string.Concat("body3_", screens[loading].name));
         }
 
         loadcircle.fillAmount = loadbar;

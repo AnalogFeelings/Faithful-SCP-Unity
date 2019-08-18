@@ -71,7 +71,7 @@ public class SCP_UI : MonoBehaviour
         }
         if (currMenu == Menu.None)
         {
-            Info1.text = string.Format(GlobalValues.uiStrings["ui_in_info"], GlobalValues.design, GlobalValues.playername, GlobalValues.mapname, GlobalValues.mapseed);
+            Info1.text = string.Format(Localization.GetString("uiStrings", "ui_in_info"), GlobalValues.design, GlobalValues.playername, GlobalValues.mapname, GlobalValues.mapseed);
 
 
             PauseM.enabled = true;
@@ -161,7 +161,7 @@ public class SCP_UI : MonoBehaviour
                 save.interactable = false;
             else
                 save.interactable = true;
-            Info2.text = string.Format(GlobalValues.uiStrings["ui_in_info"], GlobalValues.design, GlobalValues.playername, GlobalValues.mapname, GlobalValues.mapseed);
+            Info2.text = string.Format(Localization.GetString("uiStrings", "ui_in_info"), GlobalValues.design, GlobalValues.playername, GlobalValues.mapname, GlobalValues.mapseed);
             DeathMSG.text = GameController.instance.deathmsg;
             Death.enabled = true;
             Time.timeScale = 1.0f;
@@ -234,7 +234,7 @@ public class SCP_UI : MonoBehaviour
             GameObject notif = Instantiate(notifprefab, canvas.transform);
             NotifSystem notifval = notif.GetComponent<NotifSystem>();
             notifval.image.sprite = Resources.Load<Sprite>("Tutorials/" + tuto);
-            notifval.body.text = GlobalValues.tutoStrings[tuto];
+            notifval.body.text = Localization.GetString("tutoStrings", tuto);
         }
     }
 }

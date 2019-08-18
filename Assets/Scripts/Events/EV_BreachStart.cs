@@ -67,11 +67,7 @@ public class EV_BreachStart : Event_Parent
                 Sci_.SetPath(Path);
                 Gua_.SetPath(Path);
                 Gua_.PlaySound(Dialog);
-                SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["scene_BreachStart_1"], GlobalValues.charaStrings["chara_franklin"]), true);
-                SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["scene_BreachStart_2"], GlobalValues.charaStrings["chara_ulgrin"]), true);
-                SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["scene_BreachStart_3"], GlobalValues.charaStrings["chara_franklin"]), true);
-                SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["scene_BreachStart_4"], GlobalValues.charaStrings["chara_ulgrin"]), true);
-                SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["scene_BreachStart_5"], GlobalValues.charaStrings["chara_franklin"]), true);
+                SubtitleEngine.instance.playVoice("scene_BreachStart_1", true);
 
                 GameController.instance.Warp173(false, Anchor1.transform);
                 GameController.instance.player.GetComponent<Player_Control>().FakeBlink(0.5f);

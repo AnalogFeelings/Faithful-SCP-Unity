@@ -266,8 +266,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 772443387}
   m_HandleRect: {fileID: 772443386}
   m_Direction: 2
-  m_Value: 0
-  m_Size: 1
+  m_Value: 1
+  m_Size: 0.9999998
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -345,7 +345,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.00010061264, y: 0.000008021203}
+  m_AnchoredPosition: {x: -0.00010061264, y: -0.00004469449}
   m_SizeDelta: {x: -7.0999565, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &22737835
@@ -478,6 +478,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StringCode: ui_main_extras
+  Stringtable: uiStrings
 --- !u!1 &106495516
 GameObject:
   m_ObjectHideFlags: 0
@@ -931,6 +932,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StringCode: ui_main_play
+  Stringtable: uiStrings
 --- !u!1 &256355172
 GameObject:
   m_ObjectHideFlags: 0
@@ -1090,6 +1092,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StringCode: ui_main_play
+  Stringtable: uiStrings
 --- !u!114 &265213130
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1249,7 +1252,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 114.99979, y: -290}
+  m_AnchoredPosition: {x: 115, y: -290}
   m_SizeDelta: {x: 430, y: 200}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &293176383
@@ -2458,6 +2461,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StringCode: ui_main_play_seed
+  Stringtable: uiStrings
 --- !u!114 &611965347
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2667,6 +2671,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StringCode: ui_main_play_intro
+  Stringtable: uiStrings
 --- !u!1 &641180973
 GameObject:
   m_ObjectHideFlags: 0
@@ -2718,6 +2723,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StringCode: ui_main_play_start
+  Stringtable: uiStrings
 --- !u!114 &641180976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2929,6 +2935,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StringCode: ui_main_play_sname
+  Stringtable: uiStrings
 --- !u!114 &660572284
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3336,6 +3343,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StringCode: ui_main_options
+  Stringtable: uiStrings
 --- !u!1 &745978649
 GameObject:
   m_ObjectHideFlags: 0
@@ -3387,6 +3395,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StringCode: ui_main_play_new
+  Stringtable: uiStrings
 --- !u!114 &745978652
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3480,6 +3489,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StringCode: ui_generic_back
+  Stringtable: uiStrings
 --- !u!114 &766154978
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3996,6 +4006,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StringCode: ui_main_play_load
+  Stringtable: uiStrings
 --- !u!114 &848342003
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4089,6 +4100,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StringCode: ui_main_play_pro
+  Stringtable: uiStrings
 --- !u!114 &854716033
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5358,6 +5370,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StringCode: ui_generic_back
+  Stringtable: uiStrings
 --- !u!114 &1330158430
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5629,6 +5642,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StringCode: ui_main_play_new
+  Stringtable: uiStrings
 --- !u!114 &1411668761
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5764,6 +5778,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StringCode: ui_generic_back
+  Stringtable: uiStrings
 --- !u!1001 &1675636779
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5834,7 +5849,7 @@ PrefabInstance:
     - target: {fileID: 3989712610456567460, guid: 07e117d578044974390238bb56e7089e,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -33.19998
+      value: -33.200195
       objectReference: {fileID: 0}
     - target: {fileID: 3989712610456567460, guid: 07e117d578044974390238bb56e7089e,
         type: 3}
@@ -6148,6 +6163,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StringCode: ui_main_exit
+  Stringtable: uiStrings
 --- !u!1 &1684722912
 GameObject:
   m_ObjectHideFlags: 0
@@ -6345,6 +6361,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StringCode: ui_main_play_load
+  Stringtable: uiStrings
 --- !u!114 &1774988612
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6790,7 +6807,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 29.99997}
+  m_AnchoredPosition: {x: 0, y: 30}
   m_SizeDelta: {x: 550, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1905558456
@@ -7002,6 +7019,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StringCode: ui_main_play
+  Stringtable: uiStrings
 --- !u!1 &1989041189
 GameObject:
   m_ObjectHideFlags: 0

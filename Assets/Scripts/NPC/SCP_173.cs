@@ -281,7 +281,7 @@ public class SCP_173 : Roam_NPC
         if (hasDoor == false)
         {
             RaycastHit hit;
-            if (Physics.Raycast(transform.position+(Vector3.up*1.5f), transform.forward, out hit, 3f, DoorLay, QueryTriggerInteraction.Collide))
+            if (Physics.Raycast(transform.position+(Vector3.up*1.5f), transform.forward, out hit, 4f, DoorLay, QueryTriggerInteraction.Collide))
             {
                 if (PlayerDistance < Vector3.Distance(transform.position, hit.point))
                     closeDoor = false;
@@ -436,13 +436,13 @@ public class SCP_173 : Roam_NPC
     {
         if ((!IsSeen())&&(other.gameObject.CompareTag("Player"))&&GameController.instance.isAlive&&!GameController.instance.playercache.godmode)
         {
-            GameController.instance.deathmsg = GlobalValues.deathStrings["death_173"];
+            GameController.instance.deathmsg = Localization.GetString("deathStrings", "death_173");
             if (GameController.instance.currentRoom.Equals("Light_2-Way_Doors"))
-                GameController.instance.deathmsg = GlobalValues.deathStrings["death_173_doors"];
+                GameController.instance.deathmsg = Localization.GetString("deathStrings", "death_173_doors");
             if (playercache.onCam)
-                GameController.instance.deathmsg = GlobalValues.deathStrings["death_173_surv"];
+                GameController.instance.deathmsg = Localization.GetString("deathStrings", "death_173_surv");
             if (!GameController.instance.doGameplay)
-                GameController.instance.deathmsg = GlobalValues.deathStrings["death_173_intro"];
+                GameController.instance.deathmsg = Localization.GetString("deathStrings", "death_173_intro");
 
             other.gameObject.GetComponent<Player_Control>().Death(1);
             isActive = false;

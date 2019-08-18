@@ -312,10 +312,13 @@ public class GameController : MonoBehaviour
         {
             if (!npcPanel)
             {
-                GUI.Box(new Rect(10, 10, 300, 100), "Menu juego");
-                GUI.Label(new Rect(20, 40, 300, 20), "Mapa X " + xPlayer + " Mapa Y " + yPlayer);
-                GUI.Label(new Rect(20, 65, 300, 20), "Zona Actual " + zoneAmbiance);
-                GUI.Label(new Rect(20, 90, 300, 20), "¿Ejecutando procesos normales? " + doGameplay);
+                GUI.Box(new Rect(10, 10, 300, 100), "Debug Data");
+                GUI.Label(new Rect(20, 40, 300, 20), "Map X " + xPlayer + " Mapa Y " + yPlayer);
+                GUI.Label(new Rect(20, 65, 300, 20), "This Zone " + zoneAmbiance);
+                GUI.Label(new Rect(20, 90, 300, 20), "Is Gameplay? " + doGameplay);
+                GUI.Label(new Rect(20, 115, 300, 20), "Is Rooom hold? " + holdRoom);
+                GUI.Label(new Rect(20, 130, 300, 20), "Is Pocket? " + isPocket);
+                GUI.Label(new Rect(20, 155, 300, 20), "is ALive? " + isAlive);
             }
             else
             {
@@ -327,11 +330,11 @@ public class GameController : MonoBehaviour
                 if (GUI.Button(new Rect(630, 260, 100, 20), "SCP106"))
                     DebugNPC = npc.scp106;
 
-                debugX = int.Parse(GUI.TextField(new Rect(520, 290, 40, 20), debugX.ToString()));
-                debugY = int.Parse(GUI.TextField(new Rect(630, 290, 40, 20), debugY.ToString()));
+                /*debugX = int.Parse(GUI.TextField(new Rect(520, 290, 40, 20), debugX.ToString()));
+                debugY = int.Parse(GUI.TextField(new Rect(630, 290, 40, 20), debugY.ToString()));*/
 
-                if (GUI.Button(new Rect(520, 330, 100, 20), "TELEPORT"))
-                    npcTable[(int)DebugNPC].Spawn(true, new Vector3(debugX * roomsize, 0, debugY * roomsize));
+                /*if (GUI.Button(new Rect(520, 330, 100, 20), "TELEPORT"))
+                    npcTable[(int)DebugNPC].Spawn(true, new Vector3(debugX * roomsize, 0, debugY * roomsize));*/
 
                 npcCam.transform.position = npcObjects[(int)DebugNPC].transform.position;
 
@@ -457,7 +460,7 @@ public class GameController : MonoBehaviour
         SaveSystem.instance.SaveState();
         GlobalSFX.PlayOneShot(savedSFX);
         GlobalValues.hasSaved = true;
-        SubtitleEngine.instance.playSub(GlobalValues.uiStrings["ui_in_saved"]);
+        SubtitleEngine.instance.playSub("uiStrings","ui_in_saved");
     }
 
     void Update()
@@ -482,7 +485,7 @@ public class GameController : MonoBehaviour
                 }
                 else
                 {
-                    SubtitleEngine.instance.playSub(GlobalValues.uiStrings["ui_in_nosave"]);
+                    SubtitleEngine.instance.playSub("uiStrings", "ui_nosave");
                 }
             }
         }
