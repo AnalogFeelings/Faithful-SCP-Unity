@@ -205,5 +205,11 @@ public class SCP_StartMenu : MonoBehaviour
             Debug.Log("Exportando Strings");
             Localization.ExportDefault();
         }
+
+        if (Input.GetKeyDown(KeyCode.F2))
+        {
+            Debug.Log("Exportando Subtitulos");
+            Localization.BuildSubsDefault();
+        }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Pixelplacement;
 
-public class Decal : MonoBehaviour
+public class ShitDecal : MonoBehaviour
 {
     public float Duration;
     public bool Instant;

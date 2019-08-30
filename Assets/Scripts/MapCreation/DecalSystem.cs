@@ -8,7 +8,7 @@ public class DecalSystem : MonoBehaviour
     public static DecalSystem instance = null;
 
     public Material DecalAtlas;
-    public Decal[] DecalPool;
+    public ShitDecal[] DecalPool;
     public GameObject DecalPrefab;
     int currDecal = 0;
     // Start is called before the first frame update
@@ -23,7 +23,7 @@ public class DecalSystem : MonoBehaviour
 
     void Start()
     {
-        DecalPool = new Decal[100];
+        DecalPool = new ShitDecal[100];
 
         /*for (int j = 0; j < 10; j++)
         {
@@ -41,7 +41,7 @@ public class DecalSystem : MonoBehaviour
         if (DecalPool[currDecal] == null)
         {
             GameObject thisDecal = Instantiate(DecalPrefab, transform);
-            DecalPool[currDecal] = thisDecal.GetComponent<Decal>();
+            DecalPool[currDecal] = thisDecal.GetComponent<ShitDecal>();
         }
 
         DecalPool[currDecal].Scale = scale;

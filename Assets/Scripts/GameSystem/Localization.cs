@@ -31,12 +31,18 @@ public struct Language
 /// 
 public struct subtitleMeta
 {
-    string subtitle;
-    float delay;
-    float duration;
-    string nextSubtitle;
-    string character;
-    bool noFormat;
+    [SerializeField]
+    public string subtitle;
+    [SerializeField]
+    public float delay;
+    [SerializeField]
+    public float duration;
+    [SerializeField]
+    public string nextSubtitle;
+    [SerializeField]
+    public string character;
+    [SerializeField]
+    public bool noFormat;
 }
 
 public static class Localization
@@ -50,8 +56,8 @@ public static class Localization
     static Dictionary<string, Dictionary<string, string>> defStrings = new Dictionary<string, Dictionary<string, string>>();
     static Dictionary<string, Dictionary<string, string>> localStrings = new Dictionary<string, Dictionary<string, string>>();
 
-    static Dictionary<string, string> defSub = new Dictionary<string, string>();
-    static Dictionary<string, string> localSub = new Dictionary<string, string>();
+    static Dictionary<string, subtitleMeta> defSub = new Dictionary<string, subtitleMeta>();
+    static Dictionary<string, subtitleMeta> localSub = new Dictionary<string, subtitleMeta>();
 
     //Localization
 
@@ -68,7 +74,279 @@ public static class Localization
     static Dictionary<int, Language> langs;
 
 
+    static public void SetLanguage(int lang)
+    {
+        if (lang == -1)
+            lang = (int)Application.systemLanguage;
 
+        defStrings = new Dictionary<string, Dictionary<string, string>>();
+        localStrings = new Dictionary<string, Dictionary<string, string>>();
+
+        defStrings.Add("uiStrings", uiStrings_EN);
+        defStrings.Add("itemStrings", itemStrings_EN);
+        defStrings.Add("charaStrings", charaStrings_EN);
+        defStrings.Add("playStrings", playStrings_EN);
+        defStrings.Add("loadStrings", loadStrings_EN);
+        defStrings.Add("deathStrings", deathStrings_EN);
+        defStrings.Add("tutoStrings", tutoStrings_EN);
+        defSub = GetSubtitles();
+
+        if (langs.ContainsKey(lang))
+        {
+            langCode = langs[lang].code;
+
+            foreach (var table in defStrings)
+            {
+                localStrings.Add(table.Key, GetTable(table.Key));
+            }
+        }
+        else
+        {
+            localStrings.Add("uiStrings", new Dictionary<string, string>());
+            localStrings.Add("itemStrings", new Dictionary<string, string>());
+            localStrings.Add("playStrings", new Dictionary<string, string>());
+            localStrings.Add("charaStrings", new Dictionary<string, string>());
+            localStrings.Add("loadStrings", new Dictionary<string, string>());
+            localStrings.Add("deathStrings", new Dictionary<string, string>());
+            localStrings.Add("tutoStrings", new Dictionary<string, string>());
+        }
+
+        localSub = new Dictionary<string, subtitleMeta>();
+    }
+
+
+
+    static public string GetString(string table, string id)
+    {
+        if (localStrings.ContainsKey(table))
+        {
+            if (localStrings[table].ContainsKey(id))
+            {
+                return localStrings[table][id];
+            }
+            else if (defStrings[table].ContainsKey(id))
+            {
+                return defStrings[table][id];
+            }
+            else
+                return ("Missing Subtitle: " + id);
+
+        }
+        else
+            return ("Missing Table " + table);
+    }
+
+    static public subtitleMeta GetSubtitle(string id)
+    {
+        subtitleMeta temp = new subtitleMeta();
+        temp.subtitle = "MISSING SUBTITLE";
+        temp.noFormat = true;
+    
+
+        if (localSub.ContainsKey(id))
+        {
+            temp = localSub[id];
+        }
+        else if (defSub.ContainsKey(id))
+        {
+            temp = defSub[id];
+        }
+
+        return temp;
+    }
+
+    static public void ExportDefault()
+    {
+        foreach (var table in defStrings)
+        {
+            Debug.Log("Exportando tabla " + table.Key);
+            SaveTable(table.Key, "EN", table.Value);
+        }
+    }
+
+    static public void BuildSubsDefault()
+    {
+        Dictionary<string, subtitleMeta> tempSubs = new Dictionary<string, subtitleMeta>();
+        foreach (var tcadena in sceneStrings_EN)
+        {
+            subtitleMeta sub = new subtitleMeta();
+            sub.subtitle = tcadena.Value;
+            sub.delay = 0;
+            sub.duration = 6;
+            sub.nextSubtitle = "";
+            sub.character = "CHANGE_THIS";
+            sub.noFormat = false;
+
+            tempSubs.Add(tcadena.Key, sub);
+        }
+
+        SaveSub("sceneStrings", "EN", tempSubs);
+
+    }
+
+    static void SaveSub(string FileName, string LanguageCode, Dictionary<string, subtitleMeta> table)
+    {
+        fsSerializer _serializer = new fsSerializer();
+
+        if (!Directory.Exists(Path.Combine(folderPath, LanguageCode)))
+            Directory.CreateDirectory(Path.Combine(folderPath, LanguageCode));
+
+        fsData data;
+        _serializer.TrySerialize(table, out data).AssertSuccessWithoutWarnings();
+
+        // emit the data via JSON
+        using (StreamWriter streamWriter = File.CreateText(Path.Combine(folderPath, LanguageCode, FileName + ".subs")))
+        {
+            streamWriter.Write(fsJsonPrinter.PrettyJson(data));
+        }
+    }
+
+    static void SaveTable(string FileName, string LanguageCode, Dictionary<string, string> table)
+    {
+        fsSerializer _serializer = new fsSerializer();
+
+        if (!Directory.Exists(Path.Combine(folderPath, LanguageCode)))
+            Directory.CreateDirectory(Path.Combine(folderPath, LanguageCode));
+
+        fsData data;
+        _serializer.TrySerialize(table, out data).AssertSuccessWithoutWarnings();
+
+        // emit the data via JSON
+        using (StreamWriter streamWriter = File.CreateText(Path.Combine(folderPath, LanguageCode, FileName + ".subs")))
+        {
+            streamWriter.Write(fsJsonPrinter.PrettyJson(data));
+        }
+    }
+
+    public static void AddMissing()
+    {
+        Debug.Log("Iniciando Proceso");
+        foreach (var table in defStrings)
+        {
+            Dictionary<string, string> currTable = new Dictionary<string, string>();
+
+            if (!File.Exists(Path.Combine(folderPath, langCode, table.Key + ".subs")))
+            {
+                Debug.Log("Tabla no existe, agregando todos los valores");
+                foreach (var value in table.Value)
+                {
+                    currTable.Add(value.Key, " MISSING SUBTITLE ");
+                }
+            }
+            else
+            {
+                Debug.Log("Tabla si existe, examinando paso a paso");
+                currTable = localStrings[table.Key];
+                foreach (var value in table.Value)
+                {
+                    if (!localStrings[table.Key].ContainsKey(value.Key))
+                    {
+                        Debug.Log("Subtitulo faltante en " + value.Key);
+                        currTable.Add(value.Key, " MISSING SUBTITLE ");
+                    }
+                }
+            }
+
+            SaveTable(table.Key, langCode, currTable);
+        }
+    }
+
+    static Dictionary<string, string> GetTable(string FileName)
+    {
+        Debug.Log("Cargando tabla " + FileName + " en la posicion " + Path.Combine(folderPath, langCode, FileName + ".subs"));
+        fsSerializer _serializer = new fsSerializer();
+        Dictionary<string, string> loadedTable = new Dictionary<string, string>();
+
+        if (File.Exists(Path.Combine(folderPath, langCode, FileName + ".subs")))
+        {
+            using (StreamReader streamReader = File.OpenText(Path.Combine(folderPath, langCode, FileName + ".subs")))
+            {
+                string jsonString = streamReader.ReadToEnd();
+                fsData data = fsJsonParser.Parse(jsonString);
+
+                _serializer.TryDeserialize(data, ref loadedTable).AssertSuccessWithoutWarnings();
+            }
+        }
+
+        return loadedTable;
+    }
+
+    static Dictionary<string, subtitleMeta> GetSubtitles()
+    {
+        fsSerializer _serializer = new fsSerializer();
+        Dictionary<string, subtitleMeta> loadedTable = new Dictionary<string, subtitleMeta>();
+
+        if (File.Exists(Path.Combine(folderPath, langCode, "sceneStrings" + ".subs")))
+        {
+            using (StreamReader streamReader = File.OpenText(Path.Combine(folderPath, langCode, "sceneStrings" + ".subs")))
+            {
+                string jsonString = streamReader.ReadToEnd();
+                fsData data = fsJsonParser.Parse(jsonString);
+
+                _serializer.TryDeserialize(data, ref loadedTable).AssertSuccessWithoutWarnings();
+            }
+        }
+
+        return loadedTable;
+    }
+
+    static public void CheckLangs()
+    {
+        fsSerializer _serializer = new fsSerializer();
+
+
+        if (!File.Exists(Path.Combine(folderPath, "languages.langs")))
+        {
+            fsData data;
+            _serializer.TrySerialize(def_langs, out data).AssertSuccessWithoutWarnings();
+
+            // emit the data via JSON
+            using (StreamWriter streamWriter = File.CreateText(Path.Combine(folderPath, "languages.langs")))
+            {
+                streamWriter.Write(fsJsonPrinter.PrettyJson(data));
+            }
+        }
+
+        using (StreamReader streamReader = File.OpenText(Path.Combine(folderPath, "languages.langs")))
+        {
+            string jsonString = streamReader.ReadToEnd();
+            fsData data = fsJsonParser.Parse(jsonString);
+
+            langs = def_langs;
+            _serializer.TryDeserialize(data, ref langs).AssertSuccessWithoutWarnings();
+        }
+    }
+
+    static public Dictionary<int, Language> GetLangs()
+    {
+        int number = 0;
+        Dictionary<int, Language> langList = new Dictionary<int, Language>()
+        {
+            {number, new Language ("Auto", "auto", 10) },
+        };
+        Debug.Log("Parsing Languages, detected " + langs.Count);
+        foreach (var lang in langs)
+        {
+            number++;
+            if (!langList.ContainsValue(lang.Value))
+            {
+                Debug.Log("Language " + lang.Value.name);
+                langList.Add(number, lang.Value);
+            }
+        }
+
+        return (langList);
+    }
+
+
+
+
+
+
+
+    /// <summary>
+    /// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// </summary>
     //~~~~~~~~~~~~~~~~~~~~~~~~~~UI ENGLISH STRINGS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     public static Dictionary<string, string> uiStrings_EN = new Dictionary<string, string>()
     {
@@ -423,203 +701,4 @@ public static class Localization
         {"death_mtf", "Subject: D-9341. \nTerminated by Nine-Tailed Fox." },
 
     };
-
-
-
-
-static public void SetLanguage(int lang)
-    {
-        if (lang == -1)
-            lang = (int)Application.systemLanguage;
-
-        defStrings = new Dictionary<string, Dictionary<string, string>>();
-        localStrings = new Dictionary<string, Dictionary<string, string>>();
-
-        defStrings.Add("uiStrings", uiStrings_EN);
-        defStrings.Add("itemStrings", itemStrings_EN);
-        defStrings.Add("charaStrings", charaStrings_EN);
-        defStrings.Add("playStrings", playStrings_EN);
-        defStrings.Add("loadStrings", loadStrings_EN);
-        defStrings.Add("deathStrings", deathStrings_EN);
-        defStrings.Add("tutoStrings", tutoStrings_EN);
-        defSub = sceneStrings_EN;
-
-        if (langs.ContainsKey(lang))
-        {
-            langCode = langs[lang].code;
-
-            foreach (var table in defStrings)
-            {
-                localStrings.Add(table.Key, GetTable(table.Key));
-            }
-        }
-        else
-        {
-            localStrings.Add("uiStrings", new Dictionary<string, string>());
-            localStrings.Add("itemStrings", new Dictionary<string, string>());
-            localStrings.Add("playStrings", new Dictionary<string, string>());
-            localStrings.Add("charaStrings", new Dictionary<string, string>());
-            localStrings.Add("loadStrings", new Dictionary<string, string>());
-            localStrings.Add("deathStrings", new Dictionary<string, string>());
-            localStrings.Add("tutoStrings", new Dictionary<string, string>());
-        }
-
-        localSub = new Dictionary<string, string>();
-    }
-
-    
-
-    static public string GetString(string table, string id)
-    {
-        if (localStrings.ContainsKey(table))
-        {
-            if (localStrings[table].ContainsKey(id))
-            {
-                return localStrings[table][id];
-            }
-            else if (defStrings[table].ContainsKey(id))
-            {
-                return defStrings[table][id];
-            }
-            else
-                return ("Missing Subtitle: " + id);
-
-        }
-        else
-            return ("Missing Table " + table);
-    }
-
-    static public string GetSubtitle(string id)
-    {
-        return defSub[id];
-    }
-
-    static public void ExportDefault()
-    {
-        foreach (var table in defStrings)
-        {
-            Debug.Log("Exportando tabla " + table.Key);
-            SaveTable(table.Key, "EN", table.Value);
-        }
-    }
-
-    static void SaveTable(string FileName, string LanguageCode, Dictionary<string, string> table)
-    {
-        fsSerializer _serializer = new fsSerializer();
-
-        if (!Directory.Exists(Path.Combine(folderPath, LanguageCode)))
-            Directory.CreateDirectory(Path.Combine(folderPath, LanguageCode));
-
-        fsData data;
-        _serializer.TrySerialize(table, out data).AssertSuccessWithoutWarnings();
-
-        // emit the data via JSON
-        using (StreamWriter streamWriter = File.CreateText(Path.Combine(folderPath, LanguageCode, FileName  + ".subs")))
-        {
-            streamWriter.Write(fsJsonPrinter.PrettyJson(data));
-        }
-    }
-
-    public static void AddMissing()
-    {
-        Debug.Log("Iniciando Proceso");
-        foreach (var table in defStrings)
-        {
-            Dictionary<string, string> currTable = new Dictionary<string, string>();
-
-            if (!File.Exists(Path.Combine(folderPath, langCode, table.Key + ".subs")))
-            {
-                Debug.Log("Tabla no existe, agregando todos los valores");
-                foreach (var value in table.Value)
-                {
-                    currTable.Add(value.Key, " MISSING SUBTITLE ");
-                }
-            }
-            else
-            {
-                Debug.Log("Tabla si existe, examinando paso a paso");
-                currTable = localStrings[table.Key];
-                foreach (var value in table.Value)
-                {
-                    if (!localStrings[table.Key].ContainsKey(value.Key))
-                    {
-                        Debug.Log("Subtitulo faltante en " + value.Key);
-                        currTable.Add(value.Key, " MISSING SUBTITLE ");
-                    }
-                }
-            }
-
-            SaveTable(table.Key, langCode, currTable);
-        }
-    }
-
-    static Dictionary<string, string> GetTable(string FileName)
-    {
-        Debug.Log("Cargando tabla " + FileName + " en la posicion " + Path.Combine(folderPath, langCode, FileName + ".subs"));
-        fsSerializer _serializer = new fsSerializer();
-        Dictionary<string, string> loadedTable = new Dictionary<string, string>();
-
-        if (File.Exists(Path.Combine(folderPath, langCode, FileName + ".subs")))
-        {
-            using (StreamReader streamReader = File.OpenText(Path.Combine(folderPath, langCode, FileName + ".subs")))
-            {
-                string jsonString = streamReader.ReadToEnd();
-                fsData data = fsJsonParser.Parse(jsonString);
-
-                _serializer.TryDeserialize(data, ref loadedTable).AssertSuccessWithoutWarnings();
-            }
-        }
-
-        return loadedTable;
-    }
-
-    static public void CheckLangs()
-    {
-        fsSerializer _serializer = new fsSerializer();
-
-
-        if (!File.Exists(Path.Combine(folderPath, "languages.langs")))
-        {
-            fsData data;
-            _serializer.TrySerialize(def_langs, out data).AssertSuccessWithoutWarnings();
-
-            // emit the data via JSON
-            using (StreamWriter streamWriter = File.CreateText(Path.Combine(folderPath, "languages.langs")))
-            {
-                streamWriter.Write(fsJsonPrinter.PrettyJson(data));
-            }
-        }
-
-        using (StreamReader streamReader = File.OpenText(Path.Combine(folderPath, "languages.langs")))
-        {
-            string jsonString = streamReader.ReadToEnd();
-            fsData data = fsJsonParser.Parse(jsonString);
-
-            langs = def_langs;
-            _serializer.TryDeserialize(data, ref langs).AssertSuccessWithoutWarnings();
-        }
-    }
-
-    static public Dictionary<int, Language> GetLangs()
-    {
-        int number = 0;
-        Dictionary<int, Language> langList = new Dictionary<int, Language>()
-        {
-            {number, new Language ("Auto", "auto", 10) },
-        };
-        Debug.Log("Parsing Languages, detected " + langs.Count);
-        foreach (var lang in langs)
-        {
-            number++;
-            if (!langList.ContainsValue(lang.Value))
-            {
-                Debug.Log("Language " + lang.Value.name);
-                langList.Add(number, lang.Value);
-            }
-        }
-
-        return (langList);
-    }
-
-
 }
