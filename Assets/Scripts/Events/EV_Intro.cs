@@ -5,9 +5,9 @@ using UnityEngine;
 public class EV_Intro : MonoBehaviour
 {
     public Transform[] Path1;
-    public AudioClip[] Dialogs, RefuseDiag, DI_Escort, DI_Angry1, DI_Angry2, DI_Done1, DI_Done2, FinalEmpty, ConverA, ConverB;
-    public AudioClip Gunshot;
-    public Transform talktome;
+    public AudioClip[] Dialogs, RefuseDiag, DI_Escort, DI_Angry1, DI_Angry2, DI_Done1, DI_Done2, FinalEmpty, ConverA, ConverB, Ambiance;
+    public AudioClip Gunshot, MusIntro;
+    public Transform talktome, playerPos;
     public GameObject Guard1, Guard2, Door1, Door2, Door3, Trigger1, Trigger2, Trigger3, Trigger4, Gas1, Gas2, NextScene, Item;
     GameObject Player;
     Transform playerHead;
@@ -26,6 +26,27 @@ public class EV_Intro : MonoBehaviour
 
     void OnEnable()
     {
+        if (GlobalValues.playIntro)
+        {
+            AmbianceController.instance.ChangeAmbiance(Ambiance, 8);
+            MusicPlayer.instance.StartMusic(MusIntro);
+            GameController.instance.StopTimer = false;
+            GameController.instance.doGameplay = false;
+            GameController.instance.playercache.playerWarp(playerPos.transform.position, playerPos.transform.eulerAngles.y);
+        }
+        else
+        {
+            //
+            RenderSettings.fog = true;
+            GameController.instance.DefMusic();
+            GameController.instance.DefaultAmbiance();
+            GameController.instance.StopTimer = true;
+            GameController.instance.doGameplay = true;
+            GameController.instance.canSave = true;
+            GameController.instance.CullerFlag = true;
+            DestroyImmediate(this);
+        }
+
         Guard1_con = Guard1.GetComponent<EV_Puppet_Controller>();
         Guard2_con = Guard2.GetComponent<EV_Puppet_Controller>();
         playerHead = Camera.main.transform;

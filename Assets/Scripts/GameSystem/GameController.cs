@@ -75,10 +75,9 @@ public class GameController : MonoBehaviour
     int Zone3limit, Zone2limit;
     int zoneAmbiance = -1;
     int zoneMusic = -1, currentMusic = -1;
-    bool CullerFlag, DebugFlag = false;
+    public bool CullerFlag, DebugFlag = false;
     bool CullerOn, playIntro = true;
-    float roomsize = 15.3f, ambiancetimer = 0, GENambiancetimer = 0, Timer = 5, normalAmbiance, ambiancefreq = 3;
-    public float ambifreq, GENambiancefreq;
+    float roomsize = 15.3f, Timer = 5, normalAmbiance;
 
     MapSize mapSize;
     int[,,] culllookup;
@@ -104,15 +103,12 @@ public class GameController : MonoBehaviour
 
     AudioSource roomAmbiance_src;
 
-    public AudioClip[] AmbianceLibrary;
-    public AudioClip[] PreBreach;
-    public AudioClip[] GenericAmbiance;
     public AudioClip[] Z1;
     public AudioClip[] Z2;
     public AudioClip[] Z3;
     public AudioClip[] RoomMusic;
     public AudioClip[] roomAmbiance_clips;
-    public AudioClip Mus1, Mus2, Mus3, MusIntro, savedSFX;
+    public AudioClip Mus1, Mus2, Mus3, savedSFX;
 
     bool RoomMusicChange = false;
     bool roomAmbiance_chg = false;
@@ -202,7 +198,6 @@ public class GameController : MonoBehaviour
 
 
         Time.timeScale = 0;
-        AmbianceLibrary = PreBreach;
         npcCam.SetActive(false);
         doGameplay = false;
 
@@ -212,6 +207,7 @@ public class GameController : MonoBehaviour
             {
                 case LoadType.newgame:
                     {
+                        spawnHere = false;
                         spawnHere = GlobalValues.playIntro;
                         mapCreate.mapgenseed = GlobalValues.mapseed;
                         NewGame();
@@ -288,14 +284,14 @@ public class GameController : MonoBehaviour
             mapCreate.mapgenseed = GUI.TextField(new Rect(20, 40, 80, 20), mapCreate.mapgenseed);
             playIntro = GUI.Toggle(new Rect(120, 40, 80, 20), playIntro, "Iniciar Intro");
 
-            if (playIntro)
+           /* if (playIntro)
             {
-                spawnHere = true;
+                GlobalValues.playIntro = true;
             }
             else
             {
-                spawnHere = false;
-            }
+                GlobalValues.playIntro = true;
+            }*/
 
             if (GUI.Button(new Rect(220, 40, 80, 20), "Iniciar"))
             {
@@ -492,48 +488,15 @@ public class GameController : MonoBehaviour
 
         if (isStart)
         {
-            if (spawnHere)
-                StartIntro();
+            /*if (spawnHere)
+                StartIntro();*/
 
 
             if (doGameplay)
                 Gameplay();
-
-            DoAmbiance();
         }
 
 
-    }
-
-
-    void DoAmbiance()
-    {
-        ambiancetimer -= Time.deltaTime;
-        if (ambiancetimer <= 0)
-        {
-            int i = Random.Range(0, AmbianceLibrary.Length);
-            MixAmbiance.PlayOneShot(AmbianceLibrary[i]);
-            ambiancetimer = ambiancefreq * Random.Range(1, 5);
-        }
-    }
-
-    void GenAmbiance()
-    {
-        GENambiancetimer -= Time.deltaTime;
-        if (GENambiancetimer <= 0)
-        {
-            int i = Random.Range(0, GenericAmbiance.Length);
-
-            MixAmbiance.PlayOneShot(GenericAmbiance[i]);
-            GENambiancetimer = GENambiancefreq * Random.Range(2, 5);
-        }
-    }
-
-    public void ChangeAmbiance(AudioClip[] NewAmbiance, float freq)
-    {
-        AmbianceLibrary = NewAmbiance;
-        ambiancefreq = freq;
-        zoneAmbiance = -1;
     }
 
 
@@ -545,28 +508,27 @@ public class GameController : MonoBehaviour
 
     void AmbianceManager()
     {
-        if (zoneAmbiance != -1)
+        if (AmbianceController.instance.custom == false)
         {
             if (yPlayer < Zone3limit && zoneAmbiance != 2)
             {
-                AmbianceLibrary = Z3;
+                AmbianceController.instance.NormalAmbiance(Z3);
                 zoneAmbiance = 2;
-                ambiancefreq = ambifreq;
             }
             if ((yPlayer > Zone3limit && yPlayer < Zone2limit) && zoneAmbiance != 1)
             {
-                AmbianceLibrary = Z2;
+                AmbianceController.instance.NormalAmbiance(Z2);
                 zoneAmbiance = 1;
-                ambiancefreq = ambifreq;
             }
             if (yPlayer > Zone2limit && zoneAmbiance != 0)
             {
-                AmbianceLibrary = Z1;
+                AmbianceController.instance.NormalAmbiance(Z1);
                 zoneAmbiance = 0;
-                ambiancefreq = ambifreq;
             }
 
         }
+        else
+            zoneAmbiance = -1;
     }
 
     void MusicManager()
@@ -697,7 +659,7 @@ public class GameController : MonoBehaviour
         AmbianceManager();
         MusicManager();
 
-        GenAmbiance();
+        AmbianceController.instance.GenAmbiance();
 
 
 
@@ -711,16 +673,19 @@ public class GameController : MonoBehaviour
     {
         xPlayer = x;
         yPlayer = y;
-        if (SCP_Map[x, y].Event != -1)
+        if (doGameplay)
         {
-            rooms[x, y].GetComponent<EventHandler>().EventLoad(x, y, SCP_Map[x, y].eventDone);
+            if (SCP_Map[x, y].Event != -1)
+            {
+                rooms[x, y].GetComponent<EventHandler>().EventLoad(x, y, SCP_Map[x, y].eventDone);
+            }
+            PlayerReveal(x, y);
+            PlayerEvents();
         }
-        PlayerReveal(x, y);
-        PlayerEvents();
     }
 
 
-    void StartIntro()
+    /*void StartIntro()
     {
         Timer -= Time.deltaTime;
         if (Timer <= 0.0f && StopTimer == false)
@@ -728,7 +693,7 @@ public class GameController : MonoBehaviour
             startEv.SetActive(true);
             StopTimer = true;
         }
-    }
+    }*/
 
     public int AddItem(Vector3 pos, Item item)
     {
@@ -1321,7 +1286,6 @@ public class GameController : MonoBehaviour
 
     void GL_LoadStart()
     {
-        AmbianceLibrary = Z1;
         GL_Loading();
 
         zoneAmbiance = 3;
@@ -1357,30 +1321,15 @@ public class GameController : MonoBehaviour
 
     void GL_AfterPost()
     {
+
         if (ShowMap)
         {
             if (GlobalValues.LoadType != LoadType.mapless)
             {
-                if (GlobalValues.isNew == true && spawnHere)
+                if (!GlobalValues.isNew)
                 {
-                    MusicPlayer.instance.StartMusic(MusIntro);
-                    StopTimer = false;
-                    doGameplay = false;
-                }
-                else
-                {
-                    if (GlobalValues.isNew)
-                        SetMapPos(0, 10);
-                    else
-                    {
-                        SetMapPos(SaveSystem.instance.playData.mapX, SaveSystem.instance.playData.mapY);
-                        LoadItems();
-                    }
-
-                    canSave = true;
-                    RenderSettings.fog = true;
-                    DefMusic();
-                    DefaultAmbiance();
+                    SetMapPos(SaveSystem.instance.playData.mapX, SaveSystem.instance.playData.mapY);
+                    LoadItems();
                     doGameplay = true;
                     StopTimer = true;
                 }
@@ -1392,6 +1341,7 @@ public class GameController : MonoBehaviour
             HorrorBlur = HorrorFov.gameObject.GetComponent<SmokeBlur>();
             LoadUserValues();
 
+            startEv.SetActive(true);
 
             PlayHorror(Z1[0], player.transform, npc.none);  
         }
@@ -1403,14 +1353,10 @@ public class GameController : MonoBehaviour
         deathmsg = "";
         if (spawnPlayer)
         {
-            if (!spawnHere)
-            {
+            if (GlobalValues.isNew || !spawnHere)
                 player = Instantiate(origplayer, WorldAnchor.transform.position, Quaternion.identity);
-            }
             else
-            {
                 player = Instantiate(origplayer, here, Quaternion.identity);
-            }
         }
 
         playercache = player.GetComponent<Player_Control>();
@@ -1437,7 +1383,7 @@ public class GameController : MonoBehaviour
         }
 
         playercache.isGameplay = true;
-        CullerFlag = true;
+        //CullerFlag = true;
 
     }
 
@@ -1477,6 +1423,8 @@ public class GameController : MonoBehaviour
             nav_Map = SaveSystem.instance.playData.navMap;
             SetMapPos(SaveSystem.instance.playData.mapX, SaveSystem.instance.playData.mapY);
         }
+        else
+            SetMapPos(0, 10);
 
     }
 

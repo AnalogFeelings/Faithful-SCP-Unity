@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Pixelplacement;
 
-public class ShitDecal : MonoBehaviour
+public class Decal : MonoBehaviour
 {
     public float Duration;
     public bool Instant;
@@ -60,6 +60,7 @@ public class ShitDecal : MonoBehaviour
         uvs[2] = new Vector2(uvH + 0.33f, uvV - 0.25f);
 
         mesh.uv = uvs;
+        render.material = DecalAtlas;
         render.material = DecalAtlas;
     }
 

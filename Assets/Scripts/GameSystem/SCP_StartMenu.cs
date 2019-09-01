@@ -59,6 +59,7 @@ public class SCP_StartMenu : MonoBehaviour
         MusicPlayer.instance.StartMusic(Menu);
         GlobalValues.playIntro = true;
         Time.timeScale = 1;
+        AudioListener.pause = false;
     }
 
 
