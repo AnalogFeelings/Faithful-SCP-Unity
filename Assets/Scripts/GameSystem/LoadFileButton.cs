@@ -42,6 +42,7 @@ public class LoadFileButton : MonoBehaviour
         GlobalValues.pathfile = meta.savepath;
         GlobalValues.mapname = SaveName;
         GlobalValues.isNew = false;
+        GlobalValues.playIntro = false;
         GlobalValues.hasSaved = true;
         GlobalValues.LoadType = LoadType.loadgame;
         SCP_StartMenu.instance.Load_CB();

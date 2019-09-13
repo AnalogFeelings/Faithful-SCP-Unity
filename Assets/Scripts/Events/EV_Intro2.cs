@@ -296,22 +296,25 @@ public class EV_Intro2 : MonoBehaviour
                         d1_.puppetWarp(GameController.instance.WorldAnchor.transform.position + ((GameController.instance.WorldAnchor.transform.rotation * Quaternion.Inverse(TeleportAnchor.transform.rotation)) * (d1.transform.position - TeleportAnchor.position)), GameController.instance.WorldAnchor.transform.eulerAngles.y - TeleportAnchor.transform.eulerAngles.y);
                         d2_.puppetWarp(GameController.instance.WorldAnchor.transform.position + ((GameController.instance.WorldAnchor.transform.rotation * Quaternion.Inverse(TeleportAnchor.transform.rotation)) * (d2.transform.position - TeleportAnchor.position)), GameController.instance.WorldAnchor.transform.eulerAngles.y - TeleportAnchor.transform.eulerAngles.y);
                         guard_.puppetWarp(GameController.instance.WorldAnchor.transform.position + ((GameController.instance.WorldAnchor.transform.rotation * Quaternion.Inverse(TeleportAnchor.transform.rotation)) * (guard.transform.position - TeleportAnchor.position)), GameController.instance.WorldAnchor.transform.eulerAngles.y - TeleportAnchor.transform.eulerAngles.y);
-                        GameController.instance.canSave = true;
-                        RenderSettings.fog = true;
+                        
 
                         d1_.DeactivateCollision();
                         d2_.DeactivateCollision();
 
                         StopTimer = true;
 
+   
                         
-                        GameController.instance.SetMapPos(0, 10);
                         GameController.instance.startEv.GetComponent<EV_Intro>().End();
 
                         if (GameController.instance.isAlive)
                         {
                             GameController.instance.doGameplay = true;
                             GameController.instance.Action_QuickSave();
+                            GameController.instance.SetMapPos(0, 10);
+                            GameController.instance.canSave = true;
+                            RenderSettings.fog = true;
+                            GameController.instance.CullerFlag = true;
                         }
                         break;
                     }
