@@ -1,18 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Distance_Object : MonoBehaviour
 {
     // Start is called before the first frame update
     public GameObject Contains;
 
-    public void Spawn()
+    public virtual void Spawn()
     {
         Contains.SetActive(true);
     }
 
-    public void UnSpawn()
+    public virtual void UnSpawn()
     {
         Contains.SetActive(false);
     }

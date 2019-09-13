@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class AlignCubeMap : MonoBehaviour
 {
-    public float angle = -2;
+   /* public float angle = -2;
     void Start()
     {
         if (QualitySettings.realtimeReflectionProbes == false)
@@ -51,5 +51,5 @@ public class AlignCubeMap : MonoBehaviour
     void Update()
     {
 
-    }
+    }*/
 }

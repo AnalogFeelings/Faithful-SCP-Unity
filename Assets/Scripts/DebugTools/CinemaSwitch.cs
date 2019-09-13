@@ -1,11 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering.PostProcessing;
+//using UnityEngine.Rendering.PostProcessing;
 
 public class CinemaSwitch : MonoBehaviour
 {
-    int Current;
+    /*int Current;
     public PostProcessVolume [] presets;
     // Start is called before the first frame update
     void Start()
@@ -38,5 +38,5 @@ public class CinemaSwitch : MonoBehaviour
         {
             presets[Current].weight = 0;
         }
-    }
+    }*/
 }

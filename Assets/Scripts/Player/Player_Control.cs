@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Rendering.PostProcessing;
 
 public enum bodyPart { Head, Body, Hand, Any };
 public enum Ailment { Eyes, Sprint, Health};

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering.PostProcessing;
+//using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.SceneManagement;
 using Pixelplacement;
 using Pixelplacement.TweenSystem;
@@ -41,8 +41,8 @@ public class GameController : MonoBehaviour
     int doorCounter = 0;
     public bool canSave = false, debugCamera, holdRoom = false;
     public bool CreateMap, ShowMap;
-    public PostProcessVolume HorrorVol, MainVol;
-    DepthOfField depth;
+   /* public PostProcessVolume HorrorVol, MainVol;
+    DepthOfField depth;*/
     TweenBase HorrorTween;
 
     public int xPlayer, yPlayer;
@@ -158,9 +158,9 @@ public class GameController : MonoBehaviour
     public Tilemap mapFull;
     public TileBase tile;
 
-    public PostProcessProfile LowQ;
+    /*public PostProcessProfile LowQ;
     public PostProcessProfile MediumQ;
-    public PostProcessProfile HighQ;
+    public PostProcessProfile HighQ;*/
 
     public string deathmsg = "";
     public string currentRoom;
@@ -652,8 +652,8 @@ public class GameController : MonoBehaviour
             HorrorFov.fieldOfView = 65 + (7 * value);
         }
 
-        HorrorVol.weight = value;
-        depth.focusDistance.Override(Vector3.Distance(player.transform.position, currentTarget.transform.position) - 1.5f);
+        /*HorrorVol.weight = value;
+        depth.focusDistance.Override(Vector3.Distance(player.transform.position, currentTarget.transform.position) - 1.5f);*/
     }
 
 
@@ -1135,7 +1135,7 @@ public class GameController : MonoBehaviour
         SCP_UI.instance.LoadValues();
         HorrorFov.gameObject.GetComponent<Player_MouseLook>().LoadValues();
         
-        Debug.Log(MainVol.profile.GetSetting<ColorGrading>().gamma.value);
+       /* Debug.Log(MainVol.profile.GetSetting<ColorGrading>().gamma.value);
         MainVol.profile.GetSetting<ColorGrading>().gamma.value = new Vector4(1, 1, 1, PlayerPrefs.GetFloat("Gamma", 0));
         Debug.Log(PlayerPrefs.GetFloat("Gamma", 0));
 
@@ -1156,7 +1156,7 @@ public class GameController : MonoBehaviour
                     HorrorFov.gameObject.GetComponent<PostProcessLayer>().antialiasingMode = PostProcessLayer.Antialiasing.FastApproximateAntialiasing;
                     break;
                 }
-        }
+        }*/
         PlayerPrefs.Save();
     }
 
@@ -1245,7 +1245,7 @@ public class GameController : MonoBehaviour
 
     void GL_PreStart()
     {
-        switch (PlayerPrefs.GetInt("Post", 1))
+        /*switch (PlayerPrefs.GetInt("Post", 1))
         {
             case 0:
                 {
@@ -1265,7 +1265,7 @@ public class GameController : MonoBehaviour
         }
 
         depth = HorrorVol.sharedProfile.GetSetting<DepthOfField>();
-        depth.focusDistance.Override(2f);
+        depth.focusDistance.Override(2f);*/
         CullerFlag = false;
         CullerOn = false;
 

@@ -61,7 +61,7 @@ public class DecalSystem : MonoBehaviour
 
     public void SpawnDecal(Vector3 here)
     {
-        Vector2[] uvs;
+        /*Vector2[] uvs;
         GameObject plane = GameObject.CreatePrimitive(PrimitiveType.Quad);
         plane.transform.position = here;
         plane.transform.parent = transform;
@@ -79,7 +79,7 @@ public class DecalSystem : MonoBehaviour
          *UV 2 ESQUINA INFERIOR DERECHA
          *UV 3 ESQUINA SUPERIOR IZQUIERDA
          * */
-
+         /*
         float uvH = 0.33f * (Random.Range(0, 4));
         float uvV = 1 - (0.25f * (Random.Range(0, 5)));
 
@@ -89,7 +89,7 @@ public class DecalSystem : MonoBehaviour
         uvs[2] = new Vector2(uvH + 0.33f, uvV - 0.25f);
 
         mesh.uv = uvs;
-        render.material = DecalAtlas;
+        render.material = DecalAtlas;*/
     }
 
     public void CombineDecals()
