@@ -42,6 +42,7 @@ GameObject:
   - component: {fileID: 5082301981470536036}
   - component: {fileID: 4762465708657418055}
   - component: {fileID: 8571168240194746634}
+  - component: {fileID: 5691199395102207400}
   m_Layer: 0
   m_Name: Point Light (1)
   m_TagString: Untagged
@@ -57,7 +58,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5082301981470536042}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.902, y: 2.789, z: -1.909}
+  m_LocalPosition: {x: 1.902, y: 2.41, z: -1.909}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5082301982580570813}
@@ -199,7 +200,7 @@ MonoBehaviour:
   shadowDimmer: 1
   volumetricShadowDimmer: 1
   shadowFadeDistance: 10000
-  contactShadows: 0
+  contactShadows: 1
   shadowTint: {r: 0, g: 0, b: 0, a: 1}
   viewBiasMin: 0.2
   viewBiasMax: 100
@@ -224,6 +225,19 @@ MonoBehaviour:
   shadowAlgorithm: 0
   shadowVariant: 0
   shadowPrecision: 0
+--- !u!114 &5691199395102207400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5082301981470536042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b17b150acfea53449b44f39e99081905, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shadowMulti: 4
 --- !u!1 &5082301981749652157
 GameObject:
   m_ObjectHideFlags: 0
@@ -472,7 +486,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5082301982580570813
 Transform:
   m_ObjectHideFlags: 0
@@ -531,6 +545,7 @@ GameObject:
   - component: {fileID: 5082301982631997668}
   - component: {fileID: 2503427333720661356}
   - component: {fileID: 8181522673156252549}
+  - component: {fileID: 2261509940350846135}
   m_Layer: 0
   m_Name: Point Light
   m_TagString: Untagged
@@ -684,7 +699,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Version: 1
-  shadowResolution: 512
+  shadowResolution: 128
   shadowDimmer: 1
   volumetricShadowDimmer: 1
   shadowFadeDistance: 10000
@@ -713,6 +728,19 @@ MonoBehaviour:
   shadowAlgorithm: 0
   shadowVariant: 0
   shadowPrecision: 0
+--- !u!114 &2261509940350846135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5082301982631997674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b17b150acfea53449b44f39e99081905, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shadowMulti: 2
 --- !u!1 &5082301982804100394
 GameObject:
   m_ObjectHideFlags: 0
@@ -1014,6 +1042,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5323550097476433145}
     m_Modifications:
+    - target: {fileID: 4474181816553080359, guid: 799e81dfd5ed4e343a51830ce60b73da,
+        type: 3}
+      propertyPath: m_Name
+      value: RenderWait_Object
+      objectReference: {fileID: 0}
     - target: {fileID: 2624759218125443031, guid: 799e81dfd5ed4e343a51830ce60b73da,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1069,19 +1102,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4474181816553080359, guid: 799e81dfd5ed4e343a51830ce60b73da,
-        type: 3}
-      propertyPath: m_Name
-      value: RenderWait_Object
-      objectReference: {fileID: 0}
-    - target: {fileID: 3763680437886187124, guid: 799e81dfd5ed4e343a51830ce60b73da,
-        type: 3}
-      propertyPath: contains
-      value: 
-      objectReference: {fileID: 5082301982580570812}
     - target: {fileID: 1175281945176205146, guid: 799e81dfd5ed4e343a51830ce60b73da,
         type: 3}
       propertyPath: Contains
+      value: 
+      objectReference: {fileID: 5082301982580570812}
+    - target: {fileID: 3763680437886187124, guid: 799e81dfd5ed4e343a51830ce60b73da,
+        type: 3}
+      propertyPath: contains
       value: 
       objectReference: {fileID: 5082301982580570812}
     m_RemovedComponents: []
@@ -1159,15 +1187,15 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4416237426726756766, guid: 8b117d26e8560c2458ce6465ec63e1cf,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.202
-      objectReference: {fileID: 0}
     - target: {fileID: 3509292714356296820, guid: 8b117d26e8560c2458ce6465ec63e1cf,
         type: 3}
       propertyPath: m_LocalPosition.z
       value: -0.207
+      objectReference: {fileID: 0}
+    - target: {fileID: 4416237426726756766, guid: 8b117d26e8560c2458ce6465ec63e1cf,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.202
       objectReference: {fileID: 0}
     - target: {fileID: 1808541562546600270, guid: 8b117d26e8560c2458ce6465ec63e1cf,
         type: 3}

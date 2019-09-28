@@ -105,6 +105,15 @@ namespace Pixelplacement
         }
 
         /// <summary>
+        /// Sends a float to a callback method as it tweens from a start to an end value. Note that Value tweens do not interrupt currently running Value tweens of the same type - catalog a reference by setting your tween to a Tweenbase variable so you can interrupt as needed. 
+        /// </summary>
+        public static TweenSystem.TweenBase Value(float startValue, float endValue, Action<float> valueUpdatedCallback, float duration, float delay, AnimationCurve easeCurve = null, LoopType loop = LoopType.None, Action startCallback = null, Action completeCallback = null, bool obeyTimescale = true)
+        {
+            TweenSystem.ValueFloat tween = new TweenSystem.ValueFloat(startValue, endValue, valueUpdatedCallback, duration, delay, obeyTimescale, easeCurve, loop, startCallback, completeCallback);
+            SendTweenForProcessing(tween);
+            return tween;
+        }
+        /// <summary>
         /// Sends a Rect to a callback method as it tweens from a start to an end value. Note that Value tweens do not interrupt currently running Value tweens of the same type - catalog a reference by setting your tween to a Tweenbase variable so you can interrupt as needed. 
         /// </summary>
         public static TweenSystem.TweenBase Value(Rect startValue, Rect endValue, Action<Rect> valueUpdatedCallback, float duration, float delay, AnimationCurve easeCurve = null, LoopType loop = LoopType.None, Action startCallback = null, Action completeCallback = null, bool obeyTimescale = true)
@@ -164,15 +173,7 @@ namespace Pixelplacement
             return tween;
         }
 
-        /// <summary>
-        /// Sends a float to a callback method as it tweens from a start to an end value. Note that Value tweens do not interrupt currently running Value tweens of the same type - catalog a reference by setting your tween to a Tweenbase variable so you can interrupt as needed. 
-        /// </summary>
-        public static TweenSystem.TweenBase Value(float startValue, float endValue, Action<float> valueUpdatedCallback, float duration, float delay, AnimationCurve easeCurve = null, LoopType loop = LoopType.None, Action startCallback = null, Action completeCallback = null, bool obeyTimescale = true)
-        {
-            TweenSystem.ValueFloat tween = new TweenSystem.ValueFloat(startValue, endValue, valueUpdatedCallback, duration, delay, obeyTimescale, easeCurve, loop, startCallback, completeCallback);
-            SendTweenForProcessing(tween);
-            return tween;
-        }
+        
 
         /// <summary>
         /// Changes the named vector property of a Material's shader.

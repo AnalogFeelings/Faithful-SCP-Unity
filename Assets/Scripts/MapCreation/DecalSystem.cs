@@ -7,7 +7,7 @@ public class DecalSystem : MonoBehaviour
 {
     public static DecalSystem instance = null;
 
-    public Material DecalAtlas;
+    public Material [] DecalAtlas;
     public Decal[] DecalPool;
     public GameObject DecalPrefab;
     int currDecal = 0;
@@ -24,19 +24,9 @@ public class DecalSystem : MonoBehaviour
     void Start()
     {
         DecalPool = new Decal[100];
-
-        /*for (int j = 0; j < 10; j++)
-        {
-            SpawnDecal(new Vector3(transform.position.x, transform.position.y, transform.position.z + 0.7f * j));
-        }
-        CombineDecals();
-
-
-        Decal(new Vector3(transform.position.x, transform.position.y, transform.position.z - 0.7f), new Vector3(90f, 0, 0), 5f, false, 6f, 2, 0);
-        Decal(new Vector3(transform.position.x, transform.position.y, transform.position.z - 1.7f), new Vector3(90f, 0, 0), 1f, true, 6f, 0, 3);*/
     }
 
-    public void Decal(Vector3 position, Vector3 rotation, float scale, bool Instant, float Time, int h, int v)
+    public void Decal(Vector3 position, Vector3 rotation, float scale, bool Instant, float Time, int decal)
     {
         if (DecalPool[currDecal] == null)
         {
@@ -45,12 +35,12 @@ public class DecalSystem : MonoBehaviour
         }
 
         DecalPool[currDecal].Scale = scale;
-        DecalPool[currDecal].rotation = rotation;
+        DecalPool[currDecal].transform.rotation = Quaternion.Euler(rotation);
         DecalPool[currDecal].Instant = Instant;
         DecalPool[currDecal].Duration = Time;
-        DecalPool[currDecal].h = h;
-        DecalPool[currDecal].v = v;
-        DecalPool[currDecal].position = position;
+        DecalPool[currDecal].DecalAtlas = DecalAtlas[decal];
+
+        DecalPool[currDecal].transform.position = position;
 
         DecalPool[currDecal].SetDecal();
 
@@ -114,11 +104,5 @@ public class DecalSystem : MonoBehaviour
 
         foreach (Transform child in this.transform)
             Destroy(child.gameObject);
-}
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

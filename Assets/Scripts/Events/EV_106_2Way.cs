@@ -30,7 +30,7 @@ public class EV_106_2Way : Event_Parent
         if (!isStarted)
         {
             GameController.instance.npcTable[(int)npc.scp106].Event_Spawn(true, start.position);
-            DecalSystem.instance.Decal(decal1.position, decal1.rotation.eulerAngles, 3f, false, 5f, 2, 0);
+            DecalSystem.instance.Decal(decal1.position, decal1.rotation.eulerAngles, 3f, false, 5f, 2);
             ((SCP_106)GameController.instance.npcTable[(int)npc.scp106]).SetPath(path);
             isStarted = true;
         }
@@ -45,7 +45,7 @@ public class EV_106_2Way : Event_Parent
             if (!part2)
             {
                 ((SCP_106)GameController.instance.npcTable[(int)npc.scp106]).SetPath(path2);
-                DecalSystem.instance.Decal(decal2.position, decal2.rotation.eulerAngles, 3f, false, 5f, 2, 0);
+                DecalSystem.instance.Decal(decal2.position, decal2.rotation.eulerAngles, 3f, false, 5f, 2);
                 part2 = true;
             }
         }

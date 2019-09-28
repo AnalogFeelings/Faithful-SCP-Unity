@@ -781,6 +781,7 @@ GameObject:
   - component: {fileID: 6606088577978705565}
   - component: {fileID: 5716741379305714126}
   - component: {fileID: 4978036394417432085}
+  - component: {fileID: 6018647511860907538}
   m_Layer: 0
   m_Name: Point Light
   m_TagString: Untagged
@@ -934,7 +935,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Version: 1
-  shadowResolution: 512
+  shadowResolution: 256
   shadowDimmer: 1
   volumetricShadowDimmer: 1
   shadowFadeDistance: 10000
@@ -963,6 +964,19 @@ MonoBehaviour:
   shadowAlgorithm: 0
   shadowVariant: 0
   shadowPrecision: 0
+--- !u!114 &6018647511860907538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6606088577978705567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b17b150acfea53449b44f39e99081905, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shadowMulti: 3
 --- !u!1 &6606088578287475821
 GameObject:
   m_ObjectHideFlags: 0
@@ -4806,15 +4820,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: db99edec80e39bf4e9a3267a11dd7bbe, type: 3}
---- !u!4 &6606088577592757394 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 400002, guid: db99edec80e39bf4e9a3267a11dd7bbe,
-    type: 3}
-  m_PrefabInstance: {fileID: 6606088577592366608}
-  m_PrefabAsset: {fileID: 0}
 --- !u!23 &6606088577590464112 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2300000, guid: db99edec80e39bf4e9a3267a11dd7bbe,
+    type: 3}
+  m_PrefabInstance: {fileID: 6606088577592366608}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &6606088577592757394 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 400002, guid: db99edec80e39bf4e9a3267a11dd7bbe,
     type: 3}
   m_PrefabInstance: {fileID: 6606088577592366608}
   m_PrefabAsset: {fileID: 0}

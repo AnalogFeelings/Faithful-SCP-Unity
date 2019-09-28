@@ -14,7 +14,7 @@ public static class GlobalValues
     static public string design = "pepino";
     static public string playername = "melapelas";
 
-    static public int renderTime = 15;
+    static public int renderTime = 1;
     static public bool debug = true;
     static public bool debugconsole = false;
     static public bool isNew = true;

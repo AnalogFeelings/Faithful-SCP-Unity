@@ -8,7 +8,7 @@ public class EV_Intro : MonoBehaviour
     public AudioClip[] Dialogs, RefuseDiag, DI_Escort, DI_Angry1, DI_Angry2, DI_Done1, DI_Done2, FinalEmpty, ConverA, ConverB, Ambiance;
     public AudioClip Gunshot, MusIntro;
     public Transform talktome, playerPos;
-    public GameObject Guard1, Guard2, Door1, Door2, Door3, Trigger1, Trigger2, Trigger3, Trigger4, Gas1, Gas2, NextScene, Item;
+    public GameObject Guard1, Guard2, Door1, Door2, Door3, Trigger1, Trigger2, Trigger3, Trigger4, Gas1, Gas2, NextScene, Item, introZone;
     GameObject Player;
     Transform playerHead;
     EV_Puppet_Controller Guard1_con, Guard2_con;
@@ -36,14 +36,15 @@ public class EV_Intro : MonoBehaviour
         }
         else
         {
-            //
-            RenderSettings.fog = true;
             GameController.instance.DefMusic();
             GameController.instance.DefaultAmbiance();
             GameController.instance.StopTimer = true;
             GameController.instance.doGameplay = true;
             GameController.instance.canSave = true;
             GameController.instance.CullerFlag = true;
+            Destroy(introZone);
+            if (GlobalValues.isNew)
+                GameController.instance.SetMapPos(0, 10);
             DestroyImmediate(this);
         }
 

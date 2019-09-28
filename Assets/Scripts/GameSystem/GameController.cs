@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-//using UnityEngine.Rendering.PostProcessing;
+using UnityEngine.Rendering;
+using UnityEngine.Experimental.Rendering.HDPipeline;
 using UnityEngine.SceneManagement;
 using Pixelplacement;
 using Pixelplacement.TweenSystem;
@@ -41,9 +42,10 @@ public class GameController : MonoBehaviour
     int doorCounter = 0;
     public bool canSave = false, debugCamera, holdRoom = false;
     public bool CreateMap, ShowMap;
-   /* public PostProcessVolume HorrorVol, MainVol;
-    DepthOfField depth;*/
+    public UnityEngine.Rendering.Volume horrorVol;
+    DepthOfField depth;
     TweenBase HorrorTween;
+    float horrorDistace;
 
     public int xPlayer, yPlayer;
     SmokeBlur HorrorBlur;
@@ -62,6 +64,9 @@ public class GameController : MonoBehaviour
     [System.NonSerialized]
     public GameObject npcParent;
 
+    public GameObject lights;
+
+    public LightTriggerController LightControl;
     public GameObject LightTrigger;
 
     public NewMapGen mapCreate;
@@ -504,6 +509,7 @@ public class GameController : MonoBehaviour
     public void DefaultAmbiance()
     {
         zoneAmbiance = 3;
+        Debug.Log("Ambiance Default");
     }
 
     void AmbianceManager()
@@ -581,7 +587,7 @@ public class GameController : MonoBehaviour
         Horror.PlayOneShot(horrorsound);
         if (HorrorTween != null)
             HorrorTween.Cancel();
-        HorrorTween = Tween.Value(0f, 1f, HorrorUpdate, 0.7f, 0, Tween.EaseInStrong, Tween.LoopType.None, null, () => Tween.Value(1f, -0.2f, HorrorUpdate, 11.0f, 0, Tween.EaseOut));
+        HorrorTween = Tween.Value(0f, 1f, HorrorUpdate, 0.7f, 0, Tween.EaseInStrong, Tween.LoopType.None, null, () => HorrorTween = Tween.Value(1f, 0f, HorrorUpdate, 8.0f, 0, Tween.EaseOut));
         if (origin != null)
         {
             currentTarget = origin;
@@ -610,12 +616,16 @@ public class GameController : MonoBehaviour
     {
         if (!isPocket)
         {
-            HorrorBlur.atten = 1 - (0.94f * value);
             HorrorFov.fieldOfView = 65 + (7 * value);
         }
+        horrorVol.weight = value;
 
-        /*HorrorVol.weight = value;
-        depth.focusDistance.Override(Vector3.Distance(player.transform.position, currentTarget.transform.position) - 1.5f);*/
+        horrorDistace = Vector3.Distance(player.transform.position, currentTarget.transform.position);
+        depth.farFocusStart.Override(horrorDistace + 1);
+        depth.farFocusEnd.Override(horrorDistace + 4);
+
+        depth.nearFocusEnd.Override(horrorDistace - 1);
+
     }
 
 
@@ -1098,6 +1108,8 @@ public class GameController : MonoBehaviour
     {
         SubtitleEngine.instance.LoadValues();
         SCP_UI.instance.LoadValues();
+        QualityController.instance.SetQuality();
+
         HorrorFov.gameObject.GetComponent<Player_MouseLook>().LoadValues();
         
        /* Debug.Log(MainVol.profile.GetSetting<ColorGrading>().gamma.value);
@@ -1228,9 +1240,8 @@ public class GameController : MonoBehaviour
                     break;
                 }
         }
-
-        depth = HorrorVol.sharedProfile.GetSetting<DepthOfField>();
-        depth.focusDistance.Override(2f);*/
+        */
+        horrorVol.sharedProfile.TryGet<DepthOfField>(out depth);
         CullerFlag = false;
         CullerOn = false;
 
@@ -1334,6 +1345,7 @@ public class GameController : MonoBehaviour
                     StopTimer = true;
                 }
                 LightTrigger = Instantiate(LightTrigger);
+                LightControl = LightTrigger.GetComponent<LightTriggerController>();
             }
 
             isStart = true;
@@ -1343,7 +1355,8 @@ public class GameController : MonoBehaviour
 
             startEv.SetActive(true);
 
-            PlayHorror(Z1[0], player.transform, npc.none);  
+            PlayHorror(Z1[0], player.transform, npc.none);
+
         }
     }
 

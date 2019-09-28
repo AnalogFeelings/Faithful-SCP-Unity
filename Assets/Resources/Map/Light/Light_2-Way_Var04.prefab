@@ -75,6 +75,7 @@ GameObject:
   - component: {fileID: 2201132017993903344}
   - component: {fileID: 8235467985654773247}
   - component: {fileID: 5544208003384432503}
+  - component: {fileID: 1668090057842100009}
   m_Layer: 0
   m_Name: Point Light (2)
   m_TagString: Untagged
@@ -228,7 +229,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Version: 1
-  shadowResolution: 512
+  shadowResolution: 256
   shadowDimmer: 1
   volumetricShadowDimmer: 1
   shadowFadeDistance: 10000
@@ -257,6 +258,19 @@ MonoBehaviour:
   shadowAlgorithm: 0
   shadowVariant: 0
   shadowPrecision: 0
+--- !u!114 &1668090057842100009
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2201132017993903358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b17b150acfea53449b44f39e99081905, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shadowMulti: 3
 --- !u!1 &2201132018690789388
 GameObject:
   m_ObjectHideFlags: 0
@@ -890,6 +904,7 @@ GameObject:
   - component: {fileID: 2201132019236124138}
   - component: {fileID: 6356400052638358038}
   - component: {fileID: 3124413037395020005}
+  - component: {fileID: 2487667954342530485}
   m_Layer: 0
   m_Name: Point Light
   m_TagString: Untagged
@@ -905,7 +920,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2201132019236124136}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 5.047, z: 2.415}
+  m_LocalPosition: {x: 0, y: 4.799, z: 2.415}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2201132019670992229}
@@ -1072,6 +1087,19 @@ MonoBehaviour:
   shadowAlgorithm: 0
   shadowVariant: 0
   shadowPrecision: 0
+--- !u!114 &2487667954342530485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2201132019236124136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b17b150acfea53449b44f39e99081905, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shadowMulti: 2
 --- !u!1 &2201132019670992226
 GameObject:
   m_ObjectHideFlags: 0
@@ -1087,7 +1115,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2201132019670992229
 Transform:
   m_ObjectHideFlags: 0
@@ -1164,7 +1192,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 380f54144497a5e45aadc8b24e81e313, type: 3}
+  - {fileID: 2100000, guid: c593b65254059d040a57ffc9cb795815, type: 2}
   - {fileID: 2100000, guid: 1e1fbcfa4933a3040b45a5dbc14e9ca5, type: 2}
   - {fileID: 2100000, guid: 83c7db492918f29478b8d7accfd8010e, type: 2}
   - {fileID: 2100000, guid: 37a062f5bbca34e4ab23adcc29f66e02, type: 2}
@@ -1181,7 +1209,7 @@ MeshRenderer:
   - {fileID: 2100000, guid: e12b35b0818479d4d947d98970ca8fcc, type: 2}
   - {fileID: 2100000, guid: 2b6a701188708634da4c9863cab0a92f, type: 2}
   - {fileID: 2100000, guid: f0be23482e55aac48909b1198b0ddb3a, type: 2}
-  - {fileID: 2100034, guid: 380f54144497a5e45aadc8b24e81e313, type: 3}
+  - {fileID: 2100000, guid: af0e2388367184241a0a4759ca53421d, type: 2}
   - {fileID: 2100000, guid: 1e1fbcfa4933a3040b45a5dbc14e9ca5, type: 2}
   - {fileID: 2100000, guid: 83c7db492918f29478b8d7accfd8010e, type: 2}
   m_StaticBatchInfo:
@@ -1382,6 +1410,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5186247000771794923}
     m_Modifications:
+    - target: {fileID: 4474181816553080359, guid: 799e81dfd5ed4e343a51830ce60b73da,
+        type: 3}
+      propertyPath: m_Name
+      value: RenderWait_Object
+      objectReference: {fileID: 0}
     - target: {fileID: 2624759218125443031, guid: 799e81dfd5ed4e343a51830ce60b73da,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1437,19 +1470,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4474181816553080359, guid: 799e81dfd5ed4e343a51830ce60b73da,
-        type: 3}
-      propertyPath: m_Name
-      value: RenderWait_Object
-      objectReference: {fileID: 0}
-    - target: {fileID: 3763680437886187124, guid: 799e81dfd5ed4e343a51830ce60b73da,
-        type: 3}
-      propertyPath: contains
-      value: 
-      objectReference: {fileID: 2201132019670992226}
     - target: {fileID: 1175281945176205146, guid: 799e81dfd5ed4e343a51830ce60b73da,
         type: 3}
       propertyPath: Contains
+      value: 
+      objectReference: {fileID: 2201132019670992226}
+    - target: {fileID: 3763680437886187124, guid: 799e81dfd5ed4e343a51830ce60b73da,
+        type: 3}
+      propertyPath: contains
       value: 
       objectReference: {fileID: 2201132019670992226}
     m_RemovedComponents: []

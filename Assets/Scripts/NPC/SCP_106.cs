@@ -217,7 +217,12 @@ public class SCP_106 : Roam_NPC
 
             playedHorror = false;
             here.y += 0.05f;
-            DecalSystem.instance.Decal(here, new Vector3(90f, 0, 0), 6f, false, 5f, 2, 0);
+            RaycastHit ray;
+            if (Physics.Raycast(transform.position + (Vector3.up), Vector3.down, out ray, 1.5f, Ground, QueryTriggerInteraction.Ignore))
+            {
+                DecalSystem.instance.Decal(here, new Vector3(90f, 0, 0), 6f, false, 5f, 2);
+            }
+            
             if (isChase == false)
             {
                 timer = spawntimer;

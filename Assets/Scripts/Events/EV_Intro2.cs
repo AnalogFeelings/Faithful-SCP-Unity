@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EV_Intro2 : MonoBehaviour
 {
-    public GameObject door1, door2, tri1, tri2, tri3, lightmana, emelight, d1, d2, sci, guard, flask, RerenderProbe1, RerenderProbe2;
+    public GameObject door1, door2, tri1, tri2, tri3, lightmana, emelight, d1, d2, sci, guard, flask, RerenderProbe1, RerenderProbe2, introZone;
     public Transform[] path1, path2, path3, path4, path5;
     public Transform ata1, ata2, ata3, ataFinal, TeleportAnchor, LookLeft, LookRight;
     GameObject objPlayer;
@@ -201,7 +201,7 @@ public class EV_Intro2 : MonoBehaviour
                         
                         GameController.instance.npcObjects[(int)npc.scp173].transform.rotation = Quaternion.Euler(0, 90, 0);
                         GameController.instance.Warp173(false, ata1);
-                        DecalSystem.instance.Decal(ata1.transform.position, new Vector3(90f, 0, 0), 2f, true, 0.4f, 1, 2);
+                        DecalSystem.instance.Decal(ata1.transform.position, new Vector3(90f, 0, 0), 2f, true, 0.4f, 7);
                         d1_.StopLookAt();
                         
                         break;
@@ -224,7 +224,7 @@ public class EV_Intro2 : MonoBehaviour
                         eventstat = 10;
                         Timer = 0.5f;
                         GameController.instance.Warp173(false, ata2);
-                        DecalSystem.instance.Decal(ata2.transform.position, new Vector3(90f, 0, 0), 4f, true, 0.4f, 1, 0);
+                        DecalSystem.instance.Decal(ata2.transform.position, new Vector3(90f, 0, 0), 4f, true, 0.4f, 1);
                         d2_.AnimTrigger(-1, true);
                         d2_.StopLookAt();
                         d2_.PlaySFX(GeneralSFX[3]);
@@ -309,12 +309,14 @@ public class EV_Intro2 : MonoBehaviour
 
                         if (GameController.instance.isAlive)
                         {
+                            GameController.instance.DefaultAmbiance();
+                            GameController.instance.DefMusic();
                             GameController.instance.doGameplay = true;
                             GameController.instance.Action_QuickSave();
                             GameController.instance.SetMapPos(0, 10);
                             GameController.instance.canSave = true;
-                            RenderSettings.fog = true;
                             GameController.instance.CullerFlag = true;
+                            Destroy(introZone);
                         }
                         break;
                     }

@@ -354,7 +354,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4244221648257335935
 Transform:
   m_ObjectHideFlags: 0
@@ -1741,7 +1741,7 @@ MeshRenderer:
   - {fileID: 2100000, guid: 92b1b6345d751c54a8f6c8faa9bc2bca, type: 2}
   - {fileID: 2100000, guid: 75ecd6509cc4f4b46b8079e7a87010fb, type: 2}
   - {fileID: 2100000, guid: 83c7db492918f29478b8d7accfd8010e, type: 2}
-  - {fileID: 2100000, guid: 5714eff8e856c7c42b9971b58076b15f, type: 2}
+  - {fileID: 2100000, guid: b3989d814692c754ca2522036ff6f35e, type: 2}
   - {fileID: 2100000, guid: 2b6a701188708634da4c9863cab0a92f, type: 2}
   - {fileID: 2100000, guid: 1d2181fd871f9954ab9fc95e462dafc4, type: 2}
   - {fileID: 2100000, guid: e12b35b0818479d4d947d98970ca8fcc, type: 2}
@@ -1921,6 +1921,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5410622453198789966}
     m_Modifications:
+    - target: {fileID: 4474181816553080359, guid: 799e81dfd5ed4e343a51830ce60b73da,
+        type: 3}
+      propertyPath: m_Name
+      value: RenderWait_Object
+      objectReference: {fileID: 0}
     - target: {fileID: 2624759218125443031, guid: 799e81dfd5ed4e343a51830ce60b73da,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1976,19 +1981,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4474181816553080359, guid: 799e81dfd5ed4e343a51830ce60b73da,
-        type: 3}
-      propertyPath: m_Name
-      value: RenderWait_Object
-      objectReference: {fileID: 0}
-    - target: {fileID: 3763680437886187124, guid: 799e81dfd5ed4e343a51830ce60b73da,
-        type: 3}
-      propertyPath: contains
-      value: 
-      objectReference: {fileID: 4244221648257335934}
     - target: {fileID: 1175281945176205146, guid: 799e81dfd5ed4e343a51830ce60b73da,
         type: 3}
       propertyPath: Contains
+      value: 
+      objectReference: {fileID: 4244221648257335934}
+    - target: {fileID: 3763680437886187124, guid: 799e81dfd5ed4e343a51830ce60b73da,
+        type: 3}
+      propertyPath: contains
       value: 
       objectReference: {fileID: 4244221648257335934}
     m_RemovedComponents: []

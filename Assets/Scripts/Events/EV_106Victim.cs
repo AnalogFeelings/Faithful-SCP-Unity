@@ -36,7 +36,7 @@ public class EV_106Victim : Event_Parent
     {
         if (!isStarted)
         {
-            DecalSystem.instance.Decal(decal.position, decal.rotation.eulerAngles, 8f, false, 5f, 2, 0);
+            DecalSystem.instance.Decal(decal.position, decal.rotation.eulerAngles, 8f, false, 5f, 2);
             GameController.instance.GlobalSFX.PlayOneShot(corrosion);
             StartCoroutine(Spawning());
             isStarted = true;

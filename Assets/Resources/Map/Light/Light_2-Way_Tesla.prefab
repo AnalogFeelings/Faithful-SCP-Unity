@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1053887803159627743}
   - component: {fileID: 6020696368850112851}
   - component: {fileID: 9040130150597665646}
+  - component: {fileID: 7261282248936133524}
   m_Layer: 0
   m_Name: Point Light (1)
   m_TagString: Untagged
@@ -165,7 +166,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Version: 1
-  shadowResolution: 1024
+  shadowResolution: 256
   shadowDimmer: 1
   volumetricShadowDimmer: 1
   shadowFadeDistance: 10000
@@ -194,6 +195,19 @@ MonoBehaviour:
   shadowAlgorithm: 0
   shadowVariant: 0
   shadowPrecision: 0
+--- !u!114 &7261282248936133524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1053887803159627737}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b17b150acfea53449b44f39e99081905, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shadowMulti: 3
 --- !u!1 &1053887803213158441
 GameObject:
   m_ObjectHideFlags: 0
@@ -255,12 +269,12 @@ GameObject:
   m_Component:
   - component: {fileID: 1053887803565864695}
   m_Layer: 0
-  m_Name: Light
+  m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1053887803565864695
 Transform:
   m_ObjectHideFlags: 0
@@ -273,7 +287,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1053887804852463265}
-  m_Father: {fileID: 3084171647375783775}
+  m_Father: {fileID: 7041324157265250387}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1053887804569266376
@@ -829,6 +843,7 @@ GameObject:
   - component: {fileID: 1053887805086071182}
   - component: {fileID: 5094537741312355548}
   - component: {fileID: 3548882591603737187}
+  - component: {fileID: 1136167688901177155}
   m_Layer: 0
   m_Name: Point Light
   m_TagString: Untagged
@@ -982,7 +997,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Version: 1
-  shadowResolution: 1024
+  shadowResolution: 256
   shadowDimmer: 1
   volumetricShadowDimmer: 1
   shadowFadeDistance: 10000
@@ -1011,6 +1026,19 @@ MonoBehaviour:
   shadowAlgorithm: 0
   shadowVariant: 0
   shadowPrecision: 0
+--- !u!114 &1136167688901177155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1053887805086071176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b17b150acfea53449b44f39e99081905, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shadowMulti: 3
 --- !u!1 &3195236204438589016
 GameObject:
   m_ObjectHideFlags: 0
@@ -1183,7 +1211,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1178406438692247647}
   m_Layer: 19
-  m_Name: GameObject
+  m_Name: Lights
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1196,13 +1224,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8731849901671146262}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1053887805086071183}
   - {fileID: 1053887803159627736}
-  m_Father: {fileID: 7041324157265250387}
+  m_Father: {fileID: 3084171647375783775}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1053887803650488745
@@ -1279,6 +1307,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3195236204438098554}
     m_Modifications:
+    - target: {fileID: 4474181816553080359, guid: 799e81dfd5ed4e343a51830ce60b73da,
+        type: 3}
+      propertyPath: m_Name
+      value: RenderWait_Object
+      objectReference: {fileID: 0}
     - target: {fileID: 2624759218125443031, guid: 799e81dfd5ed4e343a51830ce60b73da,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1334,11 +1367,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4474181816553080359, guid: 799e81dfd5ed4e343a51830ce60b73da,
+    - target: {fileID: 1175281945176205146, guid: 799e81dfd5ed4e343a51830ce60b73da,
         type: 3}
-      propertyPath: m_Name
-      value: RenderWait_Object
-      objectReference: {fileID: 0}
+      propertyPath: Contains
+      value: 
+      objectReference: {fileID: 8731849901671146262}
     - target: {fileID: 3763680437886187124, guid: 799e81dfd5ed4e343a51830ce60b73da,
         type: 3}
       propertyPath: m_Enabled
@@ -1348,12 +1381,7 @@ PrefabInstance:
         type: 3}
       propertyPath: contains
       value: 
-      objectReference: {fileID: 1053887803565864688}
-    - target: {fileID: 1175281945176205146, guid: 799e81dfd5ed4e343a51830ce60b73da,
-        type: 3}
-      propertyPath: Contains
-      value: 
-      objectReference: {fileID: 1053887803565864688}
+      objectReference: {fileID: 8731849901671146262}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 799e81dfd5ed4e343a51830ce60b73da, type: 3}
 --- !u!4 &3084171647375783775 stripped
@@ -1433,7 +1461,7 @@ PrefabInstance:
         type: 3}
       propertyPath: Contains
       value: 
-      objectReference: {fileID: 8731849901671146262}
+      objectReference: {fileID: 1053887803565864688}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8531de410db3e5a46bafbccff90d0b0f, type: 3}
 --- !u!4 &7041324157265250387 stripped

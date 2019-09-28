@@ -14,6 +14,7 @@ public class OptionController : MonoBehaviour
     public GameObject audiotab;
     public GameObject advanced;
     public GameObject inputtab;
+    public GameObject customtab;
 
     public AudioSource player;
     public AudioClip click;
@@ -22,13 +23,33 @@ public class OptionController : MonoBehaviour
     [Header("Graphics Menu")]
     public Dropdown quality;
     public Dropdown language;
-    public Dropdown postsettings;
+    public Dropdown resolutions;
+    public Button Customize;
     public Toggle vsync;
+    public Toggle Fullscreen;
     public Toggle frame;
     public Slider Gamma;
     public InputField framelimit;
     public GameObject framesettings;
     public bool startupdone;
+
+    [Header("Custom Menu")]
+    public Dropdown AA;
+    public Toggle AF;
+    public Dropdown TEX;
+    public Dropdown SHADS;
+    public Toggle CSHADS;
+    public Toggle AO;
+    public GameObject AOQ;
+    public Toggle AO_Q;
+    public Toggle SSR;
+    public GameObject SSRQ;
+    public Toggle SSR_Q;
+    public Toggle VF;
+    public Toggle SS;
+    public Toggle LR;
+    public Toggle ER;
+    
 
     [Header("Audio Menu")]
     public AudioMixer mixer;
@@ -47,6 +68,7 @@ public class OptionController : MonoBehaviour
     public Toggle debug;
     public Toggle tuto;
 
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -62,15 +84,26 @@ public class OptionController : MonoBehaviour
 
         language.AddOptions(options);
 
+        resolutions.ClearOptions();
+        options = new List<Dropdown.OptionData>();
 
-        quality.value = QualitySettings.GetQualityLevel();
+
+        foreach (Resolution curres in Screen.resolutions)
+        {
+            options.Add(new Dropdown.OptionData(curres.width + "x" + curres.height));
+        }
+
+        resolutions.AddOptions(options);
+
+
+        quality.value = PlayerPrefs.GetInt("Quality", 0);
         Debug.Log("Language loaded was " + PlayerPrefs.GetInt("Lang", 0));
         language.value = PlayerPrefs.GetInt("Lang", 0);
-
-        postsettings.value = PlayerPrefs.GetInt("Post", 1);
+        resolutions.value = PlayerPrefs.GetInt("Resolution", 0);
         Gamma.value = PlayerPrefs.GetFloat("Gamma", 0);
+        Fullscreen.isOn = (PlayerPrefs.GetInt("Fullscreen", 1) == 1);
 
-        
+
         framelimit.text = PlayerPrefs.GetInt("Framerate", 60).ToString();
         frame.isOn = (PlayerPrefs.GetInt("Frame", 0) == 1);
         vsync.isOn = (PlayerPrefs.GetInt("Vsync", 1) == 1);
@@ -88,6 +121,44 @@ public class OptionController : MonoBehaviour
         ///
         debug.isOn = (PlayerPrefs.GetInt("Debug", 0) == 1);
         tuto.isOn = (PlayerPrefs.GetInt("Tutorials", 1) == 1);
+
+        /* <summary>
+        /// SETTINGS LIST
+        /// 
+        public Dropdown AA;
+        public Toggle AF;
+        public Dropdown TEX;
+        public Dropdown SHADS;
+        public Toggle AO;
+        public GameObject AOQ;
+        public Toggle AO_Q;
+        public Toggle SSR;
+        public GameObject SSRQ;
+        public Toggle SSR_Q;
+        public Toggle VF;
+        public Toggle SS;
+        public Toggle LR;
+        public Toggle ER;
+        /// 
+        /// </summary>*/
+        /// 
+        AA.value = PlayerPrefs.GetInt("GFX_AA", 1);
+        AF.isOn = (PlayerPrefs.GetInt("GFX_AF", 1) == 1);
+        TEX.value = PlayerPrefs.GetInt("GFX_TEX", 0);
+        SHADS.value = PlayerPrefs.GetInt("GFX_SHADS", 3);
+        CSHADS.isOn = (PlayerPrefs.GetInt("GFX_CSHADS", 1) == 0);
+        AO.isOn = (PlayerPrefs.GetInt("GFX_AO", 1) == 1);
+        AO_Q.isOn = (PlayerPrefs.GetInt("GFX_AO_Q", 0) == 1);
+        SSR.isOn = (PlayerPrefs.GetInt("GFX_SSR", 1) == 1);
+        SSR_Q.isOn = (PlayerPrefs.GetInt("GFX_SSR_Q", 0) == 1);
+        VF.isOn = (PlayerPrefs.GetInt("GFX_VF", 0) == 1);
+        SS.isOn = (PlayerPrefs.GetInt("GFX_SS", 1) == 1);
+        LR.isOn = (PlayerPrefs.GetInt("GFX_LR", 1) == 1);
+        ER.isOn = (PlayerPrefs.GetInt("GFX_ER", 0) == 1);
+
+
+
+
     }
 
     private void Start()
@@ -116,6 +187,7 @@ public class OptionController : MonoBehaviour
         audiotab.SetActive(false);
         advanced.SetActive(false);
         inputtab.SetActive(false);
+        customtab.SetActive(false);
     }
     public void OpenAudio()
     {
@@ -124,6 +196,7 @@ public class OptionController : MonoBehaviour
         audiotab.SetActive(true);
         advanced.SetActive(false);
         inputtab.SetActive(false);
+        customtab.SetActive(false);
     }
     public void OpenAdvanced()
     {
@@ -132,6 +205,7 @@ public class OptionController : MonoBehaviour
         audiotab.SetActive(false);
         advanced.SetActive(true);
         inputtab.SetActive(false);
+        customtab.SetActive(false);
     }
     public void OpenInput()
     {
@@ -140,6 +214,16 @@ public class OptionController : MonoBehaviour
         audiotab.SetActive(false);
         advanced.SetActive(false);
         inputtab.SetActive(true);
+        customtab.SetActive(false);
+    }
+    public void OpenCustom()
+    {
+        player.PlayOneShot(click);
+        graphics.SetActive(false);
+        audiotab.SetActive(false);
+        advanced.SetActive(false);
+        inputtab.SetActive(false);
+        customtab.SetActive(true);
     }
 
 
@@ -159,12 +243,20 @@ public class OptionController : MonoBehaviour
     {
         if (startupdone)
             player.PlayOneShot(click);
-        QualitySettings.SetQualityLevel(Value, true);
+        PlayerPrefs.SetInt("Quality", Value);
+
+        if (Value == 0)
+            Customize.interactable = true;
+        else
+            Customize.interactable = false;
+
     }
 
-    public void SetPost(int Value)
+    public void SetRes(int Value)
     {
-        PlayerPrefs.SetInt("Post", Value);
+        PlayerPrefs.SetInt("Res", Value);
+
+        Screen.SetResolution(Screen.resolutions[Value].width, Screen.resolutions[Value].height, (PlayerPrefs.GetInt("Fullscreen", 1) == 1));
 
         if (startupdone)
             player.PlayOneShot(click);
@@ -190,6 +282,15 @@ public class OptionController : MonoBehaviour
     {
         PlayerPrefs.DeleteAll();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void SetFull(bool Value)
+    {
+        Screen.fullScreen = Value;
+        PlayerPrefs.SetInt("Fullscreen", Value ? 1 : 0);
+
+        if (startupdone)
+            player.PlayOneShot(click);
     }
 
     public void SetVsync (bool Value)
@@ -322,6 +423,153 @@ public class OptionController : MonoBehaviour
     public void Sensible(float Value)
     {
         PlayerPrefs.SetFloat("MouseAcc", Value);
+    }
+
+
+    /* <summary>
+    /// SETTINGS LIST
+    /// 
+    public Dropdown AA;
+    public Toggle AF;
+    public Dropdown TEX;
+    public Dropdown SHADS;
+    public Toggle AO;
+    public GameObject AOQ;
+    public Toggle AO_Q;
+    public Toggle SSR;
+    public GameObject SSRQ;
+    public Toggle SSR_Q;
+    public Toggle VF;
+    public Toggle SS;
+    public Toggle LR;
+    public Toggle ER;
+    /// 
+    /// </summary>*/
+
+    public void setAA(int Value)
+    {
+        PlayerPrefs.SetInt("GFX_AA", Value);
+        
+
+        if (startupdone)
+            player.PlayOneShot(click);
+    }
+
+    public void setAF(bool Value)
+    {
+        PlayerPrefs.SetInt("GFX_AF", Value ? 1 : 0);
+        if (Value)
+            QualitySettings.anisotropicFiltering = AnisotropicFiltering.ForceEnable;
+        else
+            QualitySettings.anisotropicFiltering = AnisotropicFiltering.Disable;
+
+        if (startupdone)
+            player.PlayOneShot(click);
+    }
+
+    public void setTEX(int Value)
+    {
+        PlayerPrefs.SetInt("GFX_TEX", Value);
+        QualitySettings.masterTextureLimit = Value;
+
+        if (startupdone)
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
+        if (startupdone)
+            player.PlayOneShot(click);
+    }
+
+    public void setSHADS(int Value)
+    {
+        PlayerPrefs.SetInt("GFX_SHADS", Value);
+
+        if (Value != 0)
+            CSHADS.interactable = true;
+        else
+            CSHADS.interactable = false;
+
+        if (startupdone)
+            player.PlayOneShot(click);
+    }
+
+    public void setCSHADS(bool Value)
+    {
+        PlayerPrefs.SetInt("GFX_CSHADS", Value ? 1 : 0);
+        if (startupdone)
+            player.PlayOneShot(click);
+    }
+
+    public void setAO(bool Value)
+    {
+        PlayerPrefs.SetInt("GFX_AO", Value ? 1 : 0);
+
+        if (Value == true)
+            AO_Q.interactable = true;
+        else
+            AO_Q.interactable = false;
+        if (startupdone)
+            player.PlayOneShot(click);
+    }
+
+    public void setAOQ(bool Value)
+    {
+        PlayerPrefs.SetInt("GFX_AO_Q", Value ? 1 : 0);
+
+        if (startupdone)
+            player.PlayOneShot(click);
+    }
+
+    public void setSSR(bool Value)
+    {
+        PlayerPrefs.SetInt("GFX_SSR", Value ? 1 : 0);
+
+        if (Value == true)
+            SSR_Q.interactable = true;
+        else
+            SSR_Q.interactable = false;
+
+        if (startupdone)
+            player.PlayOneShot(click);
+    }
+
+    public void setSRRQ(bool Value)
+    {
+        PlayerPrefs.SetInt("GFX_SRR_Q", Value ? 1 : 0);
+
+        if (startupdone)
+            player.PlayOneShot(click);
+    }
+
+    public void setVF(bool Value)
+    {
+        PlayerPrefs.SetInt("GFX_VF", Value ? 1 : 0);
+
+        if (startupdone)
+            player.PlayOneShot(click);
+    }
+
+    public void setSS(bool Value)
+    {
+        PlayerPrefs.SetInt("GFX_SS", Value ? 1 : 0);
+
+        if (startupdone)
+            player.PlayOneShot(click);
+    }
+
+    public void setLR(bool Value)
+    {
+        PlayerPrefs.SetInt("GFX_LR", Value ? 1 : 0);
+
+        if (startupdone)
+            player.PlayOneShot(click);
+    }
+
+    public void setER(bool Value)
+    {
+        PlayerPrefs.SetInt("GFX_ER", Value ? 1 : 0);
+
+        if (startupdone)
+            player.PlayOneShot(click);
     }
 
 }
