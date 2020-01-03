@@ -37,9 +37,11 @@ public class OptionController : MonoBehaviour
     public Dropdown AA;
     public Toggle AF;
     public Dropdown TEX;
+    public Dropdown MAT;
     public Dropdown SHADS;
     public Toggle CSHADS;
     public Toggle AO;
+    public Toggle MOTION;
     public GameObject AOQ;
     public Toggle AO_Q;
     public Toggle SSR;
@@ -96,7 +98,7 @@ public class OptionController : MonoBehaviour
         resolutions.AddOptions(options);
 
 
-        quality.value = PlayerPrefs.GetInt("Quality", 0);
+        quality.value = PlayerPrefs.GetInt("Quality", 3);
         Debug.Log("Language loaded was " + PlayerPrefs.GetInt("Lang", 0));
         language.value = PlayerPrefs.GetInt("Lang", 0);
         resolutions.value = PlayerPrefs.GetInt("Resolution", 0);
@@ -139,14 +141,17 @@ public class OptionController : MonoBehaviour
         public Toggle SS;
         public Toggle LR;
         public Toggle ER;
+        public Toggle Motion
         /// 
         /// </summary>*/
         /// 
-        AA.value = PlayerPrefs.GetInt("GFX_AA", 1);
-        AF.isOn = (PlayerPrefs.GetInt("GFX_AF", 1) == 1);
         TEX.value = PlayerPrefs.GetInt("GFX_TEX", 0);
+        AA.value = PlayerPrefs.GetInt("GFX_AA", 1);
+        MAT.value = PlayerPrefs.GetInt("GFX_MAT", 1);
+        AF.isOn = (PlayerPrefs.GetInt("GFX_AF", 1) == 1);
         SHADS.value = PlayerPrefs.GetInt("GFX_SHADS", 3);
         CSHADS.isOn = (PlayerPrefs.GetInt("GFX_CSHADS", 1) == 0);
+        MOTION.isOn = (PlayerPrefs.GetInt("GFX_MOTION", 0) == 1);
         AO.isOn = (PlayerPrefs.GetInt("GFX_AO", 1) == 1);
         AO_Q.isOn = (PlayerPrefs.GetInt("GFX_AO_Q", 0) == 1);
         SSR.isOn = (PlayerPrefs.GetInt("GFX_SSR", 1) == 1);
@@ -155,6 +160,11 @@ public class OptionController : MonoBehaviour
         SS.isOn = (PlayerPrefs.GetInt("GFX_SS", 1) == 1);
         LR.isOn = (PlayerPrefs.GetInt("GFX_LR", 1) == 1);
         ER.isOn = (PlayerPrefs.GetInt("GFX_ER", 0) == 1);
+
+        if (PlayerPrefs.GetInt("GFX_AF", 1) == 1) 
+            QualitySettings.anisotropicFiltering = AnisotropicFiltering.ForceEnable;
+        else
+            QualitySettings.anisotropicFiltering = AnisotropicFiltering.Disable;
 
 
 
@@ -455,6 +465,15 @@ public class OptionController : MonoBehaviour
             player.PlayOneShot(click);
     }
 
+    public void setMAT(int Value)
+    {
+        PlayerPrefs.SetInt("GFX_MAT", Value);
+
+
+        if (startupdone)
+            player.PlayOneShot(click);
+    }
+
     public void setAF(bool Value)
     {
         PlayerPrefs.SetInt("GFX_AF", Value ? 1 : 0);
@@ -472,8 +491,8 @@ public class OptionController : MonoBehaviour
         PlayerPrefs.SetInt("GFX_TEX", Value);
         QualitySettings.masterTextureLimit = Value;
 
-        if (startupdone)
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        /*if (startupdone)
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);*/
 
         if (startupdone)
             player.PlayOneShot(click);
@@ -488,6 +507,13 @@ public class OptionController : MonoBehaviour
         else
             CSHADS.interactable = false;
 
+        if (startupdone)
+            player.PlayOneShot(click);
+    }
+
+    public void setMOTION(bool Value)
+    {
+        PlayerPrefs.SetInt("GFX_MOTION", Value ? 1 : 0);
         if (startupdone)
             player.PlayOneShot(click);
     }

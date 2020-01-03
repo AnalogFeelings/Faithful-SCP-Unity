@@ -29,9 +29,9 @@ public class EV_106_2Way : Event_Parent
     {
         if (!isStarted)
         {
-            GameController.instance.npcTable[(int)npc.scp106].Event_Spawn(true, start.position);
+            GameController.instance.npcController.mainList[(int)npc.scp106].Event_Spawn(true, start.position);
             DecalSystem.instance.Decal(decal1.position, decal1.rotation.eulerAngles, 3f, false, 5f, 2);
-            ((SCP_106)GameController.instance.npcTable[(int)npc.scp106]).SetPath(path);
+            ((SCP_106)GameController.instance.npcController.mainList[(int)npc.scp106]).SetPath(path);
             isStarted = true;
         }
     }
@@ -44,7 +44,7 @@ public class EV_106_2Way : Event_Parent
             Timer2 -= Time.deltaTime;
             if (!part2)
             {
-                ((SCP_106)GameController.instance.npcTable[(int)npc.scp106]).SetPath(path2);
+                ((SCP_106)GameController.instance.npcController.mainList[(int)npc.scp106]).SetPath(path2);
                 DecalSystem.instance.Decal(decal2.position, decal2.rotation.eulerAngles, 3f, false, 5f, 2);
                 part2 = true;
             }
@@ -52,13 +52,13 @@ public class EV_106_2Way : Event_Parent
 
         if (Timer2 <= 0)
         {
-            GameController.instance.npcTable[(int)npc.scp106].UnSpawn();
+            GameController.instance.npcController.mainList[(int)npc.scp106].UnSpawn();
             isStarted = false;
             EventFinished();
         }
         if (Discover)
         {
-            GameController.instance.npcTable[(int)npc.scp106].StopEvent();
+            GameController.instance.npcController.mainList[(int)npc.scp106].StopEvent();
             isStarted = false;
             EventFinished();
         }

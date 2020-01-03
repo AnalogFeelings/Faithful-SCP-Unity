@@ -55,7 +55,7 @@ public class SCP_106 : Roam_NPC
             eyesActive = false;
         }
 
-        if (isActive)
+        if (data.isActive)
         {
             if (!isEvent)
             {
@@ -80,11 +80,11 @@ public class SCP_106 : Roam_NPC
 
                 escapeTimer += Time.deltaTime;
 
-                if (agroLevel == 0 && escapeTimer >= 30)
+                if (data.npcvalue[agroLevel] == 0 && escapeTimer >= 30)
                 {
                     Escaped = true;
                 }
-                if (agroLevel == 1 && escapeTimer >= 45)
+                if (data.npcvalue[agroLevel] == 1 && escapeTimer >= 45)
                 {
                     Escaped = true;
                 }
@@ -187,7 +187,7 @@ public class SCP_106 : Roam_NPC
     {
         _navMeshagent.enabled = false;
         transform.position = (new Vector3(0, -10, 0));
-        isActive = false;
+        data.isActive = false;
         isSpawn = false;
         isChase = false;
         Escaped = false;
@@ -209,7 +209,7 @@ public class SCP_106 : Roam_NPC
             transform.position = here;
             _navMeshagent.enabled = true;
             _navMeshagent.Warp(here);
-            isActive = true;
+            data.isActive = true;
             isPath = false;
             isEvent = false;
             isSpawn = false;
@@ -236,7 +236,7 @@ public class SCP_106 : Roam_NPC
         }
         else
         {
-            isActive = false;
+            data.isActive = false;
             anim.SetBool("move", false);
         }
 
@@ -296,7 +296,7 @@ public class SCP_106 : Roam_NPC
     public override void Event_Spawn(bool instant, Vector3 here)
     {
         col.enabled = false;
-        isActive = true;
+        data.isActive = true;
         isSpawn = true;
         anim.SetBool("move", false);
         _navMeshagent.enabled = false;

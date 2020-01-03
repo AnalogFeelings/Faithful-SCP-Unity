@@ -43,8 +43,8 @@ public class EV_SurvRoom : Event_Parent
             {
                 case 1:
                     {
-                        GameController.instance.npcTable[(int)npc.scp106].Event_Spawn(true, spawn1.position);
-                        ((SCP_106)GameController.instance.npcTable[(int)npc.scp106]).SetPath(points);
+                        GameController.instance.npcController.mainList[(int)npc.scp106].Event_Spawn(true, spawn1.position);
+                        ((SCP_106)GameController.instance.npcController.mainList[(int)npc.scp106]).SetPath(points);
                         status = 2;
 
                         Timer = 0.1f;
@@ -59,7 +59,7 @@ public class EV_SurvRoom : Event_Parent
                     }
                 case 3:
                     {
-                        GameController.instance.npcTable[(int)npc.scp106].StopEvent();
+                        GameController.instance.npcController.mainList[(int)npc.scp106].StopEvent();
                         EventFinished();
                         status = 5;
                         break;
@@ -73,7 +73,7 @@ public class EV_SurvRoom : Event_Parent
 
         if (endtrigger.GetState() && status != 0)
         {
-            GameController.instance.npcTable[(int)npc.scp106].StopEvent();
+            GameController.instance.npcController.mainList[(int)npc.scp106].StopEvent();
             EventFinished();
         }
 

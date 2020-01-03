@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using Pixelplacement;
-using UnityEngine.Experimental.Rendering.HDPipeline;
+using UnityEngine.Rendering.HighDefinition;
 
 public class Decal : MonoBehaviour
 {
@@ -8,13 +8,13 @@ public class Decal : MonoBehaviour
     public bool Instant;
     public float Scale;
     public Material DecalAtlas;
-    public DecalProjectorComponent decal;
+    public DecalProjector decal;
 
     // Start is called before the first frame update
     void Awake()
     {
 
-        decal = GetComponent<DecalProjectorComponent>();
+        decal = GetComponent<DecalProjector>();
 
     }
 

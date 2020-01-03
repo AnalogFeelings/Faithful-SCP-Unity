@@ -74,8 +74,8 @@ public class EV_Storeroom : Event_Parent
                     {
                         guard.PlaySFX(cronch);
                         guard.AnimTrigger(-2, true);
-                        GameController.instance.npcTable[(int)npc.scp173].Event_Spawn(true, Spawn173.transform.position);
-                        GameController.instance.npcObjects[(int)npc.scp173].transform.rotation = Spawn173.transform.rotation;
+                        GameController.instance.npcController.mainList[(int)npc.scp173].Event_Spawn(true, Spawn173.transform.position);
+                        GameController.instance.npcController.SCPS[(int)npc.scp173].transform.rotation = Spawn173.transform.rotation;
                         timer = time5;
                         status = 5;
                         break;

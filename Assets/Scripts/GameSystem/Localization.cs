@@ -82,13 +82,13 @@ public static class Localization
         defStrings = new Dictionary<string, Dictionary<string, string>>();
         localStrings = new Dictionary<string, Dictionary<string, string>>();
 
-        defStrings.Add("uiStrings", uiStrings_EN);
-        defStrings.Add("itemStrings", itemStrings_EN);
-        defStrings.Add("charaStrings", charaStrings_EN);
-        defStrings.Add("playStrings", playStrings_EN);
-        defStrings.Add("loadStrings", loadStrings_EN);
-        defStrings.Add("deathStrings", deathStrings_EN);
-        defStrings.Add("tutoStrings", tutoStrings_EN);
+        defStrings.Add("uiStrings", GetTable("uiStrings"));
+        defStrings.Add("itemStrings", GetTable("itemStrings"));
+        defStrings.Add("charaStrings", GetTable("charaStrings"));
+        defStrings.Add("playStrings", GetTable("playStrings"));
+        defStrings.Add("loadStrings", GetTable("loadStrings"));
+        defStrings.Add("deathStrings", GetTable("deathStrings"));
+        defStrings.Add("tutoStrings", GetTable("tutoStrings"));
         defSub = GetSubtitles();
 
         if (langs.ContainsKey(lang))

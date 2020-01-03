@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Roam_NPC : MonoBehaviour
+public abstract class Roam_NPC : Map_NPC
 {
-    public int agroLevel = 1;
     public bool isEvent;
-    public bool isActive;
+    public static int agroLevel = 0;
 
     public virtual void Spawn(bool beActive, Vector3 warppoint)
     {
@@ -22,7 +21,7 @@ public abstract class Roam_NPC : MonoBehaviour
 
     public virtual void SetAgroLevel(int level)
     {
-        agroLevel = level;
+        data.npcvalue[0] = level;
         Debug.Log("Nivel Agro =" + level);
     }
 

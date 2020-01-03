@@ -74,7 +74,7 @@ public class SCP_173 : Roam_NPC
 
         DoorCool -= Time.deltaTime;
 
-        if (isActive)
+        if (data.isActive)
         {
             HorrorFar();
 
@@ -192,10 +192,6 @@ public class SCP_173 : Roam_NPC
 
 
 
-
-
-
-
     private void SetDestination()
     {
         if (PlayerDistance < 30f)
@@ -224,9 +220,9 @@ public class SCP_173 : Roam_NPC
             {
                 if (TeleWait != true)
                 {
-                    if (agroLevel == 1)
+                    if (data.npcvalue[agroLevel] == 1)
                     TeleCoolDown = 6f;
-                    if (agroLevel == 0)
+                    if (data.npcvalue[agroLevel] == 0)
                         TeleCoolDown = 15f;
                     TeleWait = true;
                 }
@@ -236,7 +232,7 @@ public class SCP_173 : Roam_NPC
                     TeleWait = false;
                     hasPatrol = false;
 
-                    if (agroLevel == 1)
+                    if (data.npcvalue[agroLevel] == 1)
                     {
                         Vector3 here;
                         do
@@ -380,7 +376,7 @@ public class SCP_173 : Roam_NPC
         if (!beActive)
         {
             _navMeshagent.Warp(warppoint);
-            isActive = beActive;
+            data.isActive = beActive;
             playedNear = false;
             playedHorror = false;
             hasDoor = false;
@@ -394,7 +390,7 @@ public class SCP_173 : Roam_NPC
             if (NavMesh.SamplePosition(warppoint, out here, 0.2f, NavMesh.AllAreas))
             {
                 _navMeshagent.Warp(warppoint);
-                isActive = beActive;
+                data.isActive = beActive;
                 playedNear = false;
                 playedHorror = false;
                 hasDoor = false;
@@ -404,7 +400,7 @@ public class SCP_173 : Roam_NPC
             else if (NavMesh.SamplePosition(warppoint, out here, 10f, NavMesh.AllAreas))
             {
                 _navMeshagent.Warp(here.position);
-                isActive = beActive;
+                data.isActive = beActive;
                 playedNear = false;
                 playedHorror = false;
                 hasDoor = false;
@@ -414,7 +410,7 @@ public class SCP_173 : Roam_NPC
             else
                 Debug.Log("I failed to spawn :C ");
 
-            if (isActive)
+            if (data.isActive)
             {
                 GameController.instance.GlobalSFX.PlayOneShot(teleport);
             }
@@ -423,7 +419,7 @@ public class SCP_173 : Roam_NPC
     public override void Event_Spawn(bool instant, Vector3 here)
     {
         _navMeshagent.Warp(here);
-        isActive = true;
+        data.isActive = true;
         playedNear = false;
         playedHorror = false;
         hasDoor = false;
@@ -445,7 +441,7 @@ public class SCP_173 : Roam_NPC
                 GameController.instance.deathmsg = Localization.GetString("deathStrings", "death_173_intro");
 
             other.gameObject.GetComponent<Player_Control>().Death(1);
-            isActive = false;
+            data.isActive = false;
         }
     }
 

@@ -28,7 +28,7 @@ public class EV_EmilyDeath : Event_Parent
     {
         base.EventStart();
         GameController.instance.GlobalSFX.PlayOneShot(voice079);
-        Instantiate(spark, pos.transform.position, pos.transform.rotation);
+        GameController.instance.particleController.StartParticle(0, pos.transform.position, pos.transform.rotation);
         EventFinished();
     }
 }

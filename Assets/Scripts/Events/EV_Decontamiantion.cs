@@ -1,15 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class EV_Decontamiantion : Event_Parent
 {
     // Start is called before the first frame update
     public AudioClip gas;
     public Transform pos1, pos2;
-    public GameObject smokeprefab;
+    public VisualEffect smoke1, smoke2;
     public Object_Door door1, door2;
-    bool ActiveTimer, spawnedsmoke, passed, opened;
+    bool ActiveTimer, spawnedsmoke, passed, opened, stoppedsmoke;
     float Timer;
 
     void Start()
@@ -28,8 +29,15 @@ public class EV_Decontamiantion : Event_Parent
             {
                 if (Timer <= 10 && !spawnedsmoke)
                 {
-                    Instantiate(smokeprefab, pos1.transform.position, pos1.transform.rotation);
-                    Instantiate(smokeprefab, pos2.transform.position, pos2.transform.rotation);
+                    smoke1.Play();
+                    smoke2.Play();
+                    spawnedsmoke = true;
+                    GameController.instance.GlobalSFX.PlayOneShot(gas);
+                }
+                if (Timer <= 5 && !stoppedsmoke)
+                {
+                    smoke1.Stop();
+                    smoke2.Stop();
                     spawnedsmoke = true;
                     GameController.instance.GlobalSFX.PlayOneShot(gas);
                 }
@@ -54,6 +62,7 @@ public class EV_Decontamiantion : Event_Parent
         if (isStarted && ActiveTimer == false && other.tag == "Player" && !passed)
         {
             spawnedsmoke = false;
+            stoppedsmoke = false;
             ActiveTimer = true;
             Timer = 11;
             passed= true;

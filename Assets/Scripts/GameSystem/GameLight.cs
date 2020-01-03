@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using UnityEngine.Experimental.Rendering.HDPipeline;
+using UnityEngine.Rendering.HighDefinition;
 
 public class GameLight : MonoBehaviour
 {
@@ -13,7 +13,7 @@ public class GameLight : MonoBehaviour
     // Update is called once per frame
     public void SetRes()
     {
-        var light = GetComponent<UnityEngine.Experimental.Rendering.AdditionalShadowData>();
+        var light = GetComponent<HDAdditionalLightData>();
 
         int currentRes = shadowMulti;
 
@@ -22,7 +22,8 @@ public class GameLight : MonoBehaviour
         else if (QualityController.instance.settings[(int)QualityController.setting.shadowforce] == 0)
             currentRes += (QualityController.instance.settings[(int)QualityController.setting.shadowres] - 1);
 
-        light.shadowResolution = GetRes(currentRes);
+        light.SetShadowResolution(GetRes(currentRes));
+        light.normalBias = 1.5f;
         light.shadowFadeDistance = 30;
     }
 
@@ -33,6 +34,8 @@ public class GameLight : MonoBehaviour
         {
             lastValue = lastValue * 2;
         }
+        if (lastValue > 2048)
+            lastValue = 2048;
         return lastValue;
     }
 }
