@@ -212,7 +212,7 @@ public class GameController : MonoBehaviour
                     }
                 case LoadType.mapless:
                     {
-                        spawnHere = true;
+                        
 
                         SaveSystem.instance.playData = GlobalValues.worldState;
 
@@ -222,7 +222,8 @@ public class GameController : MonoBehaviour
                         globalFloats = SaveSystem.instance.playData.globalFloats;
                         globalBools = SaveSystem.instance.playData.globalBools;
 
-
+                        spawnHere = true;
+                        Debug.Log("Iniciando spawn mapless, con spawnHere valor " + spawnHere);
                         GL_SpawnPlayer(playerSpawn.position);
                         GL_Start();
                         GL_AfterPost();
@@ -988,6 +989,7 @@ public class GameController : MonoBehaviour
     public void GoPocket()
     {
         GlobalValues.LoadType = LoadType.mapless;
+        GlobalValues.isNew = false;
         GlobalValues.sceneReturn = SceneManager.GetActiveScene().buildIndex;
         Debug.Log("Scene" + SceneManager.GetActiveScene().name);
         LoadingSystem.instance.LoadLevel(3);
@@ -996,7 +998,7 @@ public class GameController : MonoBehaviour
     {
         GlobalValues.worldState.items = ItemController.instance.GetItems();
 
-        GlobalValues.isNew = false;
+        
         GlobalValues.LoadType = LoadType.otherworld;
         LoadingSystem.instance.LoadLevelHalf(1);
     }
@@ -1233,9 +1235,9 @@ public class GameController : MonoBehaviour
                     doGameplay = true;
                     StopTimer = true;
                 }
-                LightTrigger = Instantiate(LightTrigger);
-                LightControl = LightTrigger.GetComponent<LightTriggerController>();
             }
+            LightTrigger = Instantiate(LightTrigger);
+            LightControl = LightTrigger.GetComponent<LightTriggerController>();
 
             isStart = true;
             HorrorFov = Camera.main;
@@ -1256,9 +1258,15 @@ public class GameController : MonoBehaviour
         if (spawnPlayer)
         {
             if (GlobalValues.isNew || !spawnHere)
+            {
                 player = Instantiate(origplayer, WorldAnchor.transform.position, Quaternion.identity);
+                Debug.Log("Spawning at anchor " + WorldAnchor.transform + " es nuevo " + GlobalValues.isNew + " !spawnhere " + spawnHere);
+            }
             else
+            {
                 player = Instantiate(origplayer, here, Quaternion.identity);
+                Debug.Log("Spawning here at " + here);
+            }
         }
 
         playercache = player.GetComponent<Player_Control>();
@@ -1288,7 +1296,7 @@ public class GameController : MonoBehaviour
     {
         Vector3 here = playerSpawn.position;
         bool origSpawn = spawnHere; 
-        if (!GlobalValues.isNew)
+        if (!GlobalValues.isNew && GlobalValues.LoadType != LoadType.mapless)
         {
             spawnHere = true;
             here = new Vector3(SaveSystem.instance.playData.pX, SaveSystem.instance.playData.pY, SaveSystem.instance.playData.pZ);

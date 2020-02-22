@@ -8,7 +8,7 @@ public class PD_Teleports : MonoBehaviour
     public Transform[] spawners;
     public Transform[] zones;
     public AudioClip music, enter, escape;
-    public GameObject teleporter, zone1Fog, objectSpawn;
+    public GameObject teleporter, objectSpawn;
     public bool IsTesting;
     bool WorldActive = true;
     int currentZone = 0;
@@ -98,16 +98,6 @@ public class PD_Teleports : MonoBehaviour
                 currentZone = place;
             }
 
-            if (place == 0)
-            {
-                zone1Fog.SetActive(true);
-            }
-            else
-            {
-                zone1Fog.SetActive(false);
-                RenderSettings.fogEndDistance = 15;
-                Camera.main.farClipPlane = 30;
-            }
         }
     }
 
