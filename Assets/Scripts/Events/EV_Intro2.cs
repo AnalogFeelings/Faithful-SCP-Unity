@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EV_Intro2 : MonoBehaviour
 {
-    public GameObject door1, door2, tri1, tri2, tri3, lightmana, emelight, d1, d2, sci, guard, flask, RerenderProbe1, RerenderProbe2;
+    public GameObject door1, door2, tri1, tri2, tri3, lightmana, emelight, d1, d2, sci, guard, flask, RerenderProbe1, RerenderProbe2, introZone;
     public Transform[] path1, path2, path3, path4, path5;
     public Transform ata1, ata2, ata3, ataFinal, TeleportAnchor, LookLeft, LookRight;
     GameObject objPlayer;
@@ -164,8 +164,8 @@ public class EV_Intro2 : MonoBehaviour
                     {
                         check2 = true;
                         StopTimer = true;
-                        d1_.SetLookAt(GameController.instance.npcObjects[(int)npc.scp173].transform);
-                        d2_.SetLookAt(GameController.instance.npcObjects[(int)npc.scp173].transform);
+                        d1_.SetLookAt(GameController.instance.npcController.mainList[(int)npc.scp173].transform);
+                        d2_.SetLookAt(GameController.instance.npcController.mainList[(int)npc.scp173].transform);
                         break;
                     }
 
@@ -198,9 +198,9 @@ public class EV_Intro2 : MonoBehaviour
                         eventstat = 8;
                         Timer = 0.7f;
                         d1_.AnimTrigger(-2, true);
-                        
-                        GameController.instance.npcObjects[(int)npc.scp173].transform.rotation = Quaternion.Euler(0, 90, 0);
-                        GameController.instance.Warp173(false, ata1);
+
+                        GameController.instance.npcController.SCPS[(int)npc.scp173].transform.rotation = Quaternion.Euler(0, 90, 0);
+                        GameController.instance.npcController.mainList[(int)npc.scp173].Spawn(false, ata1.position);
                         DecalSystem.instance.Decal(ata1.transform.position, new Vector3(90f, 0, 0), 2f, true, 0.4f, 1, 2);
                         d1_.StopLookAt();
                         
@@ -208,7 +208,7 @@ public class EV_Intro2 : MonoBehaviour
                     }
                 case 8:
                     {
-                        d2_.SetLookAt(GameController.instance.npcObjects[(int)npc.scp173].transform);
+                        d2_.SetLookAt(GameController.instance.npcController.mainList[(int)npc.scp173].transform);
                         d1_.PlaySFX(GeneralSFX[3]);
                         lightmana.SetActive(true);
                         sci_.PlaySFX(GeneralSFX[0]);
@@ -223,7 +223,7 @@ public class EV_Intro2 : MonoBehaviour
                         objPlayer.GetComponent<Player_Control>().FakeBlink(0.3f);
                         eventstat = 10;
                         Timer = 0.5f;
-                        GameController.instance.Warp173(false, ata2);
+                        GameController.instance.npcController.mainList[(int)npc.scp173].Spawn(false, ata2.position);
                         DecalSystem.instance.Decal(ata2.transform.position, new Vector3(90f, 0, 0), 4f, true, 0.4f, 1, 0);
                         d2_.AnimTrigger(-1, true);
                         d2_.StopLookAt();
@@ -233,7 +233,7 @@ public class EV_Intro2 : MonoBehaviour
                 case 10:
                     {
                         check3 = false;
-                        GameController.instance.npcTable[(int)npc.scp173].Event_Spawn(true, ata2.transform.position);
+                        GameController.instance.npcController.mainList[(int)npc.scp173].Event_Spawn(true, ata2.transform.position);
                         guard_.PlaySound(guardWhat[Random.Range(0, guardWhat.Length)]);
 
                         sci_.PlaySFX(GeneralSFX[1]);
@@ -248,11 +248,11 @@ public class EV_Intro2 : MonoBehaviour
                         objPlayer.GetComponent<Player_Control>().FakeBlink(0.4f);
                         eventstat = 12;
                         Timer = 0.7f;
-                        GameController.instance.npcObjects[(int)npc.scp173].transform.rotation = Quaternion.Euler(0, -90, 0);
-                        GameController.instance.Warp173(false, ata3);
+                        GameController.instance.npcController.SCPS[(int)npc.scp173].transform.rotation = Quaternion.Euler(0, -90, 0);
+                        GameController.instance.npcController.mainList[(int)npc.scp173].Spawn(false, ata3.position);
                         guard_.StopLookAt();
                         guard_.PlaySound(guardDies);
-                        guard_.SetRota(GameController.instance.npcObjects[(int)npc.scp173].transform);
+                        guard_.SetRota(GameController.instance.npcController.SCPS[(int)npc.scp173].transform);
                         sci_.PlaySFX(GeneralSFX[5]);
                         break;
                     }
@@ -273,7 +273,7 @@ public class EV_Intro2 : MonoBehaviour
                     {
                         emelight.SetActive(false);
                         objPlayer.GetComponent<Player_Control>().FakeBlink(0.4f);
-                        GameController.instance.Warp173(false, ataFinal);
+                        GameController.instance.npcController.mainList[(int)npc.scp173].Spawn(false, ataFinal.position);
                         eventstat = 14;
                         Timer = 0.7f;
                         guard_.AnimTrigger(-2, true);
@@ -309,12 +309,15 @@ public class EV_Intro2 : MonoBehaviour
 
                         if (GameController.instance.isAlive)
                         {
+                            GameController.instance.DefaultAmbiance();
+                            GameController.instance.DefMusic();
                             GameController.instance.doGameplay = true;
                             GameController.instance.Action_QuickSave();
                             GameController.instance.SetMapPos(0, 10);
                             GameController.instance.canSave = true;
                             RenderSettings.fog = true;
                             GameController.instance.CullerFlag = true;
+                            Destroy(introZone);
                         }
                         break;
                     }

@@ -133,7 +133,7 @@ public class EV_SCP012 : Event_Parent
             }
             if (shesamaniac == false)
             {
-                GameController.instance.player.GetComponent<Player_Control>().CognitoHazard(true);
+                GameController.instance.playercache.CognitoHazard(true);
                 shesamaniac = true;
             }
         }
@@ -141,7 +141,7 @@ public class EV_SCP012 : Event_Parent
         {
             if (shesamaniac == true)
             {
-                GameController.instance.player.GetComponent<Player_Control>().CognitoHazard(false);
+                GameController.instance.playercache.CognitoHazard(false);
                 shesamaniac = false;
             }
         }

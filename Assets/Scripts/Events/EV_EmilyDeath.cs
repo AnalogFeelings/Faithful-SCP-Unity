@@ -7,7 +7,6 @@ public class EV_EmilyDeath : Event_Parent
     public AudioClip Scream, voice079;
     public AudioSource Source;
     public Transform pos;
-    public GameObject spark;
     // Start is called before the first frame update
     void Start()
     {
@@ -28,7 +27,7 @@ public class EV_EmilyDeath : Event_Parent
     {
         base.EventStart();
         GameController.instance.GlobalSFX.PlayOneShot(voice079);
-        Instantiate(spark, pos.transform.position, pos.transform.rotation);
+        GameController.instance.particleController.StartParticle(0, pos.transform.position, pos.transform.rotation);
         EventFinished();
     }
 }

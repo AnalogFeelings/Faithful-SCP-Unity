@@ -125,8 +125,7 @@ public class Object_Door : MonoBehaviour
 
                 if (UseParticle)
                 {
-                    Instantiate(GameController.instance.doorVacuumParticle, transform.position, transform.rotation);
-                    Instantiate(GameController.instance.doorVacuumParticle, transform.position, Quaternion.Inverse(transform.rotation));
+                    GameController.instance.particleController.StartParticle(1, transform.position, transform.rotation);
                 }
 
                 IsOpen = false;

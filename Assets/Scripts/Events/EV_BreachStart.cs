@@ -45,7 +45,7 @@ public class EV_BreachStart : Event_Parent
             GameController.instance.player.GetComponent<Player_Control>().FakeBlink(1f);
             AmbianceController.instance.ChangeAmbiance(NewAmbiance, 6);
             GameController.instance.GlobalSFX.PlayOneShot(blackout);
-            GameController.instance.Warp173(false, GameController.instance.transform);
+            GameController.instance.npcController.mainList[(int)npc.scp173].Spawn(false, GameController.instance.transform.position);
             StopTimer = true;
             SCP_UI.instance.ShowTutorial("tutorun");
             EventFinished();
@@ -55,7 +55,7 @@ public class EV_BreachStart : Event_Parent
         {
             GameController.instance.player.GetComponent<Player_Control>().FakeBlink(1f);
             GameController.instance.GlobalSFX.PlayOneShot(blackout);
-            GameController.instance.Warp173(false, Anchor2.transform);
+            GameController.instance.npcController.mainList[(int)npc.scp173].Spawn(false, Anchor2.transform.position);
             step = true;
         }
 
@@ -69,11 +69,11 @@ public class EV_BreachStart : Event_Parent
                 Gua_.PlaySound(Dialog);
                 SubtitleEngine.instance.playVoice("scene_BreachStart_1", true);
 
-                GameController.instance.Warp173(false, Anchor1.transform);
+                GameController.instance.npcController.mainList[(int)npc.scp173].Spawn(false, Anchor1.transform.position);
                 GameController.instance.player.GetComponent<Player_Control>().FakeBlink(0.5f);
                 GameController.instance.GlobalSFX.PlayOneShot(blackout);
 
-                GameController.instance.npcObjects[(int)npc.scp173].transform.rotation = Anchor1.transform.rotation;
+                GameController.instance.npcController.SCPS[(int)npc.scp173].transform.rotation = Anchor1.transform.rotation;
                 check2 = false;
                 StopTimer = false;
                 Timer = 10;

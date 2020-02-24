@@ -82,12 +82,12 @@ public class DecalSystem : MonoBehaviour
          * */
 
         float uvH = 0.33f * (Random.Range(0, 4));
-        float uvV = 1 - (0.25f * (Random.Range(0, 5)));
+        float uvV = 0.25f * (Random.Range(0, 5));
 
-        uvs[3] = new Vector2(uvH, uvV);
-        uvs[1] = new Vector2(uvH + 0.33f, uvV);
-        uvs[0] = new Vector2(uvH, uvV - 0.25f);
-        uvs[2] = new Vector2(uvH + 0.33f, uvV - 0.25f);
+        uvs[0] = new Vector2(uvH, uvV);
+        uvs[1] = new Vector2(uvH, uvV + 0.25f);
+        uvs[2] = new Vector2(uvH + 0.33f, uvV);
+        uvs[3] = new Vector2(uvH + 0.33f, uvV + 0.25f);
 
         mesh.uv = uvs;
         render.material = DecalAtlas;

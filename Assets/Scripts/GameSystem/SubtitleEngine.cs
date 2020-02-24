@@ -3,14 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-class time_data
+class delay_data
 {
-    public string id;
+    public subtitleMeta sub;
     public float time;
 
-    public time_data (string _id, float _time)
+    public delay_data (subtitleMeta _sub, float _time)
     {
-        id = _id;
+        sub = _sub;
+        time = _time;
+    }
+}
+
+class time_data
+{
+    public string sub;
+    public float time;
+
+    public time_data(string _sub, float _time)
+    {
+        sub = _sub;
         time = _time;
     }
 }
@@ -34,7 +46,7 @@ public class SubtitleEngine : MonoBehaviour
     public Image[] bg = new Image[3];
     public RectTransform[] bgsize = new RectTransform[3];
     List<time_data> pending = new List<time_data>();
-    List<time_data> delayed = new List<time_data>();
+    List<delay_data> delayed = new List<delay_data>();
     string [] current = new string [3];
 
     [Header("FlavorText")]
@@ -85,10 +97,9 @@ public class SubtitleEngine : MonoBehaviour
 
     public void playVoice(string id, bool Force = false)
     {
+        Debug.Log("Buscando Subtitulo " + id);
         if (VoiceSubsEnabled)
         {
-            subtitleMeta sub = Localization.GetSubtitle(id);
-
             if (Force)
             {
                 pending.Clear();
@@ -96,38 +107,56 @@ public class SubtitleEngine : MonoBehaviour
                 subtitle_hold[2] = 0;
                 Debug.Log(" FORCE SUB ");
             }
+            subtitleMeta sub = Localization.GetSubtitle(id);
 
-            string buildSubtitle;
-            if (!sub.noFormat)
-                buildSubtitle = string.Format(stage_direction, Localization.GetString("charaStrings", sub.character), sub.subtitle);
-            else
-                buildSubtitle = sub.subtitle;
-
-
-
-            if (sub.delay > 0)
-                delayed.Add(new time_data(id, sub.delay));
-            else
-            {
-                if (buildSubtitle.Length > 80)
-                {
-                    int firstspace = buildSubtitle.IndexOf(" ", 80);
-                    if (firstspace != -1)
-                    {
-                        pending.Add(new time_data(buildSubtitle.Substring(0, firstspace),(sub.duration/2)));
-                        buildSubtitle = buildSubtitle.Substring(firstspace + 1);
-                    }
-                }
-                pending.Add(new time_data(buildSubtitle, sub.duration));
-            }
-
+            doSub(sub);
             
-
-
-            if (!string.IsNullOrEmpty(sub.nextSubtitle))
-                playVoice(sub.nextSubtitle);
         }
 
+    }
+
+    public void doSub(subtitleMeta sub)
+    {
+        
+
+        string buildSubtitle;
+        if (!sub.noFormat)
+            buildSubtitle = string.Format(stage_direction, Localization.GetString("charaStrings", sub.character), sub.subtitle);
+        else
+            buildSubtitle = sub.subtitle;
+
+        Debug.Log("Subtitulo " + buildSubtitle + " con el extra " + sub.nextSubtitle);
+
+        if (!string.IsNullOrEmpty(sub.nextSubtitle))
+            playVoice(sub.nextSubtitle);
+
+        sub.nextSubtitle = "";
+
+        if (sub.delay > 0)
+            delayed.Add(new delay_data(sub, sub.delay));
+        else
+        {
+            if (buildSubtitle.Length > 60)
+            {
+                int firstspace = buildSubtitle.IndexOf(" ", 60);
+                if (firstspace != -1)
+                {
+                    subtitleMeta midSub = sub;
+                    sub.duration = (sub.duration / 2) < 2 ? 2 : (sub.duration / 2);
+                    midSub.duration = sub.duration;
+                    midSub.noFormat = true;
+                    midSub.subtitle = buildSubtitle.Substring(firstspace + 1);
+
+                    if (!string.IsNullOrEmpty(midSub.subtitle))
+                        delayed.Add(new delay_data(midSub, sub.duration));
+
+                    buildSubtitle = buildSubtitle.Substring(0, firstspace);
+                }
+            }
+            pending.Add(new time_data(buildSubtitle, sub.duration));
+        }
+
+        
     }
 
     // Update is called once per frame
@@ -196,25 +225,10 @@ public class SubtitleEngine : MonoBehaviour
             delayed[i].time -= Time.deltaTime;
             if (delayed[i].time < 0)
             {
-                subtitleMeta sub = Localization.GetSubtitle(delayed[i].id);
-                string buildSubtitle;
-                if (!sub.noFormat)
-                    buildSubtitle = string.Format(stage_direction, Localization.GetString("charaStrings", sub.character), sub.subtitle);
-                else
-                {
-                    buildSubtitle = sub.subtitle;
-                }
-
-                if (buildSubtitle.Length > 80)
-                {
-                    int firstspace = buildSubtitle.IndexOf(" ", 80);
-                    if (firstspace != -1)
-                    {
-                        pending.Add(new time_data(buildSubtitle.Substring(0, firstspace), (sub.duration / 2)));
-                        buildSubtitle = buildSubtitle.Substring(firstspace + 1);
-                    }
-                }
-                pending.Add(new time_data(buildSubtitle, sub.duration));
+                subtitleMeta sub = delayed[i].sub;
+                sub.delay = 0;
+                doSub(sub);
+                
                 delayed.RemoveAt(i);
             }
         }
@@ -237,7 +251,7 @@ public class SubtitleEngine : MonoBehaviour
     {
             if (current[0] == null)
             {
-                current[0] = pending[0].id;
+                current[0] = pending[0].sub;
                 subtitle_hold[0] = pending[0].time;
                 pending.RemoveAt(0);
                 foundSub = true;

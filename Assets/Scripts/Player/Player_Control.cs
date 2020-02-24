@@ -52,6 +52,7 @@ public class Player_Control : MonoBehaviour
     Image eyes, blinkbar, runbar, batbar, overlay, handEquip, eyeIcon;
     RectTransform hand_rect, hud_rect;
     public bool Freeze = false, isGameplay = false, Crouch = false, onCam = false, godmode = false;
+    public bool noMasterController = false;
 
     [Header("Movement")]
     public float GroundDistance = 0.2f;
@@ -116,6 +117,10 @@ public class Player_Control : MonoBehaviour
 
     void Awake()
     {
+        if (noMasterController)
+            isGameplay = true;
+
+
         CameraObj = Camera.main.gameObject;
         CameraObj.transform.position = CameraContainer.transform.position;
 
@@ -127,15 +132,21 @@ public class Player_Control : MonoBehaviour
         _groundChecker = transform.GetChild(0);
         PlayerCam = CameraObj.GetComponent<Camera>();
         speed = Basespeed;
-        headPos = DefHead.transform.position;
-        eyes = SCP_UI.instance.eyes;
-        blinkbar = SCP_UI.instance.blinkBar;
-        runbar = SCP_UI.instance.runBar;
-        batbar = SCP_UI.instance.navBar;
-        hand = SCP_UI.instance.hand;
-        overlay = SCP_UI.instance.Overlay;
-        handEquip = SCP_UI.instance.handEquip;
-        eyeIcon = SCP_UI.instance.eyegraphics;
+        if (!noMasterController)
+        {
+            eyes = SCP_UI.instance.eyes;
+            blinkbar = SCP_UI.instance.blinkBar;
+            runbar = SCP_UI.instance.runBar;
+            batbar = SCP_UI.instance.navBar;
+            hand = SCP_UI.instance.hand;
+
+            overlay = SCP_UI.instance.Overlay;
+            handEquip = SCP_UI.instance.handEquip;
+            eyeIcon = SCP_UI.instance.eyegraphics;
+
+            hand_rect = hand.GetComponent<RectTransform>();
+            hud_rect = SCP_UI.instance.HUD.GetComponent<RectTransform>();
+        }
 
         hand_rect = hand.GetComponent<RectTransform>();
         hud_rect = SCP_UI.instance.HUD.GetComponent<RectTransform>();
@@ -151,7 +162,7 @@ public class Player_Control : MonoBehaviour
     private void Start()
     {
         CameraObj.transform.rotation = Quaternion.identity;
-        if (GlobalValues.isNew == false)
+        if (!noMasterController && GlobalValues.isNew == false)
         {
             CameraObj.GetComponent<Player_MouseLook>().rotation = new Vector3(0, SaveSystem.instance.playData.angle, 0);
         }
@@ -168,7 +179,8 @@ public class Player_Control : MonoBehaviour
             if (IsNoClip == false)
             {
                 ACT_Effects();
-                ACT_Blinking();
+                if (!noMasterController)
+                    ACT_Blinking();
                 ACT_Buttons();
                 if (!Freeze)
                 {
@@ -238,7 +250,7 @@ public class Player_Control : MonoBehaviour
         if (Health <= 30)
             Crouch = true;
 
-        isRunning = (Input.GetButton("Run") && !Crouch && RunningTimer > 0.2f && !GameController.instance.isPocket);
+        isRunning = (Input.GetButton("Run") && !Crouch && RunningTimer > 0.2f && (!noMasterController && !GameController.instance.isPocket));
 
         speed = Basespeed;
         if (Crouch)
@@ -247,7 +259,7 @@ public class Player_Control : MonoBehaviour
         if (isRunning)
             speed = runSpeed;
 
-        if (GameController.instance.isPocket)
+        if (!noMasterController && GameController.instance.isPocket)
         {
             speed = crouchspeed+0.5f;
         }
@@ -335,56 +347,58 @@ public class Player_Control : MonoBehaviour
     {
         if (!cameraNextFrame)
         {
-            int blinkPercent = ((int)Mathf.Ceil((BlinkingTimer / (BlinkingTimerBase / 100)) / 5));
-
-            blinkbar.rectTransform.sizeDelta = new Vector2(blinkPercent * 8, 14);
-
-            int runPercent = ((int)Mathf.Floor((RunningTimer / (RunningTimerBase / 100)) / 5));
-
-            runbar.rectTransform.sizeDelta = new Vector2(runPercent * 8, 14);
-
-            if (InterHold != null)
+            if (!noMasterController)
             {
-                hand.SetActive(true);
-                Vector3 screen = PlayerCam.WorldToScreenPoint(InterHold.transform.position);
+                int blinkPercent = ((int)Mathf.Ceil((BlinkingTimer / (BlinkingTimerBase / 100)) / 5));
 
-                Vector3 heading = InterHold.transform.position - CameraObj.transform.position;
-                if (Vector3.Dot(CameraObj.transform.forward, heading) < 0)
+                blinkbar.rectTransform.sizeDelta = new Vector2(blinkPercent * 8, 14);
+
+                int runPercent = ((int)Mathf.Floor((RunningTimer / (RunningTimerBase / 100)) / 5));
+
+                runbar.rectTransform.sizeDelta = new Vector2(runPercent * 8, 14);
+
+                if (InterHold != null)
                 {
-                    screen.y = 0f;
+                    hand.SetActive(true);
+                    Vector3 screen = PlayerCam.WorldToScreenPoint(InterHold.transform.position);
+
+                    Vector3 heading = InterHold.transform.position - CameraObj.transform.position;
+                    if (Vector3.Dot(CameraObj.transform.forward, heading) < 0)
+                    {
+                        screen.y = 0f;
+                    }
+
+                    hand.transform.position = screen;
                 }
+                else
+                    hand.SetActive(false);
 
-                hand.transform.position = screen;
-            }
-            else
-                hand.SetActive(false);
+                Vector3 pos = hand_rect.localPosition;
 
-            Vector3 pos = hand_rect.localPosition;
+                Vector3 minPosition = hud_rect.rect.min - hand_rect.rect.min;
+                Vector3 maxPosition = hud_rect.rect.max - hand_rect.rect.max;
 
-            Vector3 minPosition = hud_rect.rect.min - hand_rect.rect.min;
-            Vector3 maxPosition = hud_rect.rect.max - hand_rect.rect.max;
+                pos.x = Mathf.Clamp(hand_rect.localPosition.x, minPosition.x, maxPosition.x);
+                pos.y = Mathf.Clamp(hand_rect.localPosition.y, minPosition.y, maxPosition.y);
 
-            pos.x = Mathf.Clamp(hand_rect.localPosition.x, minPosition.x, maxPosition.x);
-            pos.y = Mathf.Clamp(hand_rect.localPosition.y, minPosition.y, maxPosition.y);
+                hand_rect.localPosition = pos;
 
-            hand_rect.localPosition = pos;
-
-            if (Input.GetButtonDown("Unequip"))
-            {
-                if (equipment[(int)bodyPart.Hand] != null)
+                if (Input.GetButtonDown("Unequip"))
                 {
-                    ACT_UnEquip(bodyPart.Hand);
-                    return;
-                }
-                if (equipment[(int)bodyPart.Head] != null)
-                {
-                    ACT_UnEquip(bodyPart.Head);
-                    return;
-                }
+                    if (equipment[(int)bodyPart.Hand] != null)
+                    {
+                        ACT_UnEquip(bodyPart.Hand);
+                        return;
+                    }
+                    if (equipment[(int)bodyPart.Head] != null)
+                    {
+                        ACT_UnEquip(bodyPart.Head);
+                        return;
+                    }
 
+                }
             }
         }
-
 
     }
 
@@ -728,7 +742,7 @@ public class Player_Control : MonoBehaviour
 
     public void FakeDeath(int cause)
     {
-        if (isGameplay && !godmode)
+        if (isGameplay && !godmode && !noMasterController)
         {
 
             GameController.instance.FakeDeath();

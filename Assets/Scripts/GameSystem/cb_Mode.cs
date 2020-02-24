@@ -34,7 +34,7 @@ public class cb_Mode : MonoBehaviour
                 GameController.instance.globalFloats[0] = Random.Range(840, 1050); //LARRY TIMER
                 Vector3 newpos = GameController.instance.player.transform.position;
                 newpos.y -= 1f;
-                GameController.instance.npcTable[(int)npc.scp106].Spawn(true, newpos);
+                GameController.instance.npcController.mainList[(int)npc.scp106].Spawn(true, newpos);
             }
 
             if (GameController.instance.globalFloats[1] < 0 && !ambiancechanged)

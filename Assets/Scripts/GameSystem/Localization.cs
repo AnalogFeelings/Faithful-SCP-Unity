@@ -76,19 +76,21 @@ public static class Localization
 
     static public void SetLanguage(int lang)
     {
+        langCode = "EN";
+
         if (lang == -1)
             lang = (int)Application.systemLanguage;
 
         defStrings = new Dictionary<string, Dictionary<string, string>>();
         localStrings = new Dictionary<string, Dictionary<string, string>>();
 
-        defStrings.Add("uiStrings", uiStrings_EN);
-        defStrings.Add("itemStrings", itemStrings_EN);
-        defStrings.Add("charaStrings", charaStrings_EN);
-        defStrings.Add("playStrings", playStrings_EN);
-        defStrings.Add("loadStrings", loadStrings_EN);
-        defStrings.Add("deathStrings", deathStrings_EN);
-        defStrings.Add("tutoStrings", tutoStrings_EN);
+        defStrings.Add("uiStrings", GetTable("uiStrings"));
+        defStrings.Add("itemStrings", GetTable("itemStrings"));
+        defStrings.Add("charaStrings", GetTable("charaStrings"));
+        defStrings.Add("playStrings", GetTable("playStrings"));
+        defStrings.Add("loadStrings", GetTable("loadStrings"));
+        defStrings.Add("deathStrings", GetTable("deathStrings"));
+        defStrings.Add("tutoStrings", GetTable("tutoStrings"));
         defSub = GetSubtitles();
 
         if (langs.ContainsKey(lang))
@@ -111,7 +113,9 @@ public static class Localization
             localStrings.Add("tutoStrings", new Dictionary<string, string>());
         }
 
-        localSub = new Dictionary<string, subtitleMeta>();
+        localSub = new Dictionary<string, subtitleMeta>();//GetSubtitles();
+        AddMissing();
+        
     }
 
 
@@ -249,6 +253,43 @@ public static class Localization
 
             SaveTable(table.Key, langCode, currTable);
         }
+
+        Debug.Log("Subs");
+
+        Dictionary<string, subtitleMeta> currSubs = new Dictionary<string, subtitleMeta>();
+
+        if (!File.Exists(Path.Combine(folderPath, langCode, "sceneStrings" + ".subs")))
+        {
+            Dictionary<string, string> oldSubs = oldStrings[langCode];
+            Debug.Log("Tabla no existe, agregando todos los valores");
+            foreach (var value in defSub)
+            {
+                var val = value.Value;
+                if (oldSubs.ContainsKey(value.Key))
+                {
+                    val.subtitle = oldSubs[value.Key];
+                }
+                else
+                    val.subtitle = "MISSING SUBTITLE";
+                currSubs.Add(value.Key, val);
+            }
+        }
+        else
+        {
+            Debug.Log("Tabla si existe, examinando paso a paso");
+            currSubs = localSub;
+            foreach (var value in defSub)
+            {
+                if (!localSub.ContainsKey(value.Key))
+                {
+                    Debug.Log("Subtitulo faltante en " + value.Key);
+                    currSubs.Add(value.Key, value.Value);
+                }
+            }
+        }
+
+        SaveSub("sceneStrings", langCode, currSubs);
+
     }
 
     static Dictionary<string, string> GetTable(string FileName)
@@ -347,6 +388,357 @@ public static class Localization
     /// <summary>
     /// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// </summary>
+    /// 
+
+    public static Dictionary<string, Dictionary<string, string>> oldStrings = new Dictionary<string, Dictionary<string, string>>()
+    {
+        {"ES", new Dictionary<string, string>() {
+            {"BeforeDoorOpen", "<b>{0}</b> : Control, aqui el Agent Ulgrin. Solicito apertura de la celda 3-11."},
+            {"ExitCell", "<b>{0}</b> : Hey, tenemos trabajo para ti. Sal de la celda"},
+            {"ExitCellRefuse1", "<b>{0}</b> : Tienes retraso? Dije que salgas de la celda. Si no lo haces te sacare a la fuerza"},
+            {"ExitCellRefuse2", "<b>{0}</b> : Amigo no tengo todo el dia. Intento ser amable al respecto, pero si no sales, te sacare a la fuerza."},
+            {"CellGas1", "<b>{0}</b> : Huh, eres el sujeto de pruebas mas tonto que he conocido. Cierren las puertas y abran el gas nocivo."},
+            {"CellGas2", "<b>{0}</b> : Huh, Estoy decepcionado de que no pelearas mas. Tenia tantas ganas de golpearte la cara."},
+            {"EscortRun", "<b>{0}</b> : ¡Oye, estupido! Camino equivocado, es por aca!"},
+            {"EscortRefuse1", "<b>{0}</b> : ¡Rapido, te estan esperando!"},
+            {"EscortRefuse2", "<b>{0}</b> : Mira, yo ya odio mi trabajo. No me lo hagas tan dificil"},
+            {"EscortPissedOff1", "<b>{0}</b> : No estoy de humor para esto, No tengo problema en poner una bala en tu cabeza si no empiezas a coperar."},
+            {"EscortPissedOff2", "<b>{0}</b> : No estoy de humor para esto, No tengo problema en poner una bala en tu cabeza si no empiezas a coperar."},
+            {"EscortKill1", "<b>{0}</b> : ¿Sabes que? Como quieras, usaremos a alguien mas"},
+            {"EscortKill2", "<b>{0}</b> : Bien, como quieras traeremos a alguien mas."},
+
+
+            {"Intro_Convo1_1", "<b>{0}</b> : Y, uh, ¿Como va todo?"},
+            {"Intro_Convo1_2", "<b>{0}</b> : Eh, ¿M-me hablas a mi?"},
+            {"Intro_Convo1_3", "<b>{0}</b> : Pues si, ¿Quien creeias? ¿Este tonto con la cara golpeable? Claro que te hablo a ti."},
+            {"Intro_Convo1_4", "<b>{0}</b> : Oh, solo estoy algo sorprendido. Creo que nunca me habias hablado."},
+            {"Intro_Convo1_5", "<b>{0}</b> : Claro, es tu primer dia de trabajo."},
+            {"Intro_Convo1_6", "<b>{0}</b> : Nos asignaron hace 5 meses."},
+            {"Intro_Convo1_7", "<b>{0}</b> : ¿En serio? Vaya. Que extraño."},
+
+            {"Intro_Convo2_1", "<b>{0}</b> : ¿Has visto alguna buena pelicula?"},
+            {"Intro_Convo2_2", "<b>{0}</b> : No soy muy de peliuclas, soy mas de libros."},
+            {"Intro_Convo2_3", "<b>{0}</b> : ¿Si? ¿Que clase de libros?"},
+            {"Intro_Convo2_4", "<b>{0}</b> : Horror, ciencia ficcion, por ahi."},
+            {"Intro_Convo2_5", "<b>{0}</b> : Bromeas."},
+            {"Intro_Convo2_6", "<b>{0}</b> : ¿Que tiene?"},
+            {"Intro_Convo2_7", "<b>{0}</b> : Todo tu trabajo es de horror y ciencia, pero, sin la parte de la ficcion."},
+            {"Intro_Convo2_8", "<b>{0}</b> : Bueno, tenia la idea de escribir un libro sobre las cosas qu-"},
+            {"Intro_Convo2_9", "<b>{0}</b> : Mira, no te ofendas, pero no me interesa mucho."},
+
+            {"Intro_Convo3_1", "<b>{0}</b> : Vaya, ya hace hambre. ¿Hoy hay pizza en la cafeteria, cierto?"},
+            {"Intro_Convo3_2", "<b>{0}</b> : Eh, creo que hoy es ensalada de atun"},
+            {"Intro_Convo3_3", "<b>{0}</b> : Oh, maldita sea. Mi dia esta arruinado. La unica razon por la que sigo trabajando aqui es por la pizza. No se que tiene, pero es deliciosa. Por otro lado, la ensalada de atun es una abominacion asquerosa que deberia encerrarse junto a estas bestias."},
+            {"Intro_Convo3_4", "<b>{0}</b> : Uh, okay.."},
+
+            {"Intro_Convo4_1", "<b>{0}</b> : Dejame adivinar, ¿No tienes novia?"},
+            {"Intro_Convo4_2", "<b>{0}</b> : Uh, a-are you talking to me?"},
+            {"Intro_Convo4_3", "<b>{0}</b> : Course I'm talking to you."},
+            {"Intro_Convo4_4", "<b>{0}</b> : ¿..Tan obvio es?"},
+            {"Intro_Convo4_5", "<b>{0}</b> : Bueno, no leo mentes, ya que si no estaria encerrado aqui, asi que, si, es bastante obvio"},
+            {"Intro_Convo4_6", "<b>{0}</b> : ¿Bueno, como puedo tener novia con un trabajo asi? No puedo hablarle sobre mi dia ni nada"},
+            {"Intro_Convo4_7", "<b>{0}</b> : Pues mientele. Dile que trabajas en una cafeteria o algo asi"},
+            {"Intro_Convo4_8", "<b>{0}</b> : Bueno, pero... ¿Que tal si olvido lavar mis manos aqui, y al volver a casa las tenga repletas de sangre? ¿Que le digo entonces?"},
+            {"Intro_Convo4_9", "<b>{0}</b> : ¡Yo no se!  Dile que es, que es... Ketchup"},
+            {"Intro_Convo4_10", "<b>{0}</b> : ¿Ketchup? ¿Porque estaria usando Ketchup en una cafeteria?"},
+            {"Intro_Convo4_11", "<b>{0}</b> : Solo olvidalo"},
+
+            {"Intro_Convo5_1", "<b>{0}</b> : ¿Has visto alguna buena pelicula?"},
+            {"Intro_Convo5_2", "<b>{0}</b> : No soy mucho de peliculas."},
+            {"Intro_Convo5_3", "<b>{0}</b> : Oh, okey. ¿Que tal videojuegos? Eso me hace pensar, alguien deberia hacer un videojuego sobre los monstruos que tenemos aqui."},
+            {"Intro_Convo5_4", "<b>{0}</b> : ¿Por que?"},
+            {"Intro_Convo5_5", "<b>{0}</b> : No lo se, me parece una idea interesante"},
+            {"Intro_Convo5_6", "<b>{0}</b> : ...Bueno, tampoco juego videojuegos"},
+
+
+
+            {"Escort1", "<b>{0}</b> : Solo sigueme, oh, y, tenemos autorizacion para matar cualquier sujeto de pruebas, asi que no intentes nada estupido."},
+            {"Escort2", "<b>{0}</b> : Solo sigueme, oh, y, tenemos autorizacion para matar cualquier sujeto de pruebas, asi que no intentes nada estupido."},
+            {"EscortDone1", "<b>{0}</b> : Bueno, aqui estamos. Entra y haz caso a lo que te digan, y seguramente estaras bien"},
+            {"EscortDone2", "<b>{0}</b> : Bien, aqui es. La verdad es que tenia muchas ganas de golpearte, pero bueno."},
+            {"EscortDone3", "<b>{0}</b> : Bien, aqui es. La verdad es que me moria de ganas de golpearte, pero, ya que"},
+            {"EscortDone4", "<b>{0}</b> : Bueno, aqui estamos. Entra y haz caso a lo que te digan, y puede que estes bien, O puede que no. Me da lo mismo"},
+            {"EscortDone5", "<b>{0}</b> : Como sea, no perdamos mas tiempo. Te esperan en la camara"},
+
+
+            {"EnterChamber","<b>{0}</b> : Atencion Personal Clase-D, entren a la camara de contencion" },
+            {"Approach173","<b>{0}</b> : Acerquense al <color=yellow>SCP-173</color> para las pruebas" },
+            { "Problem","<b>{0}</b> : Uh, parece haber un problema con el control de la puerta, no responden a nuestros intentos de cerrarla, asi que, Uhm, No rompan el contacto visual con el SCP-173 y esperen ma-" },
+
+            { "Escape1","<b>{0}</b> : Creo que la salida mas rapida, es por el ala sur-este, ¡Sigueme!" },
+            { "Escape2","<b>{0}</b> : ¿Escuchaste eso? Ojala no sea -" },
+
+
+
+
+
+
+            {"scene_BreachStart_1", "<b>{0}</b> : ¡Agente, detras de ti!"},
+            {"scene_BreachStart_2", "<b>{0}</b> : ¡Mierda!"},
+            {"scene_BreachStart_3", "<b>{0}</b> : ¡Manten la mirada!"},
+            {"scene_BreachStart_4", "<b>{0}</b> : ¡Voy a parpadear, no lo pierdas de vista"},
+            {"scene_BreachStart_5", "<b>{0}</b> : ¡Entendido!"},
+
+            {"scene_012_1", "<i>Debo... Terminarlo...</i>"},
+            {"scene_012_2", "<i>¿Quieres hacerlo..? Yo no... creo... Que pueda...</i>"},
+            {"scene_012_3", "<i>Yo... Yo... debo... hacerlo.</i>"},
+            {"scene_012_4", "<i>¡Y-Yo... no... tengo... o-opcion!</i>"},
+            {"scene_012_5", "<i>Globos... Esto....Esto no...tiene sentido!</i>"},
+            {"scene_012_6", "<i>No... esto... esto es... impossible!</i>"},
+            {"scene_012_7", "<i>Nadie puede... ¡Nadie puede completarla!</i>"},
+        }
+    },
+        {"DE", new Dictionary<string, string>() {
+            {"BeforeDoorOpen", "<b>{0}</b> : Kontrolle, hier spricht Agent Ulgrin. Ich ersuche das Öffnen der Zelle 3-11."},
+            {"ExitCell", "<b>{0}</b> : Hey, die haben ein bisschen Arbeit für dich. Tu mir 'nen Gefallen und tret aus deiner Zelle."},
+            {"ExitCellRefuse1", "<b>{0}</b> : Bist du irgendwie dumm oder so? Ich habe gesagt tret aus deiner Zelle. Wenn du nichts aus deiner Zelle tritts kriegst du auf's Maul."},
+            {"ExitCellRefuse2", "<b>{0}</b> : Komm schon Kumpel, wir haben nicht den ganzen Tag. Ich versuche hier höflich zu sein. Wenn du nichts aus deiner Zelle tritts kriegst du auf's Maul."},
+            {"CellGas1", "<b>{0}</b> : Huh, du musst echt das dümmste Testsubjekt sein das wir jemals hatten. Auch egal, schließt die Tür und öffnet das Gasventil."},
+            {"CellGas2", "<b>{0}</b> : Huh, ich bin irgendwie enttäuscht, dass du keinen Stress gemacht hast. Ich hatte gehofft ich könnte dir ins Gesicht schlagen."},
+            {"EscortRun", "<b>{0}</b> : Hey, Spast! Das ist der falsche Weg. Komm augenblicklich hier her!"},
+            {"EscortRefuse1", "<b>{0}</b> : Beeil dich! Die warten auf dich."},
+            {"EscortRefuse2", "<b>{0}</b> : Komm schon Kumpel, ich hasse meinen Job jetzt schon. Wieso machst du ihn mir noch schwerer?"},
+            {"EscortPissedOff1", "<b>{0}</b> : Ich hab keinen Bock auf diesen Scheiß, ich habe absolut kein Problem damit dir 'ne Kugel in den Kopf zu jagen wenn du nicht anfängst mitzuarbeiten."},
+            {"EscortPissedOff2", "<b>{0}</b> : Ich hab keinen Bock auf diesen Scheiß, ich habe absolut kein Problem damit dir 'ne Kugel in den Kopf zu jagen wenn du nicht anfängst mitzuarbeiten."},
+            {"EscortKill1", "<b>{0}</b> : Okay, weißt du was? Dann sei so. Wir werden uns einfach jemand anderen holen."},
+            {"EscortKill2", "<b>{0}</b> : Okay, weißt du was? Dann sei so. Wir werden uns einfach jemand anderen holen."},
+
+
+            {"Intro_Convo1_1", "<b>{0}</b> : Also, uh, wie geht's?"},
+            {"Intro_Convo1_2", "<b>{0}</b> : Uh, r-redest du mit mir?"},
+            {"Intro_Convo1_3", "<b>{0}</b> : Nunja, mit wem denkst du rede ich, dem D-Klasse Fuzzi hier? Klar red ich mit dir."},
+            {"Intro_Convo1_4", "<b>{0}</b> : Oh, ich bin nur ein wenig überrascht. Ich denke, dass ist das erste Mal, das du mit mir redest."},
+            {"Intro_Convo1_5", "<b>{0}</b> : Naja, es ist dein erster Arbeitstag hier."},
+            {"Intro_Convo1_6", "<b>{0}</b> : Uh, eigentlich arbeiten wir seit fünf Monaten zusammen."},
+            {"Intro_Convo1_7", "<b>{0}</b> : Wirklich? Wow. Das ist seltsam."},
+
+            {"Intro_Convo2_1", "<b>{0}</b> : Uh, hast du in letzter Zeit irgendwelche guten Filme gesehen?"},
+            {"Intro_Convo2_2", "<b>{0}</b> : Uh, ich schaue nicht wirklich viele Filme, ich lese Bücher."},
+            {"Intro_Convo2_3", "<b>{0}</b> : Ja? Was für Bücher?"},
+            {"Intro_Convo2_4", "<b>{0}</b> : Uh, Horror, Science-Fiction, sowas halt."},
+            {"Intro_Convo2_5", "<b>{0}</b> : Du machst Witze."},
+            {"Intro_Convo2_6", "<b>{0}</b> : Wie?"},
+            {"Intro_Convo2_7", "<b>{0}</b> : Dein ganzer Job dreht sich um Horror und Science-Fiction, außer, dass es tatsächlich keine Fiktion ist."},
+            {"Intro_Convo2_8", "<b>{0}</b> : Also, eigentlich plane ich ein Buch über meine Erfahr-"},
+            {"Intro_Convo2_9", "<b>{0}</b> : Ok, nimm's mir nicht übel, aber ich hab jetzt schon jegliches Interesse an dem verloren was du sagen wolltest."},
+
+            {"Intro_Convo3_1", "<b>{0}</b> : Mann, bin ich hungrig. Hey, heute ist Pizzatag in der Cafeteria, stimmt's?"},
+            {"Intro_Convo3_2", "<b>{0}</b> : Uh, e-eigentlich ist es Thunfischauflauf, denke ich."},
+            {"Intro_Convo3_3", "<b>{0}</b> : Oh, Gott verdammt. Also mein Tag ist ruiniert. Der einzige Grund wieso ich immer noch hier her komme ist wegen der Pizza. Ich weiß nicht was es mit dieser Pizza auf sich hat, aber sie ist echt lecker. Thunfischauflauf andererseits ist eine grausame Abscheulichkeit die mit dem Rest von diesen Missgeburten hier eingesperrt sein sollte."},
+            {"Intro_Convo3_4", "<b>{0}</b> : Uh, okay.."},
+
+            {"Intro_Convo4_1", "<b>{0}</b> : Lass mich raten, du hast keine Freundin, oder?"},
+            {"Intro_Convo4_2", "<b>{0}</b> : Uh, s-sprichst du mit mir?"},
+            {"Intro_Convo4_3", "<b>{0}</b> : Klar sprech ich mit dir."},
+            {"Intro_Convo4_4", "<b>{0}</b> : Ist es so offensichtlich?"},
+            {"Intro_Convo4_5", "<b>{0}</b> : Also ich bin ja kein Gedankenleser, sonst wäre ich auch hier eingesperrt, also ja, es ist ziemlich offensichtlich."},
+            {"Intro_Convo4_6", "<b>{0}</b> : Wie soll ich denn mit diesem Job eine Freundin finden? Ich meine, ich kann ihr davon ja nichts erzählen, also was soll ich tun?"},
+            {"Intro_Convo4_7", "<b>{0}</b> : Lüg sie doch einfach an. Sag ihr du arbeitest in irgendeinem Café oder so."},
+            {"Intro_Convo4_8", "<b>{0}</b> : Aber, was wenn ich aus Versehen vergesse hier meine Hände zu waschen und mit Blut an ihnen nach Hause komme? Was sollte ich ihr dann sagen?"},
+            {"Intro_Convo4_9", "<b>{0}</b> : Uh, keine Ahnung, sag einfach es wäre, uh... Ketchup oder so."},
+            {"Intro_Convo4_10", "<b>{0}</b> : Ketchup? Wieso sollte ich Ketchup an meinen Händen haben wenn ich in einem Café arbeite?"},
+            {"Intro_Convo4_11", "<b>{0}</b> : Ugh, v-vergiss es einfach."},
+
+            {"Intro_Convo5_1", "<b>{0}</b> : Uh, hast du in letzter Zeit irgendwelche guten Filme gesehen?"},
+            {"Intro_Convo5_2", "<b>{0}</b> : Uh, ich schaue nicht wirklich viele Filme."},
+            {"Intro_Convo5_3", "<b>{0}</b> : Oh ok. Wie sieht es mit Videospielen aus? Weißt du was, das gibt mir eine Idee, jemand sollte ein Videospiel über diesen Ort machen."},
+            {"Intro_Convo5_4", "<b>{0}</b> : Wieso sollte das irgendjemand tun?"},
+            {"Intro_Convo5_5", "<b>{0}</b> : Ich weiß nicht, ich dachte einfach es wäre eine coole Idee."},
+            {"Intro_Convo5_6", "<b>{0}</b> : Nun, ich spiele auch keine Videospiele."},
+
+
+
+            {"Escort1", "<b>{0}</b> : Folge mir. Ach und übrigens, wir sind dazu autorisiert unfolgsame Testsubjekte zu neutralisieren, also versuch besser nichts Dummes."},
+            {"Escort2", "<b>{0}</b> : Folge mir. Ach und übrigens, wir sind dazu autorisiert unfolgsame Testsubjekte zu neutralisieren, also versuch besser nichts Dummes."},
+            {"EscortDone1", "<b>{0}</b> : Also, hier sind wir. Geh einfach da rein und befolge alle Anweisungen, dann wirst du uh, wahrscheinlich lebend da rauskommen."},
+            {"EscortDone2", "<b>{0}</b> : Also, hier sind wir. Ich bin immer noch enttäuscht, dass ich dir nicht Eine reinhauen konnte, aber egal."},
+            {"EscortDone3", "<b>{0}</b> : Also, hier sind wir. Ich bin immer noch enttäuscht, dass ich dir nicht ins Gesicht schlagen durfte, aber *seufz* egal."},
+            {"EscortDone4", "<b>{0}</b> : Geh einfach da rein und befolge alle Anweisungen, dann wirst du uh, wahrscheinlich lebend da rauskommen. Vielleicht aber auch nicht, ist mir eigentlich auch egal."},
+            {"EscortDone5", "<b>{0}</b> : Naja, jedenfalls, lass uns keine Zeit mehr verschwenden. Die Anderen warten auf dich in der Kammer."},
+
+
+            {"EnterChamber","<b>{0}</b> : Achtung an alle D-Klasse Mitarbeiter, bitte betreten Sie die Isolierungszelle." },
+            {"Approach173","<b>{0}</b> : Bitte nähern sie sich <color=yellow>SCP-173</color> für einen Versuch." },
+            { "Problem","<b>{0}</b> : Uh, es scheint ein Problem mit dem Türenkontrollsystem zu geben, die Türen reagieren nicht auf unsere Versuche sie zu schließen, also uhm, bitte halten sie mit Blickkontakt mit SCP-173 und-" },
+            { "Refuse1", "<b>{0}</b> : Subjekt D-9341, betreten sie die Isolierungszelle oder sie werden neutralisiert."  },
+            { "Refuse2", "<b>{0}</b> : Dies ist ihre letzte Warnung. Sie haben fünf Sekunden um den Anweisungen zu folgen." },
+            { "Refuse3", "<b>{0}</b> : Subjekt D-9341 zum Abschuss freigegeben. Feuer frei." },
+
+
+            { "Escape1","<b>{0}</b> : Ich denke der kürzeste Weg nach draußen ist durch den Südost-Flügel, folgen Sie mir!" },
+            { "Escape2","<b>{0}</b> : Haben Sie das gehört? Ich hoffe es war nicht-" },
+
+
+
+
+
+
+            {"scene_BreachStart_1", "<b>{0}</b> : Agent, hinter dir!"},
+            {"scene_BreachStart_2", "<b>{0}</b> : Oh, Scheiße!"},
+            {"scene_BreachStart_3", "<b>{0}</b> : Behalt ihn im Auge!"},
+            {"scene_BreachStart_4", "<b>{0}</b> : Okay, ich werde blinzeln, schau ihn einfach weiter an"},
+            {"scene_BreachStart_5", "<b>{0}</b> : Okay, Alles klar"},
+
+
+            {"scene_012_1", "<i>Ich muss... Ich muss es fertig stellen...</i>"},
+            {"scene_012_2", "<i>Möchtest du das wirklich tun... Ich schaffe... das... nicht.</i>"},
+            {"scene_012_3", "<i>Ich... Ich... muss... es schaffen.</i>"},
+            {"scene_012_4", "<i>I-Ich... habe... keine... W-Wahl!</i>"},
+            {"scene_012_5", "<i>Luftballons... Das....das macht...keinen Sinn!</i>"},
+            {"scene_012_6", "<i>Nein... das... das kann... nicht sein!</i>"},
+            {"scene_012_7", "<i>Es ist... Es ist unmöglich!</i>"},
+
+            { "kneel106", "KNIE NIEDER"},
+        }
+    },
+    {"CH", new Dictionary<string, string>() {
+            {"BeforeDoorOpen", "<b>{0}</b> : 管理中心，我是尤格林探员。我需要打开3-11号房间。"},
+            {"ExitCell", "<b>{0}</b> : 嘿，他们为你找了些工作。帮个忙，离开你的房间"},
+            {"ExitCellRefuse1", "<b>{0}</b> : 你是傻瓜还是怎么了？我说离开你的房间。如果你不离开我就会踢你的屁股"},
+            {"ExitCellRefuse2", "<b>{0}</b> : 听着，伙计，我不是一整天都有时间。我想礼貌一点。如果你不离开房间，我就踢你屁股。"},
+            {"CellGas1", "<b>{0}</b> : 啊，你是这里有史以来最笨的测试对象了。哦，好吧，关上门，打开气阀。"},
+            {"CellGas2", "<b>{0}</b> : 啊，我真的有点失望，你没被打。我还期待着打你的脸。"},
+            {"EscortRun", "<b>{0}</b> : 嘿，笨蛋！你走错了路。马上过来！"},
+            {"EscortRefuse1", "<b>{0}</b> : 快点！他们在等你。"},
+            {"EscortRefuse2", "<b>{0}</b> : 听着，伙计，我已经讨厌我的工作了。你为什么让我更难做？"},
+            {"EscortPissedOff1", "<b>{0}</b> : 我没心情和你胡扯，如果你不合作的话，我会对着你的脑子开一枪。"},
+            {"EscortPissedOff2", "<b>{0}</b> : 我没心情和你胡扯，如果你不合作的话，我会对着你的脑子开一枪。"},
+            {"EscortKill1", "<b>{0}</b> : 好吧，听我说。好吧，就这样吧。我们得去找其他人了"},
+            {"EscortKill2", "<b>{0}</b> : 好吧，就这样。那我们就去找别人吧。"},
+
+
+            {"Intro_Convo1_1", "<b>{0}</b> : 那么，呃，最近怎么样？"},
+            {"Intro_Convo1_2", "<b>{0}</b> : 呃，你-你在和我说话吗？"},
+            {"Intro_Convo1_3", "<b>{0}</b> : 嗯，是的，你觉得我在跟谁说话，这个长着要挨打的脸的家伙？我当然在和你说话。"},
+            {"Intro_Convo1_4", "<b>{0}</b> : 哦，我只是有点惊讶。我想这是你第一次和我说话。"},
+            {"Intro_Convo1_5", "<b>{0}</b> : 是的，这是你在这里工作的第一天。"},
+            {"Intro_Convo1_6", "<b>{0}</b> : 实际上，我们已经在一起工作了5个月了。"},
+            {"Intro_Convo1_7", "<b>{0}</b> : 真的吗？好奇怪啊。"},
+
+            {"Intro_Convo2_1", "<b>{0}</b> : 呃，你最近看了什么好电影吗？"},
+            {"Intro_Convo2_2", "<b>{0}</b> : 呃，我真的不看电影。我主要看书。"},
+            {"Intro_Convo2_3", "<b>{0}</b> : 是吗？那看的是什么书？"},
+            {"Intro_Convo2_4", "<b>{0}</b> : 呃，恐怖小说，科幻小说之类的？"},
+            {"Intro_Convo2_5", "<b>{0}</b> : 你在开玩笑吧。"},
+            {"Intro_Convo2_6", "<b>{0}</b> : 什么？"},
+            {"Intro_Convo2_7", "<b>{0}</b> : 你的整个工作都围绕着恐怖和科幻小说展开，其实，你知道，这不是虚构的。"},
+            {"Intro_Convo2_8", "<b>{0}</b> : 实际上，我正计划写一本关于我的经验的书-"},
+            {"Intro_Convo2_9", "<b>{0}</b> : 是的，听着，没有冒犯的意思，但我已经对你所说的失去了兴趣。"},
+
+            {"Intro_Convo3_1", "<b>{0}</b> : 伙计，我饿了。嘿，今天的披萨日在自助餐厅，对吧？"},
+            {"Intro_Convo3_2", "<b>{0}</b> : 嗯，事实上，我想是金枪鱼砂锅。"},
+            {"Intro_Convo3_3", "<b>{0}</b> : 哦，天哪。好吧，我的一天被毁了。我来这里的唯一原因是吃披萨。我不知道那比萨为什么那么美味。另一方面，金枪鱼砂锅是一种恶心的可憎的食物，它应该和其他的怪物一起关在这里。"},
+            {"Intro_Convo3_4", "<b>{0}</b> : 好吧.."},
+
+            {"Intro_Convo4_1", "<b>{0}</b> : 让我猜猜。你没有女朋友，对吧？"},
+            {"Intro_Convo4_2", "<b>{0}</b> : 呃，你-你在和我说话吗？"},
+            {"Intro_Convo4_3", "<b>{0}</b> : 我当然在和你讲话。"},
+            {"Intro_Convo4_4", "<b>{0}</b> : 那很明显吗？"},
+            {"Intro_Convo4_5", "<b>{0}</b> : 嗯哼，我绝对不是一个读心术的人，否则我会被关在这个地方，所以，是的，我会说这很明显。"},
+            {"Intro_Convo4_6", "<b>{0}</b> : 好吧，当我有这份工作的时候，我该怎么找女朋友呢？我是说，我不能告诉她，那我该怎么办？"},
+            {"Intro_Convo4_7", "<b>{0}</b> : 对她撒谎。告诉她你在咖啡店或别的什么地方工作。"},
+            {"Intro_Convo4_8", "<b>{0}</b> : 好吧，如果我在工作时不小心忘了洗手，然后我回到家，手上沾满了血怎么办？那我对她说什么？"},
+            {"Intro_Convo4_9", "<b>{0}</b> : 呃，我不知道，告诉她，呃…番茄酱。"},
+            {"Intro_Convo4_10", "<b>{0}</b> : 番茄酱？如果我在咖啡店工作，为什么我会手上会有番茄酱？"},
+            {"Intro_Convo4_11", "<b>{0}</b> : 呃，忘-忘了它吧。"},
+
+            {"Intro_Convo5_1", "<b>{0}</b> : 呃，你最近看了什么好电影吗？"},
+            {"Intro_Convo5_2", "<b>{0}</b> : 呃，我真的不看电影。"},
+            {"Intro_Convo5_3", "<b>{0}</b> : 哦，好的。那么电子游戏呢？你知道这提醒了我，有人应该在这个地方做一个电子游戏。"},
+            {"Intro_Convo5_4", "<b>{0}</b> : 为什么会有人这么做？"},
+            {"Intro_Convo5_5", "<b>{0}</b> : 我不知道，只是觉得这个主意很酷。"},
+            {"Intro_Convo5_6", "<b>{0}</b> : 嗯，我也不玩电子游戏。"},
+
+
+
+            {"Escort1", "<b>{0}</b> : 跟着我。哦，顺便说一下，我们可以杀死任何不听话的测试对象，所以不要尝试任何愚蠢的事情。"},
+            {"Escort2", "<b>{0}</b> : 跟着我。哦，顺便说一下，我们可以杀死任何不听话的测试对象，所以不要尝试任何愚蠢的事情。"},
+            {"EscortDone1", "<b>{0}</b> : 好吧，我们到了。你只要进去按照指示去做，嗯，你可能会没事的。"},
+            {"EscortDone2", "<b>{0}</b> : 好吧，我们到了。我还是很失望我没打你，但不管怎样。"},
+            {"EscortDone3", "<b>{0}</b> : 好吧，我们到了。我还是很失望没能打你的脸，但*叹气*不管怎么样。"},
+            {"EscortDone4", "<b>{0}</b> : 你只要进去按照指示去做，嗯，你可能会好起来的。或许你不会。不管怎样，我真的不在乎。"},
+            {"EscortDone5", "<b>{0}</b> : 不管怎样，我们不要再浪费时间了。他们在房间里等你。"},
+
+
+            {"EnterChamber","<b>{0}</b> : 所有D级人员注意，请进入收容室" },
+            {"Approach173","<b>{0}</b> : 请接近<color=yellow>SCP-173</color>来进行测试" },
+            { "Problem","<b>{0}</b> : 呃，看起来门控系统有点问题，我们关闭门的尝试都没有奏效，所以呃，请继续保持直视SCP-173并且-" },
+
+            { "Escape1","<b>{0}</b> : 我猜最短的出口，就是通过东南门，跟我来！" },
+            { "Escape2","<b>{0}</b> : 你听到了吗？我希望那不是-" },
+
+            { "Refuse1", "<b>{0}</b> : 项目D-9341,进入收容间或你被消灭"  },
+            { "Refuse2", "<b>{0}</b> : 这是你最后的警告。你有五秒钟的时间。" },
+            { "Refuse3", "<b>{0}</b> : 项目D-9341任务结束，随意开火" },
+
+            { "kneel106", "跪下"},
+
+
+
+
+
+
+            {"scene_BreachStart_1", "<b>{0}</b> : 特工！在你后面"},
+            {"scene_BreachStart_2", "<b>{0}</b> : 卧槽！"},
+            {"scene_BreachStart_3", "<b>{0}</b> : 盯着他！"},
+            {"scene_BreachStart_4", "<b>{0}</b> : 好了，我要眨眼了，盯着他"},
+            {"scene_BreachStart_5", "<b>{0}</b> : 好的，明白了"},
+
+
+            {"scene_012_1", "<i>我必须...我必须完成它...</i>"},
+            {"scene_012_2", "<i>你真的想这样做吗…我不...想...我能做到。</i>"},
+            {"scene_012_3", "<i>我...我...必须…做。</i>"},
+            {"scene_012_4", "<i>我-我...没...有...选-选择！</i>"},
+            {"scene_012_5", "<i>脑袋疼...这...说...不通!</i>"},
+            {"scene_012_6", "<i>不...这...这是...不可能的</i>"},
+            {"scene_012_7", "<i>这不可能...这不可能被完成</i>"},
+        }
+    },
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     //~~~~~~~~~~~~~~~~~~~~~~~~~~UI ENGLISH STRINGS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     public static Dictionary<string, string> uiStrings_EN = new Dictionary<string, string>()
     {

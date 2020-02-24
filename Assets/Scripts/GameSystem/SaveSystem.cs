@@ -29,6 +29,19 @@ public class svItem
 public class SeriVector
 {
     public float x, y, z;
+
+    public SeriVector(float _x, float _y, float _z)
+    {
+        x = _x;
+        y = _y;
+        z = _z;
+
+    }
+
+    public Vector3 toVector3()
+    {
+        return (new Vector3(x, y, z));
+    }
 }
 
 public class saveMeta
@@ -64,8 +77,8 @@ public class SaveData
     public int mapX, mapY;
     public List<svItem[]> items;
     public ItemList[] worldItems;
-    public SeriVector[] npcPos;
-    public bool[] Activenpc;
+    public NPC_Data[] npcData;
+    public NPC_Data[] mainData;
     public bool holdRoom;
     
 

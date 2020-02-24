@@ -8,7 +8,7 @@ public class EV_Intro : MonoBehaviour
     public AudioClip[] Dialogs, RefuseDiag, DI_Escort, DI_Angry1, DI_Angry2, DI_Done1, DI_Done2, FinalEmpty, ConverA, ConverB, Ambiance;
     public AudioClip Gunshot, MusIntro;
     public Transform talktome, playerPos;
-    public GameObject Guard1, Guard2, Door1, Door2, Door3, Trigger1, Trigger2, Trigger3, Trigger4, Gas1, Gas2, NextScene, Item;
+    public GameObject Guard1, Guard2, Door1, Door2, Door3, Trigger1, Trigger2, Trigger3, Trigger4, Gas1, Gas2, NextScene, Item, introZone;
     GameObject Player;
     Transform playerHead;
     EV_Puppet_Controller Guard1_con, Guard2_con;
@@ -44,6 +44,9 @@ public class EV_Intro : MonoBehaviour
             GameController.instance.doGameplay = true;
             GameController.instance.canSave = true;
             GameController.instance.CullerFlag = true;
+            Destroy(introZone);
+            if (GlobalValues.isNew)
+                GameController.instance.SetMapPos(0, 10);
             DestroyImmediate(this);
         }
 
@@ -52,6 +55,13 @@ public class EV_Intro : MonoBehaviour
         playerHead = Camera.main.transform;
         Player = GameController.instance.player;
         Timer = 5;
+
+        if (GlobalValues.mapseed.Contains("IntroConvo"))
+        {
+            AsyncScene_1();
+            Door1.GetComponent<Object_Door>().DoorSwitch();
+            ActiveTimer = false;
+        }
     }
     void Update()
     {
@@ -337,7 +347,41 @@ public class EV_Intro : MonoBehaviour
     void AsyncScene_1()
     {
         Conver = Random.Range(0, ConverA.Length);
+
+        switch(GlobalValues.mapseed)
+        {
+            case "IntroConvo1":
+                {
+                    Conver = 0;
+                    break;
+                }
+            case "IntroConvo2":
+                {
+                    Conver = 1;
+                    break;
+                }
+            case "IntroConvo3":
+                {
+                    Conver = 2;
+                    break;
+                }
+            case "IntroConvo4":
+                {
+                    Conver = 3;
+                    break;
+                }
+            case "IntroConvo5":
+                {
+                    Conver = 4;
+                    break;
+                }
+        }
+
+
         Debug.Log(Conver);
+
+
+
         Guard2_con.PlaySound(ConverB[Conver]);
         Guard1_con.PlaySound(ConverA[Conver]);
 
