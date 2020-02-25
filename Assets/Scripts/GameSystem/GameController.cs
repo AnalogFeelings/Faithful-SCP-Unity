@@ -532,10 +532,11 @@ public class GameController : MonoBehaviour
 
     public void PlayHorror(AudioClip horrorsound, Transform origin, npc who)
     {
+        Debug.Log("Playing Horror");
         Horror.PlayOneShot(horrorsound);
         if (HorrorTween != null)
             HorrorTween.Cancel();
-        HorrorTween = Tween.Value(0f, 1f, HorrorUpdate, 0.7f, 0, Tween.EaseInStrong, Tween.LoopType.None, null, () => HorrorTween = Tween.Value(1f, -0.2f, HorrorUpdate, 11.0f, 0, Tween.EaseOut));
+        HorrorTween = Tween.Value(0f, 1f, HorrorUpdate, 1f, 0, Tween.EaseInStrong, Tween.LoopType.None, null, () => HorrorTween = Tween.Value(1f, 0f, HorrorUpdate, 11.0f, 0, Tween.EaseOut), true);
         if (origin != null)
         {
             currentTarget = origin;
@@ -549,14 +550,15 @@ public class GameController : MonoBehaviour
 
     public void HorrorUpdate(float value)
     {
+        Debug.Log("Horror Update " + value);
         if (!isPocket)
         {
-            HorrorBlur.atten = 1 - (0.94f * value);
             HorrorFov.fieldOfView = 65 + (7 * value);
         }
 
         HorrorVol.weight = value;
-        depth.focusDistance.Override(Vector3.Distance(player.transform.position, currentTarget.transform.position) - 1.5f);
+        depth.focusDistance.Override(Vector3.Distance(player.transform.position, currentTarget.transform.position) - 1f);
+        Debug.Log(Vector3.Distance(player.transform.position, currentTarget.transform.position) - 1.5f);
     }
 
 

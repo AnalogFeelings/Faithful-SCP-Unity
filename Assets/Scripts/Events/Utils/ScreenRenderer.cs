@@ -82,12 +82,12 @@ public class ScreenRenderer : MonoBehaviour
     void Frame(int fh, int fv)
     {
         float uvH = hsize * fh;
-        float uvV = vsize * fv;
+        float uvV = 1-(vsize * fv);
 
-        uvs[0] = new Vector2(uvH, uvV);
-        uvs[1] = new Vector2(uvH, uvV+vsize);
-        uvs[2] = new Vector2(uvH+hsize, uvV);
-        uvs[3] = new Vector2(uvH+hsize, uvV+vsize);
+        uvs[0] = new Vector2(uvH, uvV - vsize);
+        uvs[1] = new Vector2(uvH, uvV);
+        uvs[2] = new Vector2(uvH+hsize, uvV - vsize);
+        uvs[3] = new Vector2(uvH+hsize, uvV);
 
         /*uvs[0] = new Vector2(0, 0);
         uvs[1] = new Vector2(0, 1);

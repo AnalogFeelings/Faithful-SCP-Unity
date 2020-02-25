@@ -1026,7 +1026,7 @@ namespace Pixelplacement
             {
                 StopInstanceTargetType(tween.targetInstanceID, tween.tweenType);
             }
-
+            //Debug.Log("Ejecutando Tween");
             Instance.ExecuteTween(tween);
         }
     }

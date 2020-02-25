@@ -52,12 +52,13 @@ public class Decal : MonoBehaviour
          * */
 
         float uvH = 0.33f * h;
-        float uvV = 0.25f * v;
+        float uvV = 1-(0.25f * v);
 
-        uvs[0] = new Vector2(uvH, uvV);
-        uvs[1] = new Vector2(uvH, uvV + 0.25f);
-        uvs[2] = new Vector2(uvH + 0.33f, uvV);
-        uvs[3] = new Vector2(uvH + 0.33f, uvV + 0.25f);
+
+        uvs[0] = new Vector2(uvH, uvV-0.25f);
+        uvs[1] = new Vector2(uvH, uvV );
+        uvs[2] = new Vector2(uvH + 0.33f, uvV-0.25f);
+        uvs[3] = new Vector2(uvH + 0.33f, uvV);
 
 
         mesh.uv = uvs;

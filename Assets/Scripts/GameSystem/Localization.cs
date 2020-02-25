@@ -113,9 +113,7 @@ public static class Localization
             localStrings.Add("tutoStrings", new Dictionary<string, string>());
         }
 
-        localSub = new Dictionary<string, subtitleMeta>();//GetSubtitles();
-        AddMissing();
-        
+        localSub = GetSubtitles();
     }
 
 
@@ -631,8 +629,6 @@ public static class Localization
             {"Intro_Convo3_4", "<b>{0}</b> : 好吧.."},
 
             {"Intro_Convo4_1", "<b>{0}</b> : 让我猜猜。你没有女朋友，对吧？"},
-            {"Intro_Convo4_2", "<b>{0}</b> : 呃，你-你在和我说话吗？"},
-            {"Intro_Convo4_3", "<b>{0}</b> : 我当然在和你讲话。"},
             {"Intro_Convo4_4", "<b>{0}</b> : 那很明显吗？"},
             {"Intro_Convo4_5", "<b>{0}</b> : 嗯哼，我绝对不是一个读心术的人，否则我会被关在这个地方，所以，是的，我会说这很明显。"},
             {"Intro_Convo4_6", "<b>{0}</b> : 好吧，当我有这份工作的时候，我该怎么找女朋友呢？我是说，我不能告诉她，那我该怎么办？"},
