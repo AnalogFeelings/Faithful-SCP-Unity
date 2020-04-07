@@ -44,7 +44,6 @@ public class GameController : MonoBehaviour
     TweenBase HorrorTween;
 
     public int xPlayer, yPlayer;
-    SmokeBlur HorrorBlur;
     Camera HorrorFov;
 
     public GameObject origplayer, player, roomAmbiance_obj, doorVacuumParticle;
@@ -1217,7 +1216,6 @@ public class GameController : MonoBehaviour
 
             isStart = true;
             HorrorFov = Camera.main;
-            HorrorBlur = HorrorFov.gameObject.GetComponent<SmokeBlur>();
             LoadUserValues();
 
             startEv.SetActive(true);

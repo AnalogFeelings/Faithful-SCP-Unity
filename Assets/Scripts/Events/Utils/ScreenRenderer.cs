@@ -85,19 +85,10 @@ public class ScreenRenderer : MonoBehaviour
         float uvV = 1-(vsize * fv);
 
         uvs[0] = new Vector2(uvH, uvV - vsize);
-        uvs[1] = new Vector2(uvH, uvV);
-        uvs[2] = new Vector2(uvH+hsize, uvV - vsize);
-        uvs[3] = new Vector2(uvH+hsize, uvV);
+        uvs[1] = new Vector2(uvH + hsize, uvV - vsize);
+        uvs[2] = new Vector2(uvH, uvV);
+        uvs[3] = new Vector2(uvH + hsize, uvV);
 
-        /*uvs[0] = new Vector2(0, 0);
-        uvs[1] = new Vector2(0, 1);
-        uvs[2] = new Vector2(1, 0);
-        uvs[3] = new Vector2(1, 1);*/
-
-        /*uvs[3] = new Vector2(uvH, uvV);
-        uvs[1] = new Vector2(uvH + hsize, uvV);
-        uvs[0] = new Vector2(uvH, uvV-vsize);
-        uvs[2] = new Vector2(uvH + hsize, uvV-vsize);*/
         mesh.uv = uvs;
     }
 }
