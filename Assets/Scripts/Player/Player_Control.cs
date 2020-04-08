@@ -817,9 +817,10 @@ public class Player_Control : MonoBehaviour
         if (hit.gameObject.CompareTag("DeathFall"))
             Death(3);
 
-        Rigidbody body = hit.collider.attachedRigidbody;
+        /*Rigidbody body = hit.collider.attachedRigidbody;
         if (body != null && !body.isKinematic)
-            body.velocity += hit.controller.velocity;
+            body.AddForceAtPosition(movement*70, hit.point, ForceMode.Force);*/
+
     }
 
     void CollisionDetection()

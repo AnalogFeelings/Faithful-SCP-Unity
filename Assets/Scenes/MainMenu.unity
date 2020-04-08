@@ -3620,6 +3620,7 @@ GameObject:
   - component: {fileID: 807742390}
   - component: {fileID: 807742389}
   - component: {fileID: 807742392}
+  - component: {fileID: 807742393}
   m_Layer: 0
   m_Name: Spot Light
   m_TagString: Untagged
@@ -3667,7 +3668,7 @@ Light:
     m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
-    m_Strength: 0.567
+    m_Strength: 1
     m_Bias: 0.05
     m_NormalBias: 0.4
     m_NearPlane: 0.2
@@ -3740,6 +3741,29 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &807742393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 807742388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f2fd5304dc973d41bb9b36cdd21d6d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  NGSS_DISABLE_ON_PLAY: 0
+  NGSS_NO_UPDATE_ON_PLAY: 0
+  NGSS_MANAGE_GLOBAL_SETTINGS: 1
+  NGSS_PCSS_ENABLED: 1
+  NGSS_SAMPLING_TEST: 10
+  NGSS_SAMPLING_FILTER: 30
+  NGSS_NOISE_SCALE: 1
+  NGSS_SHADOWS_OPACITY: 1
+  NGSS_SHADOWS_SOFTNESS: 1
+  NGSS_SHADOWS_DITHERING: 1
+  NGSS_SHADOWS_RESOLUTION: 256
 --- !u!1 &820967285
 GameObject:
   m_ObjectHideFlags: 0
@@ -4738,6 +4762,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5433792194975670011, guid: 47d346cfa849a6a4992cf7f2295139bf,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5433792194975670011, guid: 47d346cfa849a6a4992cf7f2295139bf,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5433792194975670011, guid: 47d346cfa849a6a4992cf7f2295139bf,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5433792195680967316, guid: 47d346cfa849a6a4992cf7f2295139bf,
         type: 3}

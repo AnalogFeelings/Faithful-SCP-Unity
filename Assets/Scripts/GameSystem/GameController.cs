@@ -130,6 +130,8 @@ public class GameController : MonoBehaviour
     public PostProcessProfile MediumQ;
     public PostProcessProfile HighQ;
 
+    public NGSS_Local shadowQuality;
+
     public string deathmsg = "";
     public string currentRoom;
 
@@ -166,8 +168,8 @@ public class GameController : MonoBehaviour
     private void Start()
     {
         itemData = new ItemList[100];
-        roomAmbiance_obj = Instantiate(roomAmbiance_obj);
-        roomAmbiance_src = roomAmbiance_obj.GetComponent<AudioSource>();
+        //roomAmbiance_obj = Instantiate(roomAmbiance_obj);
+        //roomAmbiance_src = roomAmbiance_obj.GetComponent<AudioSource>();
         MenuSFX.ignoreListenerPause = true;
 
 
@@ -1019,6 +1021,47 @@ public class GameController : MonoBehaviour
                     break;
                 }
         }
+
+        switch(QualitySettings.GetQualityLevel())
+        {
+            case 3:
+                {
+                    shadowQuality.NGSS_PCSS_ENABLED = true;
+                    shadowQuality.NGSS_SAMPLING_TEST = 6;
+                    shadowQuality.NGSS_SAMPLING_FILTER = 12;
+                    break;
+                }
+            case 4:
+                {
+                    shadowQuality.NGSS_PCSS_ENABLED = true;
+                    shadowQuality.NGSS_SAMPLING_TEST = 8;
+                    shadowQuality.NGSS_SAMPLING_FILTER = 12;
+                    break;
+                }
+            case 5:
+                {
+                    shadowQuality.NGSS_PCSS_ENABLED = true;
+                    shadowQuality.NGSS_SAMPLING_TEST = 16;
+                    shadowQuality.NGSS_SAMPLING_FILTER = 24;
+                    break;
+                }
+            case 6:
+                {
+                    shadowQuality.NGSS_PCSS_ENABLED = true;
+                    shadowQuality.NGSS_SAMPLING_TEST = 24;
+                    shadowQuality.NGSS_SAMPLING_FILTER = 32;
+                    break;
+                }
+            default:
+                {
+                    shadowQuality.NGSS_PCSS_ENABLED = false;
+                    break;
+                }
+        }
+
+
+
+
         PlayerPrefs.Save();
     }
 
@@ -1243,10 +1286,15 @@ public class GameController : MonoBehaviour
         }
 
         playercache = player.GetComponent<Player_Control>();
-        if (!GlobalValues.isNew || GlobalValues.LoadType == LoadType.mapless)
+        if (!GlobalValues.isNew || GlobalValues.LoadType == LoadType.mapless && GlobalValues.debug == false)
         {
             playercache.Health = SaveSystem.instance.playData.Health;
             playercache.bloodloss = SaveSystem.instance.playData.bloodLoss;
+        }
+        if (GlobalValues.debug == true)
+        {
+            playercache.noMasterController = true;
+            playercache.isGameplay = true;
         }
     }
 

@@ -3,7 +3,7 @@
 --- !u!30 &1
 GraphicsSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 12
+  serializedVersion: 13
   m_Deferred:
     m_Mode: 1
     m_Shader: {fileID: 69, guid: 0000000000000000f000000000000000, type: 0}
@@ -11,8 +11,8 @@ GraphicsSettings:
     m_Mode: 1
     m_Shader: {fileID: 74, guid: 0000000000000000f000000000000000, type: 0}
   m_ScreenSpaceShadows:
-    m_Mode: 1
-    m_Shader: {fileID: 64, guid: 0000000000000000f000000000000000, type: 0}
+    m_Mode: 2
+    m_Shader: {fileID: 4800000, guid: d42da1e69d53bc044ad4a55ce9a410c1, type: 3}
   m_LegacyDeferred:
     m_Mode: 1
     m_Shader: {fileID: 63, guid: 0000000000000000f000000000000000, type: 0}
@@ -38,6 +38,7 @@ GraphicsSettings:
   - {fileID: 10783, guid: 0000000000000000f000000000000000, type: 0}
   - {fileID: 16000, guid: 0000000000000000f000000000000000, type: 0}
   - {fileID: 17000, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 16001, guid: 0000000000000000f000000000000000, type: 0}
   m_PreloadedShaders: []
   m_SpritesDefaultMaterial: {fileID: 10754, guid: 0000000000000000f000000000000000,
     type: 0}
@@ -60,7 +61,7 @@ GraphicsSettings:
       useHDR: 1
       useDetailNormalMap: 0
       useCascadedShadowMaps: 1
-      prefer32BitShadowMaps: 0
+      prefer32BitShadowMaps: 1
       enableLPPV: 0
       useDitherMaskForAlphaBlendedShadows: 0
     m_Automatic: 0
@@ -77,7 +78,7 @@ GraphicsSettings:
       useHDR: 1
       useDetailNormalMap: 0
       useCascadedShadowMaps: 1
-      prefer32BitShadowMaps: 0
+      prefer32BitShadowMaps: 1
       enableLPPV: 0
       useDitherMaskForAlphaBlendedShadows: 0
     m_Automatic: 0
@@ -94,7 +95,7 @@ GraphicsSettings:
       useHDR: 1
       useDetailNormalMap: 0
       useCascadedShadowMaps: 1
-      prefer32BitShadowMaps: 0
+      prefer32BitShadowMaps: 1
       enableLPPV: 0
       useDitherMaskForAlphaBlendedShadows: 0
     m_Automatic: 0
@@ -113,3 +114,5 @@ GraphicsSettings:
   m_AlbedoSwatchInfos: []
   m_LightsUseLinearIntensity: 0
   m_LightsUseColorTemperature: 0
+  m_LogWhenShaderIsCompiled: 0
+  m_AllowEnlightenSupportForUpgradedProject: 1
