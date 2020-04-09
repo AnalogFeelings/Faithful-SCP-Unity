@@ -5,7 +5,6 @@ using UnityEngine;
 public class AmbianceController : MonoBehaviour
 {
     public bool enableAmbiance;
-    public static AmbianceController instance;
     public AudioClip[] AmbianceLibrary;
     public AudioClip[] GenericAmbiance;
     float ambiancetimer = 0, GENambiancetimer = 0, ambiancefreq = 3;
@@ -13,13 +12,6 @@ public class AmbianceController : MonoBehaviour
     public bool custom = true;
 
     // Start is called before the first frame update
-    void Awake()
-    {
-        if (instance == null)
-            instance = this;
-        else
-            Destroy(this);
-    }
 
     // Update is called once per frame
     void Update()

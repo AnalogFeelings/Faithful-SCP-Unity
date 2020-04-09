@@ -62,7 +62,7 @@ public class Player_Control : MonoBehaviour
     public float baseAmplitude, bobSpeed, headBobmult = 20, Camplitude, Cspeed, hamplitude;
     [Header("Gimmicks")]
     public float BlinkingTimerBase;
-    public float ClosedEyes, BaseBlinkMult = 0.75f, AsfixiaTimer, RunningTimerBase, OpenMulti, CollisionSphere, Health = 100, bloodloss = 0;
+    public float ClosedEyes, BaseBlinkMult = 0.75f, AsfixiaTimer, RunningTimerBase, OpenMulti, CollisionSphere, Health = 100, bloodloss = 0, handLength, handSize;
     public LayerMask Ground, InteractiveLayer;
     [Header("Object References")]
     public Transform DefHead;
@@ -124,7 +124,7 @@ public class Player_Control : MonoBehaviour
         CameraObj = Camera.main.gameObject;
         CameraObj.transform.position = CameraContainer.transform.position;
 
-        handPos.transform.parent = CameraObj.transform;
+        //handPos.transform.parent = CameraObj.transform;
 
         CameraObj.GetComponent<Player_MouseLook>().enabled = true;
         _controller = GetComponent<CharacterController>();
@@ -166,7 +166,7 @@ public class Player_Control : MonoBehaviour
         {
             CameraObj.GetComponent<Player_MouseLook>().rotation = new Vector3(0, SaveSystem.instance.playData.angle, 0);
         }
-        handPos.transform.position = CameraObj.transform.position + (CameraObj.transform.forward * 0.5f);
+        //handPos.transform.position = CameraObj.transform.position + (CameraObj.transform.forward * 0.5f);
 
         currentBlinkMult = BaseBlinkMult;
     }
@@ -585,12 +585,19 @@ public class Player_Control : MonoBehaviour
         isPath = true;
     }
 
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawSphere(handPos.transform.position, handSize);
+        //Gizmos.DrawRay(CameraObj.transform.position, CameraObj.transform.position + (CameraObj.transform.forward * handLength));
+    }
+
     void ACT_Buttons()
     {
+        handPos.transform.position = CameraObj.transform.position + (CameraObj.transform.forward * handLength);
         if (!Freeze)
         {
-            float lastdistance = 100f;
-            Interact = Physics.OverlapSphere(handPos.transform.position, 2.0f, InteractiveLayer);
+            float lastdistance = float.PositiveInfinity;
+            Interact = Physics.OverlapSphere(handPos.transform.position, handSize, InteractiveLayer);
             if (Interact.Length != 0)
             {
                 InterHold = null;
@@ -610,7 +617,30 @@ public class Player_Control : MonoBehaviour
                 }
             }
             else
-                InterHold = null;
+            {
+                lastdistance = float.PositiveInfinity;
+                Interact = Physics.OverlapSphere(transform.position, 0.5f, InteractiveLayer);
+                if (Interact.Length != 0)
+                {
+                    InterHold = null;
+                    float currdistance;
+                    for (int i = 0; i < Interact.Length; i++)
+                    {
+                        currdistance = Vector3.Distance(transform.position, Interact[i].transform.position);
+                        Debug.DrawRay(Interact[i].transform.position, (headPos - new Vector3(0.0f, 0.4f, 0.0f)) - Interact[i].transform.position, new Color(255, 255, 255, 1.0f), 5);
+                        if (currdistance < lastdistance)
+                        {
+                            if (!Physics.Raycast(Interact[i].transform.position, (headPos - new Vector3(0.0f, 0.4f, 0.0f)) - Interact[i].transform.position, currdistance, Ground, QueryTriggerInteraction.Ignore))
+                            {
+                                lastdistance = currdistance;
+                                InterHold = Interact[i].gameObject;
+                            }
+                        }
+                    }
+                }
+                else
+                    InterHold = null;
+            }
         }
 
         if (InterHold != null && Input.GetButtonDown("Interact"))

@@ -218,9 +218,9 @@ public class SCP_106 : Roam_NPC
             playedHorror = false;
             here.y += 0.05f;
             RaycastHit ray;
-            if (Physics.Raycast(transform.position + (Vector3.up), Vector3.down, out ray, 1.5f, Ground, QueryTriggerInteraction.Ignore))
+            if (Physics.Raycast(transform.position + (Vector3.up*0.2f), Vector3.down, out ray, 1.5f, Ground, QueryTriggerInteraction.Ignore))
             {
-                DecalSystem.instance.Decal(here, new Vector3(90f, 0, 0), 6f, false, 5f, 2, 0);
+                DecalSystem.instance.Decal(here+(Vector3.up*0.1f), new Vector3(90f, 0, 0), 6f, false, 5f, 2, 0);
             }
             
             if (isChase == false)

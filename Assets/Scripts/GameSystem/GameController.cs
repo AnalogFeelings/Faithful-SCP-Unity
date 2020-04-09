@@ -33,33 +33,37 @@ public class savedDoor
 
 public class GameController : MonoBehaviour
 {
+    [Header("Map Settings")]
+    [HideInInspector]
     public DeathEvent Death;
     public static GameController instance = null;
     public bool isAlive = true, isPocket;
     int doorCounter = 0;
     public bool canSave = false, debugCamera, holdRoom = false;
     public bool CreateMap, ShowMap;
-    public PostProcessVolume HorrorVol, MainVol;
+    public bool doGameplay, spawnPlayer, spawnHere, StopTimer = false, isStart = false, mapless;
+
+    [Header("Volumes")]
+    public PostProcessVolume HorrorVol;
+    public PostProcessVolume MainVol;
     DepthOfField depth;
     TweenBase HorrorTween;
 
+    [HideInInspector]
     public int xPlayer, yPlayer;
     Camera HorrorFov;
 
-    public GameObject origplayer, player, roomAmbiance_obj, doorVacuumParticle;
+    [Header("Start Config")]
+    public GameObject origplayer;
+    [HideInInspector]
+    public GameObject player;
+    [HideInInspector]
     public Player_Control playercache;
-    public GameObject startEv, itemSpawner, npcCam;
+    public GameObject startEv, itemSpawner;
 
+    [HideInInspector]
     [System.NonSerialized]
-    public GameObject itemParent;
-    [System.NonSerialized]
-    public GameObject eventParent;
-    [System.NonSerialized]
-    public GameObject doorParent;
-    [System.NonSerialized]
-    public GameObject npcParent;
-
-    public NewMapGen mapCreate;
+    public GameObject itemParent, eventParent, doorParent, npcParent;
 
 
     Transform currentTarget;
@@ -70,8 +74,11 @@ public class GameController : MonoBehaviour
     int Zone3limit, Zone2limit;
     int zoneAmbiance = -1;
     int zoneMusic = -1, currentMusic = -1;
+
+    [HideInInspector]
     public bool CullerFlag, DebugFlag = false;
     bool CullerOn, playIntro = true;
+    [HideInInspector]
     public int currZone = 0;
     float roomsize = 15.3f, Timer = 5, normalAmbiance;
 
@@ -85,12 +92,14 @@ public class GameController : MonoBehaviour
 
 
     ItemList[] itemData;
+    [HideInInspector]
     public List<savedDoor> doorTable;
 
 
-    public bool doGameplay, spawnPlayer, spawnHere, StopTimer = false, isStart = false, mapless;
+    
     public Transform playerSpawn;
 
+    [Header("Audio Sources")]
     public AudioSource Ambiance;
     public AudioSource MixAmbiance;
     public AudioSource Horror;
@@ -99,6 +108,7 @@ public class GameController : MonoBehaviour
 
     AudioSource roomAmbiance_src;
 
+    [Header("Audio Clips")]
     public AudioClip[] Z1;
     public AudioClip[] Z2;
     public AudioClip[] Z3;
@@ -112,9 +122,6 @@ public class GameController : MonoBehaviour
 
     bool StartupDone = false;
 
-    public CameraPool[] cameraPool;
-
-
     public List<int> globalInts = new List<int>();
     public List<bool> globalBools = new List<bool>();
     public List<float> globalFloats = new List<float>();
@@ -123,21 +130,31 @@ public class GameController : MonoBehaviour
     /// SpecialItemsData
     /// </summary>
     /// 
+    [Header("SNav Values")]
     public Tilemap mapFull;
     public TileBase tile;
 
+    [Header("Graphics Settings")]
     public PostProcessProfile LowQ;
     public PostProcessProfile MediumQ;
     public PostProcessProfile HighQ;
 
     public NGSS_Local shadowQuality;
 
+    [HideInInspector]
     public string deathmsg = "";
+    [HideInInspector]
     public string currentRoom;
 
     //Systems
+    [Header("Modules")]
     public ParticleController particleController;
     public NPC_Controller npcController;
+    public AmbianceController ambianceController;
+    public NewMapGen mapCreate;
+    public GameObject roomAmbiance_obj;
+    public CameraPool[] cameraPool;
+   
 
     /// <summary>
     /// ////////////////////////STARTUP SEQUENCE
@@ -168,13 +185,12 @@ public class GameController : MonoBehaviour
     private void Start()
     {
         itemData = new ItemList[100];
-        //roomAmbiance_obj = Instantiate(roomAmbiance_obj);
-        //roomAmbiance_src = roomAmbiance_obj.GetComponent<AudioSource>();
+        roomAmbiance_obj = Instantiate(roomAmbiance_obj);
+        roomAmbiance_src = roomAmbiance_obj.GetComponent<AudioSource>();
         MenuSFX.ignoreListenerPause = true;
 
 
         Time.timeScale = 0;
-        npcCam.SetActive(false);
         doGameplay = false;
 
         if (!GlobalValues.debug)
@@ -253,7 +269,7 @@ public class GameController : MonoBehaviour
 
     void OnGUI()
     {
-        if (!isStart && GlobalValues.debug && GlobalValues.LoadType != LoadType.otherworld)
+        if (!isStart && GlobalValues.debug && GlobalValues.LoadType != LoadType.otherworld && GlobalValues.LoadType != LoadType.mapless)
         {
             // Make a background box
             GUI.Box(new Rect(10, 10, 500, 120), "Menu Inicio");
@@ -463,21 +479,21 @@ public class GameController : MonoBehaviour
 
     void AmbianceManager()
     {
-        if (AmbianceController.instance.custom == false)
+        if (ambianceController.custom == false)
         {
             if (currZone == 2 && zoneAmbiance != 2)
             {
-                AmbianceController.instance.NormalAmbiance(Z3);
+                ambianceController.NormalAmbiance(Z3);
                 zoneAmbiance = 2;
             }
             if (currZone == 1 && zoneAmbiance != 1)
             {
-                AmbianceController.instance.NormalAmbiance(Z2);
+                ambianceController.NormalAmbiance(Z2);
                 zoneAmbiance = 1;
             }
             if (currZone == 0 && zoneAmbiance != 0)
             {
-                AmbianceController.instance.NormalAmbiance(Z1);
+                ambianceController.NormalAmbiance(Z1);
                 zoneAmbiance = 0;
             }
 
@@ -611,10 +627,14 @@ public class GameController : MonoBehaviour
             DebugFlag = !DebugFlag;
         }
 
-        AmbianceManager();
+        
         MusicManager();
 
-        AmbianceController.instance.GenAmbiance();
+        if (ambianceController != null)
+        {
+            ambianceController.GenAmbiance();
+            AmbianceManager();
+        }
 
 
 
@@ -733,10 +753,11 @@ public class GameController : MonoBehaviour
                 AmbianceHandler handler = rooms[xPlayer, yPlayer].GetComponent<AmbianceHandler>();
                 {
                     if (roomAmbiance_chg == false || roomAmbiance_amb != handler.Ambiance)
-
-                    roomAmbiance_src.Stop();
-                    roomAmbiance_chg = true;
-                    roomAmbiance_src.clip = roomAmbiance_clips[(int)handler.Ambiance];
+                    {
+                        roomAmbiance_src.Stop();
+                        roomAmbiance_chg = true;
+                        roomAmbiance_src.clip = roomAmbiance_clips[(int)handler.Ambiance];
+                    }
                     roomAmbiance_src.volume = handler.Volume;
                     roomAmbiance_src.spread = handler.spread;
                     roomAmbiance_src.minDistance = handler.closeDistance;
@@ -1273,7 +1294,7 @@ public class GameController : MonoBehaviour
         deathmsg = "";
         if (spawnPlayer)
         {
-            if (GlobalValues.isNew || !spawnHere)
+            if (GlobalValues.isNew && !spawnHere)
             {
                 player = Instantiate(origplayer, WorldAnchor.transform.position, Quaternion.identity);
                 Debug.Log("Spawning at anchor " + WorldAnchor.transform + " es nuevo " + GlobalValues.isNew + " !spawnhere " + spawnHere);
@@ -1293,7 +1314,6 @@ public class GameController : MonoBehaviour
         }
         if (GlobalValues.debug == true)
         {
-            playercache.noMasterController = true;
             playercache.isGameplay = true;
         }
     }

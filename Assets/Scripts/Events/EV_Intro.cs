@@ -28,7 +28,7 @@ public class EV_Intro : MonoBehaviour
     {
         if (GlobalValues.playIntro)
         {
-            AmbianceController.instance.ChangeAmbiance(Ambiance, 8);
+            GameController.instance.ambianceController.ChangeAmbiance(Ambiance, 8);
             MusicPlayer.instance.StartMusic(MusIntro);
             GameController.instance.StopTimer = false;
             GameController.instance.doGameplay = false;

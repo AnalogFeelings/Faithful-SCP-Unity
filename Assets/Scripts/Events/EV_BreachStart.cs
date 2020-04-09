@@ -43,7 +43,7 @@ public class EV_BreachStart : Event_Parent
         if (Timer <= 0.0f && StopTimer == false)
         {
             GameController.instance.player.GetComponent<Player_Control>().FakeBlink(1f);
-            AmbianceController.instance.ChangeAmbiance(NewAmbiance, 6);
+            GameController.instance.ambianceController.ChangeAmbiance(NewAmbiance, 6);
             GameController.instance.GlobalSFX.PlayOneShot(blackout);
             GameController.instance.npcController.mainList[(int)npc.scp173].Spawn(false, GameController.instance.transform.position);
             StopTimer = true;
