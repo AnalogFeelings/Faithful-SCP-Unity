@@ -60,7 +60,6 @@ public class SCP_UI : MonoBehaviour
         {
             
             GameController.instance.MenuSFX.PlayOneShot(menublip);
-            Debug.Log("Quitando pausa");
             PauseM.enabled = false;
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;

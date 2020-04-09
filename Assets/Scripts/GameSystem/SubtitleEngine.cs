@@ -125,7 +125,7 @@ public class SubtitleEngine : MonoBehaviour
         else
             buildSubtitle = sub.subtitle;
 
-        Debug.Log("Subtitulo " + buildSubtitle + " con el extra " + sub.nextSubtitle);
+        //Debug.Log("Subtitulo " + buildSubtitle + " con el extra " + sub.nextSubtitle);
 
         if (!string.IsNullOrEmpty(sub.nextSubtitle))
             playVoice(sub.nextSubtitle);

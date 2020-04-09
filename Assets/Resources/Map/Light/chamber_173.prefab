@@ -882,10 +882,10 @@ ReflectionProbe:
   m_BoxSize: {x: 8.740577, y: 6.4600434, z: 9.502387}
   m_BoxOffset: {x: 0.11587381, y: 1.7699783, z: 2.096253}
   m_NearClip: 0.3
-  m_FarClip: 1000
-  m_ShadowDistance: 100
+  m_FarClip: 100
+  m_ShadowDistance: 0
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -894,7 +894,7 @@ ReflectionProbe:
   m_HDR: 1
   m_BoxProjection: 1
   m_RenderDynamicObjects: 0
-  m_UseOcclusionCulling: 1
+  m_UseOcclusionCulling: 0
   m_Importance: 2
   m_CustomBakedTexture: {fileID: 0}
 --- !u!114 &3646462487680194703
@@ -960,10 +960,10 @@ ReflectionProbe:
   m_BoxSize: {x: 14.198968, y: 6.4600434, z: 3.6679058}
   m_BoxOffset: {x: -0.3414464, y: 1.7699783, z: -0.10403323}
   m_NearClip: 0.3
-  m_FarClip: 1000
-  m_ShadowDistance: 100
+  m_FarClip: 100
+  m_ShadowDistance: 0
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -972,7 +972,7 @@ ReflectionProbe:
   m_HDR: 1
   m_BoxProjection: 1
   m_RenderDynamicObjects: 0
-  m_UseOcclusionCulling: 1
+  m_UseOcclusionCulling: 0
   m_Importance: 2
   m_CustomBakedTexture: {fileID: 0}
 --- !u!114 &6288911697152367370
@@ -1295,10 +1295,10 @@ ReflectionProbe:
   m_BoxSize: {x: 10.589607, y: 6.4600434, z: 15.721851}
   m_BoxOffset: {x: 1.6299095, y: 1.7699783, z: 1.3666058}
   m_NearClip: 0.3
-  m_FarClip: 1000
-  m_ShadowDistance: 100
+  m_FarClip: 100
+  m_ShadowDistance: 0
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -1307,7 +1307,7 @@ ReflectionProbe:
   m_HDR: 1
   m_BoxProjection: 1
   m_RenderDynamicObjects: 0
-  m_UseOcclusionCulling: 1
+  m_UseOcclusionCulling: 0
   m_Importance: 2
   m_CustomBakedTexture: {fileID: 0}
 --- !u!114 &4185651574703488064
@@ -9170,10 +9170,10 @@ ReflectionProbe:
   m_BoxSize: {x: 10.132754, y: 6.4600434, z: 8.199013}
   m_BoxOffset: {x: -0.8885255, y: 1.7699783, z: 0.155447}
   m_NearClip: 0.3
-  m_FarClip: 1000
-  m_ShadowDistance: 100
+  m_FarClip: 100
+  m_ShadowDistance: 0
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -9182,7 +9182,7 @@ ReflectionProbe:
   m_HDR: 1
   m_BoxProjection: 1
   m_RenderDynamicObjects: 0
-  m_UseOcclusionCulling: 1
+  m_UseOcclusionCulling: 0
   m_Importance: 2
   m_CustomBakedTexture: {fileID: 0}
 --- !u!114 &4008764618386818619
@@ -11228,10 +11228,10 @@ ReflectionProbe:
   m_BoxSize: {x: 13.559792, y: 10, z: 15.070578}
   m_BoxOffset: {x: -2.898244, y: 0, z: -0.5185013}
   m_NearClip: 0.3
-  m_FarClip: 1000
-  m_ShadowDistance: 100
+  m_FarClip: 100
+  m_ShadowDistance: 0
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -11240,7 +11240,7 @@ ReflectionProbe:
   m_HDR: 1
   m_BoxProjection: 1
   m_RenderDynamicObjects: 0
-  m_UseOcclusionCulling: 1
+  m_UseOcclusionCulling: 0
   m_Importance: 1
   m_CustomBakedTexture: {fileID: 0}
 --- !u!114 &5494575329960635366
@@ -13767,6 +13767,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: DistanceShut
+      objectReference: {fileID: 0}
+    - target: {fileID: 1617216274933699070, guid: f03c9da0555287f42b4a99a37d66d188,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 24.95783
+      objectReference: {fileID: 0}
+    - target: {fileID: 1617216274933699070, guid: f03c9da0555287f42b4a99a37d66d188,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 4.6130457
+      objectReference: {fileID: 0}
+    - target: {fileID: 1617216274933699070, guid: f03c9da0555287f42b4a99a37d66d188,
+        type: 3}
+      propertyPath: m_Center.x
+      value: -12.378915
+      objectReference: {fileID: 0}
+    - target: {fileID: 1617216274933699070, guid: f03c9da0555287f42b4a99a37d66d188,
+        type: 3}
+      propertyPath: m_Center.y
+      value: 2.706523
       objectReference: {fileID: 0}
     - target: {fileID: 1827033982661758177, guid: f03c9da0555287f42b4a99a37d66d188,
         type: 3}

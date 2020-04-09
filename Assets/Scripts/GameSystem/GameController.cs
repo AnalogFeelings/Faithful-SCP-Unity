@@ -549,7 +549,7 @@ public class GameController : MonoBehaviour
 
     public void PlayHorror(AudioClip horrorsound, Transform origin, npc who)
     {
-        Debug.Log("Playing Horror");
+        //Debug.Log("Playing Horror");
         Horror.PlayOneShot(horrorsound);
         if (HorrorTween != null)
             HorrorTween.Cancel();
@@ -575,7 +575,6 @@ public class GameController : MonoBehaviour
 
         HorrorVol.weight = value;
         depth.focusDistance.Override(Vector3.Distance(player.transform.position, currentTarget.transform.position) - 1f);
-        Debug.Log(Vector3.Distance(player.transform.position, currentTarget.transform.position) - 1.5f);
     }
 
 
@@ -1022,7 +1021,7 @@ public class GameController : MonoBehaviour
         
         Debug.Log(MainVol.profile.GetSetting<ColorGrading>().gamma.value);
         MainVol.profile.GetSetting<ColorGrading>().gamma.value = new Vector4(1, 1, 1, PlayerPrefs.GetFloat("Gamma", 0));
-        Debug.Log(PlayerPrefs.GetFloat("Gamma", 0));
+        //Debug.Log(PlayerPrefs.GetFloat("Gamma", 0));
 
         switch (PlayerPrefs.GetInt("Post",1))
         {

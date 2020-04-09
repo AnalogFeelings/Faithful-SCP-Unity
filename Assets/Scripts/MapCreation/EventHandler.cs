@@ -59,7 +59,7 @@ public class EventHandler : MonoBehaviour
         
         if (Spawned == false)
         {
-            Debug.Log(EventChosen);
+            //Debug.Log(EventChosen);
             if (EventChosen == -2)
                 InternalLoad(UniqueHandler, x, y, UniquePos);
 

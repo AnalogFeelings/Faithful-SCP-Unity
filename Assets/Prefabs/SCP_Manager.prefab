@@ -31766,6 +31766,12 @@ MonoBehaviour:
   holdRoom: 0
   CreateMap: 1
   ShowMap: 1
+  doGameplay: 0
+  spawnPlayer: 1
+  spawnHere: 0
+  StopTimer: 0
+  isStart: 0
+  mapless: 0
   HorrorVol: {fileID: 1401568785531316404}
   MainVol: {fileID: 1401568785531316407}
   xPlayer: 0
@@ -31773,27 +31779,15 @@ MonoBehaviour:
   origplayer: {fileID: 1341638972000247816, guid: 575dd14983cf9b14f8562ccc9c6c9544,
     type: 3}
   player: {fileID: 0}
-  roomAmbiance_obj: {fileID: 8012520537311945422, guid: 469bbbbe978c58e4584b8e2c4f5fe70b,
-    type: 3}
-  doorVacuumParticle: {fileID: 6500974571519462976, guid: 26801002d51d48842a033c4c3aa4ae31,
-    type: 3}
   playercache: {fileID: 0}
   startEv: {fileID: 0}
   itemSpawner: {fileID: 1675467432282071768, guid: f17e077e8125f89458e5590c05ca35c4,
     type: 3}
-  npcCam: {fileID: 1401568785198756514}
-  mapCreate: {fileID: 1401568784013469617}
   WorldAnchor: {fileID: 0}
   CullerFlag: 0
   DebugFlag: 0
   currZone: 0
   doorTable: []
-  doGameplay: 0
-  spawnPlayer: 1
-  spawnHere: 0
-  StopTimer: 0
-  isStart: 0
-  mapless: 0
   playerSpawn: {fileID: 0}
   Ambiance: {fileID: 1401568783790323744}
   MixAmbiance: {fileID: 1401568784115390518}
@@ -31852,19 +31846,6 @@ MonoBehaviour:
   Mus2: {fileID: 8300000, guid: 26c45990fd7230444acaa6be6cd93cef, type: 3}
   Mus3: {fileID: 8300000, guid: 1d436e910b041aa4b9e096cbdcec2962, type: 3}
   savedSFX: {fileID: 8300000, guid: c0142b0bb830e874f9a1f8d4c9b6c9b7, type: 3}
-  cameraPool:
-  - Mats: {fileID: 2100000, guid: e2bb3b3b0ee9d984f850049d7967903a, type: 2}
-    Renders: {fileID: 8400000, guid: d2ffe5180e87f5a45830484b19d90147, type: 2}
-    isUsing: 0
-  - Mats: {fileID: 2100000, guid: e2e2d25ceb579f443aac38e8baf0d6a0, type: 2}
-    Renders: {fileID: 8400000, guid: 5f2710720eaf0a647ac0825e7b5994b2, type: 2}
-    isUsing: 0
-  - Mats: {fileID: 2100000, guid: 274a203faacd33a4291d54b9091b0ea2, type: 2}
-    Renders: {fileID: 8400000, guid: db20befe90dccd94e9abe828d6fc456e, type: 2}
-    isUsing: 0
-  - Mats: {fileID: 2100000, guid: dbcdbb0bc20fbe0438176337b6293979, type: 2}
-    Renders: {fileID: 8400000, guid: 580439a9bc6abba4687d1ffa3d3ea227, type: 2}
-    isUsing: 0
   globalInts: 
   globalBools: 
   globalFloats: []
@@ -31878,6 +31859,23 @@ MonoBehaviour:
   currentRoom: 
   particleController: {fileID: 3019291741560298970}
   npcController: {fileID: 1134087211852457607}
+  ambianceController: {fileID: 0}
+  mapCreate: {fileID: 1401568784013469617}
+  roomAmbiance_obj: {fileID: 8012520537311945422, guid: 469bbbbe978c58e4584b8e2c4f5fe70b,
+    type: 3}
+  cameraPool:
+  - Mats: {fileID: 2100000, guid: e2bb3b3b0ee9d984f850049d7967903a, type: 2}
+    Renders: {fileID: 8400000, guid: d2ffe5180e87f5a45830484b19d90147, type: 2}
+    isUsing: 0
+  - Mats: {fileID: 2100000, guid: e2e2d25ceb579f443aac38e8baf0d6a0, type: 2}
+    Renders: {fileID: 8400000, guid: 5f2710720eaf0a647ac0825e7b5994b2, type: 2}
+    isUsing: 0
+  - Mats: {fileID: 2100000, guid: 274a203faacd33a4291d54b9091b0ea2, type: 2}
+    Renders: {fileID: 8400000, guid: db20befe90dccd94e9abe828d6fc456e, type: 2}
+    isUsing: 0
+  - Mats: {fileID: 2100000, guid: dbcdbb0bc20fbe0438176337b6293979, type: 2}
+    Renders: {fileID: 8400000, guid: 580439a9bc6abba4687d1ffa3d3ea227, type: 2}
+    isUsing: 0
 --- !u!114 &1401568785531316400
 MonoBehaviour:
   m_ObjectHideFlags: 0
