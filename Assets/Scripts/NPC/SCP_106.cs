@@ -80,11 +80,11 @@ public class SCP_106 : Roam_NPC
 
                 escapeTimer += Time.deltaTime;
 
-                if (data.npcvalue[agroLevel] == 0 && escapeTimer >= 30)
+                if (data.npcvalue[data.npcvalue[0]] == 0 && escapeTimer >= 30)
                 {
                     Escaped = true;
                 }
-                if (data.npcvalue[agroLevel] == 1 && escapeTimer >= 45)
+                if (data.npcvalue[data.npcvalue[0]] == 1 && escapeTimer >= 45)
                 {
                     Escaped = true;
                 }
@@ -129,7 +129,7 @@ public class SCP_106 : Roam_NPC
 
                     }
 
-                    if (agroLevel != 0 && PlayerDistance > 20 && !Escaped)
+                    if (data.npcvalue[0] != 0 && PlayerDistance > 20 && !Escaped)
                     {
                         Spawn(true, new Vector3(Player.transform.position.x, 0.01f, Player.transform.position.z));
                     }

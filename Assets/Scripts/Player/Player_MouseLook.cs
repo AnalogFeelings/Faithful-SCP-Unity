@@ -8,10 +8,12 @@ public class Player_MouseLook : MonoBehaviour
     public float speed = 3;
     float inspeed=3;
     bool Invert = false;
+    public bool Instant;
     private void Start()
     {
 
     }
+
     void LateUpdate()
     {
         float z = transform.eulerAngles.z;

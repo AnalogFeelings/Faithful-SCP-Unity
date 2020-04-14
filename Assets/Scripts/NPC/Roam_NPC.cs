@@ -5,7 +5,6 @@ using UnityEngine;
 public abstract class Roam_NPC : Map_NPC
 {
     public bool isEvent;
-    public static int agroLevel = 0;
 
     public virtual void Spawn(bool beActive, Vector3 warppoint)
     {
@@ -22,7 +21,6 @@ public abstract class Roam_NPC : Map_NPC
     public virtual void SetAgroLevel(int level)
     {
         data.npcvalue[0] = level;
-        Debug.Log("Nivel Agro =" + level);
     }
 
     public virtual void UnSpawn()

@@ -90,10 +90,13 @@ public class NPC_Controller : MonoBehaviour
 
     public void npcLevel(npc who)
     {
+        Debug.Log("Settint Level for scp " + who + " Latest being " + LatestNPC + " current Main " + ZoneMain);
         if (LatestNPC != ZoneMain && who != ZoneMain)
         {
-            LatestNPC = who;
+            if (LatestNPC != npc.none)
+                mainList[(int)LatestNPC].SetAgroLevel(0);
             mainList[(int)who].SetAgroLevel(1);
+            LatestNPC = who;
             NPCTimer = 60;
         }
 
@@ -104,6 +107,15 @@ public class NPC_Controller : MonoBehaviour
             LatestNPC = who;
             NPCTimer = 60;
         }
+
+        if (who == ZoneMain)
+        {
+            mainList[(int)who].SetAgroLevel(1);
+            LatestNPC = who;
+            NPCTimer = 60;
+        }
+
+
     }
 
     public void NPCManager()
@@ -115,9 +127,9 @@ public class NPC_Controller : MonoBehaviour
             LatestNPC = npc.none;
         }
 
-        if (GameController.instance.currZone == 3 && ZoneMain != Zone2_Main)
+        if (GameController.instance.currZone == 2 && ZoneMain != Zone3_Main)
         {
-            SetMainNPC(Zone2_Main);
+            SetMainNPC(Zone3_Main);
         }
         if (GameController.instance.currZone == 1 && ZoneMain != Zone2_Main)
         {

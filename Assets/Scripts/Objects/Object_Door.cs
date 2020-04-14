@@ -214,7 +214,10 @@ public class Object_Door : MonoBehaviour
         AUD.clip = Close_AUD[Random.Range(0, Close_AUD.Length)];
         AUD.Play();
     }
-
+    /// <summary>
+    /// GetState() Obtiene el estado de la puera
+    /// </summary>
+    /// <returns>true Si la puerta esta abierta</returns>
     public bool GetState()
     {
         return (IsOpen);

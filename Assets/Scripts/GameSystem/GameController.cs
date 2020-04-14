@@ -562,12 +562,13 @@ public class GameController : MonoBehaviour
         if (who != npc.none)
         {
             npcController.npcLevel(who);
+            Debug.Log("Playing horror for " + who);
         }
     }
 
     public void HorrorUpdate(float value)
     {
-        Debug.Log("Horror Update " + value);
+        //Debug.Log("Horror Update " + value);
         if (!isPocket)
         {
             HorrorFov.fieldOfView = 65 + (7 * value);
@@ -586,24 +587,23 @@ public class GameController : MonoBehaviour
             int tempY = (Mathf.Clamp((Mathf.RoundToInt((player.transform.position.z / roomsize))), 0, mapSize.ySize - 1));
             if ((Binary_Map[tempX, tempY] != 0) && ((tempY == yPlayer && tempX == xPlayer + 1) || (tempY == yPlayer && tempX == xPlayer - 1) || (tempY == yPlayer + 1 && tempX == xPlayer) || (tempY == yPlayer - 1 && tempX == xPlayer)))
             {
-                if (yPlayer < Zone3limit)
-                {
-                    currZone = 2;
-                }
-                if (yPlayer > Zone3limit && yPlayer < Zone2limit)
-                {
-                    currZone = 1;
-                }
-                if (yPlayer > Zone2limit)
-                {
-                    currZone = 0;
-                }
-
-
                 xPlayer = tempX;
                 yPlayer = tempY;
                 PlayerReveal(xPlayer, yPlayer);
                 PlayerEvents();
+            }
+
+            if (yPlayer < Zone3limit)
+            {
+                currZone = 2;
+            }
+            if (yPlayer > Zone3limit && yPlayer < Zone2limit)
+            {
+                currZone = 1;
+            }
+            if (yPlayer > Zone2limit)
+            {
+                currZone = 0;
             }
         }
 
@@ -624,6 +624,11 @@ public class GameController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F1))
         {
             DebugFlag = !DebugFlag;
+        }
+
+        if (npcController != null)
+        {
+            npcController.NPCManager();
         }
 
         

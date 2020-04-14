@@ -47,7 +47,7 @@ public class Player_Control : MonoBehaviour
     Vector3 holdCam, fallSpeed, movement, HoldPos, OriPos, totalmove, headPos, forceLook;
     Quaternion toAngle;
     private CharacterController _controller;
-    bool Grounded = true, isSmoke = false, fakeBlink, isRunning, isTired = false, isLooking=false, cognitoEffect, onBlink, cameraNextFrame;
+    bool Grounded = true, isSmoke = false, objectLock=false,fakeBlink, isRunning, isTired = false, isLooking=false, cognitoEffect, onBlink, cameraNextFrame;
     Camera PlayerCam;
     Image eyes, blinkbar, runbar, batbar, overlay, handEquip, eyeIcon;
     RectTransform hand_rect, hud_rect;
@@ -63,7 +63,7 @@ public class Player_Control : MonoBehaviour
     [Header("Gimmicks")]
     public float BlinkingTimerBase;
     public float ClosedEyes, BaseBlinkMult = 0.75f, AsfixiaTimer, RunningTimerBase, OpenMulti, CollisionSphere, Health = 100, bloodloss = 0, handLength, handSize;
-    public LayerMask Ground, InteractiveLayer;
+    public LayerMask Ground, InteractiveLayer, Collisionables;
     [Header("Object References")]
     public Transform DefHead;
     public Transform CrouchHead;
@@ -250,7 +250,7 @@ public class Player_Control : MonoBehaviour
         if (Health <= 30)
             Crouch = true;
 
-        isRunning = (Input.GetButton("Run") && !Crouch && RunningTimer > 0.2f && (!noMasterController && !GameController.instance.isPocket));
+        isRunning = (Input.GetButton("Run") && !Crouch && RunningTimer > 0.2f && (!GameController.instance.isPocket));
 
         speed = Basespeed;
         if (Crouch)
@@ -259,7 +259,7 @@ public class Player_Control : MonoBehaviour
         if (isRunning)
             speed = runSpeed;
 
-        if (!noMasterController && GameController.instance.isPocket)
+        if (GameController.instance.isPocket)
         {
             speed = crouchspeed+0.5f;
         }
@@ -587,17 +587,20 @@ public class Player_Control : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Gizmos.DrawSphere(handPos.transform.position, handSize);
+        //Gizmos.DrawSphere(handPos.transform.position, handSize);
         //Gizmos.DrawRay(CameraObj.transform.position, CameraObj.transform.position + (CameraObj.transform.forward * handLength));
     }
 
     void ACT_Buttons()
     {
         handPos.transform.position = CameraObj.transform.position + (CameraObj.transform.forward * handLength);
-        if (!Freeze)
+        handPos.transform.rotation = CameraObj.transform.rotation;
+
+        if (!objectLock)
         {
             float lastdistance = float.PositiveInfinity;
-            Interact = Physics.OverlapSphere(handPos.transform.position, handSize, InteractiveLayer);
+            Interact = Physics.OverlapCapsule(transform.position, handPos.transform.position, handSize, InteractiveLayer);
+            //Interact = Physics.OverlapSphere(handPos.transform.position, handSize, InteractiveLayer);
             if (Interact.Length != 0)
             {
                 InterHold = null;
@@ -619,7 +622,7 @@ public class Player_Control : MonoBehaviour
             else
             {
                 lastdistance = float.PositiveInfinity;
-                Interact = Physics.OverlapSphere(transform.position, 0.5f, InteractiveLayer);
+                Interact = Physics.OverlapSphere(transform.position, 0.8f, InteractiveLayer);
                 if (Interact.Length != 0)
                 {
                     InterHold = null;
@@ -630,11 +633,8 @@ public class Player_Control : MonoBehaviour
                         Debug.DrawRay(Interact[i].transform.position, (headPos - new Vector3(0.0f, 0.4f, 0.0f)) - Interact[i].transform.position, new Color(255, 255, 255, 1.0f), 5);
                         if (currdistance < lastdistance)
                         {
-                            if (!Physics.Raycast(Interact[i].transform.position, (headPos - new Vector3(0.0f, 0.4f, 0.0f)) - Interact[i].transform.position, currdistance, Ground, QueryTriggerInteraction.Ignore))
-                            {
-                                lastdistance = currdistance;
-                                InterHold = Interact[i].gameObject;
-                            }
+                            lastdistance = currdistance;
+                            InterHold = Interact[i].gameObject;
                         }
                     }
                 }
@@ -643,15 +643,34 @@ public class Player_Control : MonoBehaviour
             }
         }
 
-        if (InterHold != null && Input.GetButtonDown("Interact"))
+
+
+        if (InterHold != null)
         {
-            InterHold.GetComponent<Object_Interact>().Pressed();
+            float distance = Vector3.Distance(handPos.transform.position, InterHold.transform.position);
+            float distanceBody = Vector3.Distance(transform.position, InterHold.transform.position);
+            if (Input.GetButtonDown("Interact"))
+            {
+                InterHold.GetComponent<Object_Interact>().Pressed();
+            }
+            if ((InterHold != null) && Input.GetButton("Interact"))
+            {
+                InterHold.GetComponent<Object_Interact>().Hold();
+                objectLock = true;
+            }
+            else
+            {
+                objectLock = false;
+            }
+
+            if ((distanceBody > handLength) && (distance > handLength))
+            {
+                objectLock = false;
+                InterHold = null;
+            }
         }
 
-        if (InterHold != null && Input.GetButton("Interact"))
-        {
-            InterHold.GetComponent<Object_Interact>().Hold();
-        }
+
     }
 
     void ACT_Running()
@@ -678,7 +697,7 @@ public class Player_Control : MonoBehaviour
     void ACT_Blinking()
     {
         if (onBlink == false)
-            eyes.color = new Color(255, 255, 255, Mathf.Clamp(-((BlinkingTimer-0.25f)*4), 0.0f, 1.0f));
+            eyes.color = new Color(255, 255, 255, Mathf.Clamp(-((BlinkingTimer-0.128f)*8), 0.0f, 1.0f));
         else
         {
             OpenTimer -= Time.deltaTime * OpenMulti;
@@ -687,11 +706,12 @@ public class Player_Control : MonoBehaviour
             eyes.color = new Color(255, 255, 255, OpenTimer);
         }
 
-        if (Input.GetButton("Blink"))
+        if (Input.GetButton("Blink") && !fakeBlink)
         {
-            Debug.Log("blinking");
             CloseTimer = ClosedEyes;
-            BlinkingTimer = -2f;
+            if (BlinkingTimer > 0.125)
+                BlinkingTimer = 0.125f;
+
         }
 
         if (isSmoke && !protectSmoke)
@@ -737,6 +757,7 @@ public class Player_Control : MonoBehaviour
             GameController.instance.PlayerDeath();
             _controller.enabled = false;
             DeathCol.SetActive(true);
+            CameraObj.transform.rotation = Quaternion.Euler(CameraObj.GetComponent<Player_MouseLook>().rotation);
             CameraObj.transform.parent = DeathCol.transform;
             CameraObj.GetComponent<Player_MouseLook>().enabled = false;
             isGameplay = false;
@@ -747,6 +768,8 @@ public class Player_Control : MonoBehaviour
             handEquip.color = Color.clear;
             SCP_UI.instance.SNav.SetActive(false);
             SCP_UI.instance.radio.StopRadio();
+
+
 
             switch (cause)
             {
@@ -819,7 +842,7 @@ public class Player_Control : MonoBehaviour
 
     public bool IsBlinking()
     {
-        if (BlinkingTimer <= 0.0f && fakeBlink != true)
+        if (CloseTimer < ClosedEyes && fakeBlink != true)
             return (true);
         else
             return (false);
@@ -840,22 +863,26 @@ public class Player_Control : MonoBehaviour
             onCam = false;
     }
 
-    void OnControllerColliderHit(ControllerColliderHit hit)
+    /*void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        if (hit.gameObject.CompareTag("Death"))
+        /*if (hit.gameObject.CompareTag("Death"))
             Death(0);
         if (hit.gameObject.CompareTag("DeathFall"))
             Death(3);
 
-        /*Rigidbody body = hit.collider.attachedRigidbody;
-        if (body != null && !body.isKinematic)
-            body.AddForceAtPosition(movement*70, hit.point, ForceMode.Force);*/
 
-    }
+        Debug.Log("Pushing");
+        Rigidbody body = hit.collider.attachedRigidbody;
+        if (body != null && !body.isKinematic)
+        {
+            body.AddForce(movement * 70, ForceMode.Force);
+        }
+
+    }*/
 
     void CollisionDetection()
     {
-        Collider[] collisions = Physics.OverlapSphere(transform.position, CollisionSphere, Ground, QueryTriggerInteraction.Ignore);
+        Collider[] collisions = Physics.OverlapCapsule(transform.position+(_controller.center-Vector3.up*((_controller.height/2))), transform.position + (_controller.center + Vector3.up * ((_controller.height / 2))), _controller.radius, Collisionables, QueryTriggerInteraction.Collide);
 
         if (collisions.Length != 0)
         {
@@ -865,8 +892,16 @@ public class Player_Control : MonoBehaviour
                     Death(0);
                 if (collisions[i].gameObject.CompareTag("DeathFall"))
                     Death(3);
-
-
+                
+                if (collisions[i].gameObject.CompareTag("Physics"))
+                {
+                    Debug.Log("Pushing");
+                    Rigidbody body = collisions[i].attachedRigidbody;
+                    if (body != null && !body.isKinematic)
+                    {
+                        body.AddForce(movement * 70, ForceMode.Force);
+                    }
+                }
             }
         }
     }
@@ -1164,8 +1199,6 @@ public class Player_Control : MonoBehaviour
         cameraNextFrame = true;
         Vector3 rota = CameraObj.GetComponent<Player_MouseLook>().rotation;
         CameraObj.GetComponent<Player_MouseLook>().rotation = new Vector3(rota.x, rota.y + rotation, 0);
-        
-        
         _controller.enabled = true;
     }
 
