@@ -90,6 +90,7 @@ public class EV_Intro_extra : MonoBehaviour
                 Guard2_.SetPath(path1);
                 D1_.SetPath(path1);
                 Guard2_.AnimTrigger(1, true);
+                Sci1_.AnimTrigger(2, true);
                 Sci1_.SetPath(path2);
                 checking1 = false;
                 checking2 = true;
@@ -100,6 +101,7 @@ public class EV_Intro_extra : MonoBehaviour
         {
             if (check2.GetComponent<BoxTrigger>().GetState())
             {
+                Jan_.AnimTrigger(2, true);
                 Jan_.SetPath(path3);
                 Sci2_.PlaySound(Scientistdiag);
                 checking2 = false;

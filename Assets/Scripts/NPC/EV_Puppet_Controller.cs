@@ -258,7 +258,7 @@ public class EV_Puppet_Controller : MonoBehaviour
         hasSubs = _hasSubs;
     }
 
-    public void AnimTrigger(int Number, bool value)
+    public void AnimTrigger(int Number, bool value = false)
     {
         switch(Number)
         {
@@ -285,6 +285,21 @@ public class EV_Puppet_Controller : MonoBehaviour
             case -3:
                 {
                     Puppet_Anim.SetTrigger("param-3");
+                    break;
+                }
+            case -4:
+                {
+                    Puppet_Anim.SetTrigger("param-4");
+                    break;
+                }
+            case -5:
+                {
+                    Puppet_Anim.SetTrigger("param-5");
+                    break;
+                }
+            case -6:
+                {
+                    Puppet_Anim.SetTrigger("param-6");
                     break;
                 }
         }

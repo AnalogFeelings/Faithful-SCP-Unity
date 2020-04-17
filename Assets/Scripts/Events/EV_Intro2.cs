@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class EV_Intro2 : MonoBehaviour
 {
-    public GameObject door1, door2, tri1, tri2, tri3, lightmana, emelight, d1, d2, sci, guard, flask, RerenderProbe1, RerenderProbe2, introZone;
+    public GameObject door1, door2, tri1, tri2, tri3, lightmana, emelight, d1, d2, sci, sci2, guard, flask, RerenderProbe1, RerenderProbe2, introZone;
     public Transform[] path1, path2, path3, path4, path5;
     public Transform ata1, ata2, ata3, ataFinal, TeleportAnchor, LookLeft, LookRight;
     GameObject objPlayer;
-    EV_Puppet_Controller d1_, d2_, sci_, guard_;
+    EV_Puppet_Controller d1_, d2_, sci_, guard_, sci2_;
     public AudioClip[] Dialogs, Refuse, NewAmbiance, Horror, GeneralSFX, Alarm, guardExit, guardWhat;
     public AudioClip MusicChange, classd1, classd2, guardDies;
     int eventstat = 0, refusestat = 0;
@@ -22,6 +22,7 @@ public class EV_Intro2 : MonoBehaviour
         d1_ = d1.GetComponent<EV_Puppet_Controller>();
         d2_ = d2.GetComponent<EV_Puppet_Controller>();
         sci_ = sci.GetComponent<EV_Puppet_Controller>();
+        sci2_ = sci2.GetComponent<EV_Puppet_Controller>();
         guard_ = guard.GetComponent<EV_Puppet_Controller>();
 
         GameController.instance.ChangeMusic(MusicChange);
@@ -37,7 +38,6 @@ public class EV_Intro2 : MonoBehaviour
                 eventstat = 1;
                 door2.GetComponent<Object_Door>().DoorSwitch();
                 d1_.SetLookAt(Camera.main.transform);
-                d2_.SetLookAt(Camera.main.transform);
                 Timer = Timer1;
                 ActiveTimer = true;
 
@@ -50,6 +50,7 @@ public class EV_Intro2 : MonoBehaviour
             {
                 door1.GetComponent<Object_Door>().DoorSwitch();
                 sci_.PlaySound(Dialogs[1], true);
+                sci_.AnimTrigger(-6);
                 check2 = false;
                 Timer = 4f;
                 eventstat = 5;
@@ -136,6 +137,7 @@ public class EV_Intro2 : MonoBehaviour
                         d2_.StopLookAt();
                         door1.GetComponent<Object_Door>().DoorSwitch();
                         sci_.PlaySound(Dialogs[0],true);
+                        sci_.AnimTrigger(-6);
                         Timer = Timer2;
                         eventstat = 2;
                         ActiveRefuse = true;
@@ -182,6 +184,7 @@ public class EV_Intro2 : MonoBehaviour
                         door1.GetComponent<Object_Door>().DoorSwitch();
                         check3 = true;
                         sci_.PlaySound(Dialogs[2], true);
+                        sci_.AnimTrigger(-6);
                         d2_.SetRota(door1.transform);
                         d2_.StopLookAt();
                         StartCoroutine(SmallSequence());
@@ -197,7 +200,7 @@ public class EV_Intro2 : MonoBehaviour
                         d1_.PlaySound(classd2);
                         eventstat = 8;
                         Timer = 0.7f;
-                        d1_.AnimTrigger(-2, true);
+                        d1_.AnimTrigger(-1, true);
 
                         GameController.instance.npcController.SCPS[(int)npc.scp173].transform.rotation = Quaternion.Euler(0, 90, 0);
                         GameController.instance.npcController.mainList[(int)npc.scp173].Spawn(false, ata1.position);
@@ -208,9 +211,11 @@ public class EV_Intro2 : MonoBehaviour
                     }
                 case 8:
                     {
-                        d2_.SetLookAt(GameController.instance.npcController.mainList[(int)npc.scp173].transform);
+                        d2_.StopLookAt();
+                        d2_.AnimTrigger(-5);
                         d1_.PlaySFX(GeneralSFX[3]);
                         lightmana.SetActive(true);
+                        sci2_.AnimTrigger(-4);
                         sci_.PlaySFX(GeneralSFX[0]);
                         eventstat = 9;
                         Timer = 1f;
@@ -225,7 +230,7 @@ public class EV_Intro2 : MonoBehaviour
                         Timer = 0.5f;
                         GameController.instance.npcController.mainList[(int)npc.scp173].Spawn(false, ata2.position);
                         DecalSystem.instance.Decal(ata2.transform.position, new Vector3(90f, 0, 0), 4f, true, 0.4f, 1, 0);
-                        d2_.AnimTrigger(-1, true);
+                        d2_.AnimTrigger(-2, true);
                         d2_.StopLookAt();
                         d2_.PlaySFX(GeneralSFX[3]);
                         break;
@@ -238,6 +243,7 @@ public class EV_Intro2 : MonoBehaviour
 
                         sci_.PlaySFX(GeneralSFX[1]);
                         lightmana.SetActive(true);
+                        sci2_.AnimTrigger(1, true);
                         Timer = Timer5;
                         eventstat = 11;
                         break;

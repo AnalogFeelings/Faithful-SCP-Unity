@@ -168,6 +168,7 @@ public static class Localization
 
     static public void BuildSubsDefault()
     {
+        Debug.Log("NO FUCK YOU");
         Dictionary<string, subtitleMeta> tempSubs = new Dictionary<string, subtitleMeta>();
         foreach (var tcadena in sceneStrings_EN)
         {

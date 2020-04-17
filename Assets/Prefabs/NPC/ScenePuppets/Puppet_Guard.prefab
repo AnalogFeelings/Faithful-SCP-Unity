@@ -789,6 +789,7 @@ SkinnedMeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -802,6 +803,7 @@ SkinnedMeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -1968,7 +1970,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb4fa562d67034868a9aafbe4b663012, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rootNode: {fileID: 0}
+  rootNode: {fileID: 5370258650716911529}
   segments:
   - firstTransform: {fileID: 104085732348419358}
     lastTransform: {fileID: 8507996457820156610}
@@ -1976,14 +1978,14 @@ MonoBehaviour:
     bendingMultiplier: 0.6
     maxAngleDifference: 90
     maxBendingAngle: 40
-    responsiveness: 2.5
+    responsiveness: 1
   - firstTransform: {fileID: 8507996457820156610}
     lastTransform: {fileID: 5085837525351222458}
     thresholdAngleDifference: 0
     bendingMultiplier: 0.7
     maxAngleDifference: 30
-    maxBendingAngle: 80
-    responsiveness: 4
+    maxBendingAngle: 60
+    responsiveness: 2
   nonAffectedJoints:
   - joint: {fileID: 537141601417314544}
     effect: 0.3
@@ -1991,7 +1993,7 @@ MonoBehaviour:
     effect: 0.3
   headLookVector: {x: -0.5, y: 0, z: -1}
   headUpVector: {x: 0, y: 1, z: -0.5}
-  target: {x: 0, y: 0, z: 0}
+  target: {x: -4.5058756, y: 1.5, z: -1.0988849}
   effect: 1
   overrideAnimation: 0
 --- !u!82 &6031064790808822916
@@ -2378,6 +2380,7 @@ MonoBehaviour:
   animOffset: 0
   stopDistance: 1
   pushoverrange: 0.35
+  pushSpeed: 0.125
   _controller: {fileID: 0}
   Puppet_Mesh: {fileID: 6729440987656459164}
   Def_LookAt: {fileID: 676523617916970041}
