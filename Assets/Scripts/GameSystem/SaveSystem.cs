@@ -12,17 +12,8 @@ using UnityEngine;
 [System.Serializable]
 public class ItemList
 {
-    public string item;
     public float X, Y, Z;
-    public float vlFloat;
-    public int vlInt;
-}
-[System.Serializable]
-public class svItem
-{
-    public string item;
-    public float vlFloat;
-    public int vlInt;
+    public gameItem item;
 }
 
 [System.Serializable]
@@ -75,7 +66,7 @@ public class SaveData
     public MapSize savedSize;
     public float pX, pY, pZ;
     public int mapX, mapY;
-    public List<svItem[]> items;
+    public List<gameItem[]> items;
     public ItemList[] worldItems;
     public NPC_Data[] npcData;
     public NPC_Data[] mainData;

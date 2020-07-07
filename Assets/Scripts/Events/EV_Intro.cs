@@ -11,6 +11,7 @@ public class EV_Intro : MonoBehaviour
     public GameObject Guard1, Guard2, Door1, Door2, Door3, Trigger1, Trigger2, Trigger3, Trigger4, Gas1, Gas2, NextScene, Item, introZone;
     GameObject Player;
     Transform playerHead;
+    public Transform leftTurn;
     EV_Puppet_Controller Guard1_con, Guard2_con;
     IEnumerator co;
 
@@ -256,8 +257,9 @@ public class EV_Intro : MonoBehaviour
         Guard1_con.SetLookAt(playerHead);
         Guard1_con.PlaySound(Dialogs[1],true);
         EventState = 1;
-        
-        
+        Guard2_con.AnimTrigger(2);
+
+
     }
 
     void Scene1_5()
@@ -297,10 +299,12 @@ public class EV_Intro : MonoBehaviour
 
     void Scene2()
     {
-        Guard1_con.SetPath(Path1);
+        Guard1_con.SetRota(leftTurn, true);
+        Guard1_con.SetPath(Path1, false);
         Guard1_con.StopLookAt();
-        Guard2_con.SetPath(Path1);
-        Guard2_con.SetLookAt(playerHead);
+        Guard2_con.SetRota(leftTurn, true);
+        Guard2_con.SetPath(Path1, false);
+        //Guard2_con.SetLookAt(playerHead);
         EventState = 3;
         Timer = Timer3;
 
@@ -326,6 +330,7 @@ public class EV_Intro : MonoBehaviour
         Door3.GetComponent<Object_Door>().DoorSwitch();
         Guard1_con.SetLookAt(playerHead);
         Guard2_con.StopLookAt();
+        Guard2_con.PausePath();
         
         Check2 = false;
         NextScene.SetActive(true);

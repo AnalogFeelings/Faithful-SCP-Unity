@@ -14,14 +14,19 @@ public class Item : ScriptableObject
     public int valueInt;
     public int SFX;
 
-    public virtual void Use()
+    public virtual void Use(ref gameItem currItem)
     {
 
     }
 
-    public virtual bool Mix(Item toMix)
+    public virtual bool Mix(ref gameItem currItem, ref gameItem toMix)
     {
         return false;
+    }
+
+    public virtual string getName()
+    {
+        return itemName;
     }
 
 

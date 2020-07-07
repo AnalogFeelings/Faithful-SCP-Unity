@@ -41,8 +41,9 @@ public class Item_Spawner : MonoBehaviour
 
     void Helper(GameObject newObject, Item item, Vector3 position)
     {
-        newObject.GetComponent<Object_Item>().item = item;
-        newObject.GetComponent<Object_Item>().id = GameController.instance.AddItem(position, item);
+        gameItem newItem = new gameItem(item.name);
+        newObject.GetComponent<Object_Item>().item = newItem;
+        newObject.GetComponent<Object_Item>().id = GameController.instance.AddItem(position, newItem);
         Debug.Log(newObject.GetComponent<Object_Item>().id);
         newObject.GetComponent<Object_Item>().Spawn();
     }

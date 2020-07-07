@@ -220,11 +220,13 @@ public class ConsoleController
         else
         {
             appendLogLine("Spawning Item " + item);
-            Item newitem = UnityEngine.Object.Instantiate(Resources.Load<Item>(string.Concat("Items/", item)));
-            newitem.name = item;
-
-            if (!ItemController.instance.AddItem(newitem, 0))
-                appendLogLine("Inventory full");
+            if (ItemController.instance.items.ContainsKey(item))
+            {
+                if (!ItemController.instance.AddItem(new gameItem(item), 0))
+                    appendLogLine("Inventory full");
+            }
+            else
+                appendLogLine("Couldnt Find item");
         }
     }
 

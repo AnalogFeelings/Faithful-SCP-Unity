@@ -24,7 +24,7 @@ public class EV_BreachStart : Event_Parent
     public override void EventStart()
     {
         base.EventStart();
-        ded.AnimTrigger(-3, true);
+        ded.AnimTrigger(-7, true);
         ded.DeactivateCollision();
         GameController.instance.QuickSave();
     }
@@ -64,8 +64,10 @@ public class EV_BreachStart : Event_Parent
         {
             if (trigger2.GetComponent<BoxTrigger>().GetState())
             {
-                Sci_.SetPath(Path);
-                Gua_.SetPath(Path);
+                Sci_.SetRota(Anchor1.transform);
+                Gua_.SetRota(Anchor1.transform);
+                Sci_.SetPath(Path, false);
+                Gua_.SetPath(Path, false);
                 Gua_.PlaySound(Dialog);
                 SubtitleEngine.instance.playVoice("scene_BreachStart_1", true);
 

@@ -48,7 +48,7 @@ public class EV_106Victim : Event_Parent
         base.EventFinished();
         StartCoroutine(waittodeactivate());
         victim.gameObject.SetActive(true);
-        victim.AnimTrigger(-1, true);
+        victim.AnimTrigger(-3, true);
     }
 
     IEnumerator Spawning()

@@ -2,14 +2,37 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public class gameItem
+{
+    public string itemName;
+    public int valInt;
+    public float valFloat;
 
+    public gameItem(string _itemName, bool isNew = true, int _int = 0, float _float = 0)
+    {
+        itemName = _itemName;
+        if (!isNew)
+        {
+            valInt = _int;
+            valFloat = _float;
+        }
+        else
+        {
+            valInt = ItemController.instance.items[_itemName].valueInt;
+            valFloat = ItemController.instance.items[_itemName].valueFloat;
+        }
+    }
+
+}
 
 public class ItemController : MonoBehaviour
 {
     public static ItemController instance = null;
-    public Item [] currentItem;
+    public Dictionary<string, Item> items;
+    public gameItem [] currentItem;
     public bool[] currentEquip;
-    public List<Item[]> invs;
+    public List<gameItem[]> invs;
     public List<bool []> equip;
     public slotController [] slots;
 
@@ -25,18 +48,29 @@ public class ItemController : MonoBehaviour
         else if (instance != null)
             Destroy(gameObject);
 
-        invs = new List<Item[]>();
+        invs = new List<gameItem[]>();
         equip = new List<bool[]>();
-        currentItem = new Item[10];
+        currentItem = new gameItem[10];
         currentEquip = new bool[10];
 
         invs.Add(currentItem);
         equip.Add(currentEquip);
 
-
         for (int i = 0; i < slots.Length; i++)
         {
             slots[i].id = i;
+        }
+
+        items = new Dictionary<string, Item>();
+        Object[] templatesArray;
+        templatesArray = Resources.LoadAll("Items/", typeof(Item));
+        foreach (Item template in templatesArray)
+        {
+            Debug.Log("Template name: " + template.name);
+            if (!items.ContainsKey(template.name))
+                items.Add(template.name, template);
+            /*else
+                Debug.Log("Duplicate KEY!");*/
         }
     }
 
@@ -77,15 +111,15 @@ public class ItemController : MonoBehaviour
 
     }
 
-    public bool AddItem(Item newitem, int inv)
+    public bool AddItem(gameItem item, int inv)
     {
         for(int i = 0; i < slots.Length; i++)
         {
             if (invs[inv][i] == null)
             {
-                invs[inv][i] = newitem;
-                Debug.Log(newitem.name);
-                SCP_UI.instance.ItemSFX(newitem.SFX);
+                invs[inv][i] = item;
+                Debug.Log(item.itemName);
+                SCP_UI.instance.ItemSFX(items[item.itemName].SFX);
                 return (true);
             }
         }
@@ -104,39 +138,14 @@ public class ItemController : MonoBehaviour
         return (true);
     }
 
-    public List<svItem[]> GetItems()
+    public List<gameItem[]> GetItems()
     {
-        
-        List<svItem[]> temp_list = new List<svItem[]>();
-
-        for (int j = 0; j < invs.Count; j++)
-        {
-            svItem[] temp_items = new svItem[10];
-            for (int i = 0; i < 10; i++)
-            {
-                if (invs[j][i] != null)
-                {
-                    svItem temp = new svItem();
-                    temp.item = invs[j][i].name;
-                    temp.vlFloat = invs[j][i].valueFloat;
-                    temp.vlInt = invs[j][i].valueInt;
-                    temp_items[i] = temp;
-                    Debug.Log("Objeto " + invs[j][i].name + " inv " + j + " slot " + i);
-                }
-                else
-                {
-                    temp_items[i] = null;
-                    Debug.Log("Sin objeto inv " + j + " slot " + i);
-                }
-            }
-            temp_list.Add(temp_items);
-        }
-        return (temp_list);
+        return (invs);
     }
 
-    public void LoadItems(List<svItem[]> List)
+    public void LoadItems(List<gameItem[]> List)
     {
-        Debug.Log("inventario vacio? " + invs.Count);
+        /*Debug.Log("inventario vacio? " + invs.Count);
         equip = new List<bool[]>();
 
         for (int j = 0; j < List.Count; j++)
@@ -161,17 +170,18 @@ public class ItemController : MonoBehaviour
             
             invs.Add(temp_items);
             equip.Add(new bool[10]);
-        }
+        }*/
+        invs = List;
     }
 
     public void EmptyItems()
     {
-        invs = new List<Item[]>();
+        invs = new List<gameItem[]>();
     }
 
     public void NewInv()
     {
-        invs.Add(new Item[10]);
+        invs.Add(new gameItem[10]);
         equip.Add(new bool[10]);
     }
 

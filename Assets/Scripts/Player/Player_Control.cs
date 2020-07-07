@@ -79,7 +79,7 @@ public class Player_Control : MonoBehaviour
 
     //Iteeemssss
     [System.NonSerialized]
-    public Equipable_Wear[] equipment = new Equipable_Wear[4];
+    public gameItem[] equipment = new gameItem[4];
     [System.NonSerialized]
     public effects[] playerEffects = new effects[4];
     [System.NonSerialized]
@@ -907,29 +907,31 @@ public class Player_Control : MonoBehaviour
     }
 
 
-    public void ACT_Equip(Equipable_Wear item)
+    public void ACT_Equip(gameItem item)
     {
-        if (equipment[(int)item.part] is Equipable_Nav)
+        Equipable_Wear itemData = (Equipable_Wear)ItemController.instance.items[item.itemName];
+
+        if (itemData is Equipable_Nav)
         {
             SCP_UI.instance.SNav.SetActive(false);
         }
 
-        if (equipment[(int)item.part] is Equipable_Radio)
+        if (itemData is Equipable_Radio)
         {
             SCP_UI.instance.radio.StopRadio();
         }
 
-        switch (item.part)
+        switch (itemData.part)
         {
             case bodyPart.Head:
                 {
-                    equipment[(int)item.part] = item;
-                    if (item.isUnique)
-                        SubtitleEngine.instance.playFormatted("playStrings", "play_equip_uni", "itemStrings", item.itemName);
-                    else if (item.isFem)
-                        SubtitleEngine.instance.playFormatted("playStrings", "play_equip_fem", "itemStrings", item.itemName);
+                    equipment[(int)itemData.part] = item;
+                    if (itemData.isUnique)
+                        SubtitleEngine.instance.playFormatted("playStrings", "play_equip_uni", "itemStrings", itemData.getName());
+                    else if (itemData.isFem)
+                        SubtitleEngine.instance.playFormatted("playStrings", "play_equip_fem", "itemStrings", itemData.getName());
                     else
-                        SubtitleEngine.instance.playFormatted("playStrings", "play_equip_male", "itemStrings", item.itemName);
+                        SubtitleEngine.instance.playFormatted("playStrings", "play_equip_male", "itemStrings", itemData.getName());
 
                     ItemController.instance.equip[headInv][headSlot] = false;
                     headSlot = ItemController.instance.currhover;
@@ -939,14 +941,13 @@ public class Player_Control : MonoBehaviour
                 }
             case bodyPart.Body:
                 {
-                    equipment[(int)item.part] = item;
-
-                    if (item.isUnique)
-                        SubtitleEngine.instance.playFormatted("playStrings", "play_equip_uni", "itemStrings", item.itemName);
-                    else if (item.isFem)
-                        SubtitleEngine.instance.playFormatted("playStrings", "play_equip_fem", "itemStrings", item.itemName);
+                    equipment[(int)itemData.part] = item;
+                    if (itemData.isUnique)
+                        SubtitleEngine.instance.playFormatted("playStrings", "play_equip_uni", "itemStrings", itemData.getName());
+                    else if (itemData.isFem)
+                        SubtitleEngine.instance.playFormatted("playStrings", "play_equip_fem", "itemStrings", itemData.getName());
                     else
-                        SubtitleEngine.instance.playFormatted("playStrings", "play_equip_male", "itemStrings", item.itemName);
+                        SubtitleEngine.instance.playFormatted("playStrings", "play_equip_male", "itemStrings", itemData.getName());
 
                     ItemController.instance.equip[bodyInv][bodySlot] = false;
                     bodySlot = ItemController.instance.currhover;
@@ -959,14 +960,13 @@ public class Player_Control : MonoBehaviour
                 }
             case bodyPart.Any:
                 {
-                    equipment[(int)item.part] = item;
-
-                    if (item.isUnique)
-                        SubtitleEngine.instance.playFormatted("playStrings", "play_equip_uni", "itemStrings", item.itemName);
-                    else if (item.isFem)
-                        SubtitleEngine.instance.playFormatted("playStrings", "play_equip_fem", "itemStrings", item.itemName);
+                    equipment[(int)itemData.part] = item;
+                    if (itemData.isUnique)
+                        SubtitleEngine.instance.playFormatted("playStrings", "play_equip_uni", "itemStrings", itemData.getName());
+                    else if (itemData.isFem)
+                        SubtitleEngine.instance.playFormatted("playStrings", "play_equip_fem", "itemStrings", itemData.getName());
                     else
-                        SubtitleEngine.instance.playFormatted("playStrings", "play_equip_male", "itemStrings", item.itemName);
+                        SubtitleEngine.instance.playFormatted("playStrings", "play_equip_male", "itemStrings", itemData.getName());
 
                     ItemController.instance.equip[anyInv][anySlot] = false;
                     anySlot = ItemController.instance.currhover;
@@ -976,7 +976,14 @@ public class Player_Control : MonoBehaviour
                 }
             case bodyPart.Hand:
                 {
-                    equipment[(int)item.part] = item;
+                    equipment[(int)itemData.part] = item;
+                    if (itemData.isUnique)
+                        SubtitleEngine.instance.playFormatted("playStrings", "play_equip_uni", "itemStrings", itemData.getName());
+                    else if (itemData.isFem)
+                        SubtitleEngine.instance.playFormatted("playStrings", "play_equip_fem", "itemStrings", itemData.getName());
+                    else
+                        SubtitleEngine.instance.playFormatted("playStrings", "play_equip_male", "itemStrings", itemData.getName());
+
 
                     ItemController.instance.equip[handInv][handSlot] = false;
                     handSlot = ItemController.instance.currhover;
@@ -986,8 +993,8 @@ public class Player_Control : MonoBehaviour
                     break;
                 }
         }
-        if (item.hasEffect)
-            SetEffect(item);
+        if (itemData.hasEffect)
+            SetEffect(itemData);
         ReloadEquipment();
     }
 
@@ -1001,8 +1008,6 @@ public class Player_Control : MonoBehaviour
         Health -= (bloodloss * 0.125f) * Time.deltaTime;
         if (Health >= 100)
             Health = 100;
-
-
 
         for(int i = 0; i < playerEffects.Length; i++)
         {
@@ -1060,9 +1065,9 @@ public class Player_Control : MonoBehaviour
             }
         }
 
-        if (equipment[(int)bodyPart.Hand] is Equipable_Elec && equipment[(int)bodyPart.Hand].valueFloat >= 0)
+        if (equipment[(int)bodyPart.Hand]!= null && ItemController.instance.items[equipment[(int)bodyPart.Hand].itemName] is Equipable_Elec && equipment[(int)bodyPart.Hand].valFloat >= 0)
         {
-            (equipment[(int)bodyPart.Hand]).valueFloat -= ((Equipable_Elec)equipment[(int)bodyPart.Hand]).SpendFactor * Time.deltaTime;
+            (equipment[(int)bodyPart.Hand]).valFloat -= ((Equipable_Elec)ItemController.instance.items[equipment[(int)bodyPart.Hand].itemName]).SpendFactor * Time.deltaTime;
         }
 
 
@@ -1090,31 +1095,32 @@ public class Player_Control : MonoBehaviour
 
     public void ACT_UnEquip(bodyPart where)
     {
-        SCP_UI.instance.ItemSFX(equipment[(int)where].SFX);
+        Equipable_Wear itemData = (Equipable_Wear)ItemController.instance.items[equipment[(int)where].itemName];
+        SCP_UI.instance.ItemSFX(itemData.SFX);
 
-        if (equipment[(int)where].hasEffect)
+        if (itemData.hasEffect)
         {
-            StopEffects(equipment[(int)where].Effects.Affected);
+            StopEffects(itemData.Effects.Affected);
         }
 
-        if (equipment[(int)where] is Equipable_Nav)
+        if (itemData is Equipable_Nav)
         {
             SCP_UI.instance.SNav.SetActive(false);
         }
 
-        if (equipment[(int)where] is Equipable_Radio)
+        if (itemData is Equipable_Radio)
         {
             SCP_UI.instance.radio.StopRadio();
         }
 
         if (where != bodyPart.Hand)
         {
-            if(equipment[(int)where].isUnique)
-                SubtitleEngine.instance.playFormatted("playStrings", "play_dequip_uni", "itemStrings", equipment[(int)where].itemName);
-            else if (equipment[(int)where].isFem)
-                SubtitleEngine.instance.playFormatted("playStrings", "play_dequip_fem", "itemStrings", equipment[(int)where].itemName);
+            if(itemData.isUnique)
+                SubtitleEngine.instance.playFormatted("playStrings", "play_dequip_uni", "itemStrings", itemData.getName());
+            else if (itemData.isFem)
+                SubtitleEngine.instance.playFormatted("playStrings", "play_dequip_fem", "itemStrings", itemData.getName());
             else
-                SubtitleEngine.instance.playFormatted("playStrings", "play_dequip_male", "itemStrings", equipment[(int)where].itemName);
+                SubtitleEngine.instance.playFormatted("playStrings", "play_dequip_male", "itemStrings", itemData.getName());
         }
         switch (where)
         {
@@ -1149,9 +1155,9 @@ public class Player_Control : MonoBehaviour
     {
         if (equipment[(int)bodyPart.Head] != null)
         {
-            protectSmoke = equipment[(int)bodyPart.Head].protectGas;
-            Reverb.enabled = equipment[(int)bodyPart.Head].protectGas;
-            overlay.sprite = equipment[(int)bodyPart.Head].Overlay;
+            protectSmoke = ((Equipable_Wear)ItemController.instance.items[equipment[(int)bodyPart.Head].itemName]).protectGas;
+            Reverb.enabled = ((Equipable_Wear)ItemController.instance.items[equipment[(int)bodyPart.Head].itemName]).protectGas;
+            overlay.sprite = ((Equipable_Wear)ItemController.instance.items[equipment[(int)bodyPart.Head].itemName]).Overlay;
             overlay.color = new Color(255, 255, 255, 0.75f);
         }
         else
@@ -1161,9 +1167,9 @@ public class Player_Control : MonoBehaviour
             overlay.sprite = null;
         }
 
-        if (equipment[(int)bodyPart.Hand] != null && !((equipment[(int)bodyPart.Hand] is Equipable_Radio) || (equipment[(int)bodyPart.Hand] is Equipable_Nav)))
+        if (equipment[(int)bodyPart.Hand] != null && !((ItemController.instance.items[equipment[(int)bodyPart.Hand].itemName] is Equipable_Radio) || (ItemController.instance.items[equipment[(int)bodyPart.Hand].itemName] is Equipable_Nav)))
         {
-            handEquip.sprite = equipment[(int)bodyPart.Hand].Overlay;
+            handEquip.sprite = ((Equipable_Wear)ItemController.instance.items[equipment[(int)bodyPart.Hand].itemName]).Overlay;
             handEquip.color = Color.white;
             handEquip.SetNativeSize();
         }
@@ -1175,12 +1181,11 @@ public class Player_Control : MonoBehaviour
         }
     }
 
-    public void DropItem(Item item)
+    public void DropItem(gameItem item)
     {
         GameObject newObject;
         newObject = Instantiate(GameController.instance.itemSpawner, handPos.transform.position, Quaternion.identity, GameController.instance.itemParent.transform);
         newObject.GetComponent<Object_Item>().item = item;
-        newObject.GetComponent<Object_Item>().isNew = false;
         newObject.GetComponent<Object_Item>().id = GameController.instance.AddItem(handPos.transform.position, item);
         Debug.Log("dROPPED " + newObject.GetComponent<Object_Item>().id);
         newObject.GetComponent<Object_Item>().Spawn();

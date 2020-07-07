@@ -24,6 +24,7 @@ public class EV_Intro2 : MonoBehaviour
         sci_ = sci.GetComponent<EV_Puppet_Controller>();
         sci2_ = sci2.GetComponent<EV_Puppet_Controller>();
         guard_ = guard.GetComponent<EV_Puppet_Controller>();
+        d2_.AnimTrigger(2, true);
 
         GameController.instance.ChangeMusic(MusicChange);
     }

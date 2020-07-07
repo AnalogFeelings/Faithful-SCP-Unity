@@ -9,10 +9,12 @@ public class slotController : MonoBehaviour, IDragHandler, IEndDragHandler
     Vector3 orpos;
     bool dragging;
     public int id;
+    ItemController cont;
 
     private void Start()
     {
         orpos = transform.position;
+        cont = ItemController.instance;
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -21,7 +23,7 @@ public class slotController : MonoBehaviour, IDragHandler, IEndDragHandler
         {
             transform.position = Input.mousePosition;
             dragging = true;
-            ItemController.instance.currdrag = id;
+            cont.currdrag = id;
             GetComponent<Image>().raycastTarget = false;
         }
     }
@@ -31,34 +33,34 @@ public class slotController : MonoBehaviour, IDragHandler, IEndDragHandler
         GetComponent<Image>().raycastTarget = true;
         dragging = false;
 
-        if (ItemController.instance.currhover == -1)
+        if (cont.currhover == -1)
         {
-            if (ItemController.instance.currentEquip[id] == false && ItemController.instance.currentItem[id] != null)
+            if (cont.currentEquip[id] == false && cont.currentItem[id] != null)
             {
-                GameController.instance.player.GetComponent<Player_Control>().DropItem(ItemController.instance.currentItem[id]);
-                SCP_UI.instance.ItemSFX(ItemController.instance.currentItem[id].SFX);
-                ItemController.instance.currentItem[id] = null;
+                GameController.instance.player.GetComponent<Player_Control>().DropItem(cont.currentItem[id]);
+                SCP_UI.instance.ItemSFX(cont.items[cont.currentItem[id].itemName].SFX);
+                cont.currentItem[id] = null;
                 SCP_UI.instance.ToggleInventory();
             }
         }
         else
         {
-            if (ItemController.instance.currhover != -1 && ItemController.instance.currentItem[ItemController.instance.currhover] == null && ItemController.instance.currentEquip[ItemController.instance.currhover] != true && ItemController.instance.currentEquip[id] != true)
+            if (cont.currhover != -1 && cont.currentItem[cont.currhover] == null && cont.currentEquip[cont.currhover] != true && cont.currentEquip[id] != true)
             {
                 slotMove();
-                ItemController.instance.UpdateInv();
+                cont.UpdateInv();
                 return;
             }
-            if (ItemController.instance.currentItem[ItemController.instance.currhover] != null && ItemController.instance.currentEquip[ItemController.instance.currhover] != true && ItemController.instance.currentEquip[id] != true)
+            if (cont.currentItem[cont.currhover] != null && cont.currentEquip[cont.currhover] != true && cont.currentEquip[id] != true)
             {
-                if (ItemController.instance.currentItem[ItemController.instance.currhover].Mix(ItemController.instance.currentItem[id]))
+                if (cont.items[cont.currentItem[cont.currhover].itemName].Mix(ref cont.currentItem[cont.currhover], ref cont.currentItem[id]))
                 {
-                    ItemController.instance.currentItem[id] = null;
+                    cont.currentItem[id] = null;
                 }
             }
         }
 
-        ItemController.instance.UpdateInv();
+        cont.UpdateInv();
     }
 
 
@@ -67,33 +69,35 @@ public class slotController : MonoBehaviour, IDragHandler, IEndDragHandler
     {
         Text displayText = transform.Find("Text").GetComponent<Text>();
         Image displayImage = transform.Find("Image").GetComponent<Image>();
+        Sprite currIcon;
 
-        if (ItemController.instance.currentItem[id])
+        if (cont.currentItem[id] != null)
         {
-            if (!ItemController.instance.currentEquip[id])
-                displayText.text = Localization.GetString("itemStrings", ItemController.instance.currentItem[id].itemName);
+            currIcon = cont.items[cont.currentItem[id].itemName].icon;
+            if (!cont.currentEquip[id])
+                displayText.text = Localization.GetString("itemStrings", cont.items[cont.currentItem[id].itemName].getName());
             else
-                displayText.text = string.Format(Localization.GetString("playStrings", "play_equiped"), Localization.GetString("itemStrings", ItemController.instance.currentItem[id].itemName));
-            if (ItemController.instance.currentItem[id] is Item_Clipboard)
+                displayText.text = string.Format(Localization.GetString("playStrings", "play_equiped"), Localization.GetString("itemStrings", cont.items[cont.currentItem[id].itemName].getName()));
+            if (cont.items[cont.currentItem[id].itemName] is Item_Clipboard)
             {
-                if (ItemController.instance.currentItem[id].valueInt != -1)
+                if (cont.currentItem[id].valInt != -1)
                 {
-                    if (ItemController.instance.IsEmpty(ItemController.instance.currentItem[id].valueInt))
+                    if (cont.IsEmpty(cont.currentItem[id].valInt))
                     {
-                        Item_Clipboard clippy = (Item_Clipboard)ItemController.instance.currentItem[id];
-                        ItemController.instance.currentItem[id].icon = clippy.nodoc;
+                        Item_Clipboard clippy = (Item_Clipboard)cont.items[cont.currentItem[id].itemName];
+                        currIcon = clippy.nodoc;
                     }
                 }
                 else
                 {
-                    Item_Clipboard clippy = (Item_Clipboard)ItemController.instance.currentItem[id];
-                    ItemController.instance.currentItem[id].icon = clippy.nodoc;
+                    Item_Clipboard clippy = (Item_Clipboard)cont.items[cont.currentItem[id].itemName];
+                    currIcon = clippy.nodoc;
                 }
             }
 
 
 
-            displayImage.sprite = ItemController.instance.currentItem[id].icon;
+            displayImage.sprite = currIcon;
             displayImage.color = Color.white;
         }
         else
@@ -107,22 +111,23 @@ public class slotController : MonoBehaviour, IDragHandler, IEndDragHandler
 
     public void Use()
     {
-        if (ItemController.instance.currentItem[id] && !dragging)
+        if (cont.currentItem[id]!=null && !dragging)
         {
-            int cacheinv = ItemController.instance.currInv;
-            SCP_UI.instance.ItemSFX(ItemController.instance.currentItem[id].SFX);
-            bool dontclose = ItemController.instance.currentItem[id].keepInv;
-            ItemController.instance.currentItem[id].Use();
-            if (ItemController.instance.currInv == cacheinv && ItemController.instance.currentItem[id].deleteUse == true)
+            Item currItem = cont.items[cont.currentItem[id].itemName];
+            int cacheinv = cont.currInv;
+            SCP_UI.instance.ItemSFX(currItem.SFX);
+            bool dontclose = currItem.keepInv;
+            currItem.Use(ref cont.currentItem[cont.currhover]);
+            if (cont.currInv == cacheinv && currItem.deleteUse == true)
             {
-                if (ItemController.instance.currentItem[id].isUnique)
-                    SubtitleEngine.instance.playFormatted("playStrings", "play_used_uni", "itemStrings", ItemController.instance.currentItem[id].itemName);
-                else if (ItemController.instance.currentItem[id].isFem)
-                    SubtitleEngine.instance.playFormatted("playStrings", "play_used_fem", "itemStrings", ItemController.instance.currentItem[id].itemName);
+                if (currItem.isUnique)
+                    SubtitleEngine.instance.playFormatted("playStrings", "play_used_uni", "itemStrings", currItem.getName());
+                else if (currItem.isFem)
+                    SubtitleEngine.instance.playFormatted("playStrings", "play_used_fem", "itemStrings", currItem.getName());
                 else
-                    SubtitleEngine.instance.playFormatted("playStrings", "play_used_male", "itemStrings", ItemController.instance.currentItem[id].itemName);
+                    SubtitleEngine.instance.playFormatted("playStrings", "play_used_male", "itemStrings", currItem.getName());
 
-                ItemController.instance.currentItem[id] = null;
+                cont.currentItem[id] = null;
             }
             if (!dontclose)
                 SCP_UI.instance.ToggleInventory();
@@ -132,11 +137,11 @@ public class slotController : MonoBehaviour, IDragHandler, IEndDragHandler
 
     public void Hover()
     {
-        ItemController.instance.currhover = id;
+        cont.currhover = id;
     }
     public void slotMove()
     {
-        ItemController.instance.currentItem[ItemController.instance.currhover] = ItemController.instance.currentItem[id];
-        ItemController.instance.currentItem[id] = null;
+        cont.currentItem[cont.currhover] = cont.currentItem[id];
+        cont.currentItem[id] = null;
     }
 }

@@ -17,10 +17,10 @@ public class Object_KeyButton : Object_Interact
 
         if(!WaitForBool || (WaitForBool && GameController.instance.globalBools[ThisValue]))
         {
-            if (player.equipment[(int)bodyPart.Hand] != null && player.equipment[(int)bodyPart.Hand] is Equipable_Key)
+            if (player.equipment[(int)bodyPart.Hand] != null && ItemController.instance.items[player.equipment[(int)bodyPart.Hand].itemName] is Equipable_Key)
             {
                 Equipable_Key key;
-                key = (Equipable_Key)player.equipment[(int)bodyPart.Hand];
+                key = (Equipable_Key)ItemController.instance.items[player.equipment[(int)bodyPart.Hand].itemName];
                 if (key.level >= Clearance)
                 {
                     Door01.GetComponent<Object_Door>().DoorSwitch();

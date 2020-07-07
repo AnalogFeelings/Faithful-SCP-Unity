@@ -8,7 +8,7 @@ public class Document_Equipable : Equipable_Wear
 {
     public string filename;
 
-    public override void Use()
+    public override void Use(ref gameItem currItem)
     {
         Player_Control player = GameController.instance.player.GetComponent<Player_Control>();
 
@@ -16,7 +16,7 @@ public class Document_Equipable : Equipable_Wear
         {
             this.Overlay = Resources.Load<Sprite>(string.Concat("Items/Docs/", filename));
             this.part = bodyPart.Hand;
-            player.ACT_Equip(this);
+            player.ACT_Equip(currItem);
         }
         else
         {

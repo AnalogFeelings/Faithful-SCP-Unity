@@ -674,11 +674,11 @@ public class GameController : MonoBehaviour
         }
     }*/
 
-    public int AddItem(Vector3 pos, Item item)
+    public int AddItem(Vector3 pos, gameItem item)
     {
         for (int i = 0; i < itemData.Length; i++)
         {
-            if (itemData[i] == null || itemData[i].item == null || itemData[i].item == "Null" || itemData[i].item == "")
+            if (itemData[i] == null || itemData[i].item == null)
             {
                 itemData[i] = new ItemList();
                 itemData[i].X = pos.x;
@@ -686,9 +686,7 @@ public class GameController : MonoBehaviour
                 itemData[i].Z = pos.z;
                 Debug.Log("Nuevoitem en: "+i);
 
-                itemData[i].item = item.name;
-                itemData[i].vlFloat = item.valueFloat;
-                itemData[i].vlInt = item.valueInt;
+                itemData[i].item = item;
                 return (i);
             }
         }
@@ -1095,17 +1093,14 @@ public class GameController : MonoBehaviour
         Debug.Log("Entrando al loop");
         for (int i = 0; i < itemData.Length; i++)
         {
-            if (itemData[i] != null && itemData[i].item != null && itemData[i].item != "Null" && itemData[i].item != "")
+            if (itemData[i] != null && itemData[i].item != null)
             {
                 GameObject newObject;
                 Debug.Log(itemData[i].item + " i: " + i);
                 newObject = Instantiate(itemSpawner, new Vector3(itemData[i].X, itemData[i].Y + 0.2f, itemData[i].Z), Quaternion.identity);
-                newObject.GetComponent<Object_Item>().item = Resources.Load<Item>(string.Concat("Items/", itemData[i].item));
+                newObject.GetComponent<Object_Item>().item = itemData[i].item;
                 newObject.GetComponent<Object_Item>().id = i;
                 newObject.transform.parent = itemParent.transform;
-                newObject.GetComponent<Object_Item>().vlFloat = itemData[i].vlFloat;
-                newObject.GetComponent<Object_Item>().vlInt = itemData[i].vlInt;
-                newObject.GetComponent<Object_Item>().isNew = false;
 
                 newObject.GetComponent<Object_Item>().Spawn();
             }

@@ -1,6 +1,6 @@
 // Made with Amplify Shader Editor
 // Available at the Unity Asset Store - http://u3d.as/y3X 
-Shader "screenSCP"
+Shader "custom/screenSCP"
 {
 	Properties
 	{
@@ -128,7 +128,7 @@ Shader "screenSCP"
 }
 /*ASEBEGIN
 Version=17900
--1280;-256;1280;963;277;521.5;1;True;True
+1360;-244;1280;951;329;531.5;1;True;True
 Node;AmplifyShaderEditor.TexturePropertyNode;1;-738,-427.5;Inherit;True;Property;_ScreenDisplay;ScreenDisplay;0;0;Create;True;0;0;False;0;90e90af43fdc91c4fb5267e91f1cb690;90e90af43fdc91c4fb5267e91f1cb690;False;white;Auto;Texture2D;-1;0;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.TexturePropertyNode;3;-560,-32.5;Inherit;True;Property;_ScreenOverlay;ScreenOverlay;1;0;Create;True;0;0;False;0;59c54a7d67f68b7408ec09724888adaa;59c54a7d67f68b7408ec09724888adaa;False;white;Auto;Texture2D;-1;0;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.TextureCoordinatesNode;4;-487,-227.5;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
@@ -137,7 +137,7 @@ Node;AmplifyShaderEditor.SamplerNode;5;-200,-73.5;Inherit;True;Property;_Texture
 Node;AmplifyShaderEditor.BlendOpsNode;6;144,-249.5;Inherit;True;Screen;True;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;1;False;1;COLOR;0
 Node;AmplifyShaderEditor.RangedFloatNode;8;148,134.5;Inherit;False;Property;_PostBrighten;PostBrighten;2;0;Create;True;0;0;False;0;1;1;1;10;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;7;426,9.5;Inherit;True;2;2;0;COLOR;0,0,0,0;False;1;FLOAT;1;False;1;COLOR;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;0;626,-245;Float;False;True;-1;2;ASEMaterialInspector;100;1;screenSCP;0770190933193b94aaa3065e307002fa;True;Unlit;0;0;Unlit;2;True;0;1;False;-1;0;False;-1;0;1;False;-1;0;False;-1;True;0;False;-1;0;False;-1;True;False;True;0;False;-1;True;True;True;True;True;0;False;-1;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;1;RenderType=Opaque=RenderType;True;2;0;False;False;False;False;False;False;False;False;False;True;1;LightMode=ForwardBase;False;0;;0;0;Standard;1;Vertex Position,InvertActionOnDeselection;1;0;1;True;False;;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;0;626,-245;Float;False;True;-1;2;ASEMaterialInspector;100;1;custom/screenSCP;0770190933193b94aaa3065e307002fa;True;Unlit;0;0;Unlit;2;True;0;1;False;-1;0;False;-1;0;1;False;-1;0;False;-1;True;0;False;-1;0;False;-1;True;False;True;0;False;-1;True;True;True;True;True;0;False;-1;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;1;RenderType=Opaque=RenderType;True;2;0;False;False;False;False;False;False;False;False;False;True;1;LightMode=ForwardBase;False;0;;0;0;Standard;1;Vertex Position,InvertActionOnDeselection;1;0;1;True;False;;0
 WireConnection;4;2;1;0
 WireConnection;2;0;1;0
 WireConnection;5;0;3;0
@@ -148,4 +148,4 @@ WireConnection;7;0;6;0
 WireConnection;7;1;8;0
 WireConnection;0;0;7;0
 ASEEND*/
-//CHKSM=73B747E1E916C5DE82527F5B07FC0136FC7BFCCB
+//CHKSM=82EE89660661D4C8C74F66F09DC14C627AD4D102
