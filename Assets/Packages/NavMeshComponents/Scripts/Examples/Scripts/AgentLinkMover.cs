@@ -15,14 +15,17 @@ public class AgentLinkMover : MonoBehaviour
 {
     public OffMeshLinkMoveMethod m_Method = OffMeshLinkMoveMethod.Parabola;
     public AnimationCurve m_Curve = new AnimationCurve();
+    public string areaDoorName, areaElevName;
+    int areaDoor;
 
     IEnumerator Start()
     {
         NavMeshAgent agent = GetComponent<NavMeshAgent>();
+        areaDoor = NavMesh.GetAreaFromName(areaDoorName);
         agent.autoTraverseOffMeshLink = false;
         while (true)
         {
-            if (agent.isOnOffMeshLink)
+            if (agent.isOnOffMeshLink && ((UnityEngine.AI.NavMeshLink)agent.navMeshOwner).area != areaDoor)
             {
                 if (m_Method == OffMeshLinkMoveMethod.NormalSpeed)
                     yield return StartCoroutine(NormalSpeed(agent));
@@ -42,6 +45,7 @@ public class AgentLinkMover : MonoBehaviour
         Vector3 endPos = data.endPos + Vector3.up * agent.baseOffset;
         while (agent.transform.position != endPos)
         {
+            agent.transform.LookAt(endPos);
             agent.transform.position = Vector3.MoveTowards(agent.transform.position, endPos, agent.speed * Time.deltaTime);
             yield return null;
         }

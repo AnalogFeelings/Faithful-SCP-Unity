@@ -9,6 +9,9 @@ namespace UnityEngine.AI
     public class NavMeshLink : MonoBehaviour
     {
         [SerializeField]
+        public GameObject PathHandler;
+
+        [SerializeField]
         int m_AgentTypeID;
         public int agentTypeID { get { return m_AgentTypeID; } set { m_AgentTypeID = value; UpdateLink(); } }
 

@@ -277,7 +277,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 772443387}
   m_HandleRect: {fileID: 772443386}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -1303,6 +1303,7 @@ GameObject:
   - component: {fileID: 299088542}
   - component: {fileID: 299088546}
   - component: {fileID: 299088545}
+  - component: {fileID: 299088547}
   m_Layer: 17
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1451,7 +1452,22 @@ MonoBehaviour:
   breakBeforeColorGrading: 0
   m_BeforeTransparentBundles: []
   m_BeforeStackBundles: []
-  m_AfterStackBundles: []
+  m_AfterStackBundles:
+  - assemblyQualifiedName: HorrorBlur, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+--- !u!114 &299088547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 299088541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8e47b3e8ac3fa141abb6c46ee089ffa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skinLookup: {fileID: 2800000, guid: 983458ea1b3f1854dbdfab9d0da1eba7, type: 3}
 --- !u!1 &312791245
 GameObject:
   m_ObjectHideFlags: 0

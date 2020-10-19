@@ -51,7 +51,7 @@ public class Player_Control : MonoBehaviour
     Camera PlayerCam;
     Image eyes, blinkbar, runbar, batbar, overlay, handEquip, eyeIcon;
     RectTransform hand_rect, hud_rect;
-    public bool Freeze = false, isGameplay = false, Crouch = false, onCam = false, godmode = false;
+    public bool Freeze = false, isGameplay = false, Crouch = false, onCam = false, godmode = false, checkObjects = true;
     public bool noMasterController = false;
 
     [Header("Movement")]
@@ -181,6 +181,7 @@ public class Player_Control : MonoBehaviour
                 ACT_Effects();
                 if (!noMasterController)
                     ACT_Blinking();
+                if (checkObjects)
                 ACT_Buttons();
                 if (!Freeze)
                 {
@@ -865,16 +866,10 @@ public class Player_Control : MonoBehaviour
 
     /*void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        /*if (hit.gameObject.CompareTag("Death"))
-            Death(0);
-        if (hit.gameObject.CompareTag("DeathFall"))
-            Death(3);
-
-
-        Debug.Log("Pushing");
-        Rigidbody body = hit.collider.attachedRigidbody;
-        if (body != null && !body.isKinematic)
+        if (gameObject.CompareTag("Physics"))
         {
+            Debug.Log("Pushing");
+            Rigidbody body = hit.collider.attachedRigidbody;
             body.AddForce(movement * 70, ForceMode.Force);
         }
 
@@ -882,7 +877,7 @@ public class Player_Control : MonoBehaviour
 
     void CollisionDetection()
     {
-        Collider[] collisions = Physics.OverlapCapsule(transform.position+(_controller.center-Vector3.up*((_controller.height/2))), transform.position + (_controller.center + Vector3.up * ((_controller.height / 2))), _controller.radius, Collisionables, QueryTriggerInteraction.Collide);
+        Collider[] collisions = Physics.OverlapCapsule(transform.position+(_controller.center-Vector3.up*((_controller.height/2))), transform.position + (_controller.center + Vector3.up * ((_controller.height / 2))), _controller.radius+0.2f, Collisionables, QueryTriggerInteraction.Collide);
 
         if (collisions.Length != 0)
         {
@@ -892,15 +887,12 @@ public class Player_Control : MonoBehaviour
                     Death(0);
                 if (collisions[i].gameObject.CompareTag("DeathFall"))
                     Death(3);
-                
+
                 if (collisions[i].gameObject.CompareTag("Physics"))
                 {
                     Debug.Log("Pushing");
                     Rigidbody body = collisions[i].attachedRigidbody;
-                    if (body != null && !body.isKinematic)
-                    {
-                        body.AddForce(movement * 70, ForceMode.Force);
-                    }
+                    body.AddForce(movement, ForceMode.Impulse);
                 }
             }
         }

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class AmbianceController : MonoBehaviour
@@ -10,10 +11,17 @@ public class AmbianceController : MonoBehaviour
     float ambiancetimer = 0, GENambiancetimer = 0, ambiancefreq = 3;
     public float ambifreq, GENambiancefreq;
     public bool custom = true;
+    public string eventBundleName;
+    //private AssetBundle eventBundle;
 
     // Start is called before the first frame update
 
     // Update is called once per frame
+    /*private void Start()
+    {
+        eventBundle = AssetBundle.LoadFromFile(Path.Combine(Application.streamingAssetsPath, eventBundleName));
+    }*/
+
     void Update()
     {
         if (enableAmbiance && AmbianceLibrary.Length != 0)
@@ -59,4 +67,23 @@ public class AmbianceController : MonoBehaviour
         custom = false;
         //GameController.instance.zoneAmbiance = -1;
     }
+
+    /*public AudioClip[] getEventAudioArray(string[] clips)
+    {
+        AudioClip[] returnedAudio = new AudioClip[clips.Length];
+        
+        for(int i = 0; i < clips.Length; i++)
+        {
+            returnedAudio[i] = eventBundle.LoadAsset<AudioClip>(clips[i]);
+        }
+
+        return returnedAudio;
+    }
+
+    public AudioClip getEventAudio(string clip)
+    {
+        return eventBundle.LoadAsset<AudioClip>(clip);
+    }*/
+
+
 }

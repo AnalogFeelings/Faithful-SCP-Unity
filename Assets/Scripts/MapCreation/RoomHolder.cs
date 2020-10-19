@@ -5,4 +5,5 @@ using UnityEngine;
 public class RoomHolder : MonoBehaviour
 {
     public GameObject Room, Lights, Probes;
+    public GameObject[] cutsceneReferences;
 }

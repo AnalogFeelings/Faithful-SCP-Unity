@@ -75,7 +75,7 @@ public class EV_BreachStart : Event_Parent
                 GameController.instance.player.GetComponent<Player_Control>().FakeBlink(0.5f);
                 GameController.instance.GlobalSFX.PlayOneShot(blackout);
 
-                GameController.instance.npcController.SCPS[(int)npc.scp173].transform.rotation = Anchor1.transform.rotation;
+                GameController.instance.npcController.mainList[(int)npc.scp173].transform.rotation = Anchor1.transform.rotation;
                 check2 = false;
                 StopTimer = false;
                 Timer = 10;

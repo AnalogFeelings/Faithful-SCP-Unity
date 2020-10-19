@@ -31,6 +31,20 @@ public class savedDoor
 
 }
 
+[System.Serializable]
+public class savedObject
+{
+    public int id;
+    public bool State;
+
+    public savedObject(int _id)
+    {
+        State = false;
+        id = _id;
+    }
+
+}
+
 public class GameController : MonoBehaviour
 {
     [Header("Map Settings")]
@@ -39,6 +53,7 @@ public class GameController : MonoBehaviour
     public static GameController instance = null;
     public bool isAlive = true, isPocket;
     int doorCounter = 0;
+    int persCounter = 0;
     public bool canSave = false, debugCamera, holdRoom = false;
     public bool CreateMap, ShowMap;
     public bool doGameplay, spawnPlayer, spawnHere, StopTimer = false, isStart = false, mapless;
@@ -63,7 +78,7 @@ public class GameController : MonoBehaviour
 
     [HideInInspector]
     [System.NonSerialized]
-    public GameObject itemParent, eventParent, doorParent, npcParent;
+    public GameObject itemParent, eventParent, doorParent, npcParent, persParent;
 
 
     Transform currentTarget;
@@ -87,16 +102,17 @@ public class GameController : MonoBehaviour
     int[,] Binary_Map;
     int[,] nav_Map;
     room[,] SCP_Map;
-    GameObject[,] rooms;
+    RoomHolder[,] rooms;
     Dictionary<string, room_dat> roomLookup;
 
 
     ItemList[] itemData;
     [HideInInspector]
     public List<savedDoor> doorTable;
+    public List<savedObject> persTable;
 
 
-    
+
     public Transform playerSpawn;
 
     [Header("Audio Sources")]
@@ -176,6 +192,8 @@ public class GameController : MonoBehaviour
 
         doorParent = new GameObject();
         doorParent.name = "doorParent";
+
+        persParent = new GameObject("persParent");
 
 
         //Define globals into dictionary
@@ -346,6 +364,7 @@ public class GameController : MonoBehaviour
             Camera.main.gameObject.transform.parent = null;
 
             doorParent.BroadcastMessage("resetState");
+            persParent.BroadcastMessage("resetState");
 
             DestroyImmediate(player);
             npcController.DeleteNPC();
@@ -393,6 +412,38 @@ public class GameController : MonoBehaviour
     public void SetDoorState(bool state, int id)
     {
         doorTable[id].isOpen = state;
+    }
+
+    public int GetObjectID()
+    {
+        if (GlobalValues.isNew)
+        {
+            persTable.Add(new savedObject(persTable.Count));
+            return (persTable.Count - 1);
+        }
+        else
+        {
+            persCounter++;
+            return (persCounter - 1);
+        }
+    }
+
+    public int GetObjectState(int id)
+    {
+        if (GlobalValues.isNew)
+            return (-1);
+        else
+        {
+            if (persTable[id].State == true)
+                return (1);
+            else
+                return (0);
+        }
+    }
+
+    public void SetObjectState(bool state, int id)
+    {
+        persTable[id].State = state;
     }
 
 
@@ -714,6 +765,11 @@ public class GameController : MonoBehaviour
     public int getValue(int x, int y, int index)
     {
         return (SCP_Map[x, y].values[index]);
+    }
+
+    public GameObject getCutsceneObject(int x, int y, int index)
+    {
+        return rooms[x, y].cutsceneReferences[index];
     }
 
     void PlayerEvents()
@@ -1124,6 +1180,7 @@ public class GameController : MonoBehaviour
         playData.saveName = GlobalValues.mapname;
         playData.saveSeed = GlobalValues.mapseed;
         playData.doorState = doorTable;
+        playData.persState = persTable;
         playData.savedSize = mapSize;
         playData.pX = player.transform.position.x;
         playData.pY = player.transform.position.y;
@@ -1251,6 +1308,7 @@ public class GameController : MonoBehaviour
         itemData = SaveSystem.instance.playData.worldItems;
         mapCreate.mapfil = SaveSystem.instance.playData.savedMap;
         doorTable = SaveSystem.instance.playData.doorState;
+        persTable = SaveSystem.instance.playData.persState;
         SCP_Map = SaveSystem.instance.playData.savedMap;
         ItemController.instance.EmptyItems();
         ItemController.instance.LoadItems(SaveSystem.instance.playData.items);
@@ -1390,7 +1448,7 @@ public class GameController : MonoBehaviour
 
     void HidRoom(int i, int j)
     {
-        RoomHolder hold = rooms[i, j].GetComponent<RoomHolder>();
+        RoomHolder hold = rooms[i, j];
         hold.Lights.SetActive(false);
         if (hold.Probes != null)
             hold.Probes.SetActive(false);
@@ -1400,19 +1458,20 @@ public class GameController : MonoBehaviour
             r.enabled = false;
     }
 
-    void ShowRoom(int i, int j)
+    IEnumerator ShowRoom(int i, int j)
     {
-        RoomHolder hold = rooms[i, j].GetComponent<RoomHolder>();
+        RoomHolder hold = rooms[i, j];
         hold.Lights.SetActive(true);
-        if (hold.Probes != null)
-        {
-            hold.Probes.SetActive(true);
-            StartCoroutine(RenderProbe(hold.Probes.GetComponentsInChildren<ReflectionProbe>()));
-        }
-        
+
         Renderer[] rs = hold.Room.GetComponentsInChildren<Renderer>();
         foreach (Renderer r in rs)
             r.enabled = true;
+
+        if (hold.Probes != null)
+        {
+            hold.Probes.SetActive(true);
+            yield return StartCoroutine(RenderProbe(hold.Probes.GetComponentsInChildren<ReflectionProbe>()));
+        }
     }
 
     IEnumerator RenderProbe(ReflectionProbe[] probes)
@@ -1534,7 +1593,7 @@ public class GameController : MonoBehaviour
                     else
                     {
                         //Debug.Log("Showing Room at x" + i + " y " + j);
-                        ShowRoom(i, j);
+                        yield return ShowRoom(i, j);
                         if (SCP_Map[i, j].Event != -1)
                         {
                             rooms[i, j].GetComponent<EventHandler>().EventLoad(i, j, SCP_Map[i, j].eventDone);

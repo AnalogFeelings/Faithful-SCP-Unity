@@ -397,24 +397,24 @@ public class npc173_new : Roam_NPC
                 {
                     transform.position = warppoint;
 
-                    Debug.Log("I tried to spawn and it worked");
+                    //Debug.Log("I tried to spawn and it worked");
                 }
                 else if (NavMesh.SamplePosition(warppoint, out here, 15f, NavMesh.AllAreas))
                 {
                     transform.position = here.position;
                     data.isActive = beActive;
-                    Debug.Log("I tried to spawn and it worked kinda");
+                    //Debug.Log("I tried to spawn and it worked kinda");
                 }
                 else
-                    Debug.Log("I failed to spawn :C ");
+                    //Debug.Log("I failed to spawn :C ");
 
                 if (beActive)
                 {
                     GameController.instance.GlobalSFX.PlayOneShot(teleportClip);
                 }
             }
-            else
-                Debug.Log("Im too close to respawn!");
+            //else
+                //Debug.Log("Im too close to respawn!");
         }
     }
 

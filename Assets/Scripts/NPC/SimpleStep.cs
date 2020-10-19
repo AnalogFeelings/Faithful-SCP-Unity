@@ -14,7 +14,6 @@ public class SimpleStep : MonoBehaviour
 
     void StepSound()
     {
-        foot.clip = steps[Random.Range(0, steps.Length)];
-        foot.Play();
+        foot.PlayOneShot(steps[Random.Range(0, steps.Length)]);
     }
 }

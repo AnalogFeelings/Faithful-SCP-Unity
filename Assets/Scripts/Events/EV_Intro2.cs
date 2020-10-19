@@ -203,7 +203,7 @@ public class EV_Intro2 : MonoBehaviour
                         Timer = 0.7f;
                         d1_.AnimTrigger(-1, true);
 
-                        GameController.instance.npcController.SCPS[(int)npc.scp173].transform.rotation = Quaternion.Euler(0, 90, 0);
+                        GameController.instance.npcController.mainList[(int)npc.scp173].transform.rotation = Quaternion.Euler(0, 90, 0);
                         GameController.instance.npcController.mainList[(int)npc.scp173].Spawn(false, ata1.position);
                         DecalSystem.instance.Decal(ata1.transform.position, new Vector3(90f, 0, 0), 2f, true, 0.4f, 1, 2);
                         d1_.StopLookAt();
@@ -255,11 +255,11 @@ public class EV_Intro2 : MonoBehaviour
                         objPlayer.GetComponent<Player_Control>().FakeBlink(0.4f);
                         eventstat = 12;
                         Timer = 0.7f;
-                        GameController.instance.npcController.SCPS[(int)npc.scp173].transform.rotation = Quaternion.Euler(0, -90, 0);
+                        GameController.instance.npcController.mainList[(int)npc.scp173].transform.rotation = Quaternion.Euler(0, -90, 0);
                         GameController.instance.npcController.mainList[(int)npc.scp173].Spawn(false, ata3.position);
                         guard_.StopLookAt();
                         guard_.PlaySound(guardDies);
-                        guard_.SetRota(GameController.instance.npcController.SCPS[(int)npc.scp173].transform);
+                        guard_.SetRota(GameController.instance.npcController.mainList[(int)npc.scp173].transform);
                         sci_.PlaySFX(GeneralSFX[5]);
                         break;
                     }

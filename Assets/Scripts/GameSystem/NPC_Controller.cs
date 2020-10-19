@@ -2,21 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum npc { scp173, scp106, none };
-public enum npctype { guard, sci, scp939, npc };
+public enum npc { scp173, scp106, scp096, scp049, none };
+public enum npctype { guard, sci, scp939, zombie, npc };
 public enum npcstate { alive, death };
 
 public class NPC_Controller : MonoBehaviour
 {
-    List<Map_NPC> npcList = new List<Map_NPC>();
+    
 
     public GameObject[] NPC_Prefabs;
     public GameObject[] SCP_Prefabs;
 
     [HideInInspector]
-    public GameObject[] SCPS = new GameObject[2];
+    [System.NonSerialized]
+    public Roam_NPC[] mainList = new Roam_NPC[4];
     [HideInInspector]
-    public List<GameObject> NPC = new List<GameObject>();
+    [System.NonSerialized]
+    public List<Map_NPC> NPCS = new List<Map_NPC>();
 
     GameObject parent;
 
@@ -33,8 +35,6 @@ public class NPC_Controller : MonoBehaviour
     public bool[] spawnTable;
     public Transform[] spawnPos;
 
-    public Roam_NPC[] mainList = new Roam_NPC[2];
-    //public GameObject[] npcObjects = new GameObject[2];
 
     npc LatestNPC = npc.none;
     npc ZoneMain = npc.none;
@@ -61,7 +61,7 @@ public class NPC_Controller : MonoBehaviour
 
     public void DeleteNPC()
     {
-        NPC.Clear();
+        NPCS.Clear();
         DestroyImmediate(parent);
         parent = new GameObject("npcParent");
     }
@@ -78,14 +78,31 @@ public class NPC_Controller : MonoBehaviour
             if (spawnTable[v] == true)
             {
                 Debug.Log("Enemigo " + v + " pos " + scp[v].Pos.toVector3() + " Activo? " + scp[v].isActive);
+                mainList[v].data = scp[v];
                 mainList[v].Spawn(scp[v].isActive, scp[v].Pos.toVector3());
+                mainList[v].transform.rotation = Quaternion.Euler(scp[v].Rotation.toVector3());
             }
         }
     }
 
-    public int AddNpc(npctype type, Vector3 where, NPC_Data data = null)
+    public int AddNpc(npctype newType, Vector3 where, NPC_Data data = null)
     {
-        return 10;
+        
+
+        GameObject newNPC = Instantiate(NPC_Prefabs[(int)newType], where, Quaternion.identity, parent.transform);
+        if (data == null)
+        {
+            newNPC.GetComponent<Map_NPC>().createData();
+            Debug.Log("Creando NPC tipo " + newType + " con ID " + (NPCS.Count));
+        }
+        else
+        {
+            newNPC.GetComponent<Map_NPC>().setData(data);
+            Debug.Log("Reposicionando NPC tipo " + newType + " con ID " + (NPCS.Count));
+        }
+        NPCS.Add(newNPC.GetComponent<Map_NPC>());
+        
+        return NPCS.Count-1;
     }
 
     public void npcLevel(npc who)
@@ -153,10 +170,11 @@ public class NPC_Controller : MonoBehaviour
 
     public NPC_Data[] getData()
     {
-        NPC_Data[] helper = new NPC_Data[npcList.Count];
-        for (int i=0; i < npcList.Count;i++)
+        NPC_Data[] helper = new NPC_Data[NPCS.Count];
+        for (int i=0; i < NPCS.Count;i++)
         {
-            helper[i]=npcList[i].getData();
+            helper[i]= NPCS[i].getData();
+            Debug.Log("Obteniendo datos NPC " + i + " de " + NPCS.Count + " tipo " + NPCS[i].data.type);
         }
         return (helper);
     }
@@ -176,9 +194,13 @@ public class NPC_Controller : MonoBehaviour
     {
         for(int i=0; i<spawnTable.Length;i++)
         {
-            if (spawnTable[i]==true)
-            SCPS[i] = Instantiate(SCP_Prefabs[i], spawnPos[i].position, spawnPos[i].rotation, parent.transform);
-            mainList[i] = SCPS[i].GetComponent<Roam_NPC>();
+            if (spawnTable[i] == true)
+            {
+                Debug.Log("Spawning " + i + " name " + SCP_Prefabs[i].name);
+                GameObject newSCP = Instantiate(SCP_Prefabs[i], spawnPos[i].position, spawnPos[i].rotation, parent.transform);
+                Debug.Log("Step one done");
+                mainList[i] = newSCP.GetComponent<Roam_NPC>();
+            }
         }
     }
 

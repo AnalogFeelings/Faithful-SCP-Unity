@@ -289,6 +289,11 @@ public class EV_Puppet_Controller : MonoBehaviour
     {
         switch(Number)
         {
+            case 3:
+                {
+                    Puppet_Anim.SetBool("param3", value);
+                    break;
+                }
             case 2:
                 {
                     Puppet_Anim.SetBool("param2", value);
@@ -357,7 +362,7 @@ public class EV_Puppet_Controller : MonoBehaviour
     void CheckDoor()
     {
             Collider[] Interact;
-            Interact = Interact = Physics.OverlapSphere(transform.position + (transform.forward * 1.7f), 1.9f, DoorLay);
+            Interact = Physics.OverlapSphere(transform.position + (movAngle * (Vector3.forward * 1.7f)), 1.9f, DoorLay);
             if (Interact.Length != 0)
             {
                 Debug.DrawRay(transform.position+(transform.forward*1.5f), Interact[0].transform.position - transform.position);

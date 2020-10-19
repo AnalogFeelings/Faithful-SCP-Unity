@@ -29,6 +29,11 @@ public class SeriVector
 
     }
 
+    static public SeriVector fromVector3(Vector3 og)
+    {
+        return new SeriVector(og.x, og.y, og.z);
+    }
+
     public Vector3 toVector3()
     {
         return (new Vector3(x, y, z));
@@ -57,6 +62,7 @@ public class saveMeta
 public class SaveData
 {
     public List<savedDoor> doorState;
+    public List<savedObject> persState;
     public string saveName;
     public string saveSeed;
     public room[,] savedMap;

@@ -88,6 +88,7 @@ public class EventHandler : MonoBehaviour
 
         Event.GetComponent<Event_Parent>().x = x;
         Event.GetComponent<Event_Parent>().y = y;
+        Event.GetComponent<Event_Parent>().EventLoad();
     }
 
     public void EventStart()
@@ -98,6 +99,7 @@ public class EventHandler : MonoBehaviour
 
     public void EventUnLoad()
     {
+        Event.GetComponent<Event_Parent>().EventUnLoad();
         Debug.Log("Evento Eliminado");
         Destroy(Event);
         Event = null;

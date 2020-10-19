@@ -46,10 +46,4 @@ public class AlignCubeMap : MonoBehaviour
             angle = -90;
         }
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 }

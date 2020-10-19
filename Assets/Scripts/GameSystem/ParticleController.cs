@@ -41,6 +41,6 @@ public class ParticleController : MonoBehaviour
     public void StartParticle(int Particle, Vector3 pos, Quaternion rota)
     {
         currentParticles.Add(new ParticleData(Instantiate(particles[Particle].Particle, pos, rota), particles[Particle].ParticleDuration));
-        Debug.Log("SpawningParticle");
+        //Debug.Log("SpawningParticle");
     }
 }

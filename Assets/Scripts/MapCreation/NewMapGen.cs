@@ -51,7 +51,7 @@ public class room
     public int angle, Event=-1, Zone, items=0, EventState=0;
     public bool empty=true, eventDone=false, isSpecial=false;
     public int[] neighbours = new int[4];
-    public int[] values = new int[5] { 0, 0, 0, 0, 0};
+    public int[] values = new int[6] { 0, 0, 0, 0, 0, 0};
     public string roomName;
 };
 
@@ -121,7 +121,7 @@ public class NewMapGen : MonoBehaviour
     public int[,] mapgen;
     public int[,,] cull_lookup;
     public room[,] mapfil;
-    public GameObject[,] mapobjects;
+    public RoomHolder[,] mapobjects;
     public int zone3_limit;
     public int zone2_limit;
     private int mapdone;
@@ -231,7 +231,7 @@ public class NewMapGen : MonoBehaviour
         mapgen = new int[mapSize.xSize, mapSize.ySize];
         if (IsNew)
             mapfil = new room[mapSize.xSize, mapSize.ySize];
-        mapobjects = new GameObject[mapSize.xSize, mapSize.ySize];
+        mapobjects = new RoomHolder[mapSize.xSize, mapSize.ySize];
         mapdone = 0;
         walker_count = 0;
     }
@@ -1212,7 +1212,7 @@ public class NewMapGen : MonoBehaviour
         room_dat room_ = roomTable[mapfil[i, j].roomName];
 
         int angleTemp = mapfil[i, j].angle;
-        mapobjects[i, j] = Instantiate(room_.RoomHolder, new Vector3(roomsize * i, 0.0f, roomsize * j), Quaternion.Euler(0, angleTemp, 0));
+        mapobjects[i, j] = Instantiate(room_.RoomHolder, new Vector3(roomsize * i, 0.0f, roomsize * j), Quaternion.Euler(0, angleTemp, 0)).GetComponent<RoomHolder>();
         mapobjects[i, j].transform.parent = mapParent.transform;
 
         float xDecal = Random.Range(-5.0f, 5.0f);

@@ -178,19 +178,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NPC_Prefabs:
   - {fileID: 3400218257497486907, guid: 7c0f6c213cbadf040be30739f0031a92, type: 3}
+  - {fileID: 3400218257497486907, guid: 7c0f6c213cbadf040be30739f0031a92, type: 3}
+  - {fileID: 3400218257497486907, guid: 7c0f6c213cbadf040be30739f0031a92, type: 3}
+  - {fileID: 2761744468038447218, guid: c1a26adf7cb5c544b9c64257f4b11bd7, type: 3}
   SCP_Prefabs:
   - {fileID: 4188069710543728415, guid: 39d117beca400db4f9f4bf3557429982, type: 3}
   - {fileID: 9014384198852189640, guid: 557ebaffbf2e5d244bb49520c999719e, type: 3}
-  SCPS:
+  - {fileID: 5205686446920831630, guid: 5567d95446b08f445b82210781edd1d9, type: 3}
+  - {fileID: 8680764321638132989, guid: 89e3ad26f002b4047a6a2437be29a159, type: 3}
+  mainList:
   - {fileID: 0}
   - {fileID: 0}
-  NPC: []
+  NPCS: []
   npcCamText: {fileID: 0}
-  spawnTable: 0101
+  spawnTable: 01010101
   spawnPos:
   - {fileID: 0}
   - {fileID: 0}
-  mainList:
   - {fileID: 0}
   - {fileID: 0}
   Zone3_Main: 2
@@ -442,6 +446,7 @@ MonoBehaviour:
   DebugFlag: 0
   currZone: 0
   doorTable: []
+  persTable: []
   playerSpawn: {fileID: 0}
   Ambiance: {fileID: 7018069562509633042}
   MixAmbiance: {fileID: 7018069562155222532}
@@ -544,6 +549,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playData:
     doorState: []
+    persState: []
     saveName: 
     saveSeed: 
     angle: 0
@@ -32253,6 +32259,7 @@ MonoBehaviour:
   ambifreq: 10
   GENambiancefreq: 15
   custom: 0
+  eventBundleName: 
 --- !u!1 &7018069562581947153
 GameObject:
   m_ObjectHideFlags: 0
@@ -32720,6 +32727,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2934010242552206170, guid: aeb3408b34da18f41be8741cf8e79afd,
         type: 3}
+      propertyPath: m_AfterStackBundles.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2934010242552206170, guid: aeb3408b34da18f41be8741cf8e79afd,
+        type: 3}
       propertyPath: stopNaNPropagation
       value: 1
       objectReference: {fileID: 0}
@@ -32742,6 +32754,11 @@ PrefabInstance:
         type: 3}
       propertyPath: finalBlitToCameraTarget
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2934010242552206170, guid: aeb3408b34da18f41be8741cf8e79afd,
+        type: 3}
+      propertyPath: m_AfterStackBundles.Array.data[0].assemblyQualifiedName
+      value: HorrorBlur, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       objectReference: {fileID: 0}
     - target: {fileID: 5047649508498007981, guid: aeb3408b34da18f41be8741cf8e79afd,
         type: 3}

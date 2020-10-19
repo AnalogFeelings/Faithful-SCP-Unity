@@ -316,6 +316,8 @@ public static class Localization
         fsSerializer _serializer = new fsSerializer();
         Dictionary<string, subtitleMeta> loadedTable = new Dictionary<string, subtitleMeta>();
 
+        Debug.Log("Cargando tabla sceneStrings en la posicion " + Path.Combine(folderPath, langCode, "sceneStrings" + ".subs"));
+
         if (File.Exists(Path.Combine(folderPath, langCode, "sceneStrings" + ".subs")))
         {
             using (StreamReader streamReader = File.OpenText(Path.Combine(folderPath, langCode, "sceneStrings" + ".subs")))

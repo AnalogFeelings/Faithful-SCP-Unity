@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public enum Menu { None, Pause, Inv , Death, Screen, Debug, Options};
+public enum Menu { None, Pause, Inv , Death, Screen, Debug, Options, Keypad};
 
 public class SCP_UI : MonoBehaviour
 {
@@ -22,6 +22,7 @@ public class SCP_UI : MonoBehaviour
     public Text Info1, Info2, DeathMSG;
     public Button save;
     public RadioController radio;
+    public KeypadController keypad;
     Menu currMenu = Menu.None;
 
     bool canConsole, canTuto;
@@ -189,6 +190,36 @@ public class SCP_UI : MonoBehaviour
             /*Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;*/
             currMenu = Menu.Screen;
+            return;
+        }
+    }
+
+    public void ToggleKeypad(Object_Keypad keypadObject)
+    {
+        if (currMenu == Menu.Keypad)
+        {
+
+            GameController.instance.MenuSFX.PlayOneShot(menublip);
+            keypad.disableKeypad();
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            GameController.instance.player.GetComponent<Player_Control>().Freeze = false;
+            GameController.instance.player.GetComponent<Player_Control>().checkObjects = true;
+            GameController.instance.player.GetComponent<Player_Control>().StopLook();
+            currMenu = Menu.None;
+            return;
+        }
+        if (currMenu == Menu.None)
+        {
+            keypad.enableKeypad(keypadObject);
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            currMenu = Menu.Keypad;
+
+            SCP_UI.instance.ToggleScreen();
+            GameController.instance.player.GetComponent<Player_Control>().Freeze = true;
+            GameController.instance.player.GetComponent<Player_Control>().checkObjects = false;
+            GameController.instance.player.GetComponent<Player_Control>().ForceLook(keypadObject.transform.position, 4f);
             return;
         }
     }
