@@ -21,7 +21,7 @@ public class slotController : MonoBehaviour, IDragHandler, IEndDragHandler
     {
         if (id != -1)
         {
-            transform.position = Input.mousePosition;
+            transform.position = SCPInput.instance.playerInput.UI.Pointer.ReadValue<Vector2>();
             dragging = true;
             cont.currdrag = id;
             GetComponent<Image>().raycastTarget = false;

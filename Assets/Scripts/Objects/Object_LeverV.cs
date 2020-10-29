@@ -38,7 +38,7 @@ public class Object_LeverV : Object_Interact
     // Update is called once per frame
     public override void Hold()
     {
-        if (Input.GetAxis("Mouse Y") != 0)
+        if (SCPInput.instance.playerInput.Gameplay.Look.ReadValue<Vector2>().y != 0)
         {
             changing -= Time.deltaTime;
             if (changing <= 0)
@@ -58,7 +58,7 @@ public class Object_LeverV : Object_Interact
             if (change == true && !cooldown)
             {
 
-                if (Input.GetAxis("Mouse Y") > 0)
+                if (SCPInput.instance.playerInput.Gameplay.Look.ReadValue<Vector2>().y > 0)
                 {
                     if (!isUp)
                     {
@@ -75,7 +75,7 @@ public class Object_LeverV : Object_Interact
                         isUp = true;
                     }
                 }
-                if (Input.GetAxis("Mouse Y") < 0)
+                if (SCPInput.instance.playerInput.Gameplay.Look.ReadValue<Vector2>().y < 0)
                 {
                     if (isUp)
                     {

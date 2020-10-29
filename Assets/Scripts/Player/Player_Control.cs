@@ -205,7 +205,7 @@ public class Player_Control : MonoBehaviour
                 ACT_SimpleMove();
                 ACT_NoClipCamera();
                 transform.position += movement * Time.deltaTime;
-                if (Input.GetKeyDown(KeyCode.Space))
+                if (SCPInput.instance.playerInput.Gameplay.Blink.triggered)
                     movementMode = !movementMode;
             }
         }
@@ -239,19 +239,20 @@ public class Player_Control : MonoBehaviour
     {
         Grounded = _controller.isGrounded;//Physics.CheckSphere(_groundChecker.position, GroundDistance, Ground, QueryTriggerInteraction.Ignore);
 
-        InputX = Input.GetAxis("Horizontal");
-        InputY = Input.GetAxis("Vertical");
+        InputX = SCPInput.instance.playerInput.Gameplay.Move.ReadValue<Vector2>().x;
+        InputY = SCPInput.instance.playerInput.Gameplay.Move.ReadValue<Vector2>().y;
 
         movement = ((transform.right * InputX) + (transform.forward * InputY));
         Vector3.Normalize(movement);
 
-        if (Input.GetButtonDown("Crouch") && !isRunning)
+        if (SCPInput.instance.playerInput.Gameplay.CrouchTrigger.triggered && !isRunning)
             Crouch = !Crouch;
 
         if (Health <= 30)
             Crouch = true;
 
-        isRunning = (Input.GetButton("Run") && !Crouch && RunningTimer > 0.2f && (!GameController.instance.isPocket));
+        //Debug.Log("Held Value " + SCPInput.instance.playerInput.Gameplay.RunHold.ReadValue<float>());
+        isRunning = (SCPInput.instance.playerInput.Gameplay.RunHold.ReadValue<float>() > 0 && !Crouch && RunningTimer > 0.2f && (!GameController.instance.isPocket));
 
         speed = Basespeed;
         if (Crouch)
@@ -270,16 +271,16 @@ public class Player_Control : MonoBehaviour
 
     void ACT_SimpleMove()
     {
-        InputX = Input.GetAxis("Horizontal");
-        InputY = Input.GetAxis("Vertical");
+        InputX = SCPInput.instance.playerInput.Gameplay.Move.ReadValue<Vector2>().x;
+        InputY = SCPInput.instance.playerInput.Gameplay.Move.ReadValue<Vector2>().y;
 
         movement = ((transform.right * InputX) + (transform.forward * InputY));
         Vector3.Normalize(movement);
 
-        if (Input.GetButtonDown("Crouch") && !isRunning)
+        if (SCPInput.instance.playerInput.Gameplay.CrouchTrigger.triggered && !isRunning)
             Crouch = !Crouch;
 
-        isRunning = (Input.GetButton("Run") && !Crouch && RunningTimer > 0.2f);
+        isRunning = (SCPInput.instance.playerInput.Gameplay.RunHold.ReadValue<float>() > 0 && !Crouch && RunningTimer > 0.2f);
 
         speed = Basespeed;
         if (Crouch)
@@ -384,7 +385,7 @@ public class Player_Control : MonoBehaviour
 
                 hand_rect.localPosition = pos;
 
-                if (Input.GetButtonDown("Unequip"))
+                if (SCPInput.instance.playerInput.Gameplay.InteractNo.triggered)
                 {
                     if (equipment[(int)bodyPart.Hand] != null)
                     {
@@ -650,11 +651,11 @@ public class Player_Control : MonoBehaviour
         {
             float distance = Vector3.Distance(handPos.transform.position, InterHold.transform.position);
             float distanceBody = Vector3.Distance(transform.position, InterHold.transform.position);
-            if (Input.GetButtonDown("Interact"))
+            if(SCPInput.instance.playerInput.Gameplay.InteractYes.triggered)
             {
                 InterHold.GetComponent<Object_Interact>().Pressed();
             }
-            if ((InterHold != null) && Input.GetButton("Interact"))
+            if ((InterHold != null) && SCPInput.instance.playerInput.Gameplay.InteractHold.ReadValue<float>() > 0)
             {
                 InterHold.GetComponent<Object_Interact>().Hold();
                 objectLock = true;
@@ -676,7 +677,7 @@ public class Player_Control : MonoBehaviour
 
     void ACT_Running()
     {
-        if (!Input.GetButton("Run") && RunningTimer < RunningTimerBase)
+        if (SCPInput.instance.playerInput.Gameplay.RunHold.ReadValue<float>() < 0.1 && RunningTimer < RunningTimerBase)
         RunningTimer += (Time.deltaTime) * RunMult;
         
 
@@ -698,7 +699,7 @@ public class Player_Control : MonoBehaviour
     void ACT_Blinking()
     {
         if (onBlink == false)
-            eyes.color = new Color(255, 255, 255, Mathf.Clamp(-((BlinkingTimer-0.128f)*8), 0.0f, 1.0f));
+            eyes.color = new Color(255, 255, 255, Mathf.Clamp(-((BlinkingTimer-0.064f)*16), 0.0f, 1.0f));
         else
         {
             OpenTimer -= Time.deltaTime * OpenMulti;
@@ -707,7 +708,7 @@ public class Player_Control : MonoBehaviour
             eyes.color = new Color(255, 255, 255, OpenTimer);
         }
 
-        if (Input.GetButton("Blink") && !fakeBlink)
+        if (SCPInput.instance.playerInput.Gameplay.Blink.ReadValue<float>() > 0 && !fakeBlink)
         {
             CloseTimer = ClosedEyes;
             if (BlinkingTimer > 0.125)

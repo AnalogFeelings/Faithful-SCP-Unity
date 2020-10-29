@@ -484,17 +484,17 @@ public class GameController : MonoBehaviour
     {
         if (isAlive)
         {
-            if (Input.GetButtonDown("Pause"))
+            if (SCPInput.instance.playerInput.Gameplay.Pause.triggered)
             {
                 SCP_UI.instance.TogglePauseMenu();
             }
 
-            if (Input.GetButtonDown("Inventory"))
+            if (SCPInput.instance.playerInput.Gameplay.Inventory.triggered)
             {
                 SCP_UI.instance.ToggleInventory();
             }
 
-            if (Input.GetButtonDown("Save"))
+            if (SCPInput.instance.playerInput.Gameplay.Save.triggered)
             {
                 if (canSave)
                 {
@@ -672,10 +672,10 @@ public class GameController : MonoBehaviour
             }
         }*/
 
-        if (Input.GetKeyDown(KeyCode.F1))
+        /*if (Input.GetKeyDown(KeyCode.F1))
         {
             DebugFlag = !DebugFlag;
-        }
+        }*/
 
         if (npcController != null)
         {

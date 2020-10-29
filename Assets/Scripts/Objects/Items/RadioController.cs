@@ -71,15 +71,15 @@ public class RadioController : MonoBehaviour
 
 
 
-            if (Input.GetKeyDown(KeyCode.Alpha1))
+            if (SCPInput.instance.playerInput.Gameplay.Radio1.triggered)
                 chgChn(1);
-            if (Input.GetKeyDown(KeyCode.Alpha2))
+            if (SCPInput.instance.playerInput.Gameplay.Radio2.triggered)
                 chgChn(2);
-            if (Input.GetKeyDown(KeyCode.Alpha3))
+            if (SCPInput.instance.playerInput.Gameplay.Radio3.triggered)
                 chgChn(3);
-            if (Input.GetKeyDown(KeyCode.Alpha4))
+            if (SCPInput.instance.playerInput.Gameplay.Radio4.triggered)
                 chgChn(4);
-            if (Input.GetKeyDown(KeyCode.Alpha5))
+            if (SCPInput.instance.playerInput.Gameplay.Radio5.triggered)
                 chgChn(5);
         }
 
