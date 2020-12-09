@@ -7,11 +7,18 @@ public class RebindInput : MonoBehaviour
     public Text prim, sec, inputName, primBind, secBind;
     public gameplayActions bind;
 
+    public bool defaultOnly=false;
     public bool hasAlt;
     // Start is called before the first frame update
     void Start()
     {
+        if (!defaultOnly)
         RepaintText();
+    }
+
+    public void DefaultBindings()
+    {
+        SCPInput.instance.DeleteRebinds();
     }
 
     public void EndRebind()
@@ -37,7 +44,7 @@ public class RebindInput : MonoBehaviour
         if (hasAlt)
             secBind.text = SCPInput.instance.GetBindName(bind, true);
 
-        inputName.text = bind.ToString();
+        inputName.text = Localization.GetString("uiStrings", "ui_input_" + bind.ToString());
 
     }
 }
