@@ -40,16 +40,6 @@ public class SCP_UI : MonoBehaviour
             Destroy(gameObject);
     }
 
-    void Start()
-    {
-        }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void ItemSFX(int sfx)
     {
         GameController.instance.MenuSFX.PlayOneShot(inventory[sfx]);
@@ -59,7 +49,7 @@ public class SCP_UI : MonoBehaviour
     {
         if (currMenu == Menu.Pause)
         {
-            
+            SCPInput.instance.ToGameplay();
             GameController.instance.MenuSFX.PlayOneShot(menublip);
             PauseM.enabled = false;
             Cursor.lockState = CursorLockMode.Locked;
@@ -73,7 +63,7 @@ public class SCP_UI : MonoBehaviour
         {
             Info1.text = string.Format(Localization.GetString("uiStrings", "ui_in_info"), GlobalValues.design, GlobalValues.playername, GlobalValues.mapname, GlobalValues.mapseed);
 
-
+            SCPInput.instance.ToUI();
             PauseM.enabled = true;
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
@@ -117,6 +107,7 @@ public class SCP_UI : MonoBehaviour
     {
         if (currMenu == Menu.Inv)
         {
+            SCPInput.instance.ToGameplay();
             Inventory.enabled = false;
             Time.timeScale = 1.0f;
             ItemController.instance.CloseInv();
@@ -129,6 +120,7 @@ public class SCP_UI : MonoBehaviour
         }
         if (currMenu == Menu.None)
         {
+            SCPInput.instance.ToUI();
             ItemController.instance.OpenInv();
             Inventory.enabled = true;
             Time.timeScale = 0f;
@@ -146,6 +138,7 @@ public class SCP_UI : MonoBehaviour
     {
         if (currMenu == Menu.Death)
         {
+            SCPInput.instance.ToGameplay();
             DeathMSG.text = GameController.instance.deathmsg;
             Death.enabled = false;
             Time.timeScale = 1.0f;
@@ -157,6 +150,7 @@ public class SCP_UI : MonoBehaviour
         }
         else
         {
+            SCPInput.instance.ToUI();
             if (!GlobalValues.hasSaved)
                 save.interactable = false;
             else
@@ -198,7 +192,7 @@ public class SCP_UI : MonoBehaviour
     {
         if (currMenu == Menu.Keypad)
         {
-
+            SCPInput.instance.ToGameplay();
             GameController.instance.MenuSFX.PlayOneShot(menublip);
             keypad.disableKeypad();
             Cursor.lockState = CursorLockMode.Locked;
@@ -211,12 +205,13 @@ public class SCP_UI : MonoBehaviour
         }
         if (currMenu == Menu.None)
         {
+            SCPInput.instance.ToUI();
             keypad.enableKeypad(keypadObject);
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             currMenu = Menu.Keypad;
 
-            SCP_UI.instance.ToggleScreen();
+            //SCP_UI.instance.ToggleScreen();
             GameController.instance.player.GetComponent<Player_Control>().Freeze = true;
             GameController.instance.player.GetComponent<Player_Control>().checkObjects = false;
             GameController.instance.player.GetComponent<Player_Control>().ForceLook(keypadObject.transform.position, 4f);
@@ -230,6 +225,7 @@ public class SCP_UI : MonoBehaviour
         {
             if (currMenu == Menu.Debug)
             {
+                SCPInput.instance.ToGameplay();
                 Time.timeScale = 1.0f;
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
@@ -238,6 +234,7 @@ public class SCP_UI : MonoBehaviour
             }
             if (currMenu == Menu.None)
             {
+                SCPInput.instance.ToUI();
                 Time.timeScale = 0f;
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;

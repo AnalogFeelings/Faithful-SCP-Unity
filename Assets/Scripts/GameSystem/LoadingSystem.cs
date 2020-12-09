@@ -97,7 +97,7 @@ public class LoadingSystem : MonoBehaviour
         loadcircle.fillAmount = loadbar;
         Simplecircle.fillAmount = loadbar; 
 
-        if (Input.anyKey && canClick)
+        if (SCPInput.instance.playerInput.Gameplay.Blink.triggered  && canClick)
         {
             _isClicked = true;
         }
@@ -122,6 +122,8 @@ public class LoadingSystem : MonoBehaviour
 
     public void LoadLevel(int sceneIndex, bool _simple = true)
     {
+        //SCPInput.instance.ToUI();
+
         Simple = _simple;
         if (!_simple)
             DoHeavyLoading();
@@ -183,6 +185,7 @@ public class LoadingSystem : MonoBehaviour
 
     public void LoadLevelHalf(int sceneIndex, bool dofade = false, float duration = -1, int r = 0, int g = 0, int b = 0, bool _Simple = false)
     {
+        //SCPInput.instance.ToUI();
         Simple = _Simple;
 
         if (!_Simple)

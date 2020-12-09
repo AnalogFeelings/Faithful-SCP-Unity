@@ -15,7 +15,7 @@ public class Object_914Dial : Object_Interact
     // Update is called once per frame
     public override void Hold()
     {
-        if(Input.GetAxis("Mouse X") != 0)
+        if(SCPInput.instance.playerInput.Gameplay.Look.ReadValue<Vector2>().x != 0)
         {
             changing -= Time.deltaTime;
             if (changing <= 0)
@@ -27,11 +27,11 @@ public class Object_914Dial : Object_Interact
             if (change == true)
             {
 
-                if (Input.GetAxis("Mouse X") > 0)
+                if (SCPInput.instance.playerInput.Gameplay.Look.ReadValue<Vector2>().x > 0)
                 {
                     Option = Mathf.Clamp(Option + 1, 0, 5);
                 }
-                if (Input.GetAxis("Mouse X") < 0)
+                if (SCPInput.instance.playerInput.Gameplay.Look.ReadValue<Vector2>().x < 0)
                 {
                     Option = Mathf.Clamp(Option - 1, 0, 5);
                 }

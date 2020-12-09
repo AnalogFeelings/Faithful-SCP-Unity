@@ -22,7 +22,7 @@ public class Object_914Key : Object_Interact
     // Update is called once per frame
     public override void Hold()
     {
-        if (Input.GetAxis("Mouse X") != 0)
+        if (SCPInput.instance.playerInput.Gameplay.Look.ReadValue<Vector2>().x != 0)
         {
             if (change == true)
             {
