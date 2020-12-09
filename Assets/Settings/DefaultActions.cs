@@ -56,7 +56,7 @@ public class @DefaultActions : IInputActionCollection, IDisposable
                     ""id"": ""e88bcb32-64f9-43d2-8444-62103ec62881"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": ""Press(behavior=1)""
+                    ""interactions"": ""Press(behavior=2)""
                 },
                 {
                     ""name"": ""InteractHold"",
