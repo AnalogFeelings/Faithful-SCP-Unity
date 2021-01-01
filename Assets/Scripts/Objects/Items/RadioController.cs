@@ -276,7 +276,7 @@ public class RadioController : MonoBehaviour
         radio.SetActive(true);
         TurnRadio();
         currRadio = GameController.instance.player.GetComponent<Player_Control>().equipment[(int)bodyPart.Hand];
-        _Radio = ((Equipable_Radio)ItemController.instance.items[currRadio.itemName]);
+        _Radio = ((Equipable_Radio)ItemController.instance.items[currRadio.itemFileName]);
         sfxStatic.PlayOneShot(change);
     }
 

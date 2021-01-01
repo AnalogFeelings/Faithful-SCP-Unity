@@ -16,6 +16,7 @@ public abstract class Event_Parent : MonoBehaviour
 
     public virtual void EventStart()
     {
+        Debug.Log("Empezando Evento");
         isStarted = true;
     }
     public virtual void EventUpdate()

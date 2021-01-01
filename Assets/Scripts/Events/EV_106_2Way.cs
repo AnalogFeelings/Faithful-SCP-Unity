@@ -11,13 +11,6 @@ public class EV_106_2Way : Event_Parent
     bool Discover, part2;
 
 
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update()
     {

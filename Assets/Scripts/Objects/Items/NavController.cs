@@ -19,7 +19,7 @@ public class NavController : MonoBehaviour
     void OnEnable()
     {
         currNav = GameController.instance.player.GetComponent<Player_Control>().equipment[(int)bodyPart.Hand];
-        Nav = ((Equipable_Nav)ItemController.instance.items[currNav.itemName]);
+        Nav = ((Equipable_Nav)ItemController.instance.items[currNav.itemFileName]);
         if (Nav.isOnline)
         {
             GameController.instance.Map_RenderFull();

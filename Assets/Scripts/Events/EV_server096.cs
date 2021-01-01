@@ -19,8 +19,11 @@ public class EV_server096 : Event_Parent
     public AudioClip scene1, scene2, blackOut;
     public EV_Puppet_Controller guard;
     public ReflectionProbe probe;
+    public Material lights;
+    public Color32 noLights;
+    Color oldLights;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         pump.volume = 0;
         gen.volume = 0;
@@ -43,21 +46,32 @@ public class EV_server096 : Event_Parent
         
     }
 
+    public override void EventLoad()
+    {
+        base.EventLoad();
+        lights = GameController.instance.getCutsceneObject(x, y, 0).GetComponent<MeshRenderer>().materials[9];
+        oldLights = lights.GetColor("_EmissionColor");
+    }
+
     public override void EventUnLoad()
     {
         base.EventUnLoad();
-        GameController.instance.setValue(x, y, 1, leverPump.On ? 1:0);
+        GameController.instance.setValue(x, y, 1, leverPump.On ? 1 : 0);
         GameController.instance.setValue(x, y, 2, leverPower.On ? 1 : 0);
         GameController.instance.setValue(x, y, 3, leverGen.On ? 1 : 0);
     }
 
     public override void EventFinished()
     {
+        Debug.Log("Finished played");
+        isStarted = true;
         GameController.instance.setDone(x, y);
-        Destroy(guard);
+        if(guard!=null)
+            Destroy(guard.gameObject);
         Lights.SetActive(false);
         LockDoors(true);
         isBlackOut = true;
+        lights.SetColor("_EmissionColor", noLights);
         GameController.instance.setValue(x, y, 0, 1);
 
         leverPump.On = GameController.instance.getValue(x, y, 1) == 1;
@@ -126,6 +140,7 @@ public class EV_server096 : Event_Parent
             audSource.PlayOneShot(blackOut);
             isBlackOut = true;
             GameController.instance.playercache.FakeBlink(0.25f);
+            lights.SetColor("_EmissionColor", noLights);
             probe.RenderProbe();
         }
         if (!shouldBlackOut && isBlackOut)
@@ -134,8 +149,13 @@ public class EV_server096 : Event_Parent
             LockDoors(false);
             isBlackOut = false;
             GameController.instance.playercache.FakeBlink(0.25f);
+            lights.SetColor("_EmissionColor", oldLights);
             probe.RenderProbe();
         }
+
+        GameController.instance.setValue(x, y, 1, leverPump.On ? 1 : 0);
+        GameController.instance.setValue(x, y, 2, leverPower.On ? 1 : 0);
+        GameController.instance.setValue(x, y, 3, leverGen.On ? 1 : 0);
     }
 
     public override void EventStart()
@@ -145,6 +165,7 @@ public class EV_server096 : Event_Parent
         scp.Event_Spawn(true, scpSpawn.position);
         scp.transform.rotation = scpSpawn.transform.rotation;
         inDoorsClosed = true;
+        isStarted = true;
 
         GameController.instance.canSave = false;
 
@@ -165,6 +186,7 @@ public class EV_server096 : Event_Parent
             Object_Door door;
             outDoorsClosed = true;
             audSource.clip = scene1;
+            SubtitleEngine.instance.playVoice(scene1.name, true);
             audSource.Play();
             Interact = Physics.OverlapSphere(doorCloser1.position, 1f, doorLayer);
             if (Interact.Length > 0)
@@ -393,6 +415,7 @@ public class EV_server096 : Event_Parent
                 case 12:
                     {
                         eventState = 13;
+                        //scp.evChangeState(0);
                         Timer = 10f;
                         Destroy(guard.gameObject);
                         break;
@@ -401,23 +424,11 @@ public class EV_server096 : Event_Parent
                     {
                         eventState = 14;
                         scp.StopEvent();
+                        Debug.Log("096 Stopped");
                         break;
                     }
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     }
 }

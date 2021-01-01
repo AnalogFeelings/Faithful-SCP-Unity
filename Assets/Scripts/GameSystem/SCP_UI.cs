@@ -10,7 +10,7 @@ public class SCP_UI : MonoBehaviour
 {
 
     public static SCP_UI instance = null;
-    public Image eyes, eyegraphics;
+    public Image eyes, eyegraphics, infectiongraphic;
     public Canvas PauseM;
     public GameObject canvas, SNav, notifprefab;
     public Canvas Inventory, Death, Screen, Options;
@@ -19,13 +19,14 @@ public class SCP_UI : MonoBehaviour
     public EventSystem menu;
     public AudioClip[] inventory;
     public AudioClip menublip;
-    public Text Info1, Info2, DeathMSG;
+    public Text Info1, Info2, DeathMSG, bottomScrible;
     public Button save;
     public RadioController radio;
     public KeypadController keypad;
+    public 
     Menu currMenu = Menu.None;
 
-    bool canConsole, canTuto;
+    bool canConsole, canTuto, canPause;
 
     public Image blinkBar, Overlay, handEquip, runBar, navBar;
 
@@ -38,6 +39,12 @@ public class SCP_UI : MonoBehaviour
             instance = this;
         else if (instance != null)
             Destroy(gameObject);
+        canPause = false;
+    }
+
+    public void EnableMenu()
+    {
+        canPause = true;
     }
 
     public void ItemSFX(int sfx)
@@ -59,7 +66,7 @@ public class SCP_UI : MonoBehaviour
             AudioListener.pause = false;
             return;
         }
-        if (currMenu == Menu.None)
+        if (currMenu == Menu.None&&canPause)
         {
             Info1.text = string.Format(Localization.GetString("uiStrings", "ui_in_info"), GlobalValues.design, GlobalValues.playername, GlobalValues.mapname, GlobalValues.mapseed);
 

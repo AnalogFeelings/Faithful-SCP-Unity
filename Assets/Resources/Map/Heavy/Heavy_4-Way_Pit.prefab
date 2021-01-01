@@ -49,6 +49,7 @@ MonoBehaviour:
   Room: {fileID: 6371661223839344034}
   Lights: {fileID: 6371661222444720201}
   Probes: {fileID: 6371661222324174818}
+  cutsceneReferences: []
 --- !u!1 &6371661222246695530
 GameObject:
   m_ObjectHideFlags: 0
@@ -126,7 +127,7 @@ Light:
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 12100000, guid: 055403e8b723c494a9d89d3e0a8d5da7, type: 2}
-  m_RenderMode: 0
+  m_RenderMode: 2
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -156,7 +157,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6371661222324174829
 Transform:
   m_ObjectHideFlags: 0
@@ -294,6 +295,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eeb5dc026fdf4b488bc7ae0138ab719, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PathHandler: {fileID: 0}
   m_AgentTypeID: 0
   m_StartPoint: {x: 0, y: 0, z: -1}
   m_EndPoint: {x: 0, y: 0, z: 1}
@@ -317,7 +319,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6371661222444720200
 Transform:
   m_ObjectHideFlags: 0
@@ -642,7 +644,7 @@ Light:
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 12100000, guid: 055403e8b723c494a9d89d3e0a8d5da7, type: 2}
-  m_RenderMode: 0
+  m_RenderMode: 2
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -843,6 +845,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eeb5dc026fdf4b488bc7ae0138ab719, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PathHandler: {fileID: 0}
   m_AgentTypeID: 0
   m_StartPoint: {x: 0, y: 0, z: -1}
   m_EndPoint: {x: 0, y: 0, z: 1}
@@ -928,7 +931,7 @@ Light:
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 12100000, guid: 055403e8b723c494a9d89d3e0a8d5da7, type: 2}
-  m_RenderMode: 0
+  m_RenderMode: 2
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -986,6 +989,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eeb5dc026fdf4b488bc7ae0138ab719, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PathHandler: {fileID: 0}
   m_AgentTypeID: 0
   m_StartPoint: {x: 0, y: 0, z: -1}
   m_EndPoint: {x: 0, y: 0, z: 1}
@@ -1037,6 +1041,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eeb5dc026fdf4b488bc7ae0138ab719, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PathHandler: {fileID: 0}
   m_AgentTypeID: 0
   m_StartPoint: {x: 0, y: 0, z: -1}
   m_EndPoint: {x: 0, y: 0, z: 1}
@@ -1122,7 +1127,7 @@ Light:
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 12100000, guid: 055403e8b723c494a9d89d3e0a8d5da7, type: 2}
-  m_RenderMode: 0
+  m_RenderMode: 2
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -1203,7 +1208,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 1
   m_VoxelSize: 0.08
   m_BuildHeightMesh: 0
-  m_NavMeshData: {fileID: 23800000, guid: e206b966d369ad948bb341aeb598ed99, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: 05a464ee0c647d644b5caf4ffb936640, type: 2}
 --- !u!1001 &6371661223839310592
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1211,6 +1216,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6371661224228379779}
     m_Modifications:
+    - target: {fileID: 100000, guid: 746dabeeb633bff48935a8bca7ad6710, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 746dabeeb633bff48935a8bca7ad6710, type: 3}
+      propertyPath: m_TagString
+      value: Metal
+      objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: 746dabeeb633bff48935a8bca7ad6710, type: 3}
       propertyPath: m_Name
       value: room4pit_opt

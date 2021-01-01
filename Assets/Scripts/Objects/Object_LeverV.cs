@@ -12,6 +12,7 @@ public class Object_LeverV : Object_Interact
     public GameObject Handle;
     public AudioSource sfx;
     public AudioClip Switch;
+    public float posUp = -80.399f, posDown = 76.98701f, changeSpeed = 0.6f;
 
     float changing = 0;
     bool start, change, cooldown;
@@ -29,8 +30,12 @@ public class Object_LeverV : Object_Interact
     {
         if ((!On && !OnUp) || (On && OnUp))
         {
-            Tween.Value(76.98701f, -80.399f, HandleUpdate, 0.6f, 0f, Tween.EaseInStrong, Tween.LoopType.None, null);
+            Tween.Value(posDown, posUp, HandleUpdate, changeSpeed, 0f, Tween.EaseInStrong, Tween.LoopType.None, null);
             isUp = true;
+        }
+        else
+        {
+            Tween.Value(posUp, posDown, HandleUpdate, changeSpeed, 0f, Tween.EaseInStrong, Tween.LoopType.None, null);
         }
     }
 
@@ -68,7 +73,7 @@ public class Object_LeverV : Object_Interact
                         else
                             On = false;
 
-                        Tween.Value(76.98701f, -80.399f, HandleUpdate, 0.6f, 0f, Tween.EaseInStrong, Tween.LoopType.None, null);
+                        Tween.Value(posDown, posUp, HandleUpdate, changeSpeed, 0f, Tween.EaseInStrong, Tween.LoopType.None, null);
                         Debug.Log("GoingUp");
                         cooldown = true;
                         changing = 0.4f;
@@ -86,7 +91,7 @@ public class Object_LeverV : Object_Interact
                         else
                             On = true;
 
-                        Tween.Value(-80.399f, 76.98701f, HandleUpdate, 0.6f, 0, Tween.EaseInStrong, Tween.LoopType.None, null);
+                        Tween.Value(posUp, posDown, HandleUpdate, changeSpeed, 0, Tween.EaseInStrong, Tween.LoopType.None, null);
                         cooldown = true;
                         changing = 0.4f;
                         isUp = false;

@@ -97,7 +97,7 @@ public class LoadingSystem : MonoBehaviour
         loadcircle.fillAmount = loadbar;
         Simplecircle.fillAmount = loadbar; 
 
-        if (SCPInput.instance.playerInput.Gameplay.Blink.triggered  && canClick)
+        if (SCPInput.instance.playerInput.Gameplay.Pause.triggered  && canClick)
         {
             _isClicked = true;
         }

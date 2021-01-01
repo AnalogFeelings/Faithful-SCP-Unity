@@ -6,7 +6,7 @@ using UnityEngine.AI;
 
 public class EV_Puppet_Controller : MonoBehaviour
 {
-    public float Speed, accel, Distance, Gravity, maxfallspeed, animOffset, stopDistance, pushoverrange, pushSpeed = 0.125f, rotationSpeed=3F, lerpTime;
+    public float Speed, accel, Distance, Gravity, maxfallspeed, animOffset, stopDistance, pushoverrange, pushSpeed = 0.125f, rotationSpeed=3F, lerpTime, doorDis = 1.2f;
     Vector3 movement, currDirection, lastDirection, animMov=Vector3.zero, currPoint;
     Quaternion fromAngle, toAngle, currAngle, movAngle, toMovAngle;
     float fallSpeed, currentLerpTime = 1f, perc;
@@ -19,7 +19,7 @@ public class EV_Puppet_Controller : MonoBehaviour
     public GameObject Puppet_Mesh;
     Animator Puppet_Anim;
     public LayerMask DoorLay, PlayerLay;
-    public bool PushOver=false, isDebuging = false;
+    public bool PushOver=false, isDebuging = false, canDoor=true;
     public IKManager ikManager;
 
     /// <summary>
@@ -63,6 +63,7 @@ public class EV_Puppet_Controller : MonoBehaviour
     {
         if (active)
         {
+            if(canDoor)
             CheckDoor();
 
             if (PushOver && !isPursuit && !isPath)
@@ -339,6 +340,11 @@ public class EV_Puppet_Controller : MonoBehaviour
                     Puppet_Anim.SetTrigger("param-7");
                     break;
                 }
+            case -8:
+                {
+                    Puppet_Anim.SetTrigger("param-8");
+                    break;
+                }
         }
 
     }
@@ -362,10 +368,10 @@ public class EV_Puppet_Controller : MonoBehaviour
     void CheckDoor()
     {
             Collider[] Interact;
-            Interact = Physics.OverlapSphere(transform.position + (movAngle * (Vector3.forward * 1.7f)), 1.9f, DoorLay);
+            Interact = Physics.OverlapSphere(transform.position + (movAngle * (Vector3.forward * doorDis)), 0.5f, DoorLay);
             if (Interact.Length != 0)
             {
-                Debug.DrawRay(transform.position+(transform.forward*1.5f), Interact[0].transform.position - transform.position);
+                Debug.DrawRay(transform.position+(transform.forward* doorDis), Interact[0].transform.position - transform.position);
                 Interact[0].transform.gameObject.GetComponent<Object_Door>().ForceOpen(1.5f);
             }
     }
@@ -396,7 +402,11 @@ public class EV_Puppet_Controller : MonoBehaviour
         transform.rotation = Quaternion.Euler(rota.x, rota.y + rotation, rota.z);
     }
 
-
+    [ExecuteInEditMode]
+    private void OnDrawGizmos()
+    {
+        Debug.DrawLine(transform.position, transform.position + (transform.forward * doorDis), Color.blue);
+    }
 
 
 

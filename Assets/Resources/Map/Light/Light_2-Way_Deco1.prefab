@@ -59,7 +59,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2439764102823330742
 Transform:
   m_ObjectHideFlags: 0
@@ -355,6 +355,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eeb5dc026fdf4b488bc7ae0138ab719, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PathHandler: {fileID: 0}
   m_AgentTypeID: 0
   m_StartPoint: {x: 0, y: 0, z: -1.5}
   m_EndPoint: {x: 0, y: 0, z: 1.5}
@@ -440,7 +441,7 @@ Light:
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 12100000, guid: 055403e8b723c494a9d89d3e0a8d5da7, type: 2}
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -611,7 +612,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7642044976970816923
 Transform:
   m_ObjectHideFlags: 0
@@ -672,6 +673,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eeb5dc026fdf4b488bc7ae0138ab719, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PathHandler: {fileID: 0}
   m_AgentTypeID: 0
   m_StartPoint: {x: 0, y: 0, z: -1.5}
   m_EndPoint: {x: 0, y: 0, z: 1.5}
@@ -757,7 +759,7 @@ Light:
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 0}
-  m_RenderMode: 0
+  m_RenderMode: 2
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -849,7 +851,7 @@ Light:
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 12100000, guid: 055403e8b723c494a9d89d3e0a8d5da7, type: 2}
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -936,6 +938,7 @@ MonoBehaviour:
   Room: {fileID: 8539831578457250055}
   Lights: {fileID: 7642044976970816900}
   Probes: {fileID: 3121160237325364058}
+  cutsceneReferences: []
 --- !u!1 &8539831578457250055
 GameObject:
   m_ObjectHideFlags: 0
@@ -1019,7 +1022,7 @@ MeshRenderer:
   - {fileID: 2100000, guid: 4f1339c59059b964d933b7b104e0bca1, type: 2}
   - {fileID: 2100000, guid: af0e2388367184241a0a4759ca53421d, type: 2}
   - {fileID: 2100000, guid: 1e1fbcfa4933a3040b45a5dbc14e9ca5, type: 2}
-  - {fileID: 2100000, guid: cbf54ace343547c4eae36d8d6ec6efd1, type: 2}
+  - {fileID: 2100000, guid: 7d6390302bd777b47895a59ecf77a2ba, type: 2}
   - {fileID: 2100000, guid: 2b6a701188708634da4c9863cab0a92f, type: 2}
   - {fileID: 2100000, guid: c593b65254059d040a57ffc9cb795815, type: 2}
   - {fileID: 2100054, guid: 96337c5448263c446b7eb47c8065adbe, type: 3}

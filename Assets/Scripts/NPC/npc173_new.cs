@@ -137,11 +137,11 @@ public class npc173_new : Roam_NPC
                 }
                 if (teleTimer < 0)
                 {
-                    do
-                    {
+                    /*do
+                    {*/
                         currentTarget = GameController.instance.GetPatrol(GameController.instance.player.transform.position, currMaxTele, currMinTele);
-                    }
-                    while (!GameController.instance.PlayerNotHere(currentTarget));
+                    //}
+                    //while (!GameController.instance.PlayerNotHere(currentTarget));
                     Spawn(true, currentTarget);
                     teleTimer = currTeleCool;
                 }

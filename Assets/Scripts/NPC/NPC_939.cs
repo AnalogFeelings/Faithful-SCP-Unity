@@ -200,7 +200,7 @@ public class NPC_939 : Map_NPC
                                 Debug.Log(soundlevel + "Corro hacia el!");
                             PlayVoice(4);
                         }
-                        else if (Agent.remainingDistance < 1)
+                        else if (Agent.remainingDistance < 0.5)
                         {
                             data.npcvalue[valDestSet] = 0;
                             foundTarget = false;
@@ -421,22 +421,35 @@ public class NPC_939 : Map_NPC
         {
             Audio.clip = Hello[Random.Range(0,Hello.Length)];
             delay = 0.5f;
+            if (playerDistance < 15f)
+                StartCoroutine(playDelayedScript(delay, Audio.clip.name));
         }
         if (library == 2)
         {
             Audio.clip = Heard[Random.Range(0, Heard.Length)];
             delay = 2;
+            if(playerDistance < 15f)
+                StartCoroutine(playDelayedScript(delay, Audio.clip.name));
         }
         if (library == 3)
         {
             Audio.clip = Found[Random.Range(0, Found.Length)];
             delay = 0.5f;
+            if (playerDistance < 15f)
+                StartCoroutine(playDelayedScript(delay, Audio.clip.name));
         }
         if (library == 4)
         {
             Audio.clip = Attack[Random.Range(0, Attack.Length)];
         }
         Audio.PlayDelayed(delay);
+    }
+
+    IEnumerator playDelayedScript(float secs, string voice)
+    {
+        yield return new WaitForSeconds(secs);
+        SubtitleEngine.instance.playVoice(voice);
+        yield return true;
     }
 
 

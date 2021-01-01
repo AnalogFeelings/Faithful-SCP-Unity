@@ -408,7 +408,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5599985864049024562}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 514a97e34f461b84ea9359ea96f5edbb, type: 3}
   m_Name: 
@@ -425,6 +425,7 @@ GameObject:
   - component: {fileID: 1746649876599504936}
   - component: {fileID: 261935719}
   - component: {fileID: 261935721}
+  - component: {fileID: 1698366759819127321}
   m_Layer: 15
   m_Name: CameraMonitor
   m_TagString: Untagged
@@ -489,6 +490,22 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.1, y: 0.1, z: 0.1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1698366759819127321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7010613663791739504}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77807b98212b46a4682b0ef5e686166c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controller: {fileID: 1528561930317883019}
+  screen: {fileID: 7805166059142825267}
+  turnOff: {fileID: 2100000, guid: f3c7c1439198d4f419cffb3e3ab04e81, type: 2}
+  startOn: 1
 --- !u!1001 &4528428181281417980
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -550,6 +567,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2019768997658616247, guid: 59eb967045ea2644291d31dc863b0fdc,
+        type: 3}
+      propertyPath: speed
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 2152868889472010641, guid: 59eb967045ea2644291d31dc863b0fdc,
         type: 3}

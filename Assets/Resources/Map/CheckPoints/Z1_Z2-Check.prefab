@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 621847427016913649}
-  - component: {fileID: 1752249807}
   - component: {fileID: 1831762076851011234}
+  - component: {fileID: 4508736769486957477}
   m_Layer: 0
   m_Name: Z1_Z2-Check
   m_TagString: Untagged
@@ -37,7 +37,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1752249807
+--- !u!114 &1831762076851011234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 621847427016748753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d9f07e349283d0419aa34d36023dc38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Room: {fileID: 621847427016748755}
+  Lights: {fileID: 4841211396584831109}
+  Probes: {fileID: 5224398995569890417}
+  cutsceneReferences: []
+--- !u!114 &4508736769486957477
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -58,22 +74,6 @@ MonoBehaviour:
   SpecialName: 
   UniquePos: {fileID: 0}
   EventChosen: -1
---- !u!114 &1831762076851011234
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 621847427016748753}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d9f07e349283d0419aa34d36023dc38, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Room: {fileID: 621847427016748755}
-  Lights: {fileID: 4841211396584831109}
-  Probes: {fileID: 5224398995569890417}
-  cutsceneReferences: []
 --- !u!1 &621847427016748755
 GameObject:
   m_ObjectHideFlags: 0
@@ -234,7 +234,7 @@ ReflectionProbe:
   m_FarClip: 1000
   m_ShadowDistance: 100
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 16495927
@@ -364,7 +364,7 @@ ReflectionProbe:
   m_FarClip: 1000
   m_ShadowDistance: 100
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 16495927
@@ -629,7 +629,7 @@ Light:
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 0}
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -720,6 +720,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 905c9b417ec91244796bcc767286e812, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  globalToCheck: 0
   frames:
   - {fileID: 2800000, guid: 013ba39fa82ab1143b7bf0c8685ac1b0, type: 3}
   - {fileID: 2800000, guid: e0eb69f39cc752c488b783684bcb0f9f, type: 3}
@@ -800,7 +801,7 @@ Light:
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 0}
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295

@@ -24,7 +24,6 @@ public class EV_Intro2 : MonoBehaviour
         sci_ = sci.GetComponent<EV_Puppet_Controller>();
         sci2_ = sci2.GetComponent<EV_Puppet_Controller>();
         guard_ = guard.GetComponent<EV_Puppet_Controller>();
-        d2_.AnimTrigger(2, true);
 
         GameController.instance.ChangeMusic(MusicChange);
     }
@@ -34,9 +33,11 @@ public class EV_Intro2 : MonoBehaviour
     {
         if (eventstat == 0)
         {
+            d2_.AnimTrigger(2, true);
             if (tri1.GetComponent<BoxTrigger>().GetState())
             {
                 eventstat = 1;
+                Debug.Log("Door 2 switch");
                 door2.GetComponent<Object_Door>().DoorSwitch();
                 d1_.SetLookAt(Camera.main.transform);
                 Timer = Timer1;
@@ -49,6 +50,7 @@ public class EV_Intro2 : MonoBehaviour
         {
             if (tri2.GetComponent<BoxTrigger>().GetState())
             {
+                Debug.Log("Closing door");
                 door1.GetComponent<Object_Door>().DoorSwitch();
                 sci_.PlaySound(Dialogs[1], true);
                 sci_.AnimTrigger(-6);
@@ -110,6 +112,7 @@ public class EV_Intro2 : MonoBehaviour
                             refusestat = 3;
                             guard_.AnimTrigger(1, true);
                             sci_.PlaySound(Refuse[2], true);
+                            Debug.Log("Another door opening, cause refuse");
                             door1.GetComponent<Object_Door>().DoorSwitch();
                             refuseTimer = refuseTimer4;
                             break;
@@ -136,6 +139,7 @@ public class EV_Intro2 : MonoBehaviour
                     {
                         d1_.StopLookAt();
                         d2_.StopLookAt();
+                        Debug.Log("Door should open");
                         door1.GetComponent<Object_Door>().DoorSwitch();
                         sci_.PlaySound(Dialogs[0],true);
                         sci_.AnimTrigger(-6);
@@ -182,6 +186,7 @@ public class EV_Intro2 : MonoBehaviour
                     }
                 case 6:
                     {
+                        Debug.Log("Door should open on chaos");
                         door1.GetComponent<Object_Door>().DoorSwitch();
                         check3 = true;
                         sci_.PlaySound(Dialogs[2], true);

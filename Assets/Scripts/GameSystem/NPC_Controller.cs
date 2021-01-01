@@ -11,11 +11,14 @@ public class NPC_Controller : MonoBehaviour
     
 
     public GameObject[] NPC_Prefabs;
+    public GameObject[] Simp_Prefabs;
     public GameObject[] SCP_Prefabs;
 
     [HideInInspector]
     [System.NonSerialized]
     public Roam_NPC[] mainList = new Roam_NPC[4];
+    [System.NonSerialized]
+    public SimpleNPC[] simpList = new SimpleNPC[1];
     [HideInInspector]
     [System.NonSerialized]
     public List<Map_NPC> NPCS = new List<Map_NPC>();
@@ -34,6 +37,8 @@ public class NPC_Controller : MonoBehaviour
 
     public bool[] spawnTable;
     public Transform[] spawnPos;
+
+    public bool[] spawnSimps;
 
 
     npc LatestNPC = npc.none;
@@ -66,11 +71,17 @@ public class NPC_Controller : MonoBehaviour
         parent = new GameObject("npcParent");
     }
 
-    public void ResetNPC(NPC_Data[] npc, NPC_Data[] scp)
+    public void ResetNPC(NPC_Data[] npc, NPC_Data[] scp, bool[]simps)
     {
         for(int i=0; i < npc.Length; i++)
         {
             AddNpc(npc[i].type, npc[i].Pos.toVector3(), npc[i]);
+        }
+
+        for (int i = 0; i < simpList.Length; i++)
+        {
+            simpList[i].isActive = simps[i];
+            //Debug.Log("Obteniendo datos NPC " + i + " de " + NPCS.Count + " tipo " + NPCS[i].data.type);
         }
 
         for (int v = 0; v < scp.Length; v++)
@@ -78,9 +89,9 @@ public class NPC_Controller : MonoBehaviour
             if (spawnTable[v] == true)
             {
                 Debug.Log("Enemigo " + v + " pos " + scp[v].Pos.toVector3() + " Activo? " + scp[v].isActive);
-                mainList[v].data = scp[v];
                 mainList[v].Spawn(scp[v].isActive, scp[v].Pos.toVector3());
-                mainList[v].transform.rotation = Quaternion.Euler(scp[v].Rotation.toVector3());
+                mainList[v].setData(scp[v]);
+                //mainList[v].transform.rotation = Quaternion.Euler(scp[v].Rotation.toVector3());
             }
         }
     }
@@ -114,7 +125,7 @@ public class NPC_Controller : MonoBehaviour
                 mainList[(int)LatestNPC].SetAgroLevel(0);
             mainList[(int)who].SetAgroLevel(1);
             LatestNPC = who;
-            NPCTimer = 60;
+            NPCTimer = 75;
         }
 
         if (LatestNPC != npc.none && who == ZoneMain)
@@ -122,14 +133,14 @@ public class NPC_Controller : MonoBehaviour
             mainList[(int)LatestNPC].SetAgroLevel(0);
             mainList[(int)who].SetAgroLevel(1);
             LatestNPC = who;
-            NPCTimer = 60;
+            NPCTimer = 90;
         }
 
         if (who == ZoneMain)
         {
             mainList[(int)who].SetAgroLevel(1);
             LatestNPC = who;
-            NPCTimer = 60;
+            NPCTimer = 120;
         }
 
 
@@ -179,6 +190,17 @@ public class NPC_Controller : MonoBehaviour
         return (helper);
     }
 
+    public bool[] getActiveSimps()
+    {
+        bool[] helper = new bool[simpList.Length];
+        for (int i = 0; i < simpList.Length; i++)
+        {
+            helper[i] = simpList[i].isActive;
+            //Debug.Log("Obteniendo datos NPC " + i + " de " + NPCS.Count + " tipo " + NPCS[i].data.type);
+        }
+        return (helper);
+    }
+
     public NPC_Data[] getMain()
     {
         NPC_Data[] helper = new NPC_Data[mainList.Length];
@@ -200,6 +222,15 @@ public class NPC_Controller : MonoBehaviour
                 GameObject newSCP = Instantiate(SCP_Prefabs[i], spawnPos[i].position, spawnPos[i].rotation, parent.transform);
                 Debug.Log("Step one done");
                 mainList[i] = newSCP.GetComponent<Roam_NPC>();
+            }
+        }
+
+        for (int i = 0; i < spawnSimps.Length; i++)
+        {
+            if (spawnSimps[i] == true)
+            {
+                GameObject newSCP = Instantiate(Simp_Prefabs[i], Vector3.zero, Quaternion.identity, parent.transform);
+                simpList[i] = newSCP.GetComponent<SimpleNPC>();
             }
         }
     }

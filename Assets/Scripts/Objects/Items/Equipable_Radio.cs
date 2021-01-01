@@ -11,7 +11,7 @@ public class Equipable_Radio : Equipable_Elec
 
         this.part = bodyPart.Hand;
 
-        if (player.equipment[(int)this.part] == null || player.equipment[(int)this.part].itemName != this.itemName)
+        if (player.equipment[(int)this.part] == null || ItemController.instance.items[player.equipment[(int)this.part].itemFileName].itemName != this.itemName)
         {
             player.ACT_Equip(currItem);
             SCP_UI.instance.radio.StartRadio();
@@ -25,7 +25,7 @@ public class Equipable_Radio : Equipable_Elec
 
     public override bool Mix(ref gameItem currItem, ref gameItem toMix)
     {
-        if (ItemController.instance.items[toMix.itemName].itemName.Equals("bat_nor"))
+        if (ItemController.instance.items[toMix.itemFileName].itemName.Equals("bat_nor"))
         {
             currItem.valFloat = 100;
             return (true);

@@ -59,11 +59,11 @@ public class SCPInput : MonoBehaviour
 
     public void ToGameplay()
     {
-        playerInput.Gameplay.Enable();
+        //playerInput.Gameplay.Enable();
     }
     public void ToUI()
     {
-        playerInput.Gameplay.Disable();
+        //playerInput.Gameplay.Disable();
     }
 
     public void TestRebind()
@@ -366,6 +366,7 @@ public class SCPInput : MonoBehaviour
 
     private void OnDisable()
     {
-        playerInput.Disable();
+        if(playerInput!=null)
+            playerInput.Disable();
     }
 }

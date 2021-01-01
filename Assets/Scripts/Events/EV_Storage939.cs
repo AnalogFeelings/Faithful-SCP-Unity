@@ -16,19 +16,21 @@ public class EV_Storage939 : Event_Parent
 
     public override void EventLoad()
     {
+        Debug.Log("Loading StorageEvent");
         base.EventLoad();
-        if (isStarted)
+        /*if (isStarted)
         {
             int firstSCP = GameController.instance.getValue(x, y, 3);
 
             ((NPC_939)GameController.instance.npcController.NPCS[firstSCP]).NpcEnable();
             ((NPC_939)GameController.instance.npcController.NPCS[firstSCP+1]).NpcEnable();
             ((NPC_939)GameController.instance.npcController.NPCS[firstSCP+2]).NpcEnable();
-        }
+        }*/
     }
 
     public override void EventUnLoad()
     {
+        Debug.Log("Unloading StorageEvent");
         base.EventLoad();
         if (isStarted)
         {
@@ -66,6 +68,7 @@ public class EV_Storage939 : Event_Parent
         }
         else
         {
+            //Debug.Log("Audio modifier de-activated");
             audio.SetActive(false);
         }
 
@@ -101,7 +104,8 @@ public class EV_Storage939 : Event_Parent
     public override void EventFinished()
     {
         base.EventFinished();
-        active_lev1 = (GameController.instance.getValue(x, y, 0) == 0);
+        isStarted = true;
+        active_lev1 = (GameController.instance.getValue(x, y, 0) == 1);
         active_lev2 = (GameController.instance.getValue(x, y, 1) == 1);
 
         lever1.On = active_lev1;
@@ -134,5 +138,9 @@ public class EV_Storage939 : Event_Parent
         ((NPC_939)GameController.instance.npcController.NPCS[firstSCP + 2]).Heard = heard3;
         ((NPC_939)GameController.instance.npcController.NPCS[firstSCP + 2]).Found = found3;
         ((NPC_939)GameController.instance.npcController.NPCS[firstSCP + 2]).Attack = attack3;
+
+        ((NPC_939)GameController.instance.npcController.NPCS[firstSCP]).NpcEnable();
+        ((NPC_939)GameController.instance.npcController.NPCS[firstSCP + 1]).NpcEnable();
+        ((NPC_939)GameController.instance.npcController.NPCS[firstSCP + 2]).NpcEnable();
     }
 }

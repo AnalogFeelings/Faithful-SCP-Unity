@@ -115,7 +115,7 @@ public class SCP_914 : MonoBehaviour
             {
                 GameObject newItem;
                 newItem = Instantiate(spawner, outake.position, Quaternion.identity);
-                newItem.GetComponent<Object_Item>().item = TransformItem(ItemController.instance.items[inItems[i].GetComponent<Object_Item>().item.itemName]);
+                newItem.GetComponent<Object_Item>().item = TransformItem(ItemController.instance.items[inItems[i].GetComponent<Object_Item>().item.itemFileName]);
                 newItem.GetComponent<Object_Item>().Spawn();
                 inItems[i].GetComponent<Object_Item>().Delete();
 

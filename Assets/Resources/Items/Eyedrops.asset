@@ -12,21 +12,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 212984bd537ceae4d9be38226d17bba7, type: 3}
   m_Name: Eyedrops
   m_EditorClassIdentifier: 
+  colCenter: {x: 0, y: 0, z: 0}
+  colSize: {x: 0.250877, y: 0.1208749, z: 0.4735436}
+  mass: 1
   itemName: eye
   icon: {fileID: 21300000, guid: 93dfdd4d4eb11dd4d9abae911708a0d0, type: 3}
   deleteUse: 1
   hasEffect: 1
   isFem: 0
   isUnique: 0
+  keepInv: 0
   Effects:
-    Affected: 0
+  - affected: 0
     effect:
       permanent: 0
       time: 10
       max: 0
       min: 0
-      value: 8
-      multiplier: 0.25
+      value: 10
+      multiplier: 0.5
   ItemModel: {fileID: 100000, guid: 3bcb4c71cafe0e343929e84d901469dd, type: 3}
   valueFloat: 0
   valueInt: 0

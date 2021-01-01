@@ -1,21 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &7500644437314100559
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 817869791929331681}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 156518ff67a112f4a9587cd5f8bcef0e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  steps:
-  - {fileID: 8300000, guid: 0c13b740873324a42ba45cfd8ea4c893, type: 3}
-  - {fileID: 8300000, guid: 613cee8e064a3c84ba709b73c3e8fa8c, type: 3}
-  - {fileID: 8300000, guid: 622a46a64a25430418939a34c3504d34, type: 3}
 --- !u!82 &1320062386246027891
 AudioSource:
   m_ObjectHideFlags: 0
@@ -113,6 +97,22 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &7500644437314100559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 817869791929331681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 156518ff67a112f4a9587cd5f8bcef0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  steps:
+  - {fileID: 8300000, guid: 0c13b740873324a42ba45cfd8ea4c893, type: 3}
+  - {fileID: 8300000, guid: 613cee8e064a3c84ba709b73c3e8fa8c, type: 3}
+  - {fileID: 8300000, guid: 622a46a64a25430418939a34c3504d34, type: 3}
 --- !u!1 &8680764321638132989
 GameObject:
   m_ObjectHideFlags: 0
@@ -126,7 +126,8 @@ GameObject:
   - component: {fileID: 8680764321638132984}
   - component: {fileID: 8680764321638132987}
   - component: {fileID: 8680764321638132966}
-  m_Layer: 0
+  - component: {fileID: 7647860243603445268}
+  m_Layer: 14
   m_Name: NPC_049
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -168,7 +169,7 @@ NavMeshAgent:
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
-  m_WalkableMask: 4294967295
+  m_WalkableMask: 23
   m_ObstacleAvoidanceType: 0
 --- !u!114 &8680764321638132984
 MonoBehaviour:
@@ -207,6 +208,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  areaDoorName: ElevatorDoor
+  areaElevName: 
 --- !u!114 &8680764321638132987
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -228,11 +231,26 @@ MonoBehaviour:
       x: 0
       y: 0
       z: 0
+    Rotation:
+      x: 0
+      y: 0
+      z: 0
     type: 0
     state: 0
     isActive: 0
     npcvalue: 0000000000000000000000000000000000000000
   isEvent: 0
+  levels:
+  - distanceTele: 45
+    timeBeforeTele: 180
+    minTele: 2
+    maxTele: 3
+    ringStruggleTime: 0
+  - distanceTele: 30
+    timeBeforeTele: 90
+    minTele: 1
+    maxTele: 2
+    ringStruggleTime: 0
   Chase:
   - {fileID: 8300000, guid: d8d248b06f88f5e448633642925f0b5f, type: 3}
   - {fileID: 8300000, guid: 4f98f7ccea723d545a006820d213df70, type: 3}
@@ -249,9 +267,13 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 5099b0dc3ad3cde4c9f1574ecd93a546, type: 3}
   - {fileID: 8300000, guid: 89c8c6a3db0bac548a763f199af85b89, type: 3}
   - {fileID: 8300000, guid: 6f48d42a643cc1b4da701d159a302142, type: 3}
+  Kill:
+  - {fileID: 8300000, guid: a90eeb9c632eba04894588a5944b86a1, type: 3}
+  - {fileID: 8300000, guid: 57841b659b9e22b448ab75c72718260f, type: 3}
+  chaseSong: {fileID: 8300000, guid: fdcd6fae321a44c4e88b9fa743092484, type: 3}
   animator: {fileID: 6019327152740774024}
   viewLimit: -0.5
-  normalSpeed: 0.75
+  normalSpeed: 1
   chaseSpeed: 2.5
   listeningRange: 30
   closeRange: 15
@@ -268,6 +290,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1048576
   debugIsTargeting: 1
+  allowMapPath: 1
 --- !u!82 &8680764321638132966
 AudioSource:
   m_ObjectHideFlags: 0
@@ -401,6 +424,20 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!136 &7647860243603445268
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8680764321638132989}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.4
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1.1, z: 0}
 --- !u!1001 &8680764321912272616
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -468,10 +505,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1006452095489248502, guid: 26e2f72d2c55dfa41bbd334351c10d71,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
     - target: {fileID: -927199367670048503, guid: 26e2f72d2c55dfa41bbd334351c10d71,
         type: 3}
       propertyPath: m_Name
       value: scp049
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: 26e2f72d2c55dfa41bbd334351c10d71,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 26e2f72d2c55dfa41bbd334351c10d71, type: 3}

@@ -7,7 +7,7 @@ using Pixelplacement;
 using Pixelplacement.TweenSystem;
 using UnityEngine.Tilemaps;
 
-public enum DeathEvent {none, pocketDimension };
+public enum DeathEvent {none, pocketDimension, zombie008 };
 
 [System.Serializable]
 public class CameraPool
@@ -56,6 +56,9 @@ public class GameController : MonoBehaviour
     int persCounter = 0;
     public bool canSave = false, debugCamera, holdRoom = false;
     public bool CreateMap, ShowMap;
+    public bool controlFog=true, customFog=false;
+    public float defaultFog = 15f, fogSpeed = 3;
+    public float toFog=15;
     public bool doGameplay, spawnPlayer, spawnHere, StopTimer = false, isStart = false, mapless;
 
     [Header("Volumes")]
@@ -78,7 +81,7 @@ public class GameController : MonoBehaviour
 
     [HideInInspector]
     [System.NonSerialized]
-    public GameObject itemParent, eventParent, doorParent, npcParent, persParent;
+    public GameObject itemParent, eventParent, doorParent, persParent;
 
 
     Transform currentTarget;
@@ -95,7 +98,9 @@ public class GameController : MonoBehaviour
     bool CullerOn, playIntro = true;
     [HideInInspector]
     public int currZone = 0;
-    float roomsize = 15.3f, Timer = 5, normalAmbiance;
+    [HideInInspector]
+    public float roomsize = 15.3f;
+    float Timer = 5, normalAmbiance;
 
     MapSize mapSize;
     int[,,] culllookup;
@@ -141,6 +146,7 @@ public class GameController : MonoBehaviour
     public List<int> globalInts = new List<int>();
     public List<bool> globalBools = new List<bool>();
     public List<float> globalFloats = new List<float>();
+    public List<string> globalStrings = new List<string>();
 
     /// <summary>
     /// SpecialItemsData
@@ -244,9 +250,10 @@ public class GameController : MonoBehaviour
                         SaveSystem.instance.playData = GlobalValues.worldState;
 
                         ItemController.instance.EmptyItems();
-                        ItemController.instance.LoadItems(SaveSystem.instance.playData.items);
+                        ItemController.instance.LoadItems(SaveSystem.instance.playData.items, SaveSystem.instance.playData.equips);
                         globalInts = SaveSystem.instance.playData.globalInts;
                         globalFloats = SaveSystem.instance.playData.globalFloats;
+                        globalStrings = SaveSystem.instance.playData.globalStrings;
                         globalBools = SaveSystem.instance.playData.globalBools;
                         spawnHere = true;
                         Debug.Log("Iniciando spawn mapless, con spawnHere valor " + spawnHere);
@@ -269,7 +276,7 @@ public class GameController : MonoBehaviour
             if (GlobalValues.worldState != null)
             {
                 ItemController.instance.EmptyItems();
-                ItemController.instance.LoadItems(SaveSystem.instance.playData.items);
+                ItemController.instance.LoadItems(SaveSystem.instance.playData.items, SaveSystem.instance.playData.equips);
             }
 
             GL_SpawnPlayer(playerSpawn.position);
@@ -295,14 +302,14 @@ public class GameController : MonoBehaviour
             mapCreate.mapgenseed = GUI.TextField(new Rect(20, 40, 80, 20), mapCreate.mapgenseed);
             playIntro = GUI.Toggle(new Rect(120, 40, 80, 20), playIntro, "Iniciar Intro");
 
-           /* if (playIntro)
-            {
-                GlobalValues.playIntro = true;
-            }
-            else
-            {
-                GlobalValues.playIntro = true;
-            }*/
+            /* if (playIntro)
+             {
+                 GlobalValues.playIntro = true;
+             }
+             else
+             {
+                 GlobalValues.playIntro = true;
+             }*/
 
             if (GUI.Button(new Rect(220, 40, 80, 20), "Iniciar"))
             {
@@ -317,13 +324,15 @@ public class GameController : MonoBehaviour
         }
         else if (DebugFlag)
         {
-                GUI.Box(new Rect(10, 10, 300, 100), "Debug Data");
-                GUI.Label(new Rect(20, 40, 300, 20), "Map X " + xPlayer + " Mapa Y " + yPlayer);
-                GUI.Label(new Rect(20, 65, 300, 20), "This Zone " + currZone);
-                GUI.Label(new Rect(20, 90, 300, 20), "Is Gameplay? " + doGameplay);
-                GUI.Label(new Rect(20, 115, 300, 20), "Is Rooom hold? " + holdRoom);
-                GUI.Label(new Rect(20, 130, 300, 20), "Is Pocket? " + isPocket);
-                GUI.Label(new Rect(20, 155, 300, 20), "is ALive? " + isAlive);
+            GUI.Box(new Rect(10, 10, 300, 100), "Debug Data");
+            GUI.Label(new Rect(20, 40, 300, 20), "Map X " + xPlayer + " Mapa Y " + yPlayer);
+            GUI.Label(new Rect(20, 65, 300, 20), "This Zone " + currZone);
+            GUI.Label(new Rect(20, 90, 300, 20), "Is Gameplay? " + doGameplay);
+            GUI.Label(new Rect(20, 115, 300, 20), "Is Rooom hold? " + holdRoom);
+            GUI.Label(new Rect(20, 130, 300, 20), "Is Pocket? " + isPocket);
+            GUI.Label(new Rect(20, 155, 300, 20), "is ALive? " + isAlive);
+            GUI.Label(new Rect(20, 170, 300, 20), "Player X " + playercache.transform.position.x + " Y " + playercache.transform.position.y + " Z " + playercache.transform.position.z);
+            GUI.Label(new Rect(20, 185, 300, 20), "Player Rotation " + playercache.transform.rotation.eulerAngles.y);
         }
     }
 
@@ -355,7 +364,7 @@ public class GameController : MonoBehaviour
 
             itemParent = new GameObject("itemParent");
             eventParent = new GameObject("eventParent");
-            npcParent = new GameObject("npcParent");
+            //npcParent = new GameObject("npcParent");
 
             SaveSystem.instance.LoadState();
 
@@ -502,7 +511,7 @@ public class GameController : MonoBehaviour
                 }
                 else
                 {
-                    SubtitleEngine.instance.playSub("uiStrings", "ui_nosave");
+                    SubtitleEngine.instance.playSub("uiStrings", "ui_in_nosave");
                 }
             }
         }
@@ -642,7 +651,11 @@ public class GameController : MonoBehaviour
                 yPlayer = tempY;
                 PlayerReveal(xPlayer, yPlayer);
                 PlayerEvents();
+                if (!customFog)
+                    toFog = ((SCP_Map[xPlayer, yPlayer].customFog == -1) ? defaultFog : SCP_Map[xPlayer, yPlayer].customFog);
             }
+
+            RenderSettings.fogEndDistance = Mathf.MoveTowards(RenderSettings.fogEndDistance, toFog, fogSpeed * Time.deltaTime);
 
             if (yPlayer < Zone3limit)
             {
@@ -672,10 +685,10 @@ public class GameController : MonoBehaviour
             }
         }*/
 
-        /*if (Input.GetKeyDown(KeyCode.F1))
+        if (SCPInput.instance.playerInput.Gameplay.DebugF1.triggered)
         {
             DebugFlag = !DebugFlag;
-        }*/
+        }
 
         if (npcController != null)
         {
@@ -746,7 +759,7 @@ public class GameController : MonoBehaviour
 
     public void DeleteItem(int i)
     {
-        Debug.Log(i);
+        //Debug.Log(i);
         itemData[i] = null;
     }
 
@@ -871,7 +884,7 @@ public class GameController : MonoBehaviour
             xPatrol = Random.Range(Mathf.Clamp(xPos - Outer, 0, mapSize.xSize - 1), Mathf.Clamp(xPos + Outer, 0, mapSize.xSize - 1));
             yPatrol = Random.Range(Mathf.Clamp(yPos - Outer, 0, mapSize.ySize - 1), Mathf.Clamp(yPos + Outer, 0, mapSize.ySize - 1));
         }
-        while (Binary_Map[xPatrol, yPatrol] == 0 && ((xPatrol < xPos + Inner) && (xPatrol > xPos - Inner) && (yPatrol < yPos + Inner) && (yPatrol > yPos - Inner)));
+        while (Binary_Map[xPatrol, yPatrol] == 0 || (((xPatrol < xPos + Inner) && (xPatrol > xPos - Inner)) || ((yPatrol < yPos + Inner) && (yPatrol > yPos - Inner))));
 
         Debug.Log("Otorgue Posicion X= " + xPatrol + " Posicion Y= " + yPatrol + " desde x " + xPos + " y " + yPos);
 
@@ -1005,6 +1018,16 @@ public class GameController : MonoBehaviour
                     GoPocket();
                     break;
                 }
+            case DeathEvent.zombie008:
+                {
+                    GlobalValues.worldState = QuickSave();
+                    //LoadingSystem.instance.FadeOut(1.5f, new Vector3Int(0, 0, 0));
+                    yield return new WaitForSeconds(3);
+
+                    GoZombie008();
+
+                    break;
+                }
         }
     }
 
@@ -1056,6 +1079,14 @@ public class GameController : MonoBehaviour
         Debug.Log("Scene" + SceneManager.GetActiveScene().name);
         LoadingSystem.instance.LoadLevel(3);
     }
+    public void GoZombie008()
+    {
+        GlobalValues.LoadType = LoadType.mapless;
+        GlobalValues.isNew = false;
+        //GlobalValues.sceneReturn = SceneManager.GetActiveScene().buildIndex;
+        //Debug.Log("Scene" + SceneManager.GetActiveScene().name);
+        LoadingSystem.instance.LoadLevel(4);
+    }
     public void WorldReturn()
     {
         GlobalValues.worldState.items = ItemController.instance.GetItems();
@@ -1086,17 +1117,19 @@ public class GameController : MonoBehaviour
         {
             case 0:
                 {
-                    HorrorFov.gameObject.GetComponent<PostProcessLayer>().antialiasingMode = PostProcessLayer.Antialiasing.None;
+                    HorrorFov.gameObject.GetComponent<PostProcessLayer>().antialiasingMode = PostProcessLayer.Antialiasing.FastApproximateAntialiasing;
                     break;
                 }
             case 1:
                 {
-                    HorrorFov.gameObject.GetComponent<PostProcessLayer>().antialiasingMode = PostProcessLayer.Antialiasing.FastApproximateAntialiasing;
+                    HorrorFov.gameObject.GetComponent<PostProcessLayer>().antialiasingMode = PostProcessLayer.Antialiasing.SubpixelMorphologicalAntialiasing;
+                    HorrorFov.gameObject.GetComponent<PostProcessLayer>().subpixelMorphologicalAntialiasing.quality = SubpixelMorphologicalAntialiasing.Quality.Medium;
                     break;
                 }
             case 2:
                 {
-                    HorrorFov.gameObject.GetComponent<PostProcessLayer>().antialiasingMode = PostProcessLayer.Antialiasing.FastApproximateAntialiasing;
+                    HorrorFov.gameObject.GetComponent<PostProcessLayer>().antialiasingMode = PostProcessLayer.Antialiasing.SubpixelMorphologicalAntialiasing;
+                    HorrorFov.gameObject.GetComponent<PostProcessLayer>().subpixelMorphologicalAntialiasing.quality = SubpixelMorphologicalAntialiasing.Quality.High;
                     break;
                 }
         }
@@ -1131,9 +1164,18 @@ public class GameController : MonoBehaviour
                     shadowQuality.NGSS_SAMPLING_FILTER = 32;
                     break;
                 }
+            case 7:
+                {
+                    shadowQuality.NGSS_PCSS_ENABLED = true;
+                    shadowQuality.NGSS_SAMPLING_TEST = 24;
+                    shadowQuality.NGSS_SAMPLING_FILTER = 32;
+                    break;
+                }
             default:
                 {
                     shadowQuality.NGSS_PCSS_ENABLED = false;
+                    shadowQuality.NGSS_SAMPLING_TEST = 4;
+                    shadowQuality.NGSS_SAMPLING_FILTER = 8;
                     break;
                 }
         }
@@ -1152,7 +1194,7 @@ public class GameController : MonoBehaviour
             if (itemData[i] != null && itemData[i].item != null)
             {
                 GameObject newObject;
-                Debug.Log(itemData[i].item + " i: " + i);
+                Debug.Log(itemData[i].item.itemFileName + " i: " + i);
                 newObject = Instantiate(itemSpawner, new Vector3(itemData[i].X, itemData[i].Y + 0.2f, itemData[i].Z), Quaternion.identity);
                 newObject.GetComponent<Object_Item>().item = itemData[i].item;
                 newObject.GetComponent<Object_Item>().id = i;
@@ -1185,6 +1227,7 @@ public class GameController : MonoBehaviour
         playData.pX = player.transform.position.x;
         playData.pY = player.transform.position.y;
         playData.pZ = player.transform.position.z;
+        playData.equips = ItemController.instance.GetEquips();
         playData.items = ItemController.instance.GetItems();
         playData.navMap = nav_Map;
         playData.angle = Camera.main.gameObject.transform.eulerAngles.y;
@@ -1193,12 +1236,16 @@ public class GameController : MonoBehaviour
         playData.holdRoom = holdRoom;
         playData.globalBools = globalBools;
         playData.globalFloats = globalFloats;
+        playData.seedState = Random.state;
         playData.globalInts = globalInts;
+        playData.globalStrings = globalStrings;
         playData.Health = playercache.Health;
         playData.bloodLoss = playercache.bloodloss;
+        playData.zombieTime = (playercache.hasZombie == false ? -1 : playercache.zombieTimer);
 
         playData.npcData = npcController.getData();
         playData.mainData = npcController.getMain();
+        playData.simpData = npcController.getActiveSimps();
 
 
         playData.worldItems = itemData;
@@ -1311,10 +1358,11 @@ public class GameController : MonoBehaviour
         persTable = SaveSystem.instance.playData.persState;
         SCP_Map = SaveSystem.instance.playData.savedMap;
         ItemController.instance.EmptyItems();
-        ItemController.instance.LoadItems(SaveSystem.instance.playData.items);
+        ItemController.instance.LoadItems(SaveSystem.instance.playData.items, SaveSystem.instance.playData.equips);
         holdRoom = SaveSystem.instance.playData.holdRoom;
         globalInts = SaveSystem.instance.playData.globalInts;
         globalFloats = SaveSystem.instance.playData.globalFloats;
+        globalStrings = SaveSystem.instance.playData.globalStrings;
         globalBools = SaveSystem.instance.playData.globalBools;
     }
 
@@ -1328,21 +1376,28 @@ public class GameController : MonoBehaviour
             {
                 if (!GlobalValues.isNew)
                 {
-                    SetMapPos(SaveSystem.instance.playData.mapX, SaveSystem.instance.playData.mapY);
-                    LoadItems();
                     doGameplay = true;
                     StopTimer = true;
+                    LoadItems();
+                    Camera.main.gameObject.transform.rotation = Quaternion.Euler(0, SaveSystem.instance.playData.angle, 0);
+                    SetMapPos(SaveSystem.instance.playData.mapX, SaveSystem.instance.playData.mapY);
+                    ItemController.instance.SetEquips();
+                    Random.state = SaveSystem.instance.playData.seedState;
                 }
+                Debug.Log("Showing map");
+                var e = ShowRoom(xPlayer, yPlayer);
+                while (e.MoveNext()) { }
             }
+        }
 
-            isStart = true;
-            HorrorFov = Camera.main;
-            LoadUserValues();
+        isStart = true;
+        HorrorFov = Camera.main;
+        LoadUserValues();
 
+        if(startEv!=null)
             startEv.SetActive(true);
 
-            PlayHorror(Z1[0], player.transform, npc.none);
-        }
+        PlayHorror(Z1[0], player.transform, npc.none);
     }
 
     void GL_SpawnPlayer(Vector3 here)
@@ -1353,7 +1408,7 @@ public class GameController : MonoBehaviour
         {
             if (GlobalValues.isNew && !spawnHere)
             {
-                player = Instantiate(origplayer, WorldAnchor.transform.position, Quaternion.identity);
+                player = Instantiate(origplayer, WorldAnchor.transform.position+(Vector3.up*0.5f), Quaternion.identity);
                 Debug.Log("Spawning at anchor " + WorldAnchor.transform + " es nuevo " + GlobalValues.isNew + " !spawnhere " + spawnHere);
             }
             else
@@ -1368,6 +1423,8 @@ public class GameController : MonoBehaviour
         {
             playercache.Health = SaveSystem.instance.playData.Health;
             playercache.bloodloss = SaveSystem.instance.playData.bloodLoss;
+            playercache.hasZombie = SaveSystem.instance.playData.zombieTime > 0;
+            playercache.zombieTimer = SaveSystem.instance.playData.zombieTime;
         }
         if (GlobalValues.debug == true)
         {
@@ -1380,13 +1437,11 @@ public class GameController : MonoBehaviour
         if (!GlobalValues.isNew && GlobalValues.LoadType != LoadType.mapless)
         {
             Debug.Log("Spawning inplaces");
-            npcController.ResetNPC(SaveSystem.instance.playData.npcData, SaveSystem.instance.playData.mainData);
+            npcController.ResetNPC(SaveSystem.instance.playData.npcData, SaveSystem.instance.playData.mainData, SaveSystem.instance.playData.simpData);
         }
         Camera.main.enabled = true;
-
+        SCP_UI.instance.EnableMenu();
         playercache.isGameplay = true;
-        //CullerFlag = true;
-
     }
 
     void GL_Spawning()
@@ -1448,6 +1503,12 @@ public class GameController : MonoBehaviour
 
     void HidRoom(int i, int j)
     {
+        culllookup[i, j, 1] = 0;
+        if (SCP_Map[i, j].Event != -1)
+        {
+            rooms[i, j].GetComponent<EventHandler>().EventUnLoad();
+        }
+
         RoomHolder hold = rooms[i, j];
         hold.Lights.SetActive(false);
         if (hold.Probes != null)
@@ -1460,6 +1521,15 @@ public class GameController : MonoBehaviour
 
     IEnumerator ShowRoom(int i, int j)
     {
+        if (SCP_Map[i, j].Event != -1)
+        {
+            rooms[i, j].GetComponent<EventHandler>().EventLoad(i, j, SCP_Map[i, j].eventDone);
+        }
+        culllookup[i, j, 1] = 1;
+        culllookup[i, j, 0] = 1;
+
+        yield return null;
+
         RoomHolder hold = rooms[i, j];
         hold.Lights.SetActive(true);
 
@@ -1541,14 +1611,9 @@ public class GameController : MonoBehaviour
             {
                 if ((Binary_Map[i, j] == 1))      //Imprime el mapa
                 {
-                    //Debug.Log("Hiding Room at x" + i + " y " + j);
                     HidRoom(i, j);
                     culllookup[i, j, 0] = 0;
                     culllookup[i, j, 1] = 0;
-                    if (SCP_Map[i, j].Event != -1)
-                    {
-                        rooms[i, j].GetComponent<EventHandler>().EventUnLoad();
-                    }
                 }
             }
         }
@@ -1556,12 +1621,14 @@ public class GameController : MonoBehaviour
         GL_Start();
         LoadingSystem.instance.FadeIn(0.5f, new Vector3Int(0, 0, 0));
 
-        canSave = true;
-        doGameplay = true;
+        //canSave = true;
+        //doGameplay = true;
         isAlive = true;
-        LoadItems();
+        //LoadItems();
 
         CullerFlag = true;
+
+        GL_AfterPost();
     }
 
 
@@ -1594,13 +1661,7 @@ public class GameController : MonoBehaviour
                     {
                         //Debug.Log("Showing Room at x" + i + " y " + j);
                         yield return ShowRoom(i, j);
-                        if (SCP_Map[i, j].Event != -1)
-                        {
-                            rooms[i, j].GetComponent<EventHandler>().EventLoad(i, j, SCP_Map[i, j].eventDone);
-                        }
-                        yield return null;
-                        culllookup[i, j, 1] = 1;
-                        culllookup[i, j, 0] = 1;
+                        
                     }
                 }
             }
@@ -1617,11 +1678,6 @@ public class GameController : MonoBehaviour
                     if (culllookup[i, j, 1] == 1)
                     {
                         HidRoom(i, j);
-                        culllookup[i, j, 1] = 0;
-                        if (SCP_Map[i, j].Event != -1)
-                        {
-                            rooms[i, j].GetComponent<EventHandler>().EventUnLoad();
-                        }
                         yield return null;
                     }
                 }
@@ -1689,9 +1745,18 @@ public class GameController : MonoBehaviour
         Vector3 here = new Vector3(xPlayer * roomsize, 0, yPlayer * roomsize);
         npcController.mainList[(int)npc.scp106].Spawn(true, here);
     }
+    public void CL_spawn049()
+    {
+        Vector3 here = new Vector3(xPlayer * roomsize, 0, yPlayer * roomsize);
+        npcController.mainList[(int)npc.scp049].Spawn(true, here);
+    }
     public void CL_spawn173()
     {
         Vector3 here = new Vector3(xPlayer * roomsize, 0, yPlayer * roomsize);
         npcController.mainList[(int)npc.scp173].Event_Spawn(true, here);
+    }
+    public void CL_spawn513()
+    {
+        npcController.simpList[(int)SimpNpcList.bell].isActive = true;
     }
 }

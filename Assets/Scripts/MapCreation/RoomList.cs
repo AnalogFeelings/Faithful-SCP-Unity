@@ -8,6 +8,7 @@ public class RoomChance
     public GameObject Room;
     public int Chance;
     public bool isSpecial, hasEvent, hasSpecial, hasItem = false, hasAmbiance=false;
+    public float customFog = -1;
     public RoomType type;
     public int Zone;
     public int music = -1;

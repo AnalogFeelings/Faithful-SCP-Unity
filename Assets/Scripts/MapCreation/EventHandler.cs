@@ -77,6 +77,8 @@ public class EventHandler : MonoBehaviour
     void InternalLoad(string scp_event, int x, int y, Transform pos)
     {
         Event = Resources.Load<GameObject>(string.Concat("Events/", scp_event));
+
+        Debug.Log("Evento " + scp_event + " cargado en " + x + " " + y);
         
         if (pos == null)
         {
@@ -99,11 +101,15 @@ public class EventHandler : MonoBehaviour
 
     public void EventUnLoad()
     {
-        Event.GetComponent<Event_Parent>().EventUnLoad();
-        Debug.Log("Evento Eliminado");
-        Destroy(Event);
+        if (Event)
+        {
+            Event.GetComponent<Event_Parent>().EventUnLoad();
+            Destroy(Event);
+        }
         Event = null;
         Spawned = false;
+        Debug.Log("Evento Eliminado");
+
     }
 
 

@@ -15,7 +15,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3680633899130173635
 Transform:
   m_ObjectHideFlags: 0
@@ -44,6 +44,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2806528296772532109}
   - component: {fileID: 1198462554094766467}
+  - component: {fileID: 4236769754399577822}
   m_Layer: 0
   m_Name: Heavy_2-Way_Tesla
   m_TagString: Untagged
@@ -83,6 +84,28 @@ MonoBehaviour:
   Room: {fileID: 8735762837672204294}
   Lights: {fileID: 1600722217919643656}
   Probes: {fileID: 2804428598303648489}
+  cutsceneReferences: []
+--- !u!114 &4236769754399577822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1777141851452463505}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2244201d5ad243e4a9c5a3705c01d400, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EventList:
+  - Chance: 50
+    EventHandler: Event_TeslaGate
+    pos: {fileID: 0}
+  UniqueHandler: 
+  Spawned: 0
+  SpecialName: 
+  UniquePos: {fileID: 0}
+  EventChosen: -1
 --- !u!1 &2064862350753829859
 GameObject:
   m_ObjectHideFlags: 0
@@ -160,7 +183,7 @@ Light:
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 12100000, guid: deb58512da518644ab6ecdf2035b37b1, type: 2}
-  m_RenderMode: 0
+  m_RenderMode: 2
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -192,7 +215,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1843289243991058920
 Transform:
   m_ObjectHideFlags: 0
@@ -296,6 +319,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eeb5dc026fdf4b488bc7ae0138ab719, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PathHandler: {fileID: 0}
   m_AgentTypeID: 0
   m_StartPoint: {x: 0, y: 0, z: -1}
   m_EndPoint: {x: 0, y: 0, z: 1}
@@ -347,6 +371,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eeb5dc026fdf4b488bc7ae0138ab719, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PathHandler: {fileID: 0}
   m_AgentTypeID: 0
   m_StartPoint: {x: 0, y: 0, z: -1}
   m_EndPoint: {x: 0, y: 0, z: 1}
@@ -432,7 +457,7 @@ Light:
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 12100000, guid: deb58512da518644ab6ecdf2035b37b1, type: 2}
-  m_RenderMode: 0
+  m_RenderMode: 2
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -524,7 +549,7 @@ Light:
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 12100000, guid: deb58512da518644ab6ecdf2035b37b1, type: 2}
-  m_RenderMode: 0
+  m_RenderMode: 2
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -616,7 +641,7 @@ Light:
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 12100000, guid: deb58512da518644ab6ecdf2035b37b1, type: 2}
-  m_RenderMode: 0
+  m_RenderMode: 2
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -733,6 +758,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3533541866680684449}
     m_Modifications:
+    - target: {fileID: 100000, guid: 8626c9225dda19248ae8a8e9e301b4bb, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 8626c9225dda19248ae8a8e9e301b4bb, type: 3}
+      propertyPath: m_TagString
+      value: Concrete
+      objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: 8626c9225dda19248ae8a8e9e301b4bb, type: 3}
       propertyPath: m_Name
       value: room2tesla_hcz_opt

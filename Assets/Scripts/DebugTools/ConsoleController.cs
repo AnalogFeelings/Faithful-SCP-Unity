@@ -73,6 +73,8 @@ public class ConsoleController
         registerCommand("teleport", teleportRoom, "Teleports to room with this name");
         registerCommand("spawn106", spawn106, "Spawns SCP-106 at the center of the current room");
         registerCommand("spawn173", spawn173, "Spawns SCP-173 at the center of the current room");
+        registerCommand("spawn049", spawn049, "Spawns SCP-049 at the center of the current room");
+        registerCommand("spawn513", spawn513, "Activates SCP-513");
         registerCommand("health", sethealth, "Sets the player current health [0 - 100]");
         registerCommand(repeatCmdName, repeatCommand, "Repeat last command.");
     }
@@ -222,7 +224,7 @@ public class ConsoleController
             appendLogLine("Spawning Item " + item);
             if (ItemController.instance.items.ContainsKey(item))
             {
-                if (!ItemController.instance.AddItem(new gameItem(item), 0))
+                if (ItemController.instance.AddItem(new gameItem(item), 0)==-1)
                     appendLogLine("Inventory full");
             }
             else
@@ -401,6 +403,15 @@ public class ConsoleController
     void spawn173(string[] args)
     {
         GameController.instance.CL_spawn173();
+    }
+
+    void spawn513(string[] args)
+    {
+        GameController.instance.CL_spawn513();
+    }
+    void spawn049(string[] args)
+    {
+        GameController.instance.CL_spawn049();
     }
 
 

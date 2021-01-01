@@ -5,13 +5,13 @@ using UnityEngine;
 [System.Serializable]
 public class gameItem
 {
-    public string itemName;
-    public int valInt;
-    public float valFloat;
+    public string itemFileName;
+    public int valInt=-1;
+    public float valFloat=-1;
 
-    public gameItem(string _itemName, bool isNew = true, int _int = 0, float _float = 0)
+    public gameItem(string _itemName, bool isNew = true, int _int = -1, float _float = -1)
     {
-        itemName = _itemName;
+        itemFileName = _itemName;
         if (!isNew)
         {
             valInt = _int;
@@ -19,6 +19,7 @@ public class gameItem
         }
         else
         {
+            //Debug.Log("Creating item " + _itemName + " with values int " + ItemController.instance.items[_itemName].valueInt + " float " + ItemController.instance.items[_itemName].valueFloat);
             valInt = ItemController.instance.items[_itemName].valueInt;
             valFloat = ItemController.instance.items[_itemName].valueFloat;
         }
@@ -66,23 +67,12 @@ public class ItemController : MonoBehaviour
         templatesArray = Resources.LoadAll("Items/", typeof(Item));
         foreach (Item template in templatesArray)
         {
-            Debug.Log("Template name: " + template.name);
+            //Debug.Log("Template name: " + template.name);
             if (!items.ContainsKey(template.name))
                 items.Add(template.name, template);
             /*else
                 Debug.Log("Duplicate KEY!");*/
         }
-    }
-
-    private void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void OpenInv()
@@ -111,20 +101,28 @@ public class ItemController : MonoBehaviour
 
     }
 
-    public bool AddItem(gameItem item, int inv)
+    public int AddItem(gameItem item, int inv)
     {
         for(int i = 0; i < slots.Length; i++)
         {
             if (invs[inv][i] == null)
             {
                 invs[inv][i] = item;
-                Debug.Log(item.itemName);
-                SCP_UI.instance.ItemSFX(items[item.itemName].SFX);
-                return (true);
+                Debug.Log(item.itemFileName);
+                SCP_UI.instance.ItemSFX(items[item.itemFileName].SFX);
+
+                if (items[item.itemFileName] is Equipable_Wear && ((Equipable_Wear)items[item.itemFileName]).autoEquip)
+                {
+                    currInv = 0;
+                    currhover = i;
+                    slots[i].Use(true);
+                }
+
+                return (i);
             }
         }
 
-        return (false);
+        return (-1);
     }
 
     public bool IsEmpty(int inv)
@@ -143,35 +141,32 @@ public class ItemController : MonoBehaviour
         return (invs);
     }
 
-    public void LoadItems(List<gameItem[]> List)
+    public List<bool[]> GetEquips()
     {
-        /*Debug.Log("inventario vacio? " + invs.Count);
-        equip = new List<bool[]>();
+        return (equip);
+    }
 
-        for (int j = 0; j < List.Count; j++)
-        {
-            Debug.Log("Entrando al loop j" + j);
-            Item[] temp_items = new Item[10];
-            for (int i = 0; i < 10; i++)
-            {
-                Debug.Log("Entrando al loop i" + i);
-                if (List[j][i] != null)
-                {
-                    Item newitem = Object.Instantiate(Resources.Load<Item>(string.Concat("Items/", List[j][i].item)));
-                    newitem.name = List[j][i].item;
-                    newitem.valueFloat = List[j][i].vlFloat;
-                    newitem.valueInt = List[j][i].vlInt;
-                    temp_items[i] = newitem;
-                    Debug.Log("Cargando Item " + string.Concat("Items/", List[j][i].item));
-                }
-                else
-                    temp_items[i] = null;
-            }
-            
-            invs.Add(temp_items);
-            equip.Add(new bool[10]);
-        }*/
+    public void LoadItems(List<gameItem[]> List, List<bool[]> equips)
+    {
+        equip = equips;
         invs = List;
+    }
+
+    public void SetEquips()
+    {
+        for (int i = 0; i < invs.Count; i++)
+        {
+            currInv = i;
+            for (int j = 0; j < invs[i].Length; j++)
+            {
+                currhover = j;
+                if (equip[i][j])
+                {
+                    Item currItem = items[invs[i][j].itemFileName];
+                    currItem.Use(ref invs[i][j]);
+                }
+            }
+        }
     }
 
     public void EmptyItems()
@@ -181,6 +176,7 @@ public class ItemController : MonoBehaviour
 
     public void NewInv()
     {
+        //Debug.Log("Creating Inventory");
         invs.Add(new gameItem[10]);
         equip.Add(new bool[10]);
     }

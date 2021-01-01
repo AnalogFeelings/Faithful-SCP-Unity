@@ -50,10 +50,10 @@ public class PD_Teleports : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F11) && GlobalValues.debugconsole)
+        /*if (Input.GetKeyDown(KeyCode.F11) && GlobalValues.debugconsole)
         {
             StartCoroutine(Escape());
-        }
+        }*/
     }
 
     public void Teleport()

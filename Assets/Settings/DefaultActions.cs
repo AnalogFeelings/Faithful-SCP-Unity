@@ -56,7 +56,7 @@ public class @DefaultActions : IInputActionCollection, IDisposable
                     ""id"": ""e88bcb32-64f9-43d2-8444-62103ec62881"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": ""Press(behavior=2)""
+                    ""interactions"": """"
                 },
                 {
                     ""name"": ""InteractHold"",
@@ -158,6 +158,22 @@ public class @DefaultActions : IInputActionCollection, IDisposable
                     ""name"": ""Pause"",
                     ""type"": ""Button"",
                     ""id"": ""c43547c1-86a0-4f8b-93bc-03080514adb4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Debug"",
+                    ""type"": ""Button"",
+                    ""id"": ""1d464f3c-3912-4792-aba0-8356d1495c4f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""DebugF1"",
+                    ""type"": ""Button"",
+                    ""id"": ""34bc8862-dde0-4dcf-bc0e-8b3ba8052453"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
@@ -548,6 +564,28 @@ public class @DefaultActions : IInputActionCollection, IDisposable
                     ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""270558d4-d51f-47e6-a0c7-e036f4513380"",
+                    ""path"": ""<Keyboard>/f10"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Default"",
+                    ""action"": ""Debug"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""813b6610-ca87-495b-94d8-79a28ab8fcb4"",
+                    ""path"": ""<Keyboard>/f1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Default"",
+                    ""action"": ""DebugF1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -661,6 +699,8 @@ public class @DefaultActions : IInputActionCollection, IDisposable
         m_Gameplay_RadioBack = m_Gameplay.FindAction("RadioBack", throwIfNotFound: true);
         m_Gameplay_Save = m_Gameplay.FindAction("Save", throwIfNotFound: true);
         m_Gameplay_Pause = m_Gameplay.FindAction("Pause", throwIfNotFound: true);
+        m_Gameplay_Debug = m_Gameplay.FindAction("Debug", throwIfNotFound: true);
+        m_Gameplay_DebugF1 = m_Gameplay.FindAction("DebugF1", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Pointer = m_UI.FindAction("Pointer", throwIfNotFound: true);
@@ -733,6 +773,8 @@ public class @DefaultActions : IInputActionCollection, IDisposable
     private readonly InputAction m_Gameplay_RadioBack;
     private readonly InputAction m_Gameplay_Save;
     private readonly InputAction m_Gameplay_Pause;
+    private readonly InputAction m_Gameplay_Debug;
+    private readonly InputAction m_Gameplay_DebugF1;
     public struct GameplayActions
     {
         private @DefaultActions m_Wrapper;
@@ -755,6 +797,8 @@ public class @DefaultActions : IInputActionCollection, IDisposable
         public InputAction @RadioBack => m_Wrapper.m_Gameplay_RadioBack;
         public InputAction @Save => m_Wrapper.m_Gameplay_Save;
         public InputAction @Pause => m_Wrapper.m_Gameplay_Pause;
+        public InputAction @Debug => m_Wrapper.m_Gameplay_Debug;
+        public InputAction @DebugF1 => m_Wrapper.m_Gameplay_DebugF1;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -818,6 +862,12 @@ public class @DefaultActions : IInputActionCollection, IDisposable
                 @Pause.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPause;
                 @Pause.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPause;
                 @Pause.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPause;
+                @Debug.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnDebug;
+                @Debug.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnDebug;
+                @Debug.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnDebug;
+                @DebugF1.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnDebugF1;
+                @DebugF1.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnDebugF1;
+                @DebugF1.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnDebugF1;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
@@ -876,6 +926,12 @@ public class @DefaultActions : IInputActionCollection, IDisposable
                 @Pause.started += instance.OnPause;
                 @Pause.performed += instance.OnPause;
                 @Pause.canceled += instance.OnPause;
+                @Debug.started += instance.OnDebug;
+                @Debug.performed += instance.OnDebug;
+                @Debug.canceled += instance.OnDebug;
+                @DebugF1.started += instance.OnDebugF1;
+                @DebugF1.performed += instance.OnDebugF1;
+                @DebugF1.canceled += instance.OnDebugF1;
             }
         }
     }
@@ -958,6 +1014,8 @@ public class @DefaultActions : IInputActionCollection, IDisposable
         void OnRadioBack(InputAction.CallbackContext context);
         void OnSave(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
+        void OnDebug(InputAction.CallbackContext context);
+        void OnDebugF1(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

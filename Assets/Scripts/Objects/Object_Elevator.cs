@@ -24,6 +24,12 @@ public class Object_Elevator : Object_Persistent
 
     }
 
+    public override void resetState()
+    {
+        base.resetState();
+        FloorUp = State;
+    }
+
     // Update is called once per frame
     void Update()
     {

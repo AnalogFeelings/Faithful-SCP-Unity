@@ -20,7 +20,7 @@ public class Object_instaItem : Object_Interact
     public void Spawn()
     {
         item = new gameItem(itemOG.name);
-        GameObject model = ItemController.instance.items[item.itemName].ItemModel;
+        GameObject model = ItemController.instance.items[item.itemFileName].ItemModel;
         MeshFilter mesh = model.GetComponentInChildren<MeshFilter>(true);
         MeshRenderer renderer = model.GetComponentInChildren<MeshRenderer>(true);
         itemMesh = mesh.sharedMesh;
@@ -30,19 +30,19 @@ public class Object_instaItem : Object_Interact
     // Update is called once per frame
     public override void Pressed()
     {
-        if (ItemController.instance.AddItem(item, 0))
+        if (ItemController.instance.AddItem(item, 0)!=-1)
         {
             GameController.instance.DeleteItem(id);
             DestroyImmediate(this.gameObject);
 
-            if (ItemController.instance.items[item.itemName].isUnique)
-                SubtitleEngine.instance.playFormatted("playStrings", "play_picked_uni", "itemStrings", ItemController.instance.items[item.itemName].getName());
+            if (ItemController.instance.items[item.itemFileName].isUnique)
+                SubtitleEngine.instance.playFormatted("playStrings", "play_picked_uni", "itemStrings", ItemController.instance.items[item.itemFileName].getName());
             else
             {
-                if (ItemController.instance.items[item.itemName].isFem)
-                    SubtitleEngine.instance.playFormatted("playStrings", "play_picked_fem", "itemStrings", ItemController.instance.items[item.itemName].getName());
+                if (ItemController.instance.items[item.itemFileName].isFem)
+                    SubtitleEngine.instance.playFormatted("playStrings", "play_picked_fem", "itemStrings", ItemController.instance.items[item.itemFileName].getName());
                 else
-                    SubtitleEngine.instance.playFormatted("playStrings", "play_picked_male", "itemStrings", ItemController.instance.items[item.itemName].getName());
+                    SubtitleEngine.instance.playFormatted("playStrings", "play_picked_male", "itemStrings", ItemController.instance.items[item.itemFileName].getName());
             }
         }
         else

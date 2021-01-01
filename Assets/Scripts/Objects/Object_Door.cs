@@ -15,7 +15,6 @@ public class Object_Door : MonoBehaviour
     public AudioSource AUD;
 
     public UnityEngine.AI.NavMeshObstacle carveMesh;
-    public string areaDoor, areaNormal;
 
     public bool UseParticle = false;
 
@@ -81,14 +80,14 @@ public class Object_Door : MonoBehaviour
 
     void DoorOpen()
     {
-        float tempdis = Vector3.Distance(Door01.transform.position, Pos1 + (Door01.transform.right * DoorEndPos));
+        float tempdis = Vector3.Distance(Door01.transform.position, Pos1 - (Door01.transform.right * DoorEndPos));
         if (tempdis >= 0.02)
         {
-            Door01.transform.position += Door01.transform.right * OpenSpeed * Time.deltaTime;
+            Door01.transform.position -= Door01.transform.right * OpenSpeed * Time.deltaTime;
             if (tempdis > LastPos1)
             {
-                Door01.transform.position = Pos1 + (Door01.transform.right * DoorEndPos);
-                Door02.transform.position = Pos2 + (Door02.transform.right * DoorEndPos);
+                Door01.transform.position = Pos1 - (Door01.transform.right * DoorEndPos);
+                Door02.transform.position = Pos2 - (Door02.transform.right * DoorEndPos);
                 IsOpen = true;
                 carveMesh.enabled = false;
                 if (!ignoreSave)
@@ -106,10 +105,10 @@ public class Object_Door : MonoBehaviour
                 GameController.instance.SetDoorState(true, id);
         }
 
-        tempdis = Vector3.Distance(Door02.transform.position, Pos2 + (Door02.transform.right * DoorEndPos));
+        tempdis = Vector3.Distance(Door02.transform.position, Pos2 - (Door02.transform.right * DoorEndPos));
         if (tempdis >= 0.02)
         {
-            Door02.transform.position += Door02.transform.right * OpenSpeed * Time.deltaTime;
+            Door02.transform.position -= Door02.transform.right * OpenSpeed * Time.deltaTime;
         }
 
 
@@ -122,7 +121,7 @@ public class Object_Door : MonoBehaviour
         float tempdis = Vector3.Distance(Door01.transform.position, Pos1);
         if (tempdis >= 0.00002)
         {
-            Door01.transform.position += Door01.transform.right * -OpenSpeed * Time.deltaTime;
+            Door01.transform.position -= Door01.transform.right * -OpenSpeed * Time.deltaTime;
             if (tempdis > LastPos1)
             {
                 Door01.transform.position = Pos1;
@@ -151,7 +150,7 @@ public class Object_Door : MonoBehaviour
 
         tempdis = Vector3.Distance(Door02.transform.position, Pos2);
         if (tempdis >= 0.02)
-            Door02.transform.position += Door02.transform.right * -OpenSpeed * Time.deltaTime;
+            Door02.transform.position -= Door02.transform.right * -OpenSpeed * Time.deltaTime;
     }
 
     public void DoorSwitch()
@@ -170,6 +169,31 @@ public class Object_Door : MonoBehaviour
                 switchOpen = true;
                 PlayOpen();
                 LastPos1 = 10f;
+            }
+        }
+    }
+
+    public void InstantSet(bool open)
+    {
+        if (!isDisabled)
+        {
+            if (open == false)
+            {
+                switchOpen = false;
+                IsOpen = false;
+                Door01.transform.position = Pos1;
+                Door02.transform.position = Pos2;
+                if (!ignoreSave)
+                    GameController.instance.SetDoorState(false, id);
+            }
+            else
+            {
+                IsOpen = true;
+                switchOpen = true;
+                Door01.transform.position = Pos1 - (Door01.transform.right * DoorEndPos);
+                Door02.transform.position = Pos2 - (Door02.transform.right * DoorEndPos);
+                if (!ignoreSave)
+                    GameController.instance.SetDoorState(true, id);
             }
         }
     }
@@ -228,7 +252,7 @@ public class Object_Door : MonoBehaviour
         AUD.Play();
     }
     /// <summary>
-    /// GetState() Obtiene el estado de la puera
+    /// GetState() Obtiene el estado de la puerta, True si Abierta
     /// </summary>
     /// <returns>true Si la puerta esta abierta</returns>
     public bool GetState()

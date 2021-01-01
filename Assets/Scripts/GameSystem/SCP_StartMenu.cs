@@ -142,6 +142,9 @@ public class SCP_StartMenu : MonoBehaviour
     public void StartGame()
     {
         player.PlayOneShot(click);
+        if (string.IsNullOrWhiteSpace(seedString.text))
+            GlobalValues.mapseed = GlobalValues.getRandomString(5, 9);
+
         GlobalValues.isNew = true;
         GlobalValues.hasSaved = false;
         GlobalValues.LoadType = LoadType.newgame;
@@ -151,7 +154,7 @@ public class SCP_StartMenu : MonoBehaviour
     public void SetSeed(string seed)
     {
         Debug.Log(seed);
-        if (string.IsNullOrWhiteSpace(namestring.text) || string.IsNullOrWhiteSpace(seedString.text))
+        if (string.IsNullOrWhiteSpace(namestring.text))
             mapnew.interactable = false;
         else
             mapnew.interactable = true;
@@ -160,7 +163,7 @@ public class SCP_StartMenu : MonoBehaviour
     public void SetName(string name)
     {
         Debug.Log(name);
-        if (string.IsNullOrWhiteSpace(namestring.text) || string.IsNullOrWhiteSpace(seedString.text))
+        if (string.IsNullOrWhiteSpace(namestring.text))
             mapnew.interactable = false;
         else
             mapnew.interactable = true;
@@ -174,7 +177,7 @@ public class SCP_StartMenu : MonoBehaviour
         folderPath = folderPath.Replace("/", @"\");
         Debug.Log(folderPath);
 
-        return Directory.GetFiles(folderPath, "*" + ".meta").OrderByDescending(d => new FileInfo(d).CreationTime); ;
+        return Directory.GetFiles(folderPath, "*" + GlobalValues.fileExtension).OrderByDescending(d => new FileInfo(d).CreationTime); ;
     }
 
     public void Load_CB()

@@ -68,20 +68,23 @@ public class SaveData
     public room[,] savedMap;
     public int[,] navMap;
     public float angle;
-    public float Health, bloodLoss;
+    public float Health, bloodLoss, zombieTime;
     public MapSize savedSize;
     public float pX, pY, pZ;
     public int mapX, mapY;
     public List<gameItem[]> items;
+    public List<bool[]> equips;
     public ItemList[] worldItems;
     public NPC_Data[] npcData;
     public NPC_Data[] mainData;
+    public bool[] simpData;
     public bool holdRoom;
-    
+    public Random.State seedState;
 
     public List<int> globalInts;
     public List<bool> globalBools;
     public List<float> globalFloats;
+    public List<string> globalStrings;
 }
 
 

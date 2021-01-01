@@ -9,7 +9,7 @@ public class Equipable_Elec : Equipable_Wear
     public override void Use(ref gameItem currItem)
     {
         Player_Control player = GameController.instance.player.GetComponent<Player_Control>();
-        if (player.equipment[(int)this.part] == null || player.equipment[(int)this.part].itemName != this.itemName)
+        if (player.equipment[(int)this.part] == null || ItemController.instance.items[player.equipment[(int)this.part].itemFileName].itemName != this.itemName)
             player.ACT_Equip(currItem);
         else
             player.ACT_UnEquip(part);

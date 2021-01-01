@@ -263,6 +263,10 @@ MonoBehaviour:
   onCam: 0
   godmode: 0
   checkObjects: 1
+  IsPuttingOn: 0
+  hasZombie: 0
+  allowZombie: 1
+  allowMove: 1
   noMasterController: 0
   GroundDistance: 0.4
   Gravity: 9.8
@@ -270,6 +274,8 @@ MonoBehaviour:
   Basespeed: 2
   crouchspeed: 1
   runSpeed: 4.2
+  speedMul: 1
+  forceWalkSpeed: 1.6
   HurtDivisor: 60
   baseAmplitude: 0.045
   bobSpeed: 4
@@ -288,6 +294,8 @@ MonoBehaviour:
   bloodloss: 0
   handLength: 1
   handSize: 0.6
+  zombieVirusMaxTime: 8
+  zombieVirusFull: 5
   Ground:
     serializedVersion: 2
     m_Bits: 1024
@@ -300,7 +308,6 @@ MonoBehaviour:
   DefHead: {fileID: 252651301}
   CrouchHead: {fileID: 998635334}
   CameraObj: {fileID: 0}
-  InterHold: {fileID: 0}
   DeathCol: {fileID: 1169660964460360198}
   handPos: {fileID: 8477872283603563125}
   CameraContainer: {fileID: 2511613781811911685}
@@ -352,8 +359,20 @@ MonoBehaviour:
   - {fileID: 8300000, guid: ef137234b88731444bef16b24d7a618c, type: 3}
   - {fileID: 8300000, guid: ea54417093a109546b5f856f65e6a3f1, type: 3}
   - {fileID: 8300000, guid: 009f98fd0c0c3cb418aefe99d3ed193c, type: 3}
+  zombieVoice:
+  - {fileID: 8300000, guid: fc55bb53db24d7b42ab33f86d227af8f, type: 3}
+  - {fileID: 8300000, guid: 292b4741dfdac4546b4881219d8dfaef, type: 3}
+  - {fileID: 8300000, guid: 01a92b5260f86e64f8ae1a0325e92dde, type: 3}
+  - {fileID: 8300000, guid: de72e49c8ebae8d48bfa374b02107fe0, type: 3}
+  - {fileID: 8300000, guid: 931c4a7203e3b72449092e2e1b2cade3, type: 3}
+  - {fileID: 8300000, guid: 1d63b3c4805a6e645b6a1ac7f8fc2367, type: 3}
+  - {fileID: 8300000, guid: a9b7d67ef2dc31b4d980d69d597fd3d6, type: 3}
   sfx: {fileID: 393827807079942417}
   va: {fileID: 4757049399036591918}
+  headEffects: []
+  bodyEffects: []
+  anyEffects: []
+  handEffects: []
   NodeDistance: 0.3
 --- !u!82 &393827807079942417
 AudioSource:
@@ -660,9 +679,9 @@ Light:
   serializedVersion: 10
   m_Type: 2
   m_Shape: 0
-  m_Color: {r: 0.7028302, g: 0.82990974, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 0.1
-  m_Range: 5
+  m_Range: 7
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -695,7 +714,7 @@ Light:
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 0}
-  m_RenderMode: 0
+  m_RenderMode: 2
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295

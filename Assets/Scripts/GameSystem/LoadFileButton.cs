@@ -13,6 +13,7 @@ public class LoadFileButton : MonoBehaviour
     public Text textDate;
     public Text textSeed;
     public Text textVer;
+    public GameObject loadButton;
     public saveMeta meta;
     // Start is called before the first frame update
     void Start()
@@ -20,20 +21,32 @@ public class LoadFileButton : MonoBehaviour
         textName.text = SaveName;
         textDate.text = Date;
 
-        using (StreamReader streamReader = File.OpenText(SavePath))
+        if(File.Exists((SavePath.Replace(GlobalValues.fileExtension, GlobalValues.metaExtension))))
         {
-            string jsonString = streamReader.ReadToEnd();
-            meta = JsonUtility.FromJson<saveMeta>(jsonString);
-        }
+            using (StreamReader streamReader = File.OpenText((SavePath.Replace(GlobalValues.fileExtension, GlobalValues.metaExtension))))
+            {
+                string jsonString = streamReader.ReadToEnd();
+                meta = JsonUtility.FromJson<saveMeta>(jsonString);
+            }
 
-        textVer.text = "Ver. " + meta.mapver;
-        textSeed.text = meta.seed;
+            textVer.text = "Ver. " + meta.mapver;
+            textSeed.text = meta.seed;
+            if (meta.mapver != GlobalValues.saveFileVer)
+                loadButton.SetActive(false);
+        }
+        else
+        {
+            textVer.text = "Ver. 0.1.0";
+            textSeed.text = "N/A";
+            loadButton.SetActive(false);
+        }
     }
 
     // Update is called once per frame
     public void DeleteThis()
     {
         File.Delete(SavePath);
+        File.Delete((SavePath.Replace(GlobalValues.fileExtension, GlobalValues.metaExtension)));
         DestroyImmediate(this.gameObject);
     }
 

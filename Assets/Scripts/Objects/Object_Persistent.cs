@@ -20,6 +20,7 @@ public class Object_Persistent : MonoBehaviour
 
     public virtual void resetState()
     {
+        Debug.Log("Resetting state of " + this.gameObject.name);
         int newState = GameController.instance.GetObjectState(id);
         if (newState != -1)
         {

@@ -14,6 +14,7 @@ public class NPC_Data
 
 public class Map_NPC : MonoBehaviour
 {
+    [HideInInspector]
     public NPC_Data data;
     // Start is called before the first frame update
     public virtual void createData()

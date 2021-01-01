@@ -81,6 +81,7 @@ public class MapListGUI : Editor
             SerializedProperty hasSpecial = MyListRef.FindPropertyRelative("hasSpecial");
             SerializedProperty Zone = MyListRef.FindPropertyRelative("Zone");
             SerializedProperty Music = MyListRef.FindPropertyRelative("music");
+            SerializedProperty Fog = MyListRef.FindPropertyRelative("customFog");
             SerializedProperty hasAmbiance = MyListRef.FindPropertyRelative("hasAmbiance");
 
 
@@ -103,6 +104,7 @@ public class MapListGUI : Editor
             EditorGUILayout.PropertyField(hasItem);
             EditorGUILayout.PropertyField(hasAmbiance);
             EditorGUILayout.PropertyField(Music);
+            EditorGUILayout.PropertyField(Fog);
             EditorGUILayout.Space();
             EditorGUILayout.Space();
             if (GUILayout.Button("Remove This Index (" + i.ToString() + ")"))

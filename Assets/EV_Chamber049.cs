@@ -14,11 +14,19 @@ public class EV_Chamber049 : Event_Parent
     public AudioClip blackOut, chamberMusic;
     public Object_Elevator elev1, elev2;
     public Object_LeverV energyPump, elev;
+    public Material lightMat;
+    public Color32 noLights;
+    Color oldLights;
+
     // Start is called before the first frame update
     void Start()
     {
         elev1 = GameController.instance.getCutsceneObject(x, y, 0).GetComponent<Object_Elevator>();
         elev2 = GameController.instance.getCutsceneObject(x, y, 1).GetComponent<Object_Elevator>();
+
+        lightMat = GameController.instance.getCutsceneObject(x, y, 2).GetComponent<MeshRenderer>().materials[10];
+        oldLights = lightMat.GetColor("_EmissionColor");
+
     }
 
     // Update is called once per frame
@@ -60,6 +68,7 @@ public class EV_Chamber049 : Event_Parent
 
         if (blackoutSet && !isBlackout && Timer < 0)
         {
+            lightMat.SetColor("_EmissionColor", noLights);
             isBlackout = true;
             GameController.instance.playercache.FakeBlink(0.25f);
             audSource.PlayOneShot(blackOut);
@@ -122,6 +131,7 @@ public class EV_Chamber049 : Event_Parent
 
         if (blackoutSet && !isBlackout)
         {
+            lightMat.SetColor("_EmissionColor", noLights);
             lights.SetActive(false);
             audSource.PlayOneShot(blackOut);
             isBlackout = true;
@@ -129,6 +139,7 @@ public class EV_Chamber049 : Event_Parent
         }
         if (!blackoutSet && isBlackout)
         {
+            lightMat.SetColor("_EmissionColor", oldLights);
             lights.SetActive(true);
             isBlackout = false;
             GameController.instance.playercache.FakeBlink(0.25f);

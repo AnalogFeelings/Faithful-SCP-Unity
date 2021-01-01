@@ -5,10 +5,10 @@ using UnityEngine.UI;
 using UnityEngine.Rendering.PostProcessing;
 
 public enum bodyPart { Head, Body, Hand, Any };
-public enum Ailment { Eyes, Sprint, Health};
+public enum Ailment { Eyes, Sprint, Health, Speed, Zombie, ZombieCure};
 
 [System.Serializable]
-public class effects
+public class EfectsData
 {
     public bool permanent;
     public float time = -1;
@@ -16,24 +16,33 @@ public class effects
     public float min = -1;
     public float value = -1;
     public float multiplier = -1;
+
+    public EfectsData(bool _perm, float _time, float _max, float _min, float _value, float _mul)
+    {
+        permanent = _perm;
+        time = _time;
+        max = _max;
+        min = _min;
+        value = _value;
+        multiplier = _mul;
+    }
 }
 
 [System.Serializable]
-public class efecttable
+public class EfectTable
 {
-    public Ailment Affected;
-    public effects effect;
+    public Ailment affected;
+    public EfectsData effect;
+
+    public EfectTable CopyData()
+    {
+        EfectTable copied = new EfectTable();
+        copied.affected = this.affected;
+        copied.effect = new EfectsData(this.effect.permanent, this.effect.time, this.effect.max, this.effect.min, this.effect.value, this.effect.multiplier);
+        return copied;
+    }
 }
-public class Timers
-{
-    public float Timer;
-    public bool Activated;
-        public Timers()
-        {
-        Timer = 0;
-        Activated = false;
-        }
-}
+
 
 
 public class Player_Control : MonoBehaviour
@@ -51,39 +60,46 @@ public class Player_Control : MonoBehaviour
     Camera PlayerCam;
     Image eyes, blinkbar, runbar, batbar, overlay, handEquip, eyeIcon;
     RectTransform hand_rect, hud_rect;
-    public bool Freeze = false, isGameplay = false, Crouch = false, onCam = false, godmode = false, checkObjects = true;
+    public bool Freeze = false, isGameplay = false, Crouch = false, onCam = false, godmode = false, checkObjects = true, IsPuttingOn=false, hasZombie=true, allowZombie=true, allowMove=true;
     public bool noMasterController = false;
 
     [Header("Movement")]
     public float GroundDistance = 0.2f;
-    public float Gravity = -9.81f, maxfallspeed, Basespeed = 3, crouchspeed = 2, runSpeed = 4;
+    public float Gravity = -9.81f, maxfallspeed, Basespeed = 3, crouchspeed = 2, runSpeed = 4, speedMul=1, forceWalkSpeed = 1.6f;
     [Header("Camera")]
     public float HurtDivisor = 3;
     public float baseAmplitude, bobSpeed, headBobmult = 20, Camplitude, Cspeed, hamplitude;
     [Header("Gimmicks")]
     public float BlinkingTimerBase;
-    public float ClosedEyes, BaseBlinkMult = 0.75f, AsfixiaTimer, RunningTimerBase, OpenMulti, CollisionSphere, Health = 100, bloodloss = 0, handLength, handSize;
+    public float ClosedEyes, BaseBlinkMult = 0.75f, AsfixiaTimer, RunningTimerBase, OpenMulti, CollisionSphere, Health = 100, bloodloss = 0, handLength, handSize, zombieVirusMaxTime, zombieVirusFull;
+    [System.NonSerialized]
+    public float zombieTimer, zombieVoiceTimer;
     public LayerMask Ground, InteractiveLayer, Collisionables;
     [Header("Object References")]
     public Transform DefHead;
     public Transform CrouchHead;
-    public GameObject CameraObj, InterHold, DeathCol, handPos, CameraContainer, CinemaEffect, SoundPrefab;
+    public GameObject CameraObj, DeathCol, handPos, CameraContainer, CinemaEffect, SoundPrefab;
 
     [Header("Audio")]
     public AudioReverbZone Reverb;
-    public AudioClip[] Conch, CurrentStep, Deaths, Breath, Concrete, Metal, PD, Forest;
+    public AudioClip[] Conch, CurrentStep, Deaths, Breath, Concrete, Metal, PD, Forest, zombieVoice;
     public AudioSource sfx, va;
     
 
     Collider[] Interact;
+    Collider InterHold;
 
     //Iteeemssss
     [System.NonSerialized]
     public gameItem[] equipment = new gameItem[4];
     [System.NonSerialized]
-    public effects[] playerEffects = new effects[4];
-    [System.NonSerialized]
-    public Timers[] effecTimers = new Timers[4];
+    public List<EfectTable> tempEffects = new List<EfectTable>();
+
+    public List<EfectTable> headEffects = new List<EfectTable>();
+    public List<EfectTable> bodyEffects = new List<EfectTable>();
+    public List<EfectTable> anyEffects = new List<EfectTable>();
+    public List<EfectTable> handEffects = new List<EfectTable>();
+
     int headSlot = 0;
     int bodySlot = 0;
     int anySlot = 0;
@@ -150,13 +166,6 @@ public class Player_Control : MonoBehaviour
 
         hand_rect = hand.GetComponent<RectTransform>();
         hud_rect = SCP_UI.instance.HUD.GetComponent<RectTransform>();
-
-        playerEffects[0] = null;
-        playerEffects[1] = null;
-        playerEffects[2] = null;
-        effecTimers[0] = new Timers();
-        effecTimers[1] = new Timers();
-        effecTimers[2] = new Timers();
     }
 
     private void Start()
@@ -181,6 +190,7 @@ public class Player_Control : MonoBehaviour
                 ACT_Effects();
                 if (!noMasterController)
                     ACT_Blinking();
+                ACT_Zombie();
                 if (checkObjects)
                 ACT_Buttons();
                 if (!Freeze)
@@ -242,8 +252,13 @@ public class Player_Control : MonoBehaviour
         InputX = SCPInput.instance.playerInput.Gameplay.Move.ReadValue<Vector2>().x;
         InputY = SCPInput.instance.playerInput.Gameplay.Move.ReadValue<Vector2>().y;
 
-        movement = ((transform.right * InputX) + (transform.forward * InputY));
-        Vector3.Normalize(movement);
+        if (allowMove)
+        {
+            movement = ((transform.right * InputX) + (transform.forward * InputY));
+            Vector3.Normalize(movement);
+        }
+        else
+            movement = Vector3.zero;
 
         if (SCPInput.instance.playerInput.Gameplay.CrouchTrigger.triggered && !isRunning)
             Crouch = !Crouch;
@@ -265,6 +280,8 @@ public class Player_Control : MonoBehaviour
         {
             speed = crouchspeed+0.5f;
         }
+
+        speed *= speedMul;
 
         movement *= speed;
     }
@@ -556,7 +573,7 @@ public class Player_Control : MonoBehaviour
         }
 
         Vector3 Point = new Vector3(Path[currentNode].position.x, transform.position.y, Path[currentNode].position.z) - transform.position;
-        movement += (Point.normalized * 1.6f);
+        movement += (Point.normalized * forceWalkSpeed);
 
         if (Vector3.Distance(new Vector3(Path[currentNode].position.x, transform.position.y, Path[currentNode].position.z), transform.position) < NodeDistance)
         {
@@ -568,7 +585,7 @@ public class Player_Control : MonoBehaviour
             else
             {
                 walkAnim = false;
-                movement -= (Point.normalized * 1.6f);
+                movement -= (Point.normalized * forceWalkSpeed);
             }
 
         }
@@ -609,14 +626,15 @@ public class Player_Control : MonoBehaviour
                 float currdistance;
                 for (int i = 0; i < Interact.Length; i++)
                 {
-                    currdistance = Vector3.Distance(handPos.transform.position, Interact[i].transform.position);
-                    Debug.DrawRay(Interact[i].transform.position, (headPos - new Vector3(0.0f, 0.4f, 0.0f)) - Interact[i].transform.position, new Color(255, 255, 255, 1.0f), 5);
+                    Vector3 closePoint = Interact[i].ClosestPoint(handPos.transform.position);
+                    currdistance = Vector3.Distance(handPos.transform.position, closePoint);
+                    Debug.DrawRay(closePoint, (headPos - new Vector3(0.0f, 0.4f, 0.0f)) - closePoint, new Color(255, 255, 255, 1.0f), 5);
                     if (currdistance < lastdistance)
                     {
-                        if (!Physics.Raycast(Interact[i].transform.position, (headPos - new Vector3(0.0f, 0.4f, 0.0f)) - Interact[i].transform.position, currdistance, Ground, QueryTriggerInteraction.Ignore))
+                        if (!Physics.Raycast(closePoint, (headPos - new Vector3(0.0f, 0.4f, 0.0f)) - closePoint, currdistance, Ground, QueryTriggerInteraction.Ignore))
                         {
                             lastdistance = currdistance;
-                            InterHold = Interact[i].gameObject;
+                            InterHold = Interact[i];
                         }
                     }
                 }
@@ -636,7 +654,7 @@ public class Player_Control : MonoBehaviour
                         if (currdistance < lastdistance)
                         {
                             lastdistance = currdistance;
-                            InterHold = Interact[i].gameObject;
+                            InterHold = Interact[i];
                         }
                     }
                 }
@@ -698,6 +716,8 @@ public class Player_Control : MonoBehaviour
 
     void ACT_Blinking()
     {
+        BlinkingTimer = Mathf.Min(BlinkingTimer, BlinkingTimerBase);
+
         if (onBlink == false)
             eyes.color = new Color(255, 255, 255, Mathf.Clamp(-((BlinkingTimer-0.064f)*16), 0.0f, 1.0f));
         else
@@ -902,7 +922,7 @@ public class Player_Control : MonoBehaviour
 
     public void ACT_Equip(gameItem item)
     {
-        Equipable_Wear itemData = (Equipable_Wear)ItemController.instance.items[item.itemName];
+        Equipable_Wear itemData = (Equipable_Wear)ItemController.instance.items[item.itemFileName];
 
         if (itemData is Equipable_Nav)
         {
@@ -913,6 +933,9 @@ public class Player_Control : MonoBehaviour
         {
             SCP_UI.instance.radio.StopRadio();
         }
+
+        if (equipment[(int)itemData.part] != null)
+            ACT_UnEquip(itemData.part);
 
         switch (itemData.part)
         {
@@ -993,107 +1016,248 @@ public class Player_Control : MonoBehaviour
 
     public void SetEffect(Item item)
     {
-        playerEffects[(int)item.Effects.Affected] = item.Effects.effect;
+        if (item is Equipable_Wear)
+        {
+            ref List<EfectTable> currEffect = ref headEffects;
+            switch (((Equipable_Wear)item).part)
+            {
+                case bodyPart.Any:
+                    {
+                        currEffect = ref anyEffects;
+                        break;
+                    }
+                case bodyPart.Body:
+                    {
+                        currEffect = ref bodyEffects;
+                        break;
+                    }
+                case bodyPart.Hand:
+                    {
+                        currEffect = ref handEffects;
+                        break;
+                    }
+            }
+
+            for (int i = 0; i < currEffect.Count; i++)
+            {
+                StopEffects(currEffect[i]);
+            }
+
+            currEffect.Clear();
+
+            for (int i = 0; i < item.Effects.Count; i++)
+            {
+                currEffect.Add(item.Effects[i].CopyData());
+            }
+
+        }
+        else
+        {
+            //Debug.Log("Copying effects");
+            for (int i = 0; i < item.Effects.Count; i++)
+            {
+                tempEffects.Add(item.Effects[i].CopyData());
+            }
+        }
+    }
+
+    void ACT_Zombie()
+    {
+        if (hasZombie)
+            zombieTimer += Time.deltaTime;
+        else
+            zombieTimer -= Time.deltaTime * 4;
+
+        zombieTimer = Mathf.Max(zombieTimer, 0);
+
+        float perc = (Mathf.Min(zombieTimer, (zombieVirusFull)) / zombieVirusFull);
+        if (hasZombie)
+        {
+            zombieVoiceTimer -= Time.deltaTime;
+            Debug.Log("Zombie state: Timer: " + zombieTimer + " off " + zombieVirusFull + " " + zombieVirusMaxTime + " perc " + (Mathf.Min(zombieTimer, (zombieVirusFull)) / zombieVirusFull));
+            if (zombieVoiceTimer < 0)
+            {
+                int choice = Random.Range(0, zombieVoice.Length - 1);
+
+                zombieVoiceTimer = zombieVoice[choice].length + Random.Range(10, 30);
+
+                va.PlayOneShot(zombieVoice[choice], perc);
+            }
+        }
+        speedMul *= (1f-(perc*0.5f));
+        SCP_UI.instance.infectiongraphic.color = new Color(perc, perc, perc, perc);
+
+        if (zombieTimer > zombieVirusMaxTime && GlobalValues.LoadType != LoadType.mapless)
+        {
+            GameController.instance.Death = DeathEvent.zombie008;
+            FakeDeath(0);
+            eyes.color = Color.black;
+        }
     }
 
     void ACT_Effects()
     {
+        currentBlinkMult = BaseBlinkMult;
+        sprintMin = 0;
+        speedMul = 1;
+
+
         Health -= (bloodloss * 0.125f) * Time.deltaTime;
         if (Health >= 100)
             Health = 100;
 
-        for(int i = 0; i < playerEffects.Length; i++)
+        processEffects(ref headEffects);
+        processEffects(ref anyEffects);
+        processEffects(ref handEffects);
+        processEffects(ref bodyEffects);
+
+        if (equipment[(int)bodyPart.Hand] != null && ItemController.instance.items[equipment[(int)bodyPart.Hand].itemFileName] is Equipable_Elec && equipment[(int)bodyPart.Hand].valFloat >= 0)
         {
-            if (playerEffects[i] != null)
+            (equipment[(int)bodyPart.Hand]).valFloat -= ((Equipable_Elec)ItemController.instance.items[equipment[(int)bodyPart.Hand].itemFileName]).SpendFactor * Time.deltaTime;
+        }
+
+        for (int i = 0; i < tempEffects.Count; i++)
+        {
+            DoEffects(tempEffects[i]);
+            if (!tempEffects[i].effect.permanent)
             {
-                if (effecTimers[i].Activated == false)
-                {
-                    effecTimers[i].Timer = playerEffects[i].time;
-                    switch ((Ailment)i)
-                    {
-                        case Ailment.Eyes:
-                            {
-                                if (playerEffects[i].multiplier != -1)
-                                    currentBlinkMult = playerEffects[i].multiplier;
-                                Debug.Log("Blink mult is now " + BlinkMult);
-                                if (playerEffects[i].value != -1)
-                                    BlinkingTimer = playerEffects[i].value;
-                                break;
-                            }
-                        case Ailment.Sprint:
-                            {
-                                if (playerEffects[i].min != -1)
-                                    sprintMin = playerEffects[i].min;
-                                break;
-                            }
-                        case Ailment.Health:
-                            {
-                                if (playerEffects[i].value != -1)
-                                    Health += playerEffects[i].value;
-                                if (playerEffects[i].multiplier != -1)
-                                {
-                                    if (bloodloss == 1)
-                                        SubtitleEngine.instance.playSub("playStrings","play_cureblood");
-                                    if (bloodloss > 1)
-                                        SubtitleEngine.instance.playSub("playStrings","play_cureblood2");
-                                    bloodloss -= playerEffects[i].multiplier;
-                                    
-                                }
-                                else
-                                    SubtitleEngine.instance.playSub("playStrings","play_cure");
-
-
-                                break;
-                            }
-                    }
-                    effecTimers[i].Activated = true;
-                }
-
-                if (!playerEffects[i].permanent)
-                {
-                    effecTimers[i].Timer -= Time.deltaTime;
-                    if (effecTimers[i].Timer <= 0)
-                        StopEffects((Ailment)i);
-                }
+                tempEffects[i].effect.time -= Time.deltaTime;
+            }
+            if (!tempEffects[i].effect.permanent && tempEffects[i].effect.time < 0)
+            {
+                StopEffects(tempEffects[i]);
+                tempEffects.RemoveAt(i);
+                i--;
             }
         }
-
-        if (equipment[(int)bodyPart.Hand]!= null && ItemController.instance.items[equipment[(int)bodyPart.Hand].itemName] is Equipable_Elec && equipment[(int)bodyPart.Hand].valFloat >= 0)
-        {
-            (equipment[(int)bodyPart.Hand]).valFloat -= ((Equipable_Elec)ItemController.instance.items[equipment[(int)bodyPart.Hand].itemName]).SpendFactor * Time.deltaTime;
-        }
-
-
+        
     }
 
-    void StopEffects(Ailment what)
+    void processEffects(ref List<EfectTable> effects)
     {
-        switch (what)
+        for (int i = 0; i < effects.Count; i++)
+        {
+
+            DoEffects(effects[i]);
+        }
+    }
+
+    void DoEffects(EfectTable ail)
+    {
+        switch (ail.affected)
         {
             case Ailment.Eyes:
                 {
-                    currentBlinkMult = BaseBlinkMult;
-                    Debug.Log("Stopping effects");
+                    if (ail.effect.multiplier != -1)
+                        currentBlinkMult *= ail.effect.multiplier;
+                    if (ail.effect.value != -1)
+                    {
+                        BlinkingTimer = ail.effect.value;
+                        ail.effect.value = -1;
+                    }
+                    break;
+                }
+            case Ailment.Speed:
+                {
+                    if (ail.effect.multiplier != -1)
+                        speedMul *= ail.effect.multiplier;
                     break;
                 }
             case Ailment.Sprint:
                 {
-                    sprintMin = 0;
+                    if (ail.effect.min != -1)
+                        sprintMin = Mathf.Max(sprintMin, ail.effect.min);
+                    break;
+                }
+            case Ailment.Health:
+                {
+                    if (ail.effect.value != -1)
+                    {
+                        Health += ail.effect.value;
+                        ail.effect.value = -1;
+                    }
+                    if (ail.effect.multiplier != -1)
+                    {
+                        if (bloodloss == 1)
+                            SubtitleEngine.instance.playSub("playStrings", "play_cureblood");
+                        if (bloodloss > 1)
+                            SubtitleEngine.instance.playSub("playStrings", "play_cureblood2");
+                        bloodloss -= ail.effect.multiplier;
+                        ail.effect.multiplier = -1;
+                    }
+                    else
+                        SubtitleEngine.instance.playSub("playStrings", "play_cure");
+                    break;
+                }
+            case Ailment.Zombie:
+                {
+                    Debug.Log("You are dumb. You are sad. Your brain, run by Zombie");
+                    hasZombie = true;
+                    break;
+                }
+            case Ailment.ZombieCure:
+                {
+                    hasZombie = false;
                     break;
                 }
         }
-        effecTimers[(int)what].Activated = false;
-        playerEffects[(int)what] = null;
+    }
+
+    void StopEffects(EfectTable what)
+    {
+        switch (what.affected)
+        {
+            case Ailment.Eyes:
+                {
+                    //currentBlinkMult = BaseBlinkMult;
+                    break;
+                }
+            case Ailment.Sprint:
+                {
+                    //sprintMin = 0;
+                    break;
+                }
+        }
     }
 
     public void ACT_UnEquip(bodyPart where)
     {
-        Equipable_Wear itemData = (Equipable_Wear)ItemController.instance.items[equipment[(int)where].itemName];
+        Equipable_Wear itemData = (Equipable_Wear)ItemController.instance.items[equipment[(int)where].itemFileName];
         SCP_UI.instance.ItemSFX(itemData.SFX);
 
         if (itemData.hasEffect)
         {
-            StopEffects(itemData.Effects.Affected);
+            ref List<EfectTable> currEffect = ref headEffects;
+
+            switch (where)
+            {
+                case bodyPart.Any:
+                    {
+                        currEffect = ref anyEffects;
+                        break;
+                    }
+                case bodyPart.Body:
+                    {
+                        currEffect = ref bodyEffects;
+                        break;
+                    }
+                case bodyPart.Hand:
+                    {
+                        currEffect = ref handEffects;
+                        break;
+                    }
+            }
+
+            for (int i = 0; i < currEffect.Count; i++)
+            {
+                StopEffects(currEffect[i]);
+            }
+            currEffect.Clear();
+        }
+
+        if (itemData is Document_Equipable)
+        {
+            Resources.UnloadAsset(itemData.Overlay);
         }
 
         if (itemData is Equipable_Nav)
@@ -1120,21 +1284,38 @@ public class Player_Control : MonoBehaviour
             case bodyPart.Head:
                 {
                     ItemController.instance.equip[headInv][headSlot] = false;
+                    if(itemData.autoEquip&&headInv==0)
+                    {
+                        ItemController.instance.slots[headSlot].UnEquip(true);
+                    }
+
                     break;
                 }
             case bodyPart.Body:
                 {
                     ItemController.instance.equip[bodyInv][bodySlot] = false;
+                    if (itemData.autoEquip && bodyInv == 0)
+                    {
+                        ItemController.instance.slots[bodySlot].UnEquip(true);
+                    }
                     break;
                 }
             case bodyPart.Hand:
                 {
                     ItemController.instance.equip[handInv][handSlot] = false;
+                    if (itemData.autoEquip && handInv == 0)
+                    {
+                        ItemController.instance.slots[handSlot].UnEquip(true);
+                    }
                     break;
                 }
             case bodyPart.Any:
                 {
                     ItemController.instance.equip[anyInv][anySlot] = false;
+                    if (itemData.autoEquip && anyInv == 0)
+                    {
+                        ItemController.instance.slots[anySlot].UnEquip(true);
+                    }
                     break;
                 }
         }
@@ -1148,9 +1329,9 @@ public class Player_Control : MonoBehaviour
     {
         if (equipment[(int)bodyPart.Head] != null)
         {
-            protectSmoke = ((Equipable_Wear)ItemController.instance.items[equipment[(int)bodyPart.Head].itemName]).protectGas;
-            Reverb.enabled = ((Equipable_Wear)ItemController.instance.items[equipment[(int)bodyPart.Head].itemName]).protectGas;
-            overlay.sprite = ((Equipable_Wear)ItemController.instance.items[equipment[(int)bodyPart.Head].itemName]).Overlay;
+            protectSmoke = ((Equipable_Wear)ItemController.instance.items[equipment[(int)bodyPart.Head].itemFileName]).protectGas;
+            Reverb.enabled = ((Equipable_Wear)ItemController.instance.items[equipment[(int)bodyPart.Head].itemFileName]).protectGas;
+            overlay.sprite = ((Equipable_Wear)ItemController.instance.items[equipment[(int)bodyPart.Head].itemFileName]).Overlay;
             overlay.color = new Color(255, 255, 255, 0.75f);
         }
         else
@@ -1160,14 +1341,15 @@ public class Player_Control : MonoBehaviour
             overlay.sprite = null;
         }
 
-        if (equipment[(int)bodyPart.Hand] != null && !((ItemController.instance.items[equipment[(int)bodyPart.Hand].itemName] is Equipable_Radio) || (ItemController.instance.items[equipment[(int)bodyPart.Hand].itemName] is Equipable_Nav)))
+        if (equipment[(int)bodyPart.Hand] != null && !((ItemController.instance.items[equipment[(int)bodyPart.Hand].itemFileName] is Equipable_Radio) || (ItemController.instance.items[equipment[(int)bodyPart.Hand].itemFileName] is Equipable_Nav)))
         {
-            handEquip.sprite = ((Equipable_Wear)ItemController.instance.items[equipment[(int)bodyPart.Hand].itemName]).Overlay;
+            handEquip.sprite = ((Equipable_Wear)ItemController.instance.items[equipment[(int)bodyPart.Hand].itemFileName]).Overlay;
             handEquip.color = Color.white;
             handEquip.SetNativeSize();
         }
         else
         {
+            SCP_UI.instance.bottomScrible.text = "";
             handEquip.sprite = null;
             handEquip.SetNativeSize();
             handEquip.color = Color.clear;

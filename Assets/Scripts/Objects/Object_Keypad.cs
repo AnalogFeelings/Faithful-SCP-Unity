@@ -8,6 +8,16 @@ public class Object_Keypad : Object_Interact
     public string code;
     public AudioClip Accepted, Rejected;
     public AudioSource soundsource;
+    public bool fromGlobal = false;
+    public int globalIndex;
+
+    private void Start()
+    {
+        if(fromGlobal)
+        {
+            code = GameController.instance.globalStrings[globalIndex];
+        }
+    }
 
     public override void Pressed()
     {
@@ -22,11 +32,11 @@ public class Object_Keypad : Object_Interact
             if (Door02 != null)
                 Door02.GetComponent<Object_Door>().DoorSwitch();
             soundsource.PlayOneShot(Accepted);
-            SubtitleEngine.instance.playSub("playStrings", "play_button_card");
+            SubtitleEngine.instance.playSub("playStrings", "play_button_code");
         }
         else
         {
-            SubtitleEngine.instance.playSub("playStrings", "play_button_lowcard");
+            SubtitleEngine.instance.playSub("playStrings", "play_button_wrongcode");
             soundsource.PlayOneShot(Rejected);
         }
 

@@ -15,7 +15,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6868018150138286641
 Transform:
   m_ObjectHideFlags: 0
@@ -204,9 +204,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d9f07e349283d0419aa34d36023dc38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Room: {fileID: 0}
+  Room: {fileID: 3001318723115946178}
   Lights: {fileID: 4767090674445467590}
   Probes: {fileID: 293087566318748555}
+  cutsceneReferences: []
 --- !u!1 &2578637013548845530
 GameObject:
   m_ObjectHideFlags: 0
@@ -284,7 +285,7 @@ Light:
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 0}
-  m_RenderMode: 0
+  m_RenderMode: 2
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -457,6 +458,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eeb5dc026fdf4b488bc7ae0138ab719, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PathHandler: {fileID: 0}
   m_AgentTypeID: 0
   m_StartPoint: {x: 0, y: 0, z: -1}
   m_EndPoint: {x: 0, y: 0, z: 1}
@@ -715,6 +717,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eeb5dc026fdf4b488bc7ae0138ab719, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PathHandler: {fileID: 0}
   m_AgentTypeID: 0
   m_StartPoint: {x: 0, y: 0, z: -1}
   m_EndPoint: {x: 0, y: 0, z: 1}
@@ -800,7 +803,7 @@ Light:
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 12100000, guid: 055403e8b723c494a9d89d3e0a8d5da7, type: 2}
-  m_RenderMode: 0
+  m_RenderMode: 2
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -892,7 +895,7 @@ Light:
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 12100000, guid: 055403e8b723c494a9d89d3e0a8d5da7, type: 2}
-  m_RenderMode: 0
+  m_RenderMode: 2
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -963,6 +966,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8765267971468253463}
     m_Modifications:
+    - target: {fileID: 100000, guid: 42d6573751aefed4ebe7b918e41b060c, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 42d6573751aefed4ebe7b918e41b060c, type: 3}
+      propertyPath: m_TagString
+      value: Metal
+      objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: 42d6573751aefed4ebe7b918e41b060c, type: 3}
       propertyPath: m_Name
       value: room2cpit_opt
@@ -1061,6 +1072,12 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 5b0c470e64ede3c4685de484fbf6d0e8, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 42d6573751aefed4ebe7b918e41b060c, type: 3}
+--- !u!1 &3001318723115946178 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100000, guid: 42d6573751aefed4ebe7b918e41b060c,
+    type: 3}
+  m_PrefabInstance: {fileID: 3001318723116045922}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3001318723115650272 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400002, guid: 42d6573751aefed4ebe7b918e41b060c,

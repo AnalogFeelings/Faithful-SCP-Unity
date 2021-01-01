@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "new Hand", menuName = "Items/Hand")]
 public class Equipable_Hand : Equipable_Wear
 {
     public int handID;
@@ -10,7 +11,7 @@ public class Equipable_Hand : Equipable_Wear
     {
         Player_Control player = GameController.instance.player.GetComponent<Player_Control>();
 
-        if (player.equipment[(int)this.part] == null || player.equipment[(int)this.part].itemName != this.itemName)
+        if (player.equipment[(int)this.part] == null || ItemController.instance.items[player.equipment[(int)this.part].itemFileName].itemName != this.itemName)
             player.ACT_Equip(currItem);
         else
             player.ACT_UnEquip(part);

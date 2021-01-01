@@ -37,10 +37,7 @@ public class slotController : MonoBehaviour, IDragHandler, IEndDragHandler
         {
             if (cont.currentEquip[id] == false && cont.currentItem[id] != null)
             {
-                GameController.instance.player.GetComponent<Player_Control>().DropItem(cont.currentItem[id]);
-                SCP_UI.instance.ItemSFX(cont.items[cont.currentItem[id].itemName].SFX);
-                cont.currentItem[id] = null;
-                SCP_UI.instance.ToggleInventory();
+                UnEquip();
             }
         }
         else
@@ -53,7 +50,7 @@ public class slotController : MonoBehaviour, IDragHandler, IEndDragHandler
             }
             if (cont.currentItem[cont.currhover] != null && cont.currentEquip[cont.currhover] != true && cont.currentEquip[id] != true)
             {
-                if (cont.items[cont.currentItem[cont.currhover].itemName].Mix(ref cont.currentItem[cont.currhover], ref cont.currentItem[id]))
+                if (cont.items[cont.currentItem[cont.currhover].itemFileName].Mix(ref cont.currentItem[cont.currhover], ref cont.currentItem[id]))
                 {
                     cont.currentItem[id] = null;
                 }
@@ -61,6 +58,15 @@ public class slotController : MonoBehaviour, IDragHandler, IEndDragHandler
         }
 
         cont.UpdateInv();
+    }
+
+    public void UnEquip(bool dontToggle = false)
+    {
+        GameController.instance.player.GetComponent<Player_Control>().DropItem(cont.currentItem[id]);
+        SCP_UI.instance.ItemSFX(cont.items[cont.currentItem[id].itemFileName].SFX);
+        cont.currentItem[id] = null;
+        if(!dontToggle)
+            SCP_UI.instance.ToggleInventory();
     }
 
 
@@ -73,24 +79,24 @@ public class slotController : MonoBehaviour, IDragHandler, IEndDragHandler
 
         if (cont.currentItem[id] != null)
         {
-            currIcon = cont.items[cont.currentItem[id].itemName].icon;
+            currIcon = cont.items[cont.currentItem[id].itemFileName].icon;
             if (!cont.currentEquip[id])
-                displayText.text = Localization.GetString("itemStrings", cont.items[cont.currentItem[id].itemName].getName());
+                displayText.text = Localization.GetString("itemStrings", cont.items[cont.currentItem[id].itemFileName].getName());
             else
-                displayText.text = string.Format(Localization.GetString("playStrings", "play_equiped"), Localization.GetString("itemStrings", cont.items[cont.currentItem[id].itemName].getName()));
-            if (cont.items[cont.currentItem[id].itemName] is Item_Clipboard)
+                displayText.text = string.Format(Localization.GetString("playStrings", "play_equiped"), Localization.GetString("itemStrings", cont.items[cont.currentItem[id].itemFileName].getName()));
+            if (cont.items[cont.currentItem[id].itemFileName] is Item_Clipboard)
             {
                 if (cont.currentItem[id].valInt != -1)
                 {
                     if (cont.IsEmpty(cont.currentItem[id].valInt))
                     {
-                        Item_Clipboard clippy = (Item_Clipboard)cont.items[cont.currentItem[id].itemName];
+                        Item_Clipboard clippy = (Item_Clipboard)cont.items[cont.currentItem[id].itemFileName];
                         currIcon = clippy.nodoc;
                     }
                 }
                 else
                 {
-                    Item_Clipboard clippy = (Item_Clipboard)cont.items[cont.currentItem[id].itemName];
+                    Item_Clipboard clippy = (Item_Clipboard)cont.items[cont.currentItem[id].itemFileName];
                     currIcon = clippy.nodoc;
                 }
             }
@@ -109,11 +115,11 @@ public class slotController : MonoBehaviour, IDragHandler, IEndDragHandler
     }
 
 
-    public void Use()
+    public void Use(bool dontToggle = false)
     {
         if (cont.currentItem[id]!=null && !dragging)
         {
-            Item currItem = cont.items[cont.currentItem[id].itemName];
+            Item currItem = cont.items[cont.currentItem[id].itemFileName];
             int cacheinv = cont.currInv;
             SCP_UI.instance.ItemSFX(currItem.SFX);
             bool dontclose = currItem.keepInv;
@@ -129,7 +135,7 @@ public class slotController : MonoBehaviour, IDragHandler, IEndDragHandler
 
                 cont.currentItem[id] = null;
             }
-            if (!dontclose)
+            if (!dontclose&&!dontToggle)
                 SCP_UI.instance.ToggleInventory();
         }
         updateInfo();

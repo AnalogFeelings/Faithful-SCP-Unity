@@ -33,12 +33,6 @@ public class Item_Spawner : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     void Helper(GameObject newObject, Item item, Vector3 position)
     {
         gameItem newItem = new gameItem(item.name);

@@ -6,14 +6,9 @@ public class EndlessHallway : MonoBehaviour
 {
     public Transform Pos1, Pos2;
     public BoxTrigger Box1, Box2;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
         if (Box1.GetState())
         {
@@ -38,6 +33,5 @@ public class EndlessHallway : MonoBehaviour
         GameObject objPlayer = GameController.instance.player;
         objPlayer.GetComponent<Player_Control>().playerWarp((end.transform.position + ((end.transform.rotation * Quaternion.Inverse(start.transform.rotation)) * (objPlayer.transform.position - start.position))), end.transform.eulerAngles.y - start.transform.eulerAngles.y);
         Debug.Log("Diferencia de Rotacion: " + (end.transform.eulerAngles.y - start.transform.eulerAngles.y));
-
     }
 }
