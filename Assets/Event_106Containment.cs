@@ -101,6 +101,7 @@ public class Event_106Containment : Event_Parent
                     {
                         if(!leverMag.On)
                         {
+                            GameController.instance.npcController.mainList[(int)npc.scp106].transform.rotation = spawn1061.rotation;
                             GameController.instance.npcController.mainList[(int)npc.scp106].Event_Spawn(false, spawn1061.position);
 
                             currTimer = 10;

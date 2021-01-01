@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EV_SurvRoom : Event_Parent
 {
-    public ScreenRenderer blockscreen;
+    public ScreenRenderer blockscreen, blockscreen2;
     public Object_LeverV lever;
     public BoxTrigger endtrigger;
     public Transform spawn1;
@@ -44,6 +44,8 @@ public class EV_SurvRoom : Event_Parent
             Timer = 5;
             blockscreen.animate = false;
             blockscreen.SetFrame(0, 0);
+            blockscreen2.animate = false;
+            blockscreen2.SetFrame(0, 0);
             GameController.instance.canSave = false;
             GameController.instance.npcController.mainList[(int)npc.scp049].Event_Spawn(true, spawn1.position);
         }

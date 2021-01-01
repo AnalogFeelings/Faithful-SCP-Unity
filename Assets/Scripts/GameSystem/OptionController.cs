@@ -21,8 +21,10 @@ public class OptionController : MonoBehaviour
 
     [Header("Graphics Menu")]
     public Dropdown quality;
+    public Dropdown resolutions;
     public Dropdown language;
     public Dropdown postsettings;
+    public Toggle fullscreen;
     public Toggle vsync;
     public Toggle frame;
     public Slider Gamma;
@@ -62,6 +64,17 @@ public class OptionController : MonoBehaviour
 
         language.AddOptions(options);
 
+        resolutions.ClearOptions();
+        options = new List<Dropdown.OptionData>();
+
+
+        foreach (Resolution curres in Screen.resolutions)
+        {
+            options.Add(new Dropdown.OptionData(curres.width + "x" + curres.height + "x" +curres.refreshRate+"hz"));
+        }
+
+        resolutions.AddOptions(options);
+
 
         quality.value = QualitySettings.GetQualityLevel();
         Debug.Log("Language loaded was " + PlayerPrefs.GetInt("Lang", 0));
@@ -70,7 +83,9 @@ public class OptionController : MonoBehaviour
         postsettings.value = PlayerPrefs.GetInt("Post", 1);
         Gamma.value = PlayerPrefs.GetFloat("Gamma", 0);
 
-        
+        fullscreen.isOn = (PlayerPrefs.GetInt("Fullscreen", 0) == 1);
+
+
         framelimit.text = PlayerPrefs.GetInt("Framerate", 60).ToString();
         frame.isOn = (PlayerPrefs.GetInt("Frame", 0) == 1);
         vsync.isOn = (PlayerPrefs.GetInt("Vsync", 1) == 1);
@@ -152,6 +167,24 @@ public class OptionController : MonoBehaviour
     /// ////////////////////////////////////////////////////       GRAPHICSSETTINGS
     /// </summary>
 
+    public void SetRes(int Value)
+    {
+        PlayerPrefs.SetInt("Res", Value);
+
+        Screen.SetResolution(Screen.resolutions[Value].width, Screen.resolutions[Value].height, (PlayerPrefs.GetInt("Fullscreen", 1) == 1), Screen.resolutions[Value].refreshRate);
+
+        if (startupdone)
+            player.PlayOneShot(click);
+    }
+
+    public void SetFull(bool Value)
+    {
+        Screen.fullScreen = Value;
+        PlayerPrefs.SetInt("Fullscreen", Value ? 1 : 0);
+
+        if (startupdone)
+            player.PlayOneShot(click);
+    }
 
 
 

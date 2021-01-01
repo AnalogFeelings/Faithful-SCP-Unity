@@ -187,6 +187,7 @@ public class SCP_096 : Roam_NPC
 
                     if (Physics.OverlapSphere(transform.position + transform.forward, 0.5f, playerMask).Length > 0)
                     {
+                        GameController.instance.deathmsg = Localization.GetString("deathStrings", "death_096");
                         GameController.instance.playercache.Death(4);
                         debugIsTargeting = false;
                         state = scp096State.attack;

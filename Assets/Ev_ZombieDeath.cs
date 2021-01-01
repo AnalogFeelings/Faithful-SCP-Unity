@@ -65,6 +65,7 @@ public class Ev_ZombieDeath : MonoBehaviour
                 case 4:
                     {
                         state = 5;
+                        GameController.instance.deathmsg = Localization.GetString("deathStrings", "death_008");
                         GameController.instance.playercache.Death(0);
                         break;
                     }

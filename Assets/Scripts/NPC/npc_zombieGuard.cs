@@ -217,9 +217,13 @@ public class npc_zombieGuard : Map_NPC
                         Timer = timeToIdle;
                         voiceSource.PlayOneShot(Hit);
 
-                        if (Physics.OverlapSphere(transform.position + transform.forward, 0.8f, playerMask).Length > 0)
+                        if (GameController.instance.isAlive && Physics.OverlapSphere(transform.position + transform.forward, 0.8f, playerMask).Length > 0)
                         {
                             GameController.instance.playercache.Health -= 25;
+                            if(GameController.instance.playercache.Health <= 0)
+                            {
+                                GameController.instance.deathmsg = Localization.GetString("deathStrings", "death_049_1");
+                            }
                         }
 
                         break;
@@ -294,7 +298,7 @@ public class npc_zombieGuard : Map_NPC
     {
         Vector3 playerDir = GameController.instance.playercache.transform.position - transform.position;
         distanceFromPlayer = Vector3.Distance(transform.position, GameController.instance.playercache.transform.position);
-        return (Vector3.Dot(playerDir.normalized, transform.forward) > viewLimit) && !Physics.Raycast(transform.position + Vector3.up * 1.5f, playerDir, distanceFromPlayer, ground) && distanceFromPlayer < 20f;
+        return (Vector3.Dot(playerDir.normalized, transform.forward) > viewLimit) && !Physics.Raycast(transform.position + Vector3.up * 1.5f, playerDir.normalized, distanceFromPlayer, ground) && distanceFromPlayer < 20f;
     }
 
     private void OnAnimatorMove()

@@ -618,7 +618,7 @@ public class Player_Control : MonoBehaviour
         if (!objectLock)
         {
             float lastdistance = float.PositiveInfinity;
-            Interact = Physics.OverlapCapsule(transform.position, handPos.transform.position, handSize, InteractiveLayer);
+            Interact = Physics.OverlapCapsule(transform.position, handPos.transform.position, handSize * (Freeze ? 1.5f:1f), InteractiveLayer);
             //Interact = Physics.OverlapSphere(handPos.transform.position, handSize, InteractiveLayer);
             if (Interact.Length != 0)
             {

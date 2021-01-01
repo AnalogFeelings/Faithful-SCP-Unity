@@ -143,6 +143,7 @@ public class NPC_049 : Roam_NPC
             teleportTo = GameController.instance.GetPatrol(GameController.instance.player.transform.position, levels[data.npcvalue[0]].maxTele, levels[data.npcvalue[0]].minTele);
             Spawn(true, teleportTo);
             teleportTimer = 0;
+            agent.isStopped = false;
         }
          ///DEBUG DATA
         //Debug.DrawRay(transform.position + Vector3.up, (GameController.instance.playercache.transform.position - transform.position));
@@ -303,6 +304,8 @@ public class NPC_049 : Roam_NPC
 
                     if (Physics.OverlapSphere(transform.position + transform.forward, 0.5f, playerMask).Length > 0)
                     {
+                        agent.isStopped = true;
+                        GameController.instance.deathmsg = Localization.GetString("deathStrings", "death_049");
                         GameController.instance.playercache.Death(0);
                         Debug.Log("Kill");
                         state = scp049State.kill;
@@ -526,6 +529,7 @@ public class NPC_049 : Roam_NPC
         agent.speed = chaseSpeed;
         data.isActive = true;
         isEvent = true;
+        agent.isStopped = false;
         base.Event_Spawn(instant, warppoint);
         agent.Warp(warppoint);
         animator.Rebind();
@@ -541,6 +545,7 @@ public class NPC_049 : Roam_NPC
         base.Spawn(beActive, warppoint);
         data.isActive = beActive;
         animator.Rebind();
+        agent.isStopped = false;
         state = scp049State.idle;
         currAnim = state;
         agent.Warp(warppoint);
