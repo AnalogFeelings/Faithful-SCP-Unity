@@ -12,23 +12,32 @@ using UnityEngine;
 [System.Serializable]
 public class ItemList
 {
-    public string item;
     public float X, Y, Z;
-    public float vlFloat;
-    public int vlInt;
-}
-[System.Serializable]
-public class svItem
-{
-    public string item;
-    public float vlFloat;
-    public int vlInt;
+    public gameItem item;
 }
 
 [System.Serializable]
 public class SeriVector
 {
     public float x, y, z;
+
+    public SeriVector(float _x, float _y, float _z)
+    {
+        x = _x;
+        y = _y;
+        z = _z;
+
+    }
+
+    static public SeriVector fromVector3(Vector3 og)
+    {
+        return new SeriVector(og.x, og.y, og.z);
+    }
+
+    public Vector3 toVector3()
+    {
+        return (new Vector3(x, y, z));
+    }
 }
 
 public class saveMeta
@@ -53,25 +62,29 @@ public class saveMeta
 public class SaveData
 {
     public List<savedDoor> doorState;
+    public List<savedObject> persState;
     public string saveName;
     public string saveSeed;
     public room[,] savedMap;
     public int[,] navMap;
     public float angle;
-    public float Health, bloodLoss;
+    public float Health, bloodLoss, zombieTime;
     public MapSize savedSize;
     public float pX, pY, pZ;
     public int mapX, mapY;
-    public List<svItem[]> items;
+    public List<gameItem[]> items;
+    public List<bool[]> equips;
     public ItemList[] worldItems;
-    public SeriVector[] npcPos;
-    public bool[] Activenpc;
+    public NPC_Data[] npcData;
+    public NPC_Data[] mainData;
+    public bool[] simpData;
     public bool holdRoom;
-    
+    public Random.State seedState;
 
     public List<int> globalInts;
     public List<bool> globalBools;
     public List<float> globalFloats;
+    public List<string> globalStrings;
 }
 
 

@@ -7,7 +7,7 @@ using Pixelplacement;
 using Pixelplacement.TweenSystem;
 using UnityEngine.Tilemaps;
 
-public enum DeathEvent {none, pocketDimension };
+public enum DeathEvent {none, pocketDimension, zombie008 };
 
 [System.Serializable]
 public class CameraPool
@@ -30,41 +30,58 @@ public class savedDoor
     }
 
 }
-public enum npc { scp173, scp106, none};
 
+[System.Serializable]
+public class savedObject
+{
+    public int id;
+    public bool State;
+
+    public savedObject(int _id)
+    {
+        State = false;
+        id = _id;
+    }
+
+}
 
 public class GameController : MonoBehaviour
 {
+    [Header("Map Settings")]
+    [HideInInspector]
     public DeathEvent Death;
     public static GameController instance = null;
     public bool isAlive = true, isPocket;
     int doorCounter = 0;
+    int persCounter = 0;
     public bool canSave = false, debugCamera, holdRoom = false;
     public bool CreateMap, ShowMap;
-    public PostProcessVolume HorrorVol, MainVol;
+    public bool controlFog=true, customFog=false;
+    public float defaultFog = 15f, fogSpeed = 3;
+    public float toFog=15;
+    public bool doGameplay, spawnPlayer, spawnHere, StopTimer = false, isStart = false, mapless;
+
+    [Header("Volumes")]
+    public PostProcessVolume HorrorVol;
+    public PostProcessVolume MainVol;
     DepthOfField depth;
     TweenBase HorrorTween;
 
+    [HideInInspector]
     public int xPlayer, yPlayer;
-    SmokeBlur HorrorBlur;
     Camera HorrorFov;
 
-    public GameObject origplayer, player, roomAmbiance_obj, doorVacuumParticle;
+    [Header("Start Config")]
+    public GameObject origplayer;
+    [HideInInspector]
+    public GameObject player;
+    [HideInInspector]
     public Player_Control playercache;
-    public GameObject orig173, startEv, orig106, itemSpawner, npcCam;
+    public GameObject startEv, itemSpawner;
 
+    [HideInInspector]
     [System.NonSerialized]
-    public GameObject itemParent;
-    [System.NonSerialized]
-    public GameObject eventParent;
-    [System.NonSerialized]
-    public GameObject doorParent;
-    [System.NonSerialized]
-    public GameObject npcParent;
-
-    public GameObject LightTrigger;
-
-    public NewMapGen mapCreate;
+    public GameObject itemParent, eventParent, doorParent, persParent;
 
 
     Transform currentTarget;
@@ -75,27 +92,35 @@ public class GameController : MonoBehaviour
     int Zone3limit, Zone2limit;
     int zoneAmbiance = -1;
     int zoneMusic = -1, currentMusic = -1;
-    bool CullerFlag, DebugFlag = false;
+
+    [HideInInspector]
+    public bool CullerFlag, DebugFlag = false;
     bool CullerOn, playIntro = true;
-    float roomsize = 15.3f, ambiancetimer = 0, GENambiancetimer = 0, Timer = 5, normalAmbiance, ambiancefreq = 3;
-    public float ambifreq, GENambiancefreq;
+    [HideInInspector]
+    public int currZone = 0;
+    [HideInInspector]
+    public float roomsize = 15.3f;
+    float Timer = 5, normalAmbiance;
 
     MapSize mapSize;
     int[,,] culllookup;
     int[,] Binary_Map;
     int[,] nav_Map;
     room[,] SCP_Map;
-    GameObject[,] rooms;
+    RoomHolder[,] rooms;
     Dictionary<string, room_dat> roomLookup;
 
 
     ItemList[] itemData;
+    [HideInInspector]
     public List<savedDoor> doorTable;
+    public List<savedObject> persTable;
 
 
-    public bool doGameplay, spawnPlayer, spawnHere, spawn173, spawn106, StopTimer = false, isStart = false, mapless;
-    public Transform place173, playerSpawn;
 
+    public Transform playerSpawn;
+
+    [Header("Audio Sources")]
     public AudioSource Ambiance;
     public AudioSource MixAmbiance;
     public AudioSource Horror;
@@ -104,15 +129,13 @@ public class GameController : MonoBehaviour
 
     AudioSource roomAmbiance_src;
 
-    public AudioClip[] AmbianceLibrary;
-    public AudioClip[] PreBreach;
-    public AudioClip[] GenericAmbiance;
+    [Header("Audio Clips")]
     public AudioClip[] Z1;
     public AudioClip[] Z2;
     public AudioClip[] Z3;
     public AudioClip[] RoomMusic;
     public AudioClip[] roomAmbiance_clips;
-    public AudioClip Mus1, Mus2, Mus3, MusIntro, savedSFX;
+    public AudioClip Mus1, Mus2, Mus3, savedSFX;
 
     bool RoomMusicChange = false;
     bool roomAmbiance_chg = false;
@@ -120,51 +143,40 @@ public class GameController : MonoBehaviour
 
     bool StartupDone = false;
 
-    public CameraPool[] cameraPool;
-
-
     public List<int> globalInts = new List<int>();
     public List<bool> globalBools = new List<bool>();
     public List<float> globalFloats = new List<float>();
-
-    /// <summary>
-    /// NPC Data
-    /// </summary>
-    int place173_curr = 0;
-    bool npcPanel = false;
-    public Texture npcCamText;
-    npc DebugNPC;
-    int debugX;
-    int debugY;
-
-    public Roam_NPC[] npcTable = new Roam_NPC[2];
-    public GameObject[] npcObjects = new GameObject[2];
-
-    npc LatestNPC = npc.none;
-    npc ZoneMain = npc.none;
-
-    public npc Zone3_Main;
-    public npc Zone2_Main;
-    public npc Zone1_Main;
-
-    float NPCTimer;
-
-
+    public List<string> globalStrings = new List<string>();
 
     /// <summary>
     /// SpecialItemsData
     /// </summary>
     /// 
+    [Header("SNav Values")]
     public Tilemap mapFull;
     public TileBase tile;
 
+    [Header("Graphics Settings")]
     public PostProcessProfile LowQ;
     public PostProcessProfile MediumQ;
     public PostProcessProfile HighQ;
 
+    public NGSS_Local shadowQuality;
+
+    [HideInInspector]
     public string deathmsg = "";
+    [HideInInspector]
     public string currentRoom;
 
+    //Systems
+    [Header("Modules")]
+    public ParticleController particleController;
+    public NPC_Controller npcController;
+    public AmbianceController ambianceController;
+    public NewMapGen mapCreate;
+    public GameObject roomAmbiance_obj;
+    public CameraPool[] cameraPool;
+   
 
     /// <summary>
     /// ////////////////////////STARTUP SEQUENCE
@@ -183,10 +195,11 @@ public class GameController : MonoBehaviour
 
         eventParent = new GameObject("eventParent");
 
-        npcParent = new GameObject("npcParent");
 
         doorParent = new GameObject();
         doorParent.name = "doorParent";
+
+        persParent = new GameObject("persParent");
 
 
         //Define globals into dictionary
@@ -202,8 +215,6 @@ public class GameController : MonoBehaviour
 
 
         Time.timeScale = 0;
-        AmbianceLibrary = PreBreach;
-        npcCam.SetActive(false);
         doGameplay = false;
 
         if (!GlobalValues.debug)
@@ -212,6 +223,7 @@ public class GameController : MonoBehaviour
             {
                 case LoadType.newgame:
                     {
+                        spawnHere = false;
                         spawnHere = GlobalValues.playIntro;
                         mapCreate.mapgenseed = GlobalValues.mapseed;
                         NewGame();
@@ -234,15 +246,17 @@ public class GameController : MonoBehaviour
                     }
                 case LoadType.mapless:
                     {
-                        spawnHere = true;
 
                         SaveSystem.instance.playData = GlobalValues.worldState;
 
                         ItemController.instance.EmptyItems();
-                        ItemController.instance.LoadItems(SaveSystem.instance.playData.items);
+                        ItemController.instance.LoadItems(SaveSystem.instance.playData.items, SaveSystem.instance.playData.equips);
                         globalInts = SaveSystem.instance.playData.globalInts;
                         globalFloats = SaveSystem.instance.playData.globalFloats;
+                        globalStrings = SaveSystem.instance.playData.globalStrings;
                         globalBools = SaveSystem.instance.playData.globalBools;
+                        spawnHere = true;
+                        Debug.Log("Iniciando spawn mapless, con spawnHere valor " + spawnHere);
 
 
                         GL_SpawnPlayer(playerSpawn.position);
@@ -262,7 +276,7 @@ public class GameController : MonoBehaviour
             if (GlobalValues.worldState != null)
             {
                 ItemController.instance.EmptyItems();
-                ItemController.instance.LoadItems(SaveSystem.instance.playData.items);
+                ItemController.instance.LoadItems(SaveSystem.instance.playData.items, SaveSystem.instance.playData.equips);
             }
 
             GL_SpawnPlayer(playerSpawn.position);
@@ -280,7 +294,7 @@ public class GameController : MonoBehaviour
 
     void OnGUI()
     {
-        if (!isStart && GlobalValues.debug && GlobalValues.LoadType != LoadType.otherworld)
+        if (!isStart && GlobalValues.debug && GlobalValues.LoadType != LoadType.otherworld && GlobalValues.LoadType != LoadType.mapless)
         {
             // Make a background box
             GUI.Box(new Rect(10, 10, 500, 120), "Menu Inicio");
@@ -288,14 +302,14 @@ public class GameController : MonoBehaviour
             mapCreate.mapgenseed = GUI.TextField(new Rect(20, 40, 80, 20), mapCreate.mapgenseed);
             playIntro = GUI.Toggle(new Rect(120, 40, 80, 20), playIntro, "Iniciar Intro");
 
-            if (playIntro)
-            {
-                spawnHere = true;
-            }
-            else
-            {
-                spawnHere = false;
-            }
+            /* if (playIntro)
+             {
+                 GlobalValues.playIntro = true;
+             }
+             else
+             {
+                 GlobalValues.playIntro = true;
+             }*/
 
             if (GUI.Button(new Rect(220, 40, 80, 20), "Iniciar"))
             {
@@ -310,32 +324,15 @@ public class GameController : MonoBehaviour
         }
         else if (DebugFlag)
         {
-            if (!npcPanel)
-            {
-                GUI.Box(new Rect(10, 10, 300, 100), "Menu juego");
-                GUI.Label(new Rect(20, 40, 300, 20), "Mapa X " + xPlayer + " Mapa Y " + yPlayer);
-                GUI.Label(new Rect(20, 65, 300, 20), "Zona Actual " + zoneAmbiance);
-                GUI.Label(new Rect(20, 90, 300, 20), "¿Ejecutando procesos normales? " + doGameplay);
-            }
-            else
-            {
-                GUI.Box(new Rect(510, 10, 700, 400), "Menu juego");
-                GUI.DrawTexture(new Rect(510, 15, 250, 250), npcCamText);
-
-                if (GUI.Button(new Rect(520, 260, 100, 20), "SCP173"))
-                    DebugNPC = npc.scp173;
-                if (GUI.Button(new Rect(630, 260, 100, 20), "SCP106"))
-                    DebugNPC = npc.scp106;
-
-                debugX = int.Parse(GUI.TextField(new Rect(520, 290, 40, 20), debugX.ToString()));
-                debugY = int.Parse(GUI.TextField(new Rect(630, 290, 40, 20), debugY.ToString()));
-
-                if (GUI.Button(new Rect(520, 330, 100, 20), "TELEPORT"))
-                    npcTable[(int)DebugNPC].Spawn(true, new Vector3(debugX * roomsize, 0, debugY * roomsize));
-
-                npcCam.transform.position = npcObjects[(int)DebugNPC].transform.position;
-
-            }
+            GUI.Box(new Rect(10, 10, 300, 100), "Debug Data");
+            GUI.Label(new Rect(20, 40, 300, 20), "Map X " + xPlayer + " Mapa Y " + yPlayer);
+            GUI.Label(new Rect(20, 65, 300, 20), "This Zone " + currZone);
+            GUI.Label(new Rect(20, 90, 300, 20), "Is Gameplay? " + doGameplay);
+            GUI.Label(new Rect(20, 115, 300, 20), "Is Rooom hold? " + holdRoom);
+            GUI.Label(new Rect(20, 130, 300, 20), "Is Pocket? " + isPocket);
+            GUI.Label(new Rect(20, 155, 300, 20), "is ALive? " + isAlive);
+            GUI.Label(new Rect(20, 170, 300, 20), "Player X " + playercache.transform.position.x + " Y " + playercache.transform.position.y + " Z " + playercache.transform.position.z);
+            GUI.Label(new Rect(20, 185, 300, 20), "Player Rotation " + playercache.transform.rotation.eulerAngles.y);
         }
     }
 
@@ -367,7 +364,7 @@ public class GameController : MonoBehaviour
 
             itemParent = new GameObject("itemParent");
             eventParent = new GameObject("eventParent");
-            npcParent = new GameObject("npcParent");
+            //npcParent = new GameObject("npcParent");
 
             SaveSystem.instance.LoadState();
 
@@ -376,10 +373,10 @@ public class GameController : MonoBehaviour
             Camera.main.gameObject.transform.parent = null;
 
             doorParent.BroadcastMessage("resetState");
+            persParent.BroadcastMessage("resetState");
 
             DestroyImmediate(player);
-            DestroyImmediate(npcObjects[(int)npc.scp173]);
-            DestroyImmediate(npcObjects[(int)npc.scp106]);
+            npcController.DeleteNPC();
 
             StartCoroutine(ReloadLevel());
         }
@@ -426,6 +423,38 @@ public class GameController : MonoBehaviour
         doorTable[id].isOpen = state;
     }
 
+    public int GetObjectID()
+    {
+        if (GlobalValues.isNew)
+        {
+            persTable.Add(new savedObject(persTable.Count));
+            return (persTable.Count - 1);
+        }
+        else
+        {
+            persCounter++;
+            return (persCounter - 1);
+        }
+    }
+
+    public int GetObjectState(int id)
+    {
+        if (GlobalValues.isNew)
+            return (-1);
+        else
+        {
+            if (persTable[id].State == true)
+                return (1);
+            else
+                return (0);
+        }
+    }
+
+    public void SetObjectState(bool state, int id)
+    {
+        persTable[id].State = state;
+    }
+
 
 
 
@@ -457,24 +486,24 @@ public class GameController : MonoBehaviour
         SaveSystem.instance.SaveState();
         GlobalSFX.PlayOneShot(savedSFX);
         GlobalValues.hasSaved = true;
-        SubtitleEngine.instance.playSub(GlobalValues.uiStrings["ui_in_saved"]);
+        SubtitleEngine.instance.playSub("uiStrings","ui_in_saved");
     }
 
     void Update()
     {
         if (isAlive)
         {
-            if (Input.GetButtonDown("Pause"))
+            if (SCPInput.instance.playerInput.Gameplay.Pause.triggered)
             {
                 SCP_UI.instance.TogglePauseMenu();
             }
 
-            if (Input.GetButtonDown("Inventory"))
+            if (SCPInput.instance.playerInput.Gameplay.Inventory.triggered)
             {
                 SCP_UI.instance.ToggleInventory();
             }
 
-            if (Input.GetButtonDown("Save"))
+            if (SCPInput.instance.playerInput.Gameplay.Save.triggered)
             {
                 if (canSave)
                 {
@@ -482,55 +511,22 @@ public class GameController : MonoBehaviour
                 }
                 else
                 {
-                    SubtitleEngine.instance.playSub(GlobalValues.uiStrings["ui_in_nosave"]);
+                    SubtitleEngine.instance.playSub("uiStrings", "ui_in_nosave");
                 }
             }
         }
 
         if (isStart)
         {
-            if (spawnHere)
-                StartIntro();
+            /*if (spawnHere)
+                StartIntro();*/
 
 
             if (doGameplay)
                 Gameplay();
-
-            DoAmbiance();
         }
 
 
-    }
-
-
-    void DoAmbiance()
-    {
-        ambiancetimer -= Time.deltaTime;
-        if (ambiancetimer <= 0)
-        {
-            int i = Random.Range(0, AmbianceLibrary.Length);
-            MixAmbiance.PlayOneShot(AmbianceLibrary[i]);
-            ambiancetimer = ambiancefreq * Random.Range(1, 5);
-        }
-    }
-
-    void GenAmbiance()
-    {
-        GENambiancetimer -= Time.deltaTime;
-        if (GENambiancetimer <= 0)
-        {
-            int i = Random.Range(0, GenericAmbiance.Length);
-
-            MixAmbiance.PlayOneShot(GenericAmbiance[i]);
-            GENambiancetimer = GENambiancefreq * Random.Range(2, 5);
-        }
-    }
-
-    public void ChangeAmbiance(AudioClip[] NewAmbiance, float freq)
-    {
-        AmbianceLibrary = NewAmbiance;
-        ambiancefreq = freq;
-        zoneAmbiance = -1;
     }
 
 
@@ -538,49 +534,49 @@ public class GameController : MonoBehaviour
     public void DefaultAmbiance()
     {
         zoneAmbiance = 3;
+        Debug.Log("Ambiance Default");
     }
 
     void AmbianceManager()
     {
-        if (zoneAmbiance != -1)
+        if (ambianceController.custom == false)
         {
-            if (yPlayer < Zone3limit && zoneAmbiance != 2)
+            if (currZone == 2 && zoneAmbiance != 2)
             {
-                AmbianceLibrary = Z3;
+                ambianceController.NormalAmbiance(Z3);
                 zoneAmbiance = 2;
-                ambiancefreq = ambifreq;
             }
-            if ((yPlayer > Zone3limit && yPlayer < Zone2limit) && zoneAmbiance != 1)
+            if (currZone == 1 && zoneAmbiance != 1)
             {
-                AmbianceLibrary = Z2;
+                ambianceController.NormalAmbiance(Z2);
                 zoneAmbiance = 1;
-                ambiancefreq = ambifreq;
             }
-            if (yPlayer > Zone2limit && zoneAmbiance != 0)
+            if (currZone == 0 && zoneAmbiance != 0)
             {
-                AmbianceLibrary = Z1;
+                ambianceController.NormalAmbiance(Z1);
                 zoneAmbiance = 0;
-                ambiancefreq = ambifreq;
             }
 
         }
+        else
+            zoneAmbiance = -1;
     }
 
     void MusicManager()
     {
         if (zoneMusic != -1)
         {
-            if (yPlayer < Zone3limit && zoneMusic != 2)
+            if (currZone == 2 && zoneMusic != 2)
             {
                 MusicPlayer.instance.ChangeMusic(Mus3);
                 zoneMusic = 2;
             }
-            if ((yPlayer > Zone3limit && yPlayer < Zone2limit) && zoneMusic != 1)
+            if (currZone == 1 && zoneMusic != 1)
             {
                 MusicPlayer.instance.ChangeMusic(Mus2);
                 zoneMusic = 1;
             }
-            if (yPlayer > Zone2limit && zoneMusic != 0)
+            if (currZone == 0 && zoneMusic != 0)
             {
                 MusicPlayer.instance.ChangeMusic(Mus1);
                 zoneMusic = 0;
@@ -613,10 +609,11 @@ public class GameController : MonoBehaviour
 
     public void PlayHorror(AudioClip horrorsound, Transform origin, npc who)
     {
+        //Debug.Log("Playing Horror");
         Horror.PlayOneShot(horrorsound);
         if (HorrorTween != null)
             HorrorTween.Cancel();
-        HorrorTween = Tween.Value(0f, 1f, HorrorUpdate, 0.7f, 0, Tween.EaseInStrong, Tween.LoopType.None, null, () => Tween.Value(1f, -0.2f, HorrorUpdate, 11.0f, 0, Tween.EaseOut));
+        HorrorTween = Tween.Value(0f, 1f, HorrorUpdate, 1f, 0, Tween.EaseInStrong, Tween.LoopType.None, null, () => HorrorTween = Tween.Value(1f, 0f, HorrorUpdate, 11.0f, 0, Tween.EaseOut), true);
         if (origin != null)
         {
             currentTarget = origin;
@@ -624,33 +621,21 @@ public class GameController : MonoBehaviour
 
         if (who != npc.none)
         {
-            if (LatestNPC != ZoneMain && who != ZoneMain)
-            {
-                LatestNPC = who;
-                npcTable[(int)who].SetAgroLevel(1);
-                NPCTimer = 60;
-            }
-
-            if (LatestNPC != npc.none && who == ZoneMain)
-            {
-                npcTable[(int)LatestNPC].SetAgroLevel(0);
-                npcTable[(int)who].SetAgroLevel(1);
-                LatestNPC = who;
-                NPCTimer = 60;
-            }
+            npcController.npcLevel(who);
+            Debug.Log("Playing horror for " + who);
         }
     }
 
     public void HorrorUpdate(float value)
     {
+        //Debug.Log("Horror Update " + value);
         if (!isPocket)
         {
-            HorrorBlur.atten = 1 - (0.94f * value);
             HorrorFov.fieldOfView = 65 + (7 * value);
         }
 
         HorrorVol.weight = value;
-        depth.focusDistance.Override(Vector3.Distance(player.transform.position, currentTarget.transform.position) - 1.5f);
+        depth.focusDistance.Override(Vector3.Distance(player.transform.position, currentTarget.transform.position) - 1f);
     }
 
 
@@ -666,8 +651,24 @@ public class GameController : MonoBehaviour
                 yPlayer = tempY;
                 PlayerReveal(xPlayer, yPlayer);
                 PlayerEvents();
+                if (!customFog)
+                    toFog = ((SCP_Map[xPlayer, yPlayer].customFog == -1) ? defaultFog : SCP_Map[xPlayer, yPlayer].customFog);
             }
-            LightTrigger.transform.position = new Vector3(xPlayer * roomsize, 0f, yPlayer * roomsize);
+
+            RenderSettings.fogEndDistance = Mathf.MoveTowards(RenderSettings.fogEndDistance, toFog, fogSpeed * Time.deltaTime);
+
+            if (yPlayer < Zone3limit)
+            {
+                currZone = 2;
+            }
+            if (yPlayer > Zone3limit && yPlayer < Zone2limit)
+            {
+                currZone = 1;
+            }
+            if (yPlayer > Zone2limit)
+            {
+                currZone = 0;
+            }
         }
 
         /*if (Input.GetKeyDown(KeyCode.F1))
@@ -684,17 +685,24 @@ public class GameController : MonoBehaviour
             }
         }*/
 
-        if (Input.GetKeyDown(KeyCode.F1))
+        if (SCPInput.instance.playerInput.Gameplay.DebugF1.triggered)
         {
             DebugFlag = !DebugFlag;
         }
 
-        NPCManager();
+        if (npcController != null)
+        {
+            npcController.NPCManager();
+        }
 
-        AmbianceManager();
+        
         MusicManager();
 
-        GenAmbiance();
+        if (ambianceController != null)
+        {
+            ambianceController.GenAmbiance();
+            AmbianceManager();
+        }
 
 
 
@@ -708,16 +716,19 @@ public class GameController : MonoBehaviour
     {
         xPlayer = x;
         yPlayer = y;
-        if (SCP_Map[x, y].Event != -1)
+        if (doGameplay)
         {
-            rooms[x, y].GetComponent<EventHandler>().EventLoad(x, y, SCP_Map[x, y].eventDone);
+            if (SCP_Map[x, y].Event != -1)
+            {
+                rooms[x, y].GetComponent<EventHandler>().EventLoad(x, y, SCP_Map[x, y].eventDone);
+            }
+            PlayerReveal(x, y);
+            PlayerEvents();
         }
-        PlayerReveal(x, y);
-        PlayerEvents();
     }
 
 
-    void StartIntro()
+    /*void StartIntro()
     {
         Timer -= Time.deltaTime;
         if (Timer <= 0.0f && StopTimer == false)
@@ -725,13 +736,13 @@ public class GameController : MonoBehaviour
             startEv.SetActive(true);
             StopTimer = true;
         }
-    }
+    }*/
 
-    public int AddItem(Vector3 pos, Item item)
+    public int AddItem(Vector3 pos, gameItem item)
     {
         for (int i = 0; i < itemData.Length; i++)
         {
-            if (itemData[i] == null || itemData[i].item == null || itemData[i].item == "Null" || itemData[i].item == "")
+            if (itemData[i] == null || itemData[i].item == null)
             {
                 itemData[i] = new ItemList();
                 itemData[i].X = pos.x;
@@ -739,9 +750,7 @@ public class GameController : MonoBehaviour
                 itemData[i].Z = pos.z;
                 Debug.Log("Nuevoitem en: "+i);
 
-                itemData[i].item = item.name;
-                itemData[i].vlFloat = item.valueFloat;
-                itemData[i].vlInt = item.valueInt;
+                itemData[i].item = item;
                 return (i);
             }
         }
@@ -750,7 +759,7 @@ public class GameController : MonoBehaviour
 
     public void DeleteItem(int i)
     {
-        Debug.Log(i);
+        //Debug.Log(i);
         itemData[i] = null;
     }
 
@@ -769,6 +778,11 @@ public class GameController : MonoBehaviour
     public int getValue(int x, int y, int index)
     {
         return (SCP_Map[x, y].values[index]);
+    }
+
+    public GameObject getCutsceneObject(int x, int y, int index)
+    {
+        return rooms[x, y].cutsceneReferences[index];
     }
 
     void PlayerEvents()
@@ -810,10 +824,11 @@ public class GameController : MonoBehaviour
                 AmbianceHandler handler = rooms[xPlayer, yPlayer].GetComponent<AmbianceHandler>();
                 {
                     if (roomAmbiance_chg == false || roomAmbiance_amb != handler.Ambiance)
-
-                    roomAmbiance_src.Stop();
-                    roomAmbiance_chg = true;
-                    roomAmbiance_src.clip = roomAmbiance_clips[(int)handler.Ambiance];
+                    {
+                        roomAmbiance_src.Stop();
+                        roomAmbiance_chg = true;
+                        roomAmbiance_src.clip = roomAmbiance_clips[(int)handler.Ambiance];
+                    }
                     roomAmbiance_src.volume = handler.Volume;
                     roomAmbiance_src.spread = handler.spread;
                     roomAmbiance_src.minDistance = handler.closeDistance;
@@ -855,37 +870,6 @@ public class GameController : MonoBehaviour
     /// ////////////////////////////////////////////////////////////NPC CODES
     /// </summary>
 
-    void NPCManager()
-    {
-        NPCTimer -= Time.deltaTime;
-
-        if (NPCTimer <= 0)
-        {
-            LatestNPC = npc.none;
-        }
-
-        if ((yPlayer > Zone3limit && yPlayer < Zone2limit) && ZoneMain != Zone2_Main)
-        {
-            SetMainNPC(Zone2_Main);
-        }
-        if (yPlayer > Zone2limit && ZoneMain != Zone1_Main)
-        {
-            SetMainNPC(Zone1_Main);
-        }
-
-    }
-
-    void SetMainNPC(npc New)
-    {
-        for (int i = 0; i < npcTable.Length; i++)
-        {
-            npcTable[i].SetAgroLevel(0);
-        }
-        npcTable[(int)New].SetAgroLevel(1);
-        ZoneMain = New;
-    }
-
-
     public Vector3 GetPatrol(Vector3 MyPos, int Outer, int Inner)
     {
         int xPos = (Mathf.Clamp((Mathf.RoundToInt((MyPos.x / roomsize))), 0, mapSize.xSize - 1));
@@ -900,17 +884,11 @@ public class GameController : MonoBehaviour
             xPatrol = Random.Range(Mathf.Clamp(xPos - Outer, 0, mapSize.xSize - 1), Mathf.Clamp(xPos + Outer, 0, mapSize.xSize - 1));
             yPatrol = Random.Range(Mathf.Clamp(yPos - Outer, 0, mapSize.ySize - 1), Mathf.Clamp(yPos + Outer, 0, mapSize.ySize - 1));
         }
-        while (Binary_Map[xPatrol, yPatrol] == 0 && ((xPatrol < xPos + Inner) && (xPatrol > xPos - Inner) && (yPatrol < yPos + Inner) && (yPatrol > yPos - Inner)));
+        while (Binary_Map[xPatrol, yPatrol] == 0 || (((xPatrol < xPos + Inner) && (xPatrol > xPos - Inner)) || ((yPatrol < yPos + Inner) && (yPatrol > yPos - Inner))));
 
         Debug.Log("Otorgue Posicion X= " + xPatrol + " Posicion Y= " + yPatrol + " desde x " + xPos + " y " + yPos);
 
         return (new Vector3(xPatrol * roomsize, 0.0f, yPatrol * roomsize));
-    }
-
-
-    public void Warp173(bool beActive, Transform Here)
-    {
-        npcTable[(int)npc.scp173].Spawn(beActive, Here.position);
     }
 
     public bool PlayerNotHere(Vector3 MyPos)
@@ -920,23 +898,6 @@ public class GameController : MonoBehaviour
 
         return (xPos != xPlayer && yPos != yPlayer);
     }
-
-
-    public void Warp106(Transform Here)
-    {
-        npcTable[(int)npc.scp106].Spawn(true, Here.position);
-    }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1045,19 +1006,26 @@ public class GameController : MonoBehaviour
                 {
                     GlobalValues.worldState = QuickSave();
 
-                    SeriVector temp = new SeriVector();
-                    temp.x = 0;
-                    temp.y = 0;
-                    temp.z = 0;
+                    SeriVector temp = new SeriVector(0, 0, 0);
 
 
                     LoadingSystem.instance.FadeOut(1.5f, new Vector3Int(0, 0, 0));
                     yield return new WaitForSeconds(3);
 
-                    GlobalValues.worldState.npcPos[(int)npc.scp106] = temp;
-                    GlobalValues.worldState.Activenpc[(int)npc.scp106] = false;
+                    GlobalValues.worldState.mainData[(int)npc.scp106].Pos = temp;
+                    GlobalValues.worldState.mainData[(int)npc.scp106].isActive = false;
 
                     GoPocket();
+                    break;
+                }
+            case DeathEvent.zombie008:
+                {
+                    GlobalValues.worldState = QuickSave();
+                    //LoadingSystem.instance.FadeOut(1.5f, new Vector3Int(0, 0, 0));
+                    yield return new WaitForSeconds(3);
+
+                    GoZombie008();
+
                     break;
                 }
         }
@@ -1106,9 +1074,18 @@ public class GameController : MonoBehaviour
     public void GoPocket()
     {
         GlobalValues.LoadType = LoadType.mapless;
+        GlobalValues.isNew = false;
         GlobalValues.sceneReturn = SceneManager.GetActiveScene().buildIndex;
         Debug.Log("Scene" + SceneManager.GetActiveScene().name);
         LoadingSystem.instance.LoadLevel(3);
+    }
+    public void GoZombie008()
+    {
+        GlobalValues.LoadType = LoadType.mapless;
+        GlobalValues.isNew = false;
+        //GlobalValues.sceneReturn = SceneManager.GetActiveScene().buildIndex;
+        //Debug.Log("Scene" + SceneManager.GetActiveScene().name);
+        LoadingSystem.instance.LoadLevel(4);
     }
     public void WorldReturn()
     {
@@ -1134,26 +1111,78 @@ public class GameController : MonoBehaviour
         
         Debug.Log(MainVol.profile.GetSetting<ColorGrading>().gamma.value);
         MainVol.profile.GetSetting<ColorGrading>().gamma.value = new Vector4(1, 1, 1, PlayerPrefs.GetFloat("Gamma", 0));
-        Debug.Log(PlayerPrefs.GetFloat("Gamma", 0));
+        //Debug.Log(PlayerPrefs.GetFloat("Gamma", 0));
 
         switch (PlayerPrefs.GetInt("Post",1))
         {
             case 0:
                 {
-                    HorrorFov.gameObject.GetComponent<PostProcessLayer>().antialiasingMode = PostProcessLayer.Antialiasing.None;
+                    HorrorFov.gameObject.GetComponent<PostProcessLayer>().antialiasingMode = PostProcessLayer.Antialiasing.FastApproximateAntialiasing;
                     break;
                 }
             case 1:
                 {
-                    HorrorFov.gameObject.GetComponent<PostProcessLayer>().antialiasingMode = PostProcessLayer.Antialiasing.FastApproximateAntialiasing;
+                    HorrorFov.gameObject.GetComponent<PostProcessLayer>().antialiasingMode = PostProcessLayer.Antialiasing.SubpixelMorphologicalAntialiasing;
+                    HorrorFov.gameObject.GetComponent<PostProcessLayer>().subpixelMorphologicalAntialiasing.quality = SubpixelMorphologicalAntialiasing.Quality.Medium;
                     break;
                 }
             case 2:
                 {
-                    HorrorFov.gameObject.GetComponent<PostProcessLayer>().antialiasingMode = PostProcessLayer.Antialiasing.FastApproximateAntialiasing;
+                    HorrorFov.gameObject.GetComponent<PostProcessLayer>().antialiasingMode = PostProcessLayer.Antialiasing.SubpixelMorphologicalAntialiasing;
+                    HorrorFov.gameObject.GetComponent<PostProcessLayer>().subpixelMorphologicalAntialiasing.quality = SubpixelMorphologicalAntialiasing.Quality.High;
                     break;
                 }
         }
+
+        switch(QualitySettings.GetQualityLevel())
+        {
+            case 3:
+                {
+                    shadowQuality.NGSS_PCSS_ENABLED = true;
+                    shadowQuality.NGSS_SAMPLING_TEST = 6;
+                    shadowQuality.NGSS_SAMPLING_FILTER = 12;
+                    break;
+                }
+            case 4:
+                {
+                    shadowQuality.NGSS_PCSS_ENABLED = true;
+                    shadowQuality.NGSS_SAMPLING_TEST = 8;
+                    shadowQuality.NGSS_SAMPLING_FILTER = 12;
+                    break;
+                }
+            case 5:
+                {
+                    shadowQuality.NGSS_PCSS_ENABLED = true;
+                    shadowQuality.NGSS_SAMPLING_TEST = 16;
+                    shadowQuality.NGSS_SAMPLING_FILTER = 24;
+                    break;
+                }
+            case 6:
+                {
+                    shadowQuality.NGSS_PCSS_ENABLED = true;
+                    shadowQuality.NGSS_SAMPLING_TEST = 24;
+                    shadowQuality.NGSS_SAMPLING_FILTER = 32;
+                    break;
+                }
+            case 7:
+                {
+                    shadowQuality.NGSS_PCSS_ENABLED = true;
+                    shadowQuality.NGSS_SAMPLING_TEST = 24;
+                    shadowQuality.NGSS_SAMPLING_FILTER = 32;
+                    break;
+                }
+            default:
+                {
+                    shadowQuality.NGSS_PCSS_ENABLED = false;
+                    shadowQuality.NGSS_SAMPLING_TEST = 4;
+                    shadowQuality.NGSS_SAMPLING_FILTER = 8;
+                    break;
+                }
+        }
+
+
+
+
         PlayerPrefs.Save();
     }
 
@@ -1162,17 +1191,14 @@ public class GameController : MonoBehaviour
         Debug.Log("Entrando al loop");
         for (int i = 0; i < itemData.Length; i++)
         {
-            if (itemData[i] != null && itemData[i].item != null && itemData[i].item != "Null" && itemData[i].item != "")
+            if (itemData[i] != null && itemData[i].item != null)
             {
                 GameObject newObject;
-                Debug.Log(itemData[i].item + " i: " + i);
+                Debug.Log(itemData[i].item.itemFileName + " i: " + i);
                 newObject = Instantiate(itemSpawner, new Vector3(itemData[i].X, itemData[i].Y + 0.2f, itemData[i].Z), Quaternion.identity);
-                newObject.GetComponent<Object_Item>().item = Resources.Load<Item>(string.Concat("Items/", itemData[i].item));
+                newObject.GetComponent<Object_Item>().item = itemData[i].item;
                 newObject.GetComponent<Object_Item>().id = i;
                 newObject.transform.parent = itemParent.transform;
-                newObject.GetComponent<Object_Item>().vlFloat = itemData[i].vlFloat;
-                newObject.GetComponent<Object_Item>().vlInt = itemData[i].vlInt;
-                newObject.GetComponent<Object_Item>().isNew = false;
 
                 newObject.GetComponent<Object_Item>().Spawn();
             }
@@ -1196,10 +1222,12 @@ public class GameController : MonoBehaviour
         playData.saveName = GlobalValues.mapname;
         playData.saveSeed = GlobalValues.mapseed;
         playData.doorState = doorTable;
+        playData.persState = persTable;
         playData.savedSize = mapSize;
         playData.pX = player.transform.position.x;
         playData.pY = player.transform.position.y;
         playData.pZ = player.transform.position.z;
+        playData.equips = ItemController.instance.GetEquips();
         playData.items = ItemController.instance.GetItems();
         playData.navMap = nav_Map;
         playData.angle = Camera.main.gameObject.transform.eulerAngles.y;
@@ -1208,30 +1236,16 @@ public class GameController : MonoBehaviour
         playData.holdRoom = holdRoom;
         playData.globalBools = globalBools;
         playData.globalFloats = globalFloats;
+        playData.seedState = Random.state;
         playData.globalInts = globalInts;
+        playData.globalStrings = globalStrings;
         playData.Health = playercache.Health;
         playData.bloodLoss = playercache.bloodloss;
+        playData.zombieTime = (playercache.hasZombie == false ? -1 : playercache.zombieTimer);
 
-        SeriVector[] pos = new SeriVector[npcObjects.Length];
-        bool[] active = new bool[npcObjects.Length];
-
-        for (int i = 0; i < npcObjects.Length; i++)
-        {
-            SeriVector temp = new SeriVector();
-
-            Debug.Log("Enemigo " + i + " pos " + npcObjects[i].transform.position + " Activo? " + npcTable[i].isActive);
-            temp.x = npcObjects[i].transform.position.x;
-            temp.y = npcObjects[i].transform.position.y;
-            temp.z = npcObjects[i].transform.position.z;
-
-
-            pos[i] = temp;
-            active[i] = npcTable[i].isActive;
-        }
-
-        playData.Activenpc = active;
-        playData.npcPos = pos;
-
+        playData.npcData = npcController.getData();
+        playData.mainData = npcController.getMain();
+        playData.simpData = npcController.getActiveSimps();
 
 
         playData.worldItems = itemData;
@@ -1318,7 +1332,6 @@ public class GameController : MonoBehaviour
 
     void GL_LoadStart()
     {
-        AmbianceLibrary = Z1;
         GL_Loading();
 
         zoneAmbiance = 3;
@@ -1342,56 +1355,49 @@ public class GameController : MonoBehaviour
         itemData = SaveSystem.instance.playData.worldItems;
         mapCreate.mapfil = SaveSystem.instance.playData.savedMap;
         doorTable = SaveSystem.instance.playData.doorState;
+        persTable = SaveSystem.instance.playData.persState;
         SCP_Map = SaveSystem.instance.playData.savedMap;
         ItemController.instance.EmptyItems();
-        ItemController.instance.LoadItems(SaveSystem.instance.playData.items);
+        ItemController.instance.LoadItems(SaveSystem.instance.playData.items, SaveSystem.instance.playData.equips);
         holdRoom = SaveSystem.instance.playData.holdRoom;
         globalInts = SaveSystem.instance.playData.globalInts;
         globalFloats = SaveSystem.instance.playData.globalFloats;
+        globalStrings = SaveSystem.instance.playData.globalStrings;
         globalBools = SaveSystem.instance.playData.globalBools;
     }
 
 
     void GL_AfterPost()
     {
+
         if (ShowMap)
         {
             if (GlobalValues.LoadType != LoadType.mapless)
             {
-                if (GlobalValues.isNew == true && spawnHere)
+                if (!GlobalValues.isNew)
                 {
-                    MusicPlayer.instance.StartMusic(MusIntro);
-                    StopTimer = false;
-                    doGameplay = false;
-                }
-                else
-                {
-                    if (GlobalValues.isNew)
-                        SetMapPos(0, 10);
-                    else
-                    {
-                        SetMapPos(SaveSystem.instance.playData.mapX, SaveSystem.instance.playData.mapY);
-                        LoadItems();
-                    }
-
-                    canSave = true;
-                    RenderSettings.fog = true;
-                    DefMusic();
-                    DefaultAmbiance();
                     doGameplay = true;
                     StopTimer = true;
+                    LoadItems();
+                    Camera.main.gameObject.transform.rotation = Quaternion.Euler(0, SaveSystem.instance.playData.angle, 0);
+                    SetMapPos(SaveSystem.instance.playData.mapX, SaveSystem.instance.playData.mapY);
+                    ItemController.instance.SetEquips();
+                    Random.state = SaveSystem.instance.playData.seedState;
                 }
-                LightTrigger = Instantiate(LightTrigger);
+                Debug.Log("Showing map");
+                var e = ShowRoom(xPlayer, yPlayer);
+                while (e.MoveNext()) { }
             }
-
-            isStart = true;
-            HorrorFov = Camera.main;
-            HorrorBlur = HorrorFov.gameObject.GetComponent<SmokeBlur>();
-            LoadUserValues();
-
-
-            PlayHorror(Z1[0], player.transform, npc.none);  
         }
+
+        isStart = true;
+        HorrorFov = Camera.main;
+        LoadUserValues();
+
+        if(startEv!=null)
+            startEv.SetActive(true);
+
+        PlayHorror(Z1[0], player.transform, npc.none);
     }
 
     void GL_SpawnPlayer(Vector3 here)
@@ -1400,21 +1406,29 @@ public class GameController : MonoBehaviour
         deathmsg = "";
         if (spawnPlayer)
         {
-            if (!spawnHere)
+            if (GlobalValues.isNew && !spawnHere)
             {
-                player = Instantiate(origplayer, WorldAnchor.transform.position, Quaternion.identity);
+                player = Instantiate(origplayer, WorldAnchor.transform.position+(Vector3.up*0.5f), Quaternion.identity);
+                Debug.Log("Spawning at anchor " + WorldAnchor.transform + " es nuevo " + GlobalValues.isNew + " !spawnhere " + spawnHere);
             }
             else
             {
                 player = Instantiate(origplayer, here, Quaternion.identity);
+                Debug.Log("Spawning here at " + here);
             }
         }
 
         playercache = player.GetComponent<Player_Control>();
-        if (!GlobalValues.isNew || GlobalValues.LoadType == LoadType.mapless)
+        if (!GlobalValues.isNew || GlobalValues.LoadType == LoadType.mapless && GlobalValues.debug == false)
         {
             playercache.Health = SaveSystem.instance.playData.Health;
             playercache.bloodloss = SaveSystem.instance.playData.bloodLoss;
+            playercache.hasZombie = SaveSystem.instance.playData.zombieTime > 0;
+            playercache.zombieTimer = SaveSystem.instance.playData.zombieTime;
+        }
+        if (GlobalValues.debug == true)
+        {
+            playercache.isGameplay = true;
         }
     }
 
@@ -1423,26 +1437,18 @@ public class GameController : MonoBehaviour
         if (!GlobalValues.isNew && GlobalValues.LoadType != LoadType.mapless)
         {
             Debug.Log("Spawning inplaces");
-            SeriVector[] pos = SaveSystem.instance.playData.npcPos;
-            bool[] actives = SaveSystem.instance.playData.Activenpc;
-            for (int v = 0; v < npcObjects.Length; v++)
-            {
-                Debug.Log("Enemigo " + v + " pos " + new Vector3(pos[v].x, pos[v].y, pos[v].z) + " Activo? " + actives[v]);
-
-                npcTable[v].Spawn(actives[v], new Vector3(pos[v].x, pos[v].y, pos[v].z));
-            }
+            npcController.ResetNPC(SaveSystem.instance.playData.npcData, SaveSystem.instance.playData.mainData, SaveSystem.instance.playData.simpData);
         }
-
+        Camera.main.enabled = true;
+        SCP_UI.instance.EnableMenu();
         playercache.isGameplay = true;
-        CullerFlag = true;
-
     }
 
     void GL_Spawning()
     {
         Vector3 here = playerSpawn.position;
-        bool origSpawn = spawnHere; 
-        if (!GlobalValues.isNew)
+        bool origSpawn = spawnHere;
+        if (!GlobalValues.isNew && GlobalValues.LoadType != LoadType.mapless)
         {
             spawnHere = true;
             here = new Vector3(SaveSystem.instance.playData.pX, SaveSystem.instance.playData.pY, SaveSystem.instance.playData.pZ);
@@ -1451,19 +1457,8 @@ public class GameController : MonoBehaviour
 
         GL_SpawnPlayer(here);
 
+        npcController.GL_Spawn();
 
-        if (spawn173)
-        {
-            npcObjects[(int)npc.scp173] = Instantiate(orig173, place173.position, place173.rotation, npcParent.transform);
-            npcTable[(int)npc.scp173] = npcObjects[(int)npc.scp173].GetComponent<SCP_173>();
-        }
-
-        if (spawn106)
-        {
-            npcObjects[(int)npc.scp106] = Instantiate(orig106, new Vector3(0, 0, 0), Quaternion.identity, npcParent.transform);
-            npcTable[(int)npc.scp106] = npcObjects[(int)npc.scp106].GetComponent<SCP_106>();
-        }
-        
 
         spawnHere = origSpawn;
 
@@ -1474,6 +1469,8 @@ public class GameController : MonoBehaviour
             nav_Map = SaveSystem.instance.playData.navMap;
             SetMapPos(SaveSystem.instance.playData.mapX, SaveSystem.instance.playData.mapY);
         }
+        else
+            SetMapPos(0, 10);
 
     }
 
@@ -1506,16 +1503,63 @@ public class GameController : MonoBehaviour
 
     void HidRoom(int i, int j)
     {
-        Renderer[] rs = rooms[i, j].GetComponentsInChildren<Renderer>();
+        culllookup[i, j, 1] = 0;
+        if (SCP_Map[i, j].Event != -1)
+        {
+            rooms[i, j].GetComponent<EventHandler>().EventUnLoad();
+        }
+
+        RoomHolder hold = rooms[i, j];
+        hold.Lights.SetActive(false);
+        if (hold.Probes != null)
+            hold.Probes.SetActive(false);
+
+        Renderer[] rs = hold.Room.GetComponentsInChildren<Renderer>();
         foreach (Renderer r in rs)
             r.enabled = false;
     }
 
-    void ShowRoom(int i, int j)
+    IEnumerator ShowRoom(int i, int j)
     {
-        Renderer[] rs = rooms[i, j].GetComponentsInChildren<Renderer>();
+        if (SCP_Map[i, j].Event != -1)
+        {
+            rooms[i, j].GetComponent<EventHandler>().EventLoad(i, j, SCP_Map[i, j].eventDone);
+        }
+        culllookup[i, j, 1] = 1;
+        culllookup[i, j, 0] = 1;
+
+        yield return null;
+
+        RoomHolder hold = rooms[i, j];
+        hold.Lights.SetActive(true);
+
+        Renderer[] rs = hold.Room.GetComponentsInChildren<Renderer>();
         foreach (Renderer r in rs)
             r.enabled = true;
+
+        if (hold.Probes != null)
+        {
+            hold.Probes.SetActive(true);
+            yield return StartCoroutine(RenderProbe(hold.Probes.GetComponentsInChildren<ReflectionProbe>()));
+        }
+    }
+
+    IEnumerator RenderProbe(ReflectionProbe[] probes)
+    {
+        foreach (ReflectionProbe probe in probes)
+        {
+            bool lazy = true;
+
+            probe.timeSlicingMode = lazy ? UnityEngine.Rendering.ReflectionProbeTimeSlicingMode.IndividualFaces : UnityEngine.Rendering.ReflectionProbeTimeSlicingMode.AllFacesAtOnce;
+
+            probe.RenderProbe();
+            int waitFrames = lazy ? 6 : 1;
+            for (int i = 0; i < waitFrames;i++)
+            {
+                yield return null;
+            }
+
+        }
     }
 
 
@@ -1567,14 +1611,9 @@ public class GameController : MonoBehaviour
             {
                 if ((Binary_Map[i, j] == 1))      //Imprime el mapa
                 {
-                    //Debug.Log("Hiding Room at x" + i + " y " + j);
                     HidRoom(i, j);
                     culllookup[i, j, 0] = 0;
                     culllookup[i, j, 1] = 0;
-                    if (SCP_Map[i, j].Event != -1)
-                    {
-                        rooms[i, j].GetComponent<EventHandler>().EventUnLoad();
-                    }
                 }
             }
         }
@@ -1582,12 +1621,14 @@ public class GameController : MonoBehaviour
         GL_Start();
         LoadingSystem.instance.FadeIn(0.5f, new Vector3Int(0, 0, 0));
 
-        canSave = true;
-        doGameplay = true;
+        //canSave = true;
+        //doGameplay = true;
         isAlive = true;
-        LoadItems();
+        //LoadItems();
 
         CullerFlag = true;
+
+        GL_AfterPost();
     }
 
 
@@ -1619,14 +1660,8 @@ public class GameController : MonoBehaviour
                     else
                     {
                         //Debug.Log("Showing Room at x" + i + " y " + j);
-                        ShowRoom(i, j);
-                        if (SCP_Map[i, j].Event != -1)
-                        {
-                            rooms[i, j].GetComponent<EventHandler>().EventLoad(i, j, SCP_Map[i, j].eventDone);
-                        }
-                        yield return null;
-                        culllookup[i, j, 1] = 1;
-                        culllookup[i, j, 0] = 1;
+                        yield return ShowRoom(i, j);
+                        
                     }
                 }
             }
@@ -1643,11 +1678,6 @@ public class GameController : MonoBehaviour
                     if (culllookup[i, j, 1] == 1)
                     {
                         HidRoom(i, j);
-                        culllookup[i, j, 1] = 0;
-                        if (SCP_Map[i, j].Event != -1)
-                        {
-                            rooms[i, j].GetComponent<EventHandler>().EventUnLoad();
-                        }
                         yield return null;
                     }
                 }
@@ -1713,11 +1743,20 @@ public class GameController : MonoBehaviour
     public void CL_spawn106()
     {
         Vector3 here = new Vector3(xPlayer * roomsize, 0, yPlayer * roomsize);
-        npcTable[(int)npc.scp106].Spawn(true, here);
+        npcController.mainList[(int)npc.scp106].Spawn(true, here);
+    }
+    public void CL_spawn049()
+    {
+        Vector3 here = new Vector3(xPlayer * roomsize, 0, yPlayer * roomsize);
+        npcController.mainList[(int)npc.scp049].Spawn(true, here);
     }
     public void CL_spawn173()
     {
         Vector3 here = new Vector3(xPlayer * roomsize, 0, yPlayer * roomsize);
-        npcTable[(int)npc.scp173].Event_Spawn(true, here);
+        npcController.mainList[(int)npc.scp173].Event_Spawn(true, here);
+    }
+    public void CL_spawn513()
+    {
+        npcController.simpList[(int)SimpNpcList.bell].isActive = true;
     }
 }

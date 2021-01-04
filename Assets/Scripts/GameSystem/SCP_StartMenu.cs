@@ -8,6 +8,7 @@ using System.Linq;
 
 public class SCP_StartMenu : MonoBehaviour
 {
+    Dictionary<int, Language> langs;
     public Canvas mainMenu, playMenu, newMenu, currMenu, loadMenu, optionMenu;
     public GameObject saveList;
     public GameObject saveSlot;
@@ -28,37 +29,22 @@ public class SCP_StartMenu : MonoBehaviour
             else if (instance != null)
                 Destroy(gameObject);
 
+        Localization.CheckLangs();
 
-        GlobalValues.uiStrings = GlobalValues.uiStrings_EN;
+        langs = Localization.GetLangs();
 
         Debug.Log("Language was " + PlayerPrefs.GetInt("Lang", 0));
 
         switch (PlayerPrefs.GetInt("Lang", 0))
         {
+            case 0:
+                {
+                    Localization.SetLanguage(-1);
+                    break;
+                }
             default:
                 {
-                    GlobalValues.SetLanguage(Application.systemLanguage);
-                    break;
-                }
-            case 1:
-                {
-                    GlobalValues.SetLanguage(SystemLanguage.English);
-                    break;
-                }
-            case 2:
-                {
-                    GlobalValues.SetLanguage(SystemLanguage.Spanish);
-                    break;
-                }
-            case 3:
-                {
-                    GlobalValues.SetLanguage(SystemLanguage.German);
-                    break;
-                }
-            case 4:
-                {
-                    
-                    GlobalValues.SetLanguage(SystemLanguage.ChineseSimplified);
+                    Localization.SetLanguage(langs[PlayerPrefs.GetInt("Lang", 0)].unitynumber);
                     break;
                 }
         }
@@ -72,6 +58,8 @@ public class SCP_StartMenu : MonoBehaviour
     {
         MusicPlayer.instance.StartMusic(Menu);
         GlobalValues.playIntro = true;
+        Time.timeScale = 1;
+        AudioListener.pause = false;
     }
 
 
@@ -154,6 +142,9 @@ public class SCP_StartMenu : MonoBehaviour
     public void StartGame()
     {
         player.PlayOneShot(click);
+        if (string.IsNullOrWhiteSpace(seedString.text))
+            GlobalValues.mapseed = GlobalValues.getRandomString(5, 9);
+
         GlobalValues.isNew = true;
         GlobalValues.hasSaved = false;
         GlobalValues.LoadType = LoadType.newgame;
@@ -163,7 +154,7 @@ public class SCP_StartMenu : MonoBehaviour
     public void SetSeed(string seed)
     {
         Debug.Log(seed);
-        if (string.IsNullOrWhiteSpace(namestring.text) || string.IsNullOrWhiteSpace(seedString.text))
+        if (string.IsNullOrWhiteSpace(namestring.text))
             mapnew.interactable = false;
         else
             mapnew.interactable = true;
@@ -172,7 +163,7 @@ public class SCP_StartMenu : MonoBehaviour
     public void SetName(string name)
     {
         Debug.Log(name);
-        if (string.IsNullOrWhiteSpace(namestring.text) || string.IsNullOrWhiteSpace(seedString.text))
+        if (string.IsNullOrWhiteSpace(namestring.text))
             mapnew.interactable = false;
         else
             mapnew.interactable = true;
@@ -186,7 +177,7 @@ public class SCP_StartMenu : MonoBehaviour
         folderPath = folderPath.Replace("/", @"\");
         Debug.Log(folderPath);
 
-        return Directory.GetFiles(folderPath, "*" + ".meta").OrderByDescending(d => new FileInfo(d).CreationTime); ;
+        return Directory.GetFiles(folderPath, "*" + GlobalValues.fileExtension).OrderByDescending(d => new FileInfo(d).CreationTime); ;
     }
 
     public void Load_CB()
@@ -213,6 +204,16 @@ public class SCP_StartMenu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        /*if (Input.GetKeyDown(KeyCode.F1))
+        {
+            Debug.Log("Exportando Strings");
+            Localization.ExportDefault();
+        }
+
+        if (Input.GetKeyDown(KeyCode.F2))
+        {
+            Debug.Log("Exportando Subtitulos");
+            Localization.BuildSubsDefault();
+        }*/
     }
 }

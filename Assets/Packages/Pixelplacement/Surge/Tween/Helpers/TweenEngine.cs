@@ -26,12 +26,13 @@ namespace Pixelplacement.TweenSystem
         static IEnumerator RunTween (TweenBase tween)
         {
             Tween.activeTweens.Add (tween);
-
+            //Debug.Log("Nuevo Tween");
             while (true) 
             {
                 //tick tween:
                 if (!tween.Tick ())
                 {
+                    //Debug.Log("Tween ya no hace tick");
                     //clean up tween:
                     Tween.activeTweens.Remove (tween);
                     yield break;

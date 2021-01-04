@@ -8,6 +8,7 @@ public class MatChange : MonoBehaviour
     bool lightLock = true;
     float Timer = 0;
     int frame = 0;
+    public int globalToCheck = 0;
     public Texture[] frames;
     // Start is called before the first frame update
     void Start()
@@ -24,19 +25,19 @@ public class MatChange : MonoBehaviour
 
             if (Timer <= 0)
             {
-                if (frame == 0)
-                    frame = 1;
-                else
+                if (frame == 1)
                     frame = 0;
+                else
+                    frame = 1;
 
                 HeavyLockMat.materials[1].SetTexture("_MainTex", frames[frame]);
                 Timer = 1;
             }
         }
 
-        if (lightLock != GameController.instance.globalBools[0])
+        if (lightLock != GameController.instance.globalBools[globalToCheck])
         {
-            lightLock = GameController.instance.globalBools[0];
+            lightLock = GameController.instance.globalBools[globalToCheck];
 
             if (lightLock == true)
             {

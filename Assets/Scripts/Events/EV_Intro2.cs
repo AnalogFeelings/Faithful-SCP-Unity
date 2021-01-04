@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class EV_Intro2 : MonoBehaviour
 {
-    public GameObject door1, door2, tri1, tri2, tri3, lightmana, emelight, d1, d2, sci, guard, flask, RerenderProbe1, RerenderProbe2;
+    public GameObject door1, door2, tri1, tri2, tri3, lightmana, emelight, d1, d2, sci, sci2, guard, flask, RerenderProbe1, RerenderProbe2, introZone;
     public Transform[] path1, path2, path3, path4, path5;
     public Transform ata1, ata2, ata3, ataFinal, TeleportAnchor, LookLeft, LookRight;
     GameObject objPlayer;
-    EV_Puppet_Controller d1_, d2_, sci_, guard_;
+    EV_Puppet_Controller d1_, d2_, sci_, guard_, sci2_;
     public AudioClip[] Dialogs, Refuse, NewAmbiance, Horror, GeneralSFX, Alarm, guardExit, guardWhat;
     public AudioClip MusicChange, classd1, classd2, guardDies;
     int eventstat = 0, refusestat = 0;
@@ -22,6 +22,7 @@ public class EV_Intro2 : MonoBehaviour
         d1_ = d1.GetComponent<EV_Puppet_Controller>();
         d2_ = d2.GetComponent<EV_Puppet_Controller>();
         sci_ = sci.GetComponent<EV_Puppet_Controller>();
+        sci2_ = sci2.GetComponent<EV_Puppet_Controller>();
         guard_ = guard.GetComponent<EV_Puppet_Controller>();
 
         GameController.instance.ChangeMusic(MusicChange);
@@ -32,12 +33,13 @@ public class EV_Intro2 : MonoBehaviour
     {
         if (eventstat == 0)
         {
+            d2_.AnimTrigger(2, true);
             if (tri1.GetComponent<BoxTrigger>().GetState())
             {
                 eventstat = 1;
+                Debug.Log("Door 2 switch");
                 door2.GetComponent<Object_Door>().DoorSwitch();
                 d1_.SetLookAt(Camera.main.transform);
-                d2_.SetLookAt(Camera.main.transform);
                 Timer = Timer1;
                 ActiveTimer = true;
 
@@ -48,8 +50,10 @@ public class EV_Intro2 : MonoBehaviour
         {
             if (tri2.GetComponent<BoxTrigger>().GetState())
             {
+                Debug.Log("Closing door");
                 door1.GetComponent<Object_Door>().DoorSwitch();
                 sci_.PlaySound(Dialogs[1], true);
+                sci_.AnimTrigger(-6);
                 check2 = false;
                 Timer = 4f;
                 eventstat = 5;
@@ -108,6 +112,7 @@ public class EV_Intro2 : MonoBehaviour
                             refusestat = 3;
                             guard_.AnimTrigger(1, true);
                             sci_.PlaySound(Refuse[2], true);
+                            Debug.Log("Another door opening, cause refuse");
                             door1.GetComponent<Object_Door>().DoorSwitch();
                             refuseTimer = refuseTimer4;
                             break;
@@ -134,8 +139,10 @@ public class EV_Intro2 : MonoBehaviour
                     {
                         d1_.StopLookAt();
                         d2_.StopLookAt();
+                        Debug.Log("Door should open");
                         door1.GetComponent<Object_Door>().DoorSwitch();
                         sci_.PlaySound(Dialogs[0],true);
+                        sci_.AnimTrigger(-6);
                         Timer = Timer2;
                         eventstat = 2;
                         ActiveRefuse = true;
@@ -164,8 +171,8 @@ public class EV_Intro2 : MonoBehaviour
                     {
                         check2 = true;
                         StopTimer = true;
-                        d1_.SetLookAt(GameController.instance.npcObjects[(int)npc.scp173].transform);
-                        d2_.SetLookAt(GameController.instance.npcObjects[(int)npc.scp173].transform);
+                        d1_.SetLookAt(GameController.instance.npcController.mainList[(int)npc.scp173].transform);
+                        d2_.SetLookAt(GameController.instance.npcController.mainList[(int)npc.scp173].transform);
                         break;
                     }
 
@@ -179,9 +186,11 @@ public class EV_Intro2 : MonoBehaviour
                     }
                 case 6:
                     {
+                        Debug.Log("Door should open on chaos");
                         door1.GetComponent<Object_Door>().DoorSwitch();
                         check3 = true;
                         sci_.PlaySound(Dialogs[2], true);
+                        sci_.AnimTrigger(-6);
                         d2_.SetRota(door1.transform);
                         d2_.StopLookAt();
                         StartCoroutine(SmallSequence());
@@ -197,10 +206,10 @@ public class EV_Intro2 : MonoBehaviour
                         d1_.PlaySound(classd2);
                         eventstat = 8;
                         Timer = 0.7f;
-                        d1_.AnimTrigger(-2, true);
-                        
-                        GameController.instance.npcObjects[(int)npc.scp173].transform.rotation = Quaternion.Euler(0, 90, 0);
-                        GameController.instance.Warp173(false, ata1);
+                        d1_.AnimTrigger(-1, true);
+
+                        GameController.instance.npcController.mainList[(int)npc.scp173].transform.rotation = Quaternion.Euler(0, 90, 0);
+                        GameController.instance.npcController.mainList[(int)npc.scp173].Spawn(false, ata1.position);
                         DecalSystem.instance.Decal(ata1.transform.position, new Vector3(90f, 0, 0), 2f, true, 0.4f, 1, 2);
                         d1_.StopLookAt();
                         
@@ -208,9 +217,11 @@ public class EV_Intro2 : MonoBehaviour
                     }
                 case 8:
                     {
-                        d2_.SetLookAt(GameController.instance.npcObjects[(int)npc.scp173].transform);
+                        d2_.StopLookAt();
+                        d2_.AnimTrigger(-5);
                         d1_.PlaySFX(GeneralSFX[3]);
                         lightmana.SetActive(true);
+                        sci2_.AnimTrigger(-4);
                         sci_.PlaySFX(GeneralSFX[0]);
                         eventstat = 9;
                         Timer = 1f;
@@ -223,9 +234,9 @@ public class EV_Intro2 : MonoBehaviour
                         objPlayer.GetComponent<Player_Control>().FakeBlink(0.3f);
                         eventstat = 10;
                         Timer = 0.5f;
-                        GameController.instance.Warp173(false, ata2);
+                        GameController.instance.npcController.mainList[(int)npc.scp173].Spawn(false, ata2.position);
                         DecalSystem.instance.Decal(ata2.transform.position, new Vector3(90f, 0, 0), 4f, true, 0.4f, 1, 0);
-                        d2_.AnimTrigger(-1, true);
+                        d2_.AnimTrigger(-2, true);
                         d2_.StopLookAt();
                         d2_.PlaySFX(GeneralSFX[3]);
                         break;
@@ -233,11 +244,12 @@ public class EV_Intro2 : MonoBehaviour
                 case 10:
                     {
                         check3 = false;
-                        GameController.instance.npcTable[(int)npc.scp173].Event_Spawn(true, ata2.transform.position);
+                        GameController.instance.npcController.mainList[(int)npc.scp173].Event_Spawn(true, ata2.transform.position);
                         guard_.PlaySound(guardWhat[Random.Range(0, guardWhat.Length)]);
 
                         sci_.PlaySFX(GeneralSFX[1]);
                         lightmana.SetActive(true);
+                        sci2_.AnimTrigger(1, true);
                         Timer = Timer5;
                         eventstat = 11;
                         break;
@@ -248,11 +260,11 @@ public class EV_Intro2 : MonoBehaviour
                         objPlayer.GetComponent<Player_Control>().FakeBlink(0.4f);
                         eventstat = 12;
                         Timer = 0.7f;
-                        GameController.instance.npcObjects[(int)npc.scp173].transform.rotation = Quaternion.Euler(0, -90, 0);
-                        GameController.instance.Warp173(false, ata3);
+                        GameController.instance.npcController.mainList[(int)npc.scp173].transform.rotation = Quaternion.Euler(0, -90, 0);
+                        GameController.instance.npcController.mainList[(int)npc.scp173].Spawn(false, ata3.position);
                         guard_.StopLookAt();
                         guard_.PlaySound(guardDies);
-                        guard_.SetRota(GameController.instance.npcObjects[(int)npc.scp173].transform);
+                        guard_.SetRota(GameController.instance.npcController.mainList[(int)npc.scp173].transform);
                         sci_.PlaySFX(GeneralSFX[5]);
                         break;
                     }
@@ -273,7 +285,7 @@ public class EV_Intro2 : MonoBehaviour
                     {
                         emelight.SetActive(false);
                         objPlayer.GetComponent<Player_Control>().FakeBlink(0.4f);
-                        GameController.instance.Warp173(false, ataFinal);
+                        GameController.instance.npcController.mainList[(int)npc.scp173].Spawn(false, ataFinal.position);
                         eventstat = 14;
                         Timer = 0.7f;
                         guard_.AnimTrigger(-2, true);
@@ -296,22 +308,28 @@ public class EV_Intro2 : MonoBehaviour
                         d1_.puppetWarp(GameController.instance.WorldAnchor.transform.position + ((GameController.instance.WorldAnchor.transform.rotation * Quaternion.Inverse(TeleportAnchor.transform.rotation)) * (d1.transform.position - TeleportAnchor.position)), GameController.instance.WorldAnchor.transform.eulerAngles.y - TeleportAnchor.transform.eulerAngles.y);
                         d2_.puppetWarp(GameController.instance.WorldAnchor.transform.position + ((GameController.instance.WorldAnchor.transform.rotation * Quaternion.Inverse(TeleportAnchor.transform.rotation)) * (d2.transform.position - TeleportAnchor.position)), GameController.instance.WorldAnchor.transform.eulerAngles.y - TeleportAnchor.transform.eulerAngles.y);
                         guard_.puppetWarp(GameController.instance.WorldAnchor.transform.position + ((GameController.instance.WorldAnchor.transform.rotation * Quaternion.Inverse(TeleportAnchor.transform.rotation)) * (guard.transform.position - TeleportAnchor.position)), GameController.instance.WorldAnchor.transform.eulerAngles.y - TeleportAnchor.transform.eulerAngles.y);
-                        GameController.instance.canSave = true;
-                        RenderSettings.fog = true;
+                        
 
                         d1_.DeactivateCollision();
                         d2_.DeactivateCollision();
 
                         StopTimer = true;
 
+   
                         
-                        GameController.instance.SetMapPos(0, 10);
                         GameController.instance.startEv.GetComponent<EV_Intro>().End();
 
                         if (GameController.instance.isAlive)
                         {
+                            GameController.instance.DefaultAmbiance();
+                            GameController.instance.DefMusic();
                             GameController.instance.doGameplay = true;
                             GameController.instance.Action_QuickSave();
+                            GameController.instance.SetMapPos(0, 10);
+                            GameController.instance.canSave = true;
+                            RenderSettings.fog = true;
+                            GameController.instance.CullerFlag = true;
+                            Destroy(introZone);
                         }
                         break;
                     }

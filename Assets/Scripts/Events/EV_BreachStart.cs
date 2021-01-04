@@ -24,7 +24,7 @@ public class EV_BreachStart : Event_Parent
     public override void EventStart()
     {
         base.EventStart();
-        ded.AnimTrigger(-3, true);
+        ded.AnimTrigger(-7, true);
         ded.DeactivateCollision();
         GameController.instance.QuickSave();
     }
@@ -43,9 +43,9 @@ public class EV_BreachStart : Event_Parent
         if (Timer <= 0.0f && StopTimer == false)
         {
             GameController.instance.player.GetComponent<Player_Control>().FakeBlink(1f);
-            GameController.instance.ChangeAmbiance(NewAmbiance, 6);
+            GameController.instance.ambianceController.ChangeAmbiance(NewAmbiance, 6);
             GameController.instance.GlobalSFX.PlayOneShot(blackout);
-            GameController.instance.Warp173(false, GameController.instance.transform);
+            GameController.instance.npcController.mainList[(int)npc.scp173].Spawn(false, GameController.instance.transform.position);
             StopTimer = true;
             SCP_UI.instance.ShowTutorial("tutorun");
             EventFinished();
@@ -55,7 +55,7 @@ public class EV_BreachStart : Event_Parent
         {
             GameController.instance.player.GetComponent<Player_Control>().FakeBlink(1f);
             GameController.instance.GlobalSFX.PlayOneShot(blackout);
-            GameController.instance.Warp173(false, Anchor2.transform);
+            GameController.instance.npcController.mainList[(int)npc.scp173].Spawn(false, Anchor2.transform.position);
             step = true;
         }
 
@@ -64,20 +64,18 @@ public class EV_BreachStart : Event_Parent
         {
             if (trigger2.GetComponent<BoxTrigger>().GetState())
             {
-                Sci_.SetPath(Path);
-                Gua_.SetPath(Path);
+                Sci_.SetRota(Anchor1.transform);
+                Gua_.SetRota(Anchor1.transform);
+                Sci_.SetPath(Path, false);
+                Gua_.SetPath(Path, false);
                 Gua_.PlaySound(Dialog);
-                SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["scene_BreachStart_1"], GlobalValues.charaStrings["chara_franklin"]), true);
-                SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["scene_BreachStart_2"], GlobalValues.charaStrings["chara_ulgrin"]), true);
-                SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["scene_BreachStart_3"], GlobalValues.charaStrings["chara_franklin"]), true);
-                SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["scene_BreachStart_4"], GlobalValues.charaStrings["chara_ulgrin"]), true);
-                SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings["scene_BreachStart_5"], GlobalValues.charaStrings["chara_franklin"]), true);
+                SubtitleEngine.instance.playVoice("scene_BreachStart_1", true);
 
-                GameController.instance.Warp173(false, Anchor1.transform);
+                GameController.instance.npcController.mainList[(int)npc.scp173].Spawn(false, Anchor1.transform.position);
                 GameController.instance.player.GetComponent<Player_Control>().FakeBlink(0.5f);
                 GameController.instance.GlobalSFX.PlayOneShot(blackout);
 
-                GameController.instance.npcObjects[(int)npc.scp173].transform.rotation = Anchor1.transform.rotation;
+                GameController.instance.npcController.mainList[(int)npc.scp173].transform.rotation = Anchor1.transform.rotation;
                 check2 = false;
                 StopTimer = false;
                 Timer = 10;

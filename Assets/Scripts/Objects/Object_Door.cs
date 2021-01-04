@@ -14,12 +14,14 @@ public class Object_Door : MonoBehaviour
     public AudioClip[] Close_AUD;
     public AudioSource AUD;
 
+    public UnityEngine.AI.NavMeshObstacle carveMesh;
+
     public bool UseParticle = false;
 
     float LastPos1;
 
     Vector3 Pos1, Pos2;
-    public bool switchOpen = false, scp173 = true, ignoreSave = false;
+    public bool switchOpen = false, scp173 = true, ignoreSave = false, isDisabled = false;
     bool IsOpen = false, isForcing = false;
 
     // Start is called before the first frame update
@@ -78,15 +80,16 @@ public class Object_Door : MonoBehaviour
 
     void DoorOpen()
     {
-        float tempdis = Vector3.Distance(Door01.transform.position, Pos1 + (Door01.transform.right * DoorEndPos));
+        float tempdis = Vector3.Distance(Door01.transform.position, Pos1 - (Door01.transform.right * DoorEndPos));
         if (tempdis >= 0.02)
         {
-            Door01.transform.position += Door01.transform.right * OpenSpeed * Time.deltaTime;
+            Door01.transform.position -= Door01.transform.right * OpenSpeed * Time.deltaTime;
             if (tempdis > LastPos1)
             {
-                Door01.transform.position = Pos1 + (Door01.transform.right * DoorEndPos);
-                Door02.transform.position = Pos2 + (Door02.transform.right * DoorEndPos);
+                Door01.transform.position = Pos1 - (Door01.transform.right * DoorEndPos);
+                Door02.transform.position = Pos2 - (Door02.transform.right * DoorEndPos);
                 IsOpen = true;
+                carveMesh.enabled = false;
                 if (!ignoreSave)
                     GameController.instance.SetDoorState(true, id);
             }
@@ -96,15 +99,16 @@ public class Object_Door : MonoBehaviour
         }
         else
         {
+            carveMesh.enabled = false;
             IsOpen = true;
             if (!ignoreSave)
                 GameController.instance.SetDoorState(true, id);
         }
 
-        tempdis = Vector3.Distance(Door02.transform.position, Pos2 + (Door02.transform.right * DoorEndPos));
+        tempdis = Vector3.Distance(Door02.transform.position, Pos2 - (Door02.transform.right * DoorEndPos));
         if (tempdis >= 0.02)
         {
-            Door02.transform.position += Door02.transform.right * OpenSpeed * Time.deltaTime;
+            Door02.transform.position -= Door02.transform.right * OpenSpeed * Time.deltaTime;
         }
 
 
@@ -117,16 +121,16 @@ public class Object_Door : MonoBehaviour
         float tempdis = Vector3.Distance(Door01.transform.position, Pos1);
         if (tempdis >= 0.00002)
         {
-            Door01.transform.position += Door01.transform.right * -OpenSpeed * Time.deltaTime;
+            Door01.transform.position -= Door01.transform.right * -OpenSpeed * Time.deltaTime;
             if (tempdis > LastPos1)
             {
                 Door01.transform.position = Pos1;
                 Door02.transform.position = Pos2;
+                carveMesh.enabled = true;
 
                 if (UseParticle)
                 {
-                    Instantiate(GameController.instance.doorVacuumParticle, transform.position, transform.rotation);
-                    Instantiate(GameController.instance.doorVacuumParticle, transform.position, Quaternion.Inverse(transform.rotation));
+                    GameController.instance.particleController.StartParticle(1, transform.position, transform.rotation);
                 }
 
                 IsOpen = false;
@@ -138,6 +142,7 @@ public class Object_Door : MonoBehaviour
         }
         else
         {
+            carveMesh.enabled = true;
             IsOpen = false;
             if (!ignoreSave)
                 GameController.instance.SetDoorState(false, id);
@@ -145,30 +150,61 @@ public class Object_Door : MonoBehaviour
 
         tempdis = Vector3.Distance(Door02.transform.position, Pos2);
         if (tempdis >= 0.02)
-            Door02.transform.position += Door02.transform.right * -OpenSpeed * Time.deltaTime;
+            Door02.transform.position -= Door02.transform.right * -OpenSpeed * Time.deltaTime;
     }
 
     public void DoorSwitch()
     {
 
-        if (switchOpen == true && IsOpen == true)
+        if (!isDisabled)
         {
-            switchOpen = false;
-            PlayClose();
-            LastPos1 = 10f;
+            if (switchOpen == true && IsOpen == true)
+            {
+                switchOpen = false;
+                PlayClose();
+                LastPos1 = 10f;
+            }
+            if (switchOpen == false && IsOpen == false)
+            {
+                switchOpen = true;
+                PlayOpen();
+                LastPos1 = 10f;
+            }
         }
-        if (switchOpen == false && IsOpen == false)
+    }
+
+    public void InstantSet(bool open)
+    {
+        if (!isDisabled)
         {
-            switchOpen = true;
-            PlayOpen();
-            LastPos1 = 10f;
+            if (open == false)
+            {
+                switchOpen = false;
+                IsOpen = false;
+                Door01.transform.position = Pos1;
+                Door02.transform.position = Pos2;
+                if (!ignoreSave)
+                    GameController.instance.SetDoorState(false, id);
+            }
+            else
+            {
+                IsOpen = true;
+                switchOpen = true;
+                Door01.transform.position = Pos1 - (Door01.transform.right * DoorEndPos);
+                Door02.transform.position = Pos2 - (Door02.transform.right * DoorEndPos);
+                if (!ignoreSave)
+                    GameController.instance.SetDoorState(true, id);
+            }
         }
     }
 
     public void ForceOpen(float time)
     {
-        isForcing = true;
-        DoorTime = time;
+        if (!isDisabled)
+        {
+            isForcing = true;
+            DoorTime = time;
+        }
     }
 
     void Hodor()
@@ -187,7 +223,7 @@ public class Object_Door : MonoBehaviour
 
     public bool Door173()
     {
-        if (switchOpen == false && IsOpen == false && scp173 == true)
+        if (switchOpen == false && IsOpen == false && scp173 == true && !isDisabled)
         {
             switchOpen = true;
             PlaySCP(0);
@@ -215,7 +251,10 @@ public class Object_Door : MonoBehaviour
         AUD.clip = Close_AUD[Random.Range(0, Close_AUD.Length)];
         AUD.Play();
     }
-
+    /// <summary>
+    /// GetState() Obtiene el estado de la puerta, True si Abierta
+    /// </summary>
+    /// <returns>true Si la puerta esta abierta</returns>
     public bool GetState()
     {
         return (IsOpen);

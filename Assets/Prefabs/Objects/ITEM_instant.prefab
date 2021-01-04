@@ -45,7 +45,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff881a59658b67c48a64f53d610f5ab6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item: {fileID: 11400000, guid: c46d2d88bbf556e49804bf1539122a81, type: 2}
+  itemOG: {fileID: 0}
+  item:
+    itemFileName: 
+    valInt: 0
+    valFloat: 0
+  id: 0
+  itemMesh: {fileID: 0}
+  itemMats: []
 --- !u!65 &2227722751124853549
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -57,8 +64,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.25087738, y: 0.12087487, z: 0.47354358}
-  m_Center: {x: -0.04888153, y: -0.037779577, z: -0.052197248}
+  m_Size: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &2227722751124853548
 Rigidbody:
   m_ObjectHideFlags: 0

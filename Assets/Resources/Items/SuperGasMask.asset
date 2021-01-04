@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c57386a160ab2e541893d65f49ad28d0, type: 3}
   m_Name: SuperGasMask
   m_EditorClassIdentifier: 
+  colCenter: {x: 0, y: 0, z: 0}
+  colSize: {x: 0.250877, y: 0.1208749, z: 0.4735436}
+  mass: 1
   itemName: gasmask2
   icon: {fileID: 21300000, guid: 899c7119eaff67b43ab861249f1428ca, type: 3}
   deleteUse: 0
@@ -20,13 +23,13 @@ MonoBehaviour:
   isUnique: 0
   keepInv: 0
   Effects:
-    Affected: 1
+  - affected: 1
     effect:
-      permanent: 1
+      permanent: 0
       time: 0
       max: 0
       min: 2
-      value: -1
+      value: 0
       multiplier: 0
   ItemModel: {fileID: 100000, guid: 92c0dcd075b999f41a4a862f510335ee, type: 3}
   valueFloat: 0
@@ -34,4 +37,5 @@ MonoBehaviour:
   SFX: 2
   Overlay: {fileID: 21300000, guid: 6a6274d5470782742a737d067fa8fac9, type: 3}
   protectGas: 1
+  autoEquip: 0
   part: 0

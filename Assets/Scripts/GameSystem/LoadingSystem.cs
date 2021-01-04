@@ -68,15 +68,15 @@ public class LoadingSystem : MonoBehaviour
 
         isLoading = true;
         start.enabled = false;
-        start.text = GlobalValues.uiStrings["ui_in_anykey"];
+        start.text = Localization.GetString("uiStrings", "ui_in_anykey");
         loadbar = 0;
         isLoadingDone = false;
         Loading.enabled = true;
         image.sprite = Resources.Load<Sprite>(string.Concat("LoadingManager/", screens[loading].imagefile));
         image.SetNativeSize();
         layout.childAlignment = screens[loading].position;
-        title.text = GlobalValues.loadStrings[string.Concat("title_", screens[loading].name)];
-        body.text = GlobalValues.loadStrings[string.Concat("body1_", screens[loading].name)];
+        title.text = Localization.GetString("loadStrings", string.Concat("title_", screens[loading].name));
+        body.text = Localization.GetString("loadStrings", string.Concat("body1_", screens[loading].name));
     }
 
     // Update is called once per frame
@@ -89,15 +89,15 @@ public class LoadingSystem : MonoBehaviour
         if (isLoading)
         {
             if (loadbar > 0.3f && loadbar < 0.6f && screens[loading].hasInfo2)
-                body.text = GlobalValues.loadStrings[string.Concat("body2_", screens[loading].name)];
+                body.text = Localization.GetString("loadStrings", string.Concat("body2_", screens[loading].name));
             if (loadbar > 0.6f && screens[loading].hasInfo3)
-                body.text = GlobalValues.loadStrings[string.Concat("body3_", screens[loading].name)];
+                body.text = Localization.GetString("loadStrings", string.Concat("body3_", screens[loading].name));
         }
 
         loadcircle.fillAmount = loadbar;
         Simplecircle.fillAmount = loadbar; 
 
-        if (Input.anyKey && canClick)
+        if (SCPInput.instance.playerInput.Gameplay.Pause.triggered  && canClick)
         {
             _isClicked = true;
         }
@@ -122,6 +122,8 @@ public class LoadingSystem : MonoBehaviour
 
     public void LoadLevel(int sceneIndex, bool _simple = true)
     {
+        //SCPInput.instance.ToUI();
+
         Simple = _simple;
         if (!_simple)
             DoHeavyLoading();
@@ -183,6 +185,7 @@ public class LoadingSystem : MonoBehaviour
 
     public void LoadLevelHalf(int sceneIndex, bool dofade = false, float duration = -1, int r = 0, int g = 0, int b = 0, bool _Simple = false)
     {
+        //SCPInput.instance.ToUI();
         Simple = _Simple;
 
         if (!_Simple)

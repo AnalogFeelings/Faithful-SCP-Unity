@@ -52,12 +52,19 @@ public class MusicPlayer : MonoBehaviour
         Music.Play();
     }
 
+    public void StopMusic()
+    {
+        changeTrack = true;
+        trackTo = null;
+        changed = false;
+    }
+
     void MusicChanging()
     {
         if (changed == false)
             Music.volume -= (Time.deltaTime) / 4;
 
-        if (Music.volume <= 0.1 && changed == false)
+        if (Music.volume <= 0.1 && changed == false && trackTo != null)
         {
             changed = true;
             Music.clip = trackTo;

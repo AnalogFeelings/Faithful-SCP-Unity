@@ -51,6 +51,7 @@ public class DecalSystem : MonoBehaviour
         DecalPool[currDecal].h = h;
         DecalPool[currDecal].v = v;
         DecalPool[currDecal].position = position;
+
         DecalPool[currDecal].SetDecal();
 
         currDecal++;
@@ -81,12 +82,12 @@ public class DecalSystem : MonoBehaviour
          * */
 
         float uvH = 0.33f * (Random.Range(0, 4));
-        float uvV = 1 - (0.25f * (Random.Range(0, 5)));
+        float uvV = 0.25f * (Random.Range(0, 5));
 
-        uvs[3] = new Vector2(uvH, uvV);
-        uvs[1] = new Vector2(uvH + 0.33f, uvV);
-        uvs[0] = new Vector2(uvH, uvV - 0.25f);
-        uvs[2] = new Vector2(uvH + 0.33f, uvV - 0.25f);
+        uvs[0] = new Vector2(uvH, uvV- 0.25f);
+        uvs[1] = new Vector2(uvH, uvV);
+        uvs[2] = new Vector2(uvH + 0.33f, uvV- 0.25f);
+        uvs[3] = new Vector2(uvH + 0.33f, uvV);
 
         mesh.uv = uvs;
         render.material = DecalAtlas;
@@ -94,12 +95,12 @@ public class DecalSystem : MonoBehaviour
 
     public void CombineDecals()
     {
-        MeshFilter []
+        MeshFilter[]
         meshFilters = GetComponentsInChildren<MeshFilter>();
         CombineInstance[] combine = new CombineInstance[meshFilters.Length];
 
         int i = 0;
-        while (i<meshFilters.Length)
+        while (i < meshFilters.Length)
         {
             combine[i].mesh = meshFilters[i].sharedMesh;
             combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
@@ -113,7 +114,7 @@ public class DecalSystem : MonoBehaviour
 
         foreach (Transform child in this.transform)
             Destroy(child.gameObject);
-}
+    }
 
     // Update is called once per frame
     void Update()

@@ -117,6 +117,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -128,6 +129,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -221,6 +223,7 @@ Transform:
   - {fileID: 998635334}
   - {fileID: 252651301}
   - {fileID: 1210200017277337165}
+  - {fileID: 1928948956760163459}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -259,12 +262,20 @@ MonoBehaviour:
   Crouch: 0
   onCam: 0
   godmode: 0
+  checkObjects: 1
+  IsPuttingOn: 0
+  hasZombie: 0
+  allowZombie: 1
+  allowMove: 1
+  noMasterController: 0
   GroundDistance: 0.4
   Gravity: 9.8
   maxfallspeed: -20
   Basespeed: 2
   crouchspeed: 1
   runSpeed: 4.2
+  speedMul: 1
+  forceWalkSpeed: 1.6
   HurtDivisor: 60
   baseAmplitude: 0.045
   bobSpeed: 4
@@ -281,16 +292,22 @@ MonoBehaviour:
   CollisionSphere: 0.7
   Health: 100
   bloodloss: 0
+  handLength: 1
+  handSize: 0.6
+  zombieVirusMaxTime: 360
+  zombieVirusFull: 300
   Ground:
     serializedVersion: 2
     m_Bits: 1024
   InteractiveLayer:
     serializedVersion: 2
     m_Bits: 2048
+  Collisionables:
+    serializedVersion: 2
+    m_Bits: 11264
   DefHead: {fileID: 252651301}
   CrouchHead: {fileID: 998635334}
   CameraObj: {fileID: 0}
-  InterHold: {fileID: 0}
   DeathCol: {fileID: 1169660964460360198}
   handPos: {fileID: 8477872283603563125}
   CameraContainer: {fileID: 2511613781811911685}
@@ -309,6 +326,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: b2aed7c0e1b8e124d91c0107f8731d47, type: 3}
   - {fileID: 8300000, guid: b2aed7c0e1b8e124d91c0107f8731d47, type: 3}
   - {fileID: 8300000, guid: 659469c955e87694da86bdb0f6989b32, type: 3}
+  - {fileID: 8300000, guid: 6ed349a0a026183438429d4695982912, type: 3}
   Breath:
   - {fileID: 8300000, guid: 4ca653b6448ec784a8181fea9a37b683, type: 3}
   - {fileID: 8300000, guid: 61d7ab299c2a53e44a44c6e5c9141a5a, type: 3}
@@ -341,8 +359,20 @@ MonoBehaviour:
   - {fileID: 8300000, guid: ef137234b88731444bef16b24d7a618c, type: 3}
   - {fileID: 8300000, guid: ea54417093a109546b5f856f65e6a3f1, type: 3}
   - {fileID: 8300000, guid: 009f98fd0c0c3cb418aefe99d3ed193c, type: 3}
+  zombieVoice:
+  - {fileID: 8300000, guid: fc55bb53db24d7b42ab33f86d227af8f, type: 3}
+  - {fileID: 8300000, guid: 292b4741dfdac4546b4881219d8dfaef, type: 3}
+  - {fileID: 8300000, guid: 01a92b5260f86e64f8ae1a0325e92dde, type: 3}
+  - {fileID: 8300000, guid: de72e49c8ebae8d48bfa374b02107fe0, type: 3}
+  - {fileID: 8300000, guid: 931c4a7203e3b72449092e2e1b2cade3, type: 3}
+  - {fileID: 8300000, guid: 1d63b3c4805a6e645b6a1ac7f8fc2367, type: 3}
+  - {fileID: 8300000, guid: a9b7d67ef2dc31b4d980d69d597fd3d6, type: 3}
   sfx: {fileID: 393827807079942417}
   va: {fileID: 4757049399036591918}
+  headEffects: []
+  bodyEffects: []
+  anyEffects: []
+  handEffects: []
   NodeDistance: 0.3
 --- !u!82 &393827807079942417
 AudioSource:
@@ -607,6 +637,98 @@ Transform:
   m_Father: {fileID: 1341638972000247821}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6186553206429660033
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1928948956760163459}
+  - component: {fileID: 2319518229991750966}
+  m_Layer: 0
+  m_Name: Point Light
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1928948956760163459
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6186553206429660033}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1341638972000247821}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!108 &2319518229991750966
+Light:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6186553206429660033}
+  m_Enabled: 1
+  serializedVersion: 10
+  m_Type: 2
+  m_Shape: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Intensity: 0.1
+  m_Range: 7
+  m_SpotAngle: 30
+  m_InnerSpotAngle: 21.80208
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 0
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 1
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+    m_CullingMatrixOverride:
+      e00: 1
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 1
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 1
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 1
+    m_UseCullingMatrixOverride: 0
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 2
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingLayerMask: 1
+  m_Lightmapping: 4
+  m_LightShadowCasterMode: 0
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 1
+  m_ColorTemperature: 6570
+  m_UseColorTemperature: 0
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_UseBoundingSphereOverride: 0
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
 --- !u!1 &6468084496126811677
 GameObject:
   m_ObjectHideFlags: 0

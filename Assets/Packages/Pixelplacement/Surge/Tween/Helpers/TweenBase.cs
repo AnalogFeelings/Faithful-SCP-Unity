@@ -50,10 +50,12 @@ namespace Pixelplacement.TweenSystem
         /// </summary>
         public void Start ()
         {
+            //Debug.Log("Iniciando Tween con estado" + Status);
             elapsedTime = 0.0f;
 
             if (Status == Tween.TweenStatus.Canceled || Status == Tween.TweenStatus.Finished || Status == Tween.TweenStatus.Stopped)
             {
+                //Debug.Log("El estado esta raro, ahora es RTunning");
                 Status = Tween.TweenStatus.Running;
                 Operation (0);
                 Tween.Instance.ExecuteTween (this);
@@ -166,12 +168,16 @@ namespace Pixelplacement.TweenSystem
             if (Status == Tween.TweenStatus.Running) 
             {
                 try {
+                    //Debug.Log("Operacion ");
                     Operation (curveValue);
                     Percentage = curveValue;
                 } catch (Exception ex) {
+                    //Debug.Log("Error al ejecutar " + ex.Message);
                     return false;
                 }
             }
+
+            //Debug.Log("Estado del tween " + Status + " valor de curva " + curveValue + " Porcentaje " + Percentage);
 
             //tween complete:
             if (percentage == 1) 

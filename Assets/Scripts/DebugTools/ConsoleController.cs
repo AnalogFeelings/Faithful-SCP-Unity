@@ -58,13 +58,14 @@ public class ConsoleController
         //When adding commands, you must add a call below to registerCommand() with its name, implementation method, and help text.
         /*registerCommand("babble", babble, "Example command that demonstrates how to parse arguments. babble [word] [# of times to repeat]");
         registerCommand("echo", echo, "echoes arguments back as array (for testing argument parser)");*/
-        registerCommand("help", help, "Print this help.");
+        registerCommand("help", help, "Print this help. Add a command as an argument and get the explanation for that specific command");
         registerCommand("resetoptions", resetPrefs, "Reset player options");
         registerCommand("noclip", noclip, "Toggles No Clip");
         registerCommand("godmode", godmode, "Switches godmode");
         registerCommand("playsub", playsub, "Plays the specified subtitle from the specified table. Usage: playsub [identifier] [table]   (WITHOUT THE BRACKETS)");
         registerCommand("playvoicesub", playvoicesub, "Plays the specified voice subtitle from the specified character. Usage: playsub [character] [identifier]   (WITHOUT THE BRACKETS)");
         registerCommand("playtuto", playtuto, "Shows the specified tutorial card. Usage: playtuto [identifier] (NO BRACKETS)");
+        registerCommand("subtitlecheck", subcheck, "Adds missing subtitles from the current language pack");
         registerCommand("give", give, "Gives you the specified item.");
         registerCommand("safeplace", safeplace, "Tests the world change function");
         registerCommand("safereturn", safereturn, "Tests the world return function");
@@ -72,6 +73,8 @@ public class ConsoleController
         registerCommand("teleport", teleportRoom, "Teleports to room with this name");
         registerCommand("spawn106", spawn106, "Spawns SCP-106 at the center of the current room");
         registerCommand("spawn173", spawn173, "Spawns SCP-173 at the center of the current room");
+        registerCommand("spawn049", spawn049, "Spawns SCP-049 at the center of the current room");
+        registerCommand("spawn513", spawn513, "Activates SCP-513");
         registerCommand("health", sethealth, "Sets the player current health [0 - 100]");
         registerCommand(repeatCmdName, repeatCommand, "Repeat last command.");
     }
@@ -219,11 +222,13 @@ public class ConsoleController
         else
         {
             appendLogLine("Spawning Item " + item);
-            Item newitem = UnityEngine.Object.Instantiate(Resources.Load<Item>(string.Concat("Items/", item)));
-            newitem.name = item;
-
-            if (!ItemController.instance.AddItem(newitem, 0))
-                appendLogLine("Inventory full");
+            if (ItemController.instance.items.ContainsKey(item))
+            {
+                if (ItemController.instance.AddItem(new gameItem(item), 0)==-1)
+                    appendLogLine("Inventory full");
+            }
+            else
+                appendLogLine("Couldnt Find item");
         }
     }
 
@@ -242,10 +247,8 @@ public class ConsoleController
         }
         else
         {
-            if (GlobalValues.tutoStrings.ContainsKey(id))
-                SCP_UI.instance.ShowTutorial(id);
-            else
-                appendLogLine("Tutorial not found");
+            SCP_UI.instance.ShowTutorial(id);
+
         }
     }
 
@@ -270,46 +273,7 @@ public class ConsoleController
             }
             else
             {
-                switch(table)
-                {
-                    case "uiStrings":
-                        {
-                            if (GlobalValues.uiStrings.ContainsKey(id))
-                                SubtitleEngine.instance.playSub(GlobalValues.uiStrings[id]);
-                            else
-                                appendLogLine("Subtitle not found");
-                            break;
-                        }
-                    case "playStrings":
-                        {
-                            if (GlobalValues.playStrings.ContainsKey(id))
-                                SubtitleEngine.instance.playSub(GlobalValues.playStrings[id]);
-                            else
-                                appendLogLine("Subtitle not found");
-                            break;
-                        }
-                    case "itemStrings":
-                        {
-                            if (GlobalValues.itemStrings.ContainsKey(id))
-                                SubtitleEngine.instance.playSub(GlobalValues.itemStrings[id]);
-                            else
-                                appendLogLine("Subtitle not found");
-                            break;
-                        }
-                    case "tutoStrings":
-                        {
-                            if (GlobalValues.tutoStrings.ContainsKey(id))
-                                SubtitleEngine.instance.playSub(GlobalValues.tutoStrings[id]);
-                            else
-                                appendLogLine("Subtitle not found");
-                            break;
-                        }
-                    default:
-                        {
-                            appendLogLine("Table not found");
-                            break;
-                        }
-                }
+                SubtitleEngine.instance.playSub(table,id);
             }
         }
     }
@@ -335,16 +299,9 @@ public class ConsoleController
             }
             else
             {
-                if (GlobalValues.charaStrings.ContainsKey(chara))
-                {
-                    if (GlobalValues.sceneStrings.ContainsKey(voice))
-                    SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings[voice],GlobalValues.charaStrings[chara]), true);
-                    else
+
                         appendLogLine("Subtitle not found");
-                }
-                else
-                    appendLogLine("Character not found");
-            }        
+            }
         }
     }
 
@@ -448,6 +405,15 @@ public class ConsoleController
         GameController.instance.CL_spawn173();
     }
 
+    void spawn513(string[] args)
+    {
+        GameController.instance.CL_spawn513();
+    }
+    void spawn049(string[] args)
+    {
+        GameController.instance.CL_spawn049();
+    }
+
 
     void help(string[] args)
     {
@@ -510,6 +476,10 @@ public class ConsoleController
         }
     }
 
+    void subcheck(string [] args)
+    {
+        Localization.AddMissing();
+    }
 
     void resetPrefs(string[] args)
     {

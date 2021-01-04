@@ -5,15 +5,15 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "new Radio", menuName = "Items/Radio")]
 public class Equipable_Radio : Equipable_Elec
 {
-    public override void Use()
+    public override void Use(ref gameItem currItem)
     {
         Player_Control player = GameController.instance.player.GetComponent<Player_Control>();
 
         this.part = bodyPart.Hand;
 
-        if (player.equipment[(int)this.part] == null || player.equipment[(int)this.part].itemName != this.itemName)
+        if (player.equipment[(int)this.part] == null || ItemController.instance.items[player.equipment[(int)this.part].itemFileName].itemName != this.itemName)
         {
-            player.ACT_Equip(this);
+            player.ACT_Equip(currItem);
             SCP_UI.instance.radio.StartRadio();
         }
         else
@@ -23,11 +23,11 @@ public class Equipable_Radio : Equipable_Elec
 
     }
 
-    public override bool Mix(Item toMix)
+    public override bool Mix(ref gameItem currItem, ref gameItem toMix)
     {
-        if (toMix != null && toMix.itemName.Equals("bat_nor"))
+        if (ItemController.instance.items[toMix.itemFileName].itemName.Equals("bat_nor"))
         {
-            valueFloat = 100;
+            currItem.valFloat = 100;
             return (true);
         }
         else

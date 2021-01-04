@@ -36,10 +36,9 @@ public class ConsoleView : MonoBehaviour
     void Update()
     {
         //Toggle visibility when tilde key pressed
-        if (Input.GetKeyUp(KeyCode.F10))
+        if (SCPInput.instance.playerInput.Gameplay.Debug.triggered)
         {
             toggleVisibility(SCP_UI.instance.ToggleConsole());
-            
         }
     }
 

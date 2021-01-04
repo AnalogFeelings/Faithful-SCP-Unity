@@ -15,14 +15,17 @@ public class AgentLinkMover : MonoBehaviour
 {
     public OffMeshLinkMoveMethod m_Method = OffMeshLinkMoveMethod.Parabola;
     public AnimationCurve m_Curve = new AnimationCurve();
+    public string areaDoorName;
+    int areaDoor;
 
     IEnumerator Start()
     {
         NavMeshAgent agent = GetComponent<NavMeshAgent>();
+        areaDoor = NavMesh.GetAreaFromName(areaDoorName);
         agent.autoTraverseOffMeshLink = false;
         while (true)
         {
-            if (agent.isOnOffMeshLink)
+            if (agent.isOnOffMeshLink && ((UnityEngine.AI.NavMeshLink)agent.navMeshOwner).area != areaDoor)
             {
                 if (m_Method == OffMeshLinkMoveMethod.NormalSpeed)
                     yield return StartCoroutine(NormalSpeed(agent));
@@ -39,10 +42,20 @@ public class AgentLinkMover : MonoBehaviour
     IEnumerator NormalSpeed(NavMeshAgent agent)
     {
         OffMeshLinkData data = agent.currentOffMeshLinkData;
+        Vector3 startPos = agent.transform.position;
         Vector3 endPos = data.endPos + Vector3.up * agent.baseOffset;
-        while (agent.transform.position != endPos)
+        Quaternion endRota = Quaternion.LookRotation((endPos - startPos).normalized);
+        Quaternion startRota = agent.transform.rotation;
+
+
+        float duration = 0.5f;
+        float normalizedTime = 0.0f;
+        while (normalizedTime < 1.0f)
         {
-            agent.transform.position = Vector3.MoveTowards(agent.transform.position, endPos, agent.speed * Time.deltaTime);
+            //agent.transform.LookAt(endPos);
+            agent.transform.position = Vector3.Lerp(startPos, endPos, normalizedTime);
+            normalizedTime += Time.deltaTime / duration;
+            agent.transform.rotation = Quaternion.Lerp(startRota, endRota, normalizedTime);
             yield return null;
         }
     }

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
     
-public class NPC_939 : MonoBehaviour
+public class NPC_939 : Map_NPC
 {
 
     private enum state_939 { idle, patrol, hearing, hearing2, walk, run, attack };
@@ -30,21 +30,32 @@ public class NPC_939 : MonoBehaviour
     public int frame;
     public Animator Animator;
     public LayerMask SoundLayer;
-    int SoundLevel=0;
-    int currentNode=0, currentPatrol;
     public bool isDebuggin, debugSpeed, debugPlayerPos;
 
 
     bool foundTarget;
-    bool destSet;
     bool stateSet, debugGameLoaded = false;
     bool checkPlayer = true;
     string soundlevel = "No sounds ";
     state_939 state = state_939.idle;
 
-    
+    //Shared data constants
+    private static int valCurrNode = 0;
+    private static int valDestSet = 1;
+    private static int valState = 2;
+    private static int valTimer = 3;
+    private static int valSoundLevel = 4;
 
 
+
+    private void Awake()
+    {
+        data.npcvalue[0] = 0;
+        data.npcvalue[1] = 0;
+        data.npcvalue[2] = 0;
+        data.npcvalue[3] = 0;
+        data.npcvalue[4] = 0;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -52,8 +63,42 @@ public class NPC_939 : MonoBehaviour
         Agent.Warp(transform.position);
     }
 
+    public override void createData()
+    {
+        base.createData();
+        data.type = npctype.scp939;
+    }
+
+    public override void setData(NPC_Data state)
+    {
+        Timer = state.npcvalue[valTimer];
+        this.state = (state_939)state.npcvalue[valState];
+        Agent.Warp(state.Pos.toVector3());
+        currentTarget = state.Target.toVector3();
+        base.setData(state);
+    }
+
+    public override NPC_Data getData()
+    {
+        data.Target = data.Target = new SeriVector(currentTarget.x, currentTarget.y, currentTarget.z);
+        data.npcvalue[valState] = ((state == state_939.patrol) || (state == state_939.walk) || (state == state_939.run)) ? 0 : (int)state;
+        return base.getData();
+    }
+
+    public override void NpcDisable()
+    {
+        base.NpcDisable();
+        Agent.isStopped = true;
+    }
+
     // Update is called once per frame
-    void Update()
+    private void Update()
+    {
+        if (data.isActive)
+            NpcUpdate();
+    }
+
+    void NpcUpdate()
     {
         if (!debugGameLoaded)
         {
@@ -76,7 +121,7 @@ public class NPC_939 : MonoBehaviour
                             playerCheck = foundPlayer;
                             Animator.SetBool("move", false);
                             Agent.isStopped = true;
-                            destSet = false;
+                            data.npcvalue[valDestSet] = 0;
                             stateSet = true;
                             Timer = Random.Range(defIdle, defIdle + 3);
                             if (isDebuggin)
@@ -125,7 +170,7 @@ public class NPC_939 : MonoBehaviour
                             Animator.SetBool("move", true);
                             Agent.isStopped = false;
                             Agent.speed = walkSpeed;
-                            Agent.SetDestination(patrol[currentNode].position);
+                            Agent.SetDestination(patrol[data.npcvalue[valCurrNode]].position);
                             Timer = Random.Range(defWalk, defWalk + 3);
                             stateSet = true;
                             if (isDebuggin)
@@ -134,30 +179,30 @@ public class NPC_939 : MonoBehaviour
                         }
                         else if (Agent.remainingDistance < 1)
                         {
-                            currentNode += 1;
-                            if (currentNode >= patrol.Length)
-                                currentNode = 0;
+                            data.npcvalue[valCurrNode] += 1;
+                            if (data.npcvalue[valCurrNode] >= patrol.Length)
+                                data.npcvalue[valCurrNode] = 0;
                             stateSet = false;
                         }
                         break;
                     }
                 case state_939.run:
                     {
-                        if (destSet == false)
+                        if (data.npcvalue[valDestSet] == 0)
                         {
                             playerCheck = foundPlayerRun;
                             Animator.SetBool("move", true);
                             Agent.isStopped = false;
                             Agent.speed = runSpeed;
                             Agent.SetDestination(currentTarget);
-                            destSet = true;
+                            data.npcvalue[valDestSet] = 1;
                             if (isDebuggin)
                                 Debug.Log(soundlevel + "Corro hacia el!");
                             PlayVoice(4);
                         }
-                        else if (Agent.remainingDistance < 1)
+                        else if (Agent.remainingDistance < 0.5)
                         {
-                            destSet = false;
+                            data.npcvalue[valDestSet] = 0;
                             foundTarget = false;
                             state = state_939.idle;
                         }
@@ -165,7 +210,7 @@ public class NPC_939 : MonoBehaviour
                     }
                 case state_939.walk:
                     {
-                        if (destSet == false)
+                        if (data.npcvalue[valDestSet] == 0)
                         {
                             playerCheck = foundPlayer;
                             PlayVoice(3);
@@ -173,13 +218,13 @@ public class NPC_939 : MonoBehaviour
                             Agent.isStopped = false;
                             Agent.speed = walkSpeed;
                             Agent.SetDestination(currentTarget);
-                            destSet = true;
+                            data.npcvalue[valDestSet] = 1;
                             if (isDebuggin)
                                 Debug.Log(soundlevel + "Camino hacia el!");
                         }
                         else if (Agent.remainingDistance < 1)
                         {
-                            destSet = false;
+                            data.npcvalue[valDestSet] = 0;
                             foundTarget = false;
                             state = state_939.idle;
                         }
@@ -192,7 +237,7 @@ public class NPC_939 : MonoBehaviour
                             Agent.isStopped = true;
                             Animator.SetBool("move", false);
                             Animator.SetTrigger("look");
-                            destSet = false;
+                            data.npcvalue[valDestSet] = 0;
                             Timer = HearingTimer;
                             if (isDebuggin)
                                 Debug.Log(soundlevel + "Escuche algo?");
@@ -208,7 +253,7 @@ public class NPC_939 : MonoBehaviour
                             Agent.isStopped = true;
                             Animator.SetBool("move", false);
                             Animator.SetTrigger("vocal");
-                            destSet = false;
+                            data.npcvalue[valDestSet] = 0;
                             Timer = Hearing2Timer;
                             if (isDebuggin)
                                 Debug.Log(soundlevel + "Si escuche!");
@@ -222,7 +267,7 @@ public class NPC_939 : MonoBehaviour
             Timer -= Time.deltaTime;
             AttackTimer -= Time.deltaTime;
 
-            if ((state != state_939.run && state != state_939.walk && state != state_939.attack) && Timer <= 0)
+            if ((state != state_939.run && state != state_939.walk && state != state_939.attack) && patrol != null && Timer <= 0)
             {
                 foundTarget = false;
                 stateSet = false;
@@ -260,7 +305,7 @@ public class NPC_939 : MonoBehaviour
                 {
                     stateSet = false;
 
-                    if (SoundLevel == 0)
+                    if (data.npcvalue[valSoundLevel] == 0)
                     {
                         switch (state)
                         {
@@ -287,7 +332,7 @@ public class NPC_939 : MonoBehaviour
                                 }
                         }
                     }
-                    if (SoundLevel == 1)
+                    if (data.npcvalue[valSoundLevel] == 1)
                     {
                         switch (state)
                         {
@@ -313,7 +358,7 @@ public class NPC_939 : MonoBehaviour
                                 }
                         }
                     }
-                    if (SoundLevel > 1)
+                    if (data.npcvalue[valSoundLevel] > 1)
                     {
                         switch (state)
                         {
@@ -376,22 +421,35 @@ public class NPC_939 : MonoBehaviour
         {
             Audio.clip = Hello[Random.Range(0,Hello.Length)];
             delay = 0.5f;
+            if (playerDistance < 15f)
+                StartCoroutine(playDelayedScript(delay, Audio.clip.name));
         }
         if (library == 2)
         {
             Audio.clip = Heard[Random.Range(0, Heard.Length)];
             delay = 2;
+            if(playerDistance < 15f)
+                StartCoroutine(playDelayedScript(delay, Audio.clip.name));
         }
         if (library == 3)
         {
             Audio.clip = Found[Random.Range(0, Found.Length)];
             delay = 0.5f;
+            if (playerDistance < 15f)
+                StartCoroutine(playDelayedScript(delay, Audio.clip.name));
         }
         if (library == 4)
         {
             Audio.clip = Attack[Random.Range(0, Attack.Length)];
         }
         Audio.PlayDelayed(delay);
+    }
+
+    IEnumerator playDelayedScript(float secs, string voice)
+    {
+        yield return new WaitForSeconds(secs);
+        SubtitleEngine.instance.playVoice(voice);
+        yield return true;
     }
 
 
@@ -415,7 +473,7 @@ public class NPC_939 : MonoBehaviour
     void CheckSounds()
     {
         float lastdistance = 100f;
-        SoundLevel = -1;
+        data.npcvalue[valSoundLevel] = -1;
         float currdistance;
         int currentSoundLevel;
         foundTarget = false;
@@ -431,13 +489,13 @@ public class NPC_939 : MonoBehaviour
                 if (currdistance > closeRange)
                     currentSoundLevel -= 1;
 
-                if (SoundLevel < currentSoundLevel)
+                if (data.npcvalue[valSoundLevel] < currentSoundLevel)
                 {
                     if (currdistance < lastdistance)
                     {
                         currentTarget = CloseSounds[i].gameObject.transform.position;
-                        SoundLevel = currentSoundLevel;
-                        soundlevel = "sonido " + SoundLevel + " distancia " + currdistance + " ";
+                        data.npcvalue[valSoundLevel] = currentSoundLevel;
+                        soundlevel = "sonido " + data.npcvalue[valSoundLevel] + " distancia " + currdistance + " ";
                         foundTarget = true;
                     }
 
@@ -460,7 +518,7 @@ public class NPC_939 : MonoBehaviour
 
                 if (other.gameObject.GetComponent<Player_Control>().Health <= 0)
                 {
-                    GameController.instance.deathmsg = GlobalValues.deathStrings["death_939"];
+                    GameController.instance.deathmsg = Localization.GetString("deathStrings", "death_939");
                     checkPlayer = false;
                     playerDistance = 100;
                     stateSet = false;

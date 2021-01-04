@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1529045537336012810
 Transform:
   m_ObjectHideFlags: 0
@@ -68,8 +68,8 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 5
-  MaxDistance: 30
+  MinDistance: 4.4715576
+  MaxDistance: 19.15448
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -174,6 +174,7 @@ GameObject:
   - component: {fileID: 1529045537598160026}
   - component: {fileID: 1529045537598160025}
   - component: {fileID: 1529045537598160027}
+  - component: {fileID: 7831742790670137222}
   m_Layer: 15
   m_Name: Smoke_Spawn
   m_TagString: Untagged
@@ -238,6 +239,22 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &7831742790670137222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1529045537598160031}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4db70907a5fdfa4884462a8ff868713, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isActive: 1
+  smokeEffect: {fileID: 1327087417542877586}
+  smokeCollider: {fileID: 1529045537336012811}
+  smokeSound: {fileID: 7126914738027668996}
 --- !u!1001 &1201148398286437170
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -453,6 +470,12 @@ PrefabInstance:
 --- !u!4 &1199551025862857966 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4221402037530588, guid: 378b2c30ef426554495292cb902cb8f4,
+    type: 3}
+  m_PrefabInstance: {fileID: 1201148398286437170}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &1327087417542877586 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 198603562046773920, guid: 378b2c30ef426554495292cb902cb8f4,
     type: 3}
   m_PrefabInstance: {fileID: 1201148398286437170}
   m_PrefabAsset: {fileID: 0}

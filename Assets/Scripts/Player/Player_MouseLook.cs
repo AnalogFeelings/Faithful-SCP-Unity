@@ -8,10 +8,12 @@ public class Player_MouseLook : MonoBehaviour
     public float speed = 3;
     float inspeed=3;
     bool Invert = false;
+    public bool Instant;
     private void Start()
     {
 
     }
+
     void LateUpdate()
     {
         float z = transform.eulerAngles.z;
@@ -23,11 +25,13 @@ public class Player_MouseLook : MonoBehaviour
             rotation.x = (rotation.x > 180) ? rotation.x - 360 : rotation.x;
         }
 
-            rotation.y += (Input.GetAxis("Mouse X") * inspeed) * Time.timeScale;
+        //Debug.Log("Mouse Vector = " + SCPInput.instance.playerInput.Gameplay.Look.ReadValue<Vector2>());
+
+            rotation.y += (SCPInput.instance.playerInput.Gameplay.Look.ReadValue<Vector2>().x * inspeed) * Time.timeScale;
             if (Invert)
-                rotation.x += (Input.GetAxis("Mouse Y") * inspeed) * Time.timeScale;
+                rotation.x += (SCPInput.instance.playerInput.Gameplay.Look.ReadValue<Vector2>().y * inspeed) * Time.timeScale;
             else
-                rotation.x += -(Input.GetAxis("Mouse Y") * inspeed) * Time.timeScale;
+                rotation.x += -(SCPInput.instance.playerInput.Gameplay.Look.ReadValue<Vector2>().y * inspeed) * Time.timeScale;
         rotation.x = Mathf.Clamp(rotation.x, -85f, 75f);
 
 

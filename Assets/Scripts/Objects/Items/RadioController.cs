@@ -22,6 +22,7 @@ public class RadioController : MonoBehaviour
     public float dotTimer;
 
     Equipable_Radio _Radio;
+    gameItem currRadio;
     // Start is called before the first frame update
     void Start()
     {
@@ -70,15 +71,15 @@ public class RadioController : MonoBehaviour
 
 
 
-            if (Input.GetKeyDown(KeyCode.Alpha1))
+            if (SCPInput.instance.playerInput.Gameplay.Radio1.triggered)
                 chgChn(1);
-            if (Input.GetKeyDown(KeyCode.Alpha2))
+            if (SCPInput.instance.playerInput.Gameplay.Radio2.triggered)
                 chgChn(2);
-            if (Input.GetKeyDown(KeyCode.Alpha3))
+            if (SCPInput.instance.playerInput.Gameplay.Radio3.triggered)
                 chgChn(3);
-            if (Input.GetKeyDown(KeyCode.Alpha4))
+            if (SCPInput.instance.playerInput.Gameplay.Radio4.triggered)
                 chgChn(4);
-            if (Input.GetKeyDown(KeyCode.Alpha5))
+            if (SCPInput.instance.playerInput.Gameplay.Radio5.triggered)
                 chgChn(5);
         }
 
@@ -202,7 +203,7 @@ public class RadioController : MonoBehaviour
                 }
             case 2:
                 {
-                    broadcast.text = GlobalValues.uiStrings["ui_radio_channel2"];
+                    broadcast.text = Localization.GetString("uiStrings", "ui_radio_channel2");
                     break;
                 }
 
@@ -212,12 +213,12 @@ public class RadioController : MonoBehaviour
                     {
                         case 3:
                             {
-                                broadcast.text = GlobalValues.uiStrings["ui_radio_channel3"];
+                                broadcast.text = Localization.GetString("uiStrings", "ui_radio_channel3");
                                 break;
                             }
                         case 4:
                             {
-                                broadcast.text = GlobalValues.uiStrings["ui_radio_channel4"];
+                                broadcast.text = Localization.GetString("uiStrings", "ui_radio_channel4");
                                 break;
                             }
                         case 5:
@@ -236,13 +237,13 @@ public class RadioController : MonoBehaviour
                         {
                             case 3:
                                 {
-                                    broadcast.text = GlobalValues.uiStrings["ui_radio_channel3"];
+                                    broadcast.text = Localization.GetString("uiStrings", "ui_radio_channel3");
                                     play = station3[ch_State[chn - 1]];
                                     break;
                                 }
                             case 4:
                                 {
-                                    broadcast.text = GlobalValues.uiStrings["ui_radio_channel4"];
+                                    broadcast.text = Localization.GetString("uiStrings", "ui_radio_channel4");
                                     play = station4[ch_State[chn - 1]];
                                     break;
                                 }
@@ -274,7 +275,8 @@ public class RadioController : MonoBehaviour
         
         radio.SetActive(true);
         TurnRadio();
-        _Radio = ((Equipable_Radio)GameController.instance.player.GetComponent<Player_Control>().equipment[(int)bodyPart.Hand]);
+        currRadio = GameController.instance.player.GetComponent<Player_Control>().equipment[(int)bodyPart.Hand];
+        _Radio = ((Equipable_Radio)ItemController.instance.items[currRadio.itemFileName]);
         sfxStatic.PlayOneShot(change);
     }
 

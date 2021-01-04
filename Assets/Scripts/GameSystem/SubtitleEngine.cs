@@ -3,9 +3,34 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+class delay_data
+{
+    public subtitleMeta sub;
+    public float time;
+
+    public delay_data (subtitleMeta _sub, float _time)
+    {
+        sub = _sub;
+        time = _time;
+    }
+}
+
+class time_data
+{
+    public string sub;
+    public float time;
+
+    public time_data(string _sub, float _time)
+    {
+        sub = _sub;
+        time = _time;
+    }
+}
+
 public class SubtitleEngine : MonoBehaviour
 {
     public static SubtitleEngine instance = null;
+    const string stage_direction = "<b>{0}</b>: {1}";
     float subtitle_add;
     float[] subtitle_hold = new float [3];
     float[] flavortext_hold = new float[3];
@@ -13,13 +38,15 @@ public class SubtitleEngine : MonoBehaviour
     bool foundSub, foundFlavortext;
     bool Moved, MoverFlavorText;
     bool VoiceSubsEnabled = true;
+
     Color boxcol;
 
     [Header ("Subtitles")]
     public Text [] line = new Text [3];
     public Image[] bg = new Image[3];
     public RectTransform[] bgsize = new RectTransform[3];
-    List<string> pending = new List<string>();
+    List<time_data> pending = new List<time_data>();
+    List<delay_data> delayed = new List<delay_data>();
     string [] current = new string [3];
 
     [Header("FlavorText")]
@@ -51,66 +78,106 @@ public class SubtitleEngine : MonoBehaviour
 
 
     }
-    /// <summary>
-    /// Sends a subtitle to the subtitle system
-    /// </summary>
-    /// <param name="sub"> The subtitle. Is the caller resposability to get the right subtitle for the right language</param>
-    /// <param name="IsVoice"> If the subtitle is a voice or flavor text</param>
-    /// <param name="Force"> If the subtitle will push itself into the list</param>
 
-
-
-    public void playSub(string sub, bool IsVoice = false, bool Force = false)
+    public void playSub(string table, string id)
     {
-        if (IsVoice)
-        {
-            if (VoiceSubsEnabled)
-            {
-                if (Force)
-                {
-                    pending = new List<string>();
-                    subtitle_hold[2] = 0;
-                    Debug.Log(" FORCE SUB ");
-                }
-
-
-                if (sub.Length > 60)
-                {
-                    int firstspace=sub.IndexOf(" ", 60);
-                    if (firstspace != -1)
-                    {
-                        pending.Add(sub.Substring(0, firstspace));
-                        playSub(sub.Substring(firstspace+1), true);
-                    }
-
-                }
-                else
-                pending.Add(sub);
-
-            }
-        } 
-        else
-        {
+        string sub = Localization.GetString(table, id);
             flavortext_hold[2] = 0;
             ft_pending.Add(sub);
+
+    }
+
+    public void playFormatted(string table, string id, string table2, string id2)
+    {
+        string format = Localization.GetString(table, id);
+        string sub = Localization.GetString(table2, id2);
+        flavortext_hold[2] = 0;
+        ft_pending.Add(string.Format(format, sub));
+    }
+
+    public void playVoice(string id, bool Force = false)
+    {
+        Debug.Log("Buscando Subtitulo " + id);
+        if (VoiceSubsEnabled)
+        {
+            if (Force)
+            {
+                pending.Clear();
+                delayed.Clear();
+                subtitle_hold[2] = 0;
+                Debug.Log(" FORCE SUB ");
+            }
+            subtitleMeta sub = Localization.GetSubtitle(id);
+
+            doSub(sub);
+            
         }
+
+    }
+
+    public void doSub(subtitleMeta sub)
+    {
+        
+
+        string buildSubtitle;
+        if (!sub.noFormat)
+            buildSubtitle = string.Format(stage_direction, Localization.GetString("charaStrings", sub.character), sub.subtitle);
+        else
+            buildSubtitle = sub.subtitle;
+
+        //Debug.Log("Subtitulo " + buildSubtitle + " con el extra " + sub.nextSubtitle);
+
+        if (!string.IsNullOrEmpty(sub.nextSubtitle))
+            playVoice(sub.nextSubtitle);
+
+        sub.nextSubtitle = "";
+
+        if (sub.delay > 0)
+            delayed.Add(new delay_data(sub, sub.delay));
+        else
+        {
+            if (buildSubtitle.Length > 60)
+            {
+                int firstspace = buildSubtitle.IndexOf(" ", 60);
+                if (firstspace != -1)
+                {
+                    subtitleMeta midSub = sub;
+                    sub.duration = (sub.duration / 2) < 2 ? 2 : (sub.duration / 2);
+                    midSub.duration = sub.duration;
+                    midSub.noFormat = true;
+                    midSub.subtitle = buildSubtitle.Substring(firstspace + 1);
+
+                    if (!string.IsNullOrEmpty(midSub.subtitle))
+                        delayed.Add(new delay_data(midSub, sub.duration));
+
+                    buildSubtitle = buildSubtitle.Substring(0, firstspace);
+                }
+            }
+            pending.Add(new time_data(buildSubtitle, sub.duration));
+        }
+
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        subtitle_add -= Time.deltaTime;
+        //subtitle_add -= Time.deltaTime;
 
-        if (subtitle_add <= 0)
+        if (delayed.Count > 0)
         {
+            doDelayed();
+        }
+
+        /*if (subtitle_add <= 0)
+        {*/
             if (pending.Count > 0)
             {
                 moveSubtitles();
                 addSubtitles();
-                subtitle_add = subtitle_add_timer;
+                //subtitle_add = subtitle_add_timer;
             }
-
-        }
+        //}
 
         if (current[0] != null)
             updateSubtitles();
@@ -151,6 +218,22 @@ public class SubtitleEngine : MonoBehaviour
 
     }
 
+    void doDelayed()
+    {
+        for (int i = 0; i < delayed.Count; i++)
+        {
+            delayed[i].time -= Time.deltaTime;
+            if (delayed[i].time < 0)
+            {
+                subtitleMeta sub = delayed[i].sub;
+                sub.delay = 0;
+                doSub(sub);
+                
+                delayed.RemoveAt(i);
+            }
+        }
+    }
+
     void moveSubtitles()
     {
         for (int i = 1; i >= 0; i--)
@@ -168,8 +251,8 @@ public class SubtitleEngine : MonoBehaviour
     {
             if (current[0] == null)
             {
-                current[0] = pending[0];
-                subtitle_hold[0] = subtitle_hold_timer;
+                current[0] = pending[0].sub;
+                subtitle_hold[0] = pending[0].time;
                 pending.RemoveAt(0);
                 foundSub = true;
                 return;

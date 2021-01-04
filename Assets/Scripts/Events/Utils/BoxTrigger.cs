@@ -6,12 +6,6 @@ public class BoxTrigger : MonoBehaviour
 {
     bool Triggered;
     public bool autoFalse = false;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
 
     // Update is called once per frame
     private void OnTriggerExit(Collider other)
@@ -20,18 +14,28 @@ public class BoxTrigger : MonoBehaviour
             Triggered = false;
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Player")
+            Triggered = true;
+    }
+
     void OnTriggerStay(Collider other)
     {
         if (other.tag == "Player")
             Triggered = true;
     }
 
+    private void LateUpdate()
+    {
+        if (autoFalse)
+            Triggered = false;
+    }
 
     public bool GetState()
     {
         bool value = Triggered;
-        if (autoFalse)
-            Triggered = false;
+        
         return value;
         
     }

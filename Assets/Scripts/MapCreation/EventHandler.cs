@@ -59,7 +59,7 @@ public class EventHandler : MonoBehaviour
         
         if (Spawned == false)
         {
-            Debug.Log(EventChosen);
+            //Debug.Log(EventChosen);
             if (EventChosen == -2)
                 InternalLoad(UniqueHandler, x, y, UniquePos);
 
@@ -77,6 +77,8 @@ public class EventHandler : MonoBehaviour
     void InternalLoad(string scp_event, int x, int y, Transform pos)
     {
         Event = Resources.Load<GameObject>(string.Concat("Events/", scp_event));
+
+        Debug.Log("Evento " + scp_event + " cargado en " + x + " " + y);
         
         if (pos == null)
         {
@@ -88,6 +90,7 @@ public class EventHandler : MonoBehaviour
 
         Event.GetComponent<Event_Parent>().x = x;
         Event.GetComponent<Event_Parent>().y = y;
+        Event.GetComponent<Event_Parent>().EventLoad();
     }
 
     public void EventStart()
@@ -98,10 +101,15 @@ public class EventHandler : MonoBehaviour
 
     public void EventUnLoad()
     {
-        Debug.Log("Evento Eliminado");
-        Destroy(Event);
+        if (Event)
+        {
+            Event.GetComponent<Event_Parent>().EventUnLoad();
+            Destroy(Event);
+        }
         Event = null;
         Spawned = false;
+        Debug.Log("Evento Eliminado");
+
     }
 
 

@@ -30,7 +30,7 @@ public class EV_ElevJanitor : Event_Parent
     {
         DecalSystem.instance.Decal(decal1.position, decal1.rotation.eulerAngles, 2.5f, true, 3.5f, 1, 2);
         DecalSystem.instance.Decal(decal2.position, decal2.rotation.eulerAngles, 2f, true, 2f, 0, 2);
-        janitor.AnimTrigger(2, true);
+        janitor.AnimTrigger(-8, true);
         base.EventFinished();
     }
 }

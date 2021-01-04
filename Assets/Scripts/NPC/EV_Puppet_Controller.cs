@@ -6,23 +6,21 @@ using UnityEngine.AI;
 
 public class EV_Puppet_Controller : MonoBehaviour
 {
-    public float Speed, Distance, Gravity, maxfallspeed, animOffset, stopDistance, pushoverrange, pushSpeed = 0.125f;
-    Vector3 movement;
-    Quaternion toAngle;
-    float fallSpeed;
+    public float Speed, accel, Distance, Gravity, maxfallspeed, animOffset, stopDistance, pushoverrange, pushSpeed = 0.125f, rotationSpeed=3F, lerpTime, doorDis = 1.2f;
+    Vector3 movement, currDirection, lastDirection, animMov=Vector3.zero, currPoint;
+    Quaternion fromAngle, toAngle, currAngle, movAngle, toMovAngle;
+    float fallSpeed, currentLerpTime = 1f, perc;
     int currentNode = 0, currSeq = 0;
-    bool isPath, isRotate, isLook, isSequence = false, isPursuit = false, hasDoor = false, hasSubs, isPushing = false, active=true;
+    bool isPath, hasSubs, isRotate, isLook, isSequence = false, isPursuit = false, hasDoor = false, isPushing = false, active = true, isMoving = false, stopRota=false;
     Transform[] ActualPath;
     Transform rotaAt, lookAt, Location;
     int pathNodes, audSeq;
     public CharacterController _controller;
-    public GameObject Puppet_Mesh, Def_LookAt;
+    public GameObject Puppet_Mesh;
     Animator Puppet_Anim;
-    HeadLookController Head;
-    NavMeshAgent _navMeshagent;
     public LayerMask DoorLay, PlayerLay;
-    public string charName;
-    public bool PushOver=false;
+    public bool PushOver=false, isDebuging = false, canDoor=true;
+    public IKManager ikManager;
 
     /// <summary>
     /// Audio Values
@@ -37,18 +35,16 @@ public class EV_Puppet_Controller : MonoBehaviour
     {
         _controller = GetComponent<CharacterController>();
         Audio = GetComponent<AudioSource>();
-        _navMeshagent = this.GetComponent<NavMeshAgent>();
 
         Puppet_Anim = Puppet_Mesh.GetComponent<Animator>();
         Puppet_Anim.SetFloat("AnimOffset", animOffset);
-        Head = Puppet_Mesh.GetComponent<HeadLookController>();
 
 
     }
 
     void Start()
     {
-        Head.effect = 0;
+        currAngle = transform.rotation;
     }
 
     public void DeactivateCollision()
@@ -67,51 +63,45 @@ public class EV_Puppet_Controller : MonoBehaviour
     {
         if (active)
         {
+            if(canDoor)
             CheckDoor();
 
             if (PushOver && !isPursuit && !isPath)
                 PlayerPush();
-
-            if (isPath)
-            {
-                ACT_Path();
-            }
+            
             if (isRotate)
-            {
-                Vector3 Point = new Vector3(rotaAt.position.x, transform.position.y, rotaAt.position.z) - transform.position;
-                toAngle = Quaternion.LookRotation(Point);
-            }
+                ACT_Rotation();
+            if (isPath && ((!isRotate)||(isRotate&&perc>=1)))
+                ACT_Path();
             if (isPursuit)
                 FindPath();
 
+            /*if (!_controller.isGrounded)*/
+            ACT_Gravity();
 
+            if (Time.deltaTime != 0)
+                _controller.Move((movAngle * movement) * Time.deltaTime);
 
-            if (isLook)
-            {
-                Head.target = lookAt.transform.position;
-            }
+            transform.rotation = currAngle;
+            animMov = ((movAngle * Quaternion.Inverse(currAngle)) * movement);
+
+            
+                //Debug.Log("Movement = " + movement + " magnitude = " + movement.magnitude + " AniMovement = " + animMov + " currAngle " + currAngle.eulerAngles + " movAngle = " + movAngle.eulerAngles);
+
+            if (!isMoving)
+            movement = Vector3.Lerp(movement, Vector3.zero, 4f * Time.deltaTime);
+
+            isMoving = false;
+
+            /*if (isPath)
+                transform.rotation = Quaternion.Lerp(transform.rotation, toAngle, 8f * Time.deltaTime);
             else
-            {
-                Head.target = Def_LookAt.transform.position;
-                if (Head.effect > 0.005)
-                    Head.effect = Mathf.Lerp(Head.effect, 0, 0.125f * Time.deltaTime);
-                else
-                    Head.effect = 0;
-            }
+                transform.rotation = Quaternion.Lerp(transform.rotation, toAngle, 3f * Time.deltaTime);*/
 
+            /*if (!isPursuit)
+            {*/
 
-            if (!isPursuit)
-            {
-                if (!_controller.isGrounded)
-                    ACT_Gravity();
-                if (Time.deltaTime != 0)
-                _controller.Move(movement);
-                movement = Vector3.Lerp(movement, Vector3.zero, 4f * Time.deltaTime);
-                if (isPath)
-                    transform.rotation = Quaternion.Lerp(transform.rotation, toAngle, 8f * Time.deltaTime);
-                else
-                    transform.rotation = Quaternion.Lerp(transform.rotation, toAngle, 3f * Time.deltaTime);
-            }
+            //}
         }
     }
 
@@ -129,26 +119,36 @@ public class EV_Puppet_Controller : MonoBehaviour
             if (currentNode != pathNodes)
                 currentNode += 1;
         }
+        toMovAngle = Quaternion.LookRotation(new Vector3(ActualPath[currentNode].position.x, transform.position.y, ActualPath[currentNode].position.z) - transform.position);
 
-        Vector3 Point = new Vector3(ActualPath[currentNode].position.x, transform.position.y, ActualPath[currentNode].position.z) - transform.position;
+        if (movement.magnitude < Speed)
+        movement += (Vector3.forward * accel) * Time.deltaTime;
+        isMoving = true;
 
-        toAngle = Quaternion.LookRotation(Point);
-
-        movement = (transform.forward * Speed) * Time.deltaTime;
+        if (!isRotate)
+        {
+            movAngle = Quaternion.LookRotation(transform.forward);
+        }
+        movAngle = Quaternion.Lerp(movAngle, toMovAngle, rotationSpeed * Time.deltaTime);
+        if(!isRotate)
+        {
+            currAngle = movAngle;
+        }
 
         if ((Vector3.Distance(new Vector3(ActualPath[currentNode].position.x, transform.position.y, ActualPath[currentNode].position.z), transform.position) < stopDistance) && currentNode == pathNodes)
         {
             isPath = false;
         }
+
+        /*if (isDebuging)
+            Debug.Log("I'm moving, im moving!");*/
     }
-
-
-
 
     void ACT_Anim()
     {
 
-        Puppet_Anim.SetBool("move", (isPath||isPursuit||isPushing));
+        Puppet_Anim.SetFloat("moveX", animMov.x);
+        Puppet_Anim.SetFloat("moveY", animMov.z);
 
     }
 
@@ -157,30 +157,63 @@ public class EV_Puppet_Controller : MonoBehaviour
     {
         if (_controller.isGrounded)
             fallSpeed = 0;
-        fallSpeed -= Gravity * Time.deltaTime;
-        if (fallSpeed < maxfallspeed)
-            fallSpeed = maxfallspeed;
+        else
+        {
+            fallSpeed -= Gravity;
+            if (fallSpeed < maxfallspeed)
+                fallSpeed = maxfallspeed;
+        }
 
         movement.y = fallSpeed;
     }
 
 
-    public void SetPath(Transform[] NewPath)
+    public void SetPath(Transform[] NewPath, bool stopRotation = true)
     {
         ActualPath = NewPath;
         pathNodes = NewPath.Length-1;
         isPath = true;
-        isRotate = false;
         isPursuit = false;
         currentNode = 0;
+        if (stopRotation)
+            isRotate = false;
+
+        movAngle = Quaternion.LookRotation(new Vector3(ActualPath[currentNode].position.x, transform.position.y, ActualPath[currentNode].position.z) - transform.position);
+
     }
 
-    public void SetRota(Transform LookAt)
+    void ACT_Rotation()
     {
+        //Debug.Log("I'm rotating");
+        toAngle = Quaternion.LookRotation((new Vector3(rotaAt.position.x, transform.position.y, rotaAt.position.z) - transform.position));
+        currentLerpTime += Time.deltaTime;
+        if (currentLerpTime > lerpTime)
+        {
+            currentLerpTime = lerpTime;
+            if (stopRota)
+                isRotate = false;
+        }
+
+        //lerp!
+        perc = currentLerpTime / lerpTime;
+        currAngle = Quaternion.Lerp(fromAngle, toAngle, perc);
+    }
+
+    public void SetRota(Transform LookAt, bool stopDone = false)
+    {
+        stopRota = stopDone;
         rotaAt = LookAt;
+        fromAngle = transform.rotation;
+        if (Vector3.Dot(transform.right, (new Vector3(rotaAt.position.x, transform.position.y, rotaAt.position.z) - transform.position)) > 0)
+            Puppet_Anim.SetTrigger("turnRight");
+        else
+            Puppet_Anim.SetTrigger("turnLeft");
+
         isRotate = true;
         isPath = false;
         isPursuit = false;
+        currentLerpTime = 0f;
+        perc = 0f;
     }
     public void StopRota()
     {
@@ -189,13 +222,11 @@ public class EV_Puppet_Controller : MonoBehaviour
 
     public void SetLookAt(Transform LookAt)
     {
-        Head.effect = 1;
-        lookAt = LookAt;
-        isLook = true;
+        ikManager.StartLook(LookAt);
     }
     public void StopLookAt()
     {
-        isLook = false;
+        ikManager.StopLook();
     }
 
     public void PausePath()
@@ -213,19 +244,16 @@ public class EV_Puppet_Controller : MonoBehaviour
         isRotate = false;
         isPursuit = true;
         Location = Here;
-        _navMeshagent.isStopped = false;
     }
 
     public void StopPursuit()
     {
-        _navMeshagent.isStopped = true;
         isPursuit = false;
     }
 
     void FindPath()
     {
         Vector3 targetVector = Location.transform.position;
-        _navMeshagent.SetDestination(targetVector);
     }
 
 
@@ -236,7 +264,7 @@ public class EV_Puppet_Controller : MonoBehaviour
         Audio.clip = currAudio;
         Audio.Play();
         if (_playSubs)
-            SubtitleEngine.instance.playSub(string.Format(GlobalValues.sceneStrings[currAudio.name], GlobalValues.charaStrings[charName]), true, Force);
+            SubtitleEngine.instance.playVoice(currAudio.name, Force);
     }
     public void StopSound()
     {
@@ -258,10 +286,15 @@ public class EV_Puppet_Controller : MonoBehaviour
         hasSubs = _hasSubs;
     }
 
-    public void AnimTrigger(int Number, bool value)
+    public void AnimTrigger(int Number, bool value = false)
     {
         switch(Number)
         {
+            case 3:
+                {
+                    Puppet_Anim.SetBool("param3", value);
+                    break;
+                }
             case 2:
                 {
                     Puppet_Anim.SetBool("param2", value);
@@ -287,6 +320,31 @@ public class EV_Puppet_Controller : MonoBehaviour
                     Puppet_Anim.SetTrigger("param-3");
                     break;
                 }
+            case -4:
+                {
+                    Puppet_Anim.SetTrigger("param-4");
+                    break;
+                }
+            case -5:
+                {
+                    Puppet_Anim.SetTrigger("param-5");
+                    break;
+                }
+            case -6:
+                {
+                    Puppet_Anim.SetTrigger("param-6");
+                    break;
+                }
+            case -7:
+                {
+                    Puppet_Anim.SetTrigger("param-7");
+                    break;
+                }
+            case -8:
+                {
+                    Puppet_Anim.SetTrigger("param-8");
+                    break;
+                }
         }
 
     }
@@ -310,10 +368,10 @@ public class EV_Puppet_Controller : MonoBehaviour
     void CheckDoor()
     {
             Collider[] Interact;
-            Interact = Interact = Physics.OverlapSphere(transform.position + (transform.forward * 1.7f), 1.9f, DoorLay);
+            Interact = Physics.OverlapSphere(transform.position + (movAngle * (Vector3.forward * doorDis)), 0.5f, DoorLay);
             if (Interact.Length != 0)
             {
-                Debug.DrawRay(transform.position+(transform.forward*1.5f), Interact[0].transform.position - transform.position);
+                Debug.DrawRay(transform.position+(transform.forward* doorDis), Interact[0].transform.position - transform.position);
                 Interact[0].transform.gameObject.GetComponent<Object_Door>().ForceOpen(1.5f);
             }
     }
@@ -325,22 +383,30 @@ public class EV_Puppet_Controller : MonoBehaviour
 
         if (Interact.Length != 0)
         {
-            Debug.DrawRay(transform.position + (transform.forward * 1.5f), Interact[0].transform.position - transform.position);
-            movement -= ((Interact[0].transform.position - transform.position).normalized * (pushSpeed/2) * Time.deltaTime);
+            //Debug.DrawRay(transform.position + (transform.forward * 1.5f), Interact[0].transform.position - transform.position);
+            movAngle = Quaternion.Inverse(Quaternion.LookRotation(new Vector3(Interact[0].transform.position.x, transform.position.y, Interact[0].transform.position.z) - transform.position).normalized);
+            movement += (Vector3.forward * (pushSpeed/2));
             isPushing = true;
+            isMoving = true;
         }
         else
             isPushing = false;
+
+        
     }
 
     public void puppetWarp(Vector3 here, float rotation)
     {
-        _navMeshagent.Warp(here);
+        transform.position = here;
         Vector3 rota = transform.eulerAngles;
         transform.rotation = Quaternion.Euler(rota.x, rota.y + rotation, rota.z);
     }
 
-
+    [ExecuteInEditMode]
+    private void OnDrawGizmos()
+    {
+        Debug.DrawLine(transform.position, transform.position + (transform.forward * doorDis), Color.blue);
+    }
 
 
 

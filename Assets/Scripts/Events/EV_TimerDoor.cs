@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EV_TimerDoor : MonoBehaviour
 {
-    public GameObject Door1, Door2, Button1, Button2;
+    public GameObject Door1, Door2, Button1, Button2, scrambleZone;
     bool isActive, timerdone, bopity;
     float Timer;
     AudioSource BipBop;
@@ -12,6 +12,7 @@ public class EV_TimerDoor : MonoBehaviour
     void Start()
     {
         BipBop = GetComponent<AudioSource>();
+        scrambleZone.SetActive(true);
     }
 
 
@@ -20,6 +21,7 @@ public class EV_TimerDoor : MonoBehaviour
     {
         if (isActive == false && (Button1.GetComponent<Object_Button_Trigger>().activated == true || Button2.GetComponent<Object_Button_Trigger>().activated == true))
         {
+            scrambleZone.SetActive(false);
             Timer = 8;
             isActive = true;
             Door1.GetComponent<Object_Door>().DoorSwitch();
@@ -37,6 +39,7 @@ public class EV_TimerDoor : MonoBehaviour
 
             if (Timer <= 0)
             {
+                scrambleZone.SetActive(true);
                 isActive = false;
                 Door1.GetComponent<Object_Door>().DoorSwitch();
                 Door2.GetComponent<Object_Door>().DoorSwitch();

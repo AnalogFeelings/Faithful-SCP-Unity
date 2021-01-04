@@ -8,6 +8,7 @@ public class NavController : MonoBehaviour
     public RectTransform batteryRect;
     
     Equipable_Nav Nav;
+    gameItem currNav;
     // Start is called before the first frame update
     void Start()
     {
@@ -17,7 +18,8 @@ public class NavController : MonoBehaviour
     // Update is called once per frame
     void OnEnable()
     {
-        Nav = ((Equipable_Nav)GameController.instance.player.GetComponent<Player_Control>().equipment[(int)bodyPart.Hand]);
+        currNav = GameController.instance.player.GetComponent<Player_Control>().equipment[(int)bodyPart.Hand];
+        Nav = ((Equipable_Nav)ItemController.instance.items[currNav.itemFileName]);
         if (Nav.isOnline)
         {
             GameController.instance.Map_RenderFull();
@@ -38,7 +40,7 @@ public class NavController : MonoBehaviour
             Battery.SetActive(false);
         }
 
-        if (Nav.valueFloat < 0 && Nav.SpendBattery)
+        if (currNav.valFloat < 0 && Nav.SpendBattery)
             Display.SetActive(false);
         else
             Display.SetActive(true);
@@ -48,9 +50,9 @@ public class NavController : MonoBehaviour
     {
         if (Nav.SpendBattery)
         {
-            int batPercent = ((int)Mathf.Floor((Nav.valueFloat / (100 / 100)) / 5));
+            int batPercent = ((int)Mathf.Floor((currNav.valFloat / (100 / 100)) / 5));
 
-            if (Nav.valueFloat <= 0)
+            if (currNav.valFloat <= 0)
                 Display.SetActive(false);
 
             batteryRect.sizeDelta = new Vector2(batPercent * 8, 14);

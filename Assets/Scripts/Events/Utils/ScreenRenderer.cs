@@ -26,9 +26,6 @@ public class ScreenRenderer : MonoBehaviour
         plane.transform.position = transform.position;
         plane.transform.rotation = transform.rotation;
         plane.transform.localScale = transform.localScale;
-        
-        
-
     }
 
     void Start()
@@ -85,12 +82,13 @@ public class ScreenRenderer : MonoBehaviour
     void Frame(int fh, int fv)
     {
         float uvH = hsize * fh;
-        float uvV = 1 - (vsize * fv);
+        float uvV = 1-(vsize * fv);
 
-        uvs[3] = new Vector2(uvH, uvV);
-        uvs[1] = new Vector2(uvH + hsize, uvV);
-        uvs[0] = new Vector2(uvH, uvV-vsize);
-        uvs[2] = new Vector2(uvH + hsize, uvV-vsize);
+        uvs[0] = new Vector2(uvH, uvV - vsize);
+        uvs[1] = new Vector2(uvH + hsize, uvV - vsize);
+        uvs[2] = new Vector2(uvH, uvV);
+        uvs[3] = new Vector2(uvH + hsize, uvV);
+
         mesh.uv = uvs;
     }
 }

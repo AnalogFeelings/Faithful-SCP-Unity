@@ -7,27 +7,27 @@ public class Item_Clipboard : Item
 {
     public Sprite doc, nodoc;
     // Start is called before the first frame update
-    public override void Use()
+    public override void Use(ref gameItem currItem)
     {
-        if (valueInt == -1)
+        //Debug.Log("Current inv = " + currItem.valInt);
+        if (currItem.valInt == -1)
         {
-            valueInt = ItemController.instance.invs.Count;
+            currItem.valInt = ItemController.instance.invs.Count;
             ItemController.instance.NewInv();
         }
-        ItemController.instance.ChangeInv(valueInt);
+        ItemController.instance.ChangeInv(currItem.valInt);
     }
-    public override bool Mix(Item toMix)
+    public override bool Mix(ref gameItem currItem, ref gameItem toMix)
     {
-        if (toMix is Document_Equipable || toMix is Equipable_Key)
+        if (ItemController.instance.items[toMix.itemFileName] is Document_Equipable || ItemController.instance.items[toMix.itemFileName] is Equipable_Key)
         {
-            if (valueInt == -1)
+            if (currItem.valInt == -1)
             {
-                valueInt = ItemController.instance.invs.Count;
+                currItem.valInt = ItemController.instance.invs.Count;
                 ItemController.instance.NewInv();
             }
-            if (ItemController.instance.AddItem(toMix, valueInt))
+            if (ItemController.instance.AddItem(toMix, currItem.valInt)!=-1)
             {
-                icon = doc;
                 return true;
             }
             else

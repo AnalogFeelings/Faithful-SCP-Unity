@@ -39,6 +39,7 @@ public class room_dat
 {
     public RoomType type;
     public bool isSpecial, hasEvents = false, hasSpecial = false, hasItems = false, hasAmbiance = false;
+    public float customFog;
     public GameObject RoomHolder;
     public int music = -1, Zone = 1;
 };
@@ -50,8 +51,9 @@ public class room
     public RoomType type;
     public int angle, Event=-1, Zone, items=0, EventState=0;
     public bool empty=true, eventDone=false, isSpecial=false;
+    public float customFog;
     public int[] neighbours = new int[4];
-    public int[] values = new int[5] { 0, 0, 0, 0, 0};
+    public int[] values = new int[6] { 0, 0, 0, 0, 0, 0};
     public string roomName;
 };
 
@@ -95,7 +97,7 @@ class RoomCompare : IComparer<RoomChance>
     public int Compare(RoomChance x, RoomChance y)
     {
         return x.Chance.CompareTo(y.Chance);
-        throw new System.NotImplementedException();
+        //throw new System.NotImplementedException();
     }
 }
 
@@ -121,7 +123,7 @@ public class NewMapGen : MonoBehaviour
     public int[,] mapgen;
     public int[,,] cull_lookup;
     public room[,] mapfil;
-    public GameObject[,] mapobjects;
+    public RoomHolder[,] mapobjects;
     public int zone3_limit;
     public int zone2_limit;
     private int mapdone;
@@ -215,6 +217,7 @@ public class NewMapGen : MonoBehaviour
             temp.Zone = roomlist[i].Zone;
             temp.type = roomlist[i].type;
             temp.hasAmbiance = roomlist[i].hasAmbiance;
+            temp.customFog = roomlist[i].customFog;
 
             roomTable.Add(temp.RoomHolder.name, temp);
         }
@@ -231,7 +234,7 @@ public class NewMapGen : MonoBehaviour
         mapgen = new int[mapSize.xSize, mapSize.ySize];
         if (IsNew)
             mapfil = new room[mapSize.xSize, mapSize.ySize];
-        mapobjects = new GameObject[mapSize.xSize, mapSize.ySize];
+        mapobjects = new RoomHolder[mapSize.xSize, mapSize.ySize];
         mapdone = 0;
         walker_count = 0;
     }
@@ -743,6 +746,7 @@ public class NewMapGen : MonoBehaviour
             mapfil[i, j].type = RoomType.TwoWay;
             mapfil[i, j].isSpecial = true;
             mapfil[i, j].Zone = 0;
+            mapfil[i, j].customFog = -1;
             cantSpawn = false;
 
             twoWay_Lookup.Add(new Roomlookup(i, j));
@@ -755,6 +759,7 @@ public class NewMapGen : MonoBehaviour
             mapfil[i, j].type = RoomType.TwoWay;
             mapfil[i, j].isSpecial = true;
             mapfil[i, j].Zone = 0;
+            mapfil[i, j].customFog = -1;
             twoWay_Lookup.Add(new Roomlookup(i, j));
             cantSpawn = false;
             return;
@@ -1036,6 +1041,7 @@ public class NewMapGen : MonoBehaviour
     {
         temp.roomName = data.Room.name;
         temp.type = data.type;
+        temp.customFog = data.customFog;
 
         if (data.hasItem)
             temp.items = 1;
@@ -1046,12 +1052,12 @@ public class NewMapGen : MonoBehaviour
 
     void SpecialRoomSpawn()
     {
-        int i, chance, tries = 1000;
+        int i, chance, tries = 10000;
         ref List<Roomlookup> currtype = ref twoWay_Lookup;
         bool spawned;
         for (i = 0; i < (speciallist.Count); i++)
         {
-            tries = 100;
+            tries = 10000;
             spawned = false;
             switch (speciallist[i].type)
             {
@@ -1212,7 +1218,7 @@ public class NewMapGen : MonoBehaviour
         room_dat room_ = roomTable[mapfil[i, j].roomName];
 
         int angleTemp = mapfil[i, j].angle;
-        mapobjects[i, j] = Instantiate(room_.RoomHolder, new Vector3(roomsize * i, 0.0f, roomsize * j), Quaternion.Euler(0, angleTemp, 0));
+        mapobjects[i, j] = Instantiate(room_.RoomHolder, new Vector3(roomsize * i, 0.0f, roomsize * j), Quaternion.Euler(0, angleTemp, 0)).GetComponent<RoomHolder>();
         mapobjects[i, j].transform.parent = mapParent.transform;
 
         float xDecal = Random.Range(-5.0f, 5.0f);
@@ -1275,7 +1281,7 @@ public class NewMapGen : MonoBehaviour
                         if (j < zone2_limit)
                             doorhold = Instantiate(DoorLight, new Vector3(roomsize * i + (roomsize / 2), 0.0f, roomsize * j), Quaternion.identity * Quaternion.Euler(0, 90, 0));
                         else
-                            doorhold = Instantiate(DoorLight, new Vector3(roomsize * i + (roomsize / 2), 0.0f, roomsize * j), Quaternion.identity * Quaternion.Euler(0, 90, 0));
+                            doorhold = Instantiate(DoorHeavy, new Vector3(roomsize * i + (roomsize / 2), 0.0f, roomsize * j), Quaternion.identity * Quaternion.Euler(0, 90, 0));
 
 
                         doorhold.transform.parent = GameController.instance.doorParent.transform;
@@ -1288,7 +1294,7 @@ public class NewMapGen : MonoBehaviour
                         if (j < zone2_limit)
                             doorhold = Instantiate(DoorLight, new Vector3(roomsize * i, 0.0f, roomsize * j + (roomsize / 2)), Quaternion.identity);
                         else
-                            doorhold = Instantiate(DoorLight, new Vector3(roomsize * i, 0.0f, roomsize * j + (roomsize / 2)), Quaternion.identity);
+                            doorhold = Instantiate(DoorHeavy, new Vector3(roomsize * i, 0.0f, roomsize * j + (roomsize / 2)), Quaternion.identity);
 
                         doorhold.transform.parent = GameController.instance.doorParent.transform;
                     }
