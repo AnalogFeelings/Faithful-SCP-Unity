@@ -15,9 +15,10 @@ public class Object_KeyButton : Object_Interact
     {
         Player_Control player = GameController.instance.player.GetComponent<Player_Control>();
 
-        if(!WaitForBool || (WaitForBool && GameController.instance.globalBools[ThisValue]))
+
+        if (player.equipment[(int)bodyPart.Hand] != null && ItemController.instance.items[player.equipment[(int)bodyPart.Hand].itemFileName] is Equipable_Key)
         {
-            if (player.equipment[(int)bodyPart.Hand] != null && ItemController.instance.items[player.equipment[(int)bodyPart.Hand].itemFileName] is Equipable_Key)
+            if (!WaitForBool || (WaitForBool && GameController.instance.globalBools[ThisValue]))
             {
                 Equipable_Key key;
                 key = (Equipable_Key)ItemController.instance.items[player.equipment[(int)bodyPart.Hand].itemFileName];
@@ -31,19 +32,20 @@ public class Object_KeyButton : Object_Interact
                 }
                 else
                 {
-                    SubtitleEngine.instance.playSub("playStrings","play_button_lowcard");
+                    SubtitleEngine.instance.playSub("playStrings", "play_button_lowcard");
                     soundsource.PlayOneShot(Rejected);
                 }
-
             }
             else
-                SubtitleEngine.instance.playSub("playStrings","play_button_nocard");
+            {
+                SubtitleEngine.instance.playSub("playStrings", "play_button_failcard");
+                soundsource.PlayOneShot(Rejected);
+            }
+
         }
         else
-        {
-            SubtitleEngine.instance.playSub("playStrings","play_button_failcard");
-            soundsource.PlayOneShot(Rejected);
-        }
+            SubtitleEngine.instance.playSub("playStrings", "play_button_nocard");
+
     }
 
     public override void Hold()

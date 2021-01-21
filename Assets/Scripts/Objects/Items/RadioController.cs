@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class RadioController : MonoBehaviour
 {
-    public AudioClip[] station3, station4, station5;
+    public AudioClip[] station3, station4, station5, eventBasedAudio;
     public AudioClip station2, sndstatic, change, station3_music;
     public Image[] bats;
     float[] ch_Timer, ch_Seek;
@@ -41,9 +41,9 @@ public class RadioController : MonoBehaviour
         {
             if (_Radio.SpendBattery)
             {
-                if (_Radio.valueFloat > 0)
+                if (currRadio.valFloat > 0)
                 {
-                    int batPercent = (Mathf.CeilToInt((5 * _Radio.valueFloat) / 100));
+                    int batPercent = (Mathf.CeilToInt((5 * currRadio.valFloat) / 100));
 
                     for (int i = 0; i < 4; i++)
                     {

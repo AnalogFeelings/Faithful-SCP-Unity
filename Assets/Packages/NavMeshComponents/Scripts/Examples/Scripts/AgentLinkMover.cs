@@ -25,7 +25,7 @@ public class AgentLinkMover : MonoBehaviour
         agent.autoTraverseOffMeshLink = false;
         while (true)
         {
-            if (agent.isOnOffMeshLink && ((UnityEngine.AI.NavMeshLink)agent.navMeshOwner).area != areaDoor)
+            if (agent.isOnOffMeshLink)
             {
                 if (m_Method == OffMeshLinkMoveMethod.NormalSpeed)
                     yield return StartCoroutine(NormalSpeed(agent));
@@ -48,7 +48,7 @@ public class AgentLinkMover : MonoBehaviour
         Quaternion startRota = agent.transform.rotation;
 
 
-        float duration = 0.5f;
+        float duration = ((startPos - endPos).magnitude / agent.speed);
         float normalizedTime = 0.0f;
         while (normalizedTime < 1.0f)
         {

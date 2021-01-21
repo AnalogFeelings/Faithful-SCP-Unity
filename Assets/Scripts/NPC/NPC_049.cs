@@ -280,6 +280,7 @@ public class NPC_049 : Roam_NPC
                 }
             case scp049State.chase:
                 {
+                    foundSound = false;
                     currSoundLevel = 0;
                     agent.speed = chaseSpeed;
                     if (Time.frameCount % framerate == 0)
@@ -297,12 +298,19 @@ public class NPC_049 : Roam_NPC
 
 
                     RaycastHit hit;
-                    if (Physics.Raycast(transform.position + Vector3.up, transform.forward, out hit, 1f, doors))
-                    {
+                    if (Physics.Raycast(transform.position + Vector3.up, transform.forward, out hit, 2f, doors))
+                    {   if (!hit.transform.gameObject.GetComponent<Object_Door>().GetState())
+                            agent.isStopped = true;
+                        else
+                            agent.isStopped = false;
                         hit.transform.gameObject.GetComponent<Object_Door>().ForceOpen(5);
                     }
+                    else
+                    {
+                        agent.isStopped = false;
+                    }
 
-                    if (Physics.OverlapSphere(transform.position + transform.forward, 0.5f, playerMask).Length > 0)
+                    if (Physics.OverlapSphere(transform.position + transform.forward, 0.5f, playerMask).Length > 0 && !GameController.instance.playercache.godmode)
                     {
                         agent.isStopped = true;
                         GameController.instance.deathmsg = Localization.GetString("deathStrings", "death_049");

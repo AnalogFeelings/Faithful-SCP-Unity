@@ -17,17 +17,16 @@ public class EV_EmilyDeath : Event_Parent
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public override void EventStart()
     {
         base.EventStart();
         GameController.instance.GlobalSFX.PlayOneShot(voice079);
         GameController.instance.particleController.StartParticle(0, pos.transform.position, pos.transform.rotation);
+        if (GameController.instance.getValue(x, y, 1) == 0)
+        {
+            GameController.instance.getCutsceneObject(x, y, 0).GetComponent<Object_Door>().DoorSwitch();
+            GameController.instance.setValue(x, y, 1, 1);
+        }
         EventFinished();
     }
 }

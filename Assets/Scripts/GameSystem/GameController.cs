@@ -324,15 +324,16 @@ public class GameController : MonoBehaviour
         }
         else if (DebugFlag)
         {
-            GUI.Box(new Rect(10, 10, 300, 100), "Debug Data");
+            GUI.Box(new Rect(10, 10, 300, 300), "Debug Data");
             GUI.Label(new Rect(20, 40, 300, 20), "Map X " + xPlayer + " Mapa Y " + yPlayer);
             GUI.Label(new Rect(20, 65, 300, 20), "This Zone " + currZone);
             GUI.Label(new Rect(20, 90, 300, 20), "Is Gameplay? " + doGameplay);
             GUI.Label(new Rect(20, 115, 300, 20), "Is Rooom hold? " + holdRoom);
             GUI.Label(new Rect(20, 130, 300, 20), "Is Pocket? " + isPocket);
-            GUI.Label(new Rect(20, 155, 300, 20), "is ALive? " + isAlive);
+            GUI.Label(new Rect(20, 155, 300, 20), "is Alive? " + isAlive);
             GUI.Label(new Rect(20, 170, 300, 20), "Player X " + playercache.transform.position.x + " Y " + playercache.transform.position.y + " Z " + playercache.transform.position.z);
             GUI.Label(new Rect(20, 185, 300, 20), "Player Rotation " + playercache.transform.rotation.eulerAngles.y);
+            GUI.Label(new Rect(20, 200, 300, 20), "Current room " + currentRoom);
         }
     }
 
@@ -1413,7 +1414,7 @@ public class GameController : MonoBehaviour
             }
             else
             {
-                player = Instantiate(origplayer, here, Quaternion.identity);
+                player = Instantiate(origplayer, here, Quaternion.Euler(0,SaveSystem.instance.playData.angle,0));
                 Debug.Log("Spawning here at " + here);
             }
         }
@@ -1549,7 +1550,8 @@ public class GameController : MonoBehaviour
         foreach (ReflectionProbe probe in probes)
         {
             bool lazy = true;
-
+            if (probe == null)
+                yield break;
             probe.timeSlicingMode = lazy ? UnityEngine.Rendering.ReflectionProbeTimeSlicingMode.IndividualFaces : UnityEngine.Rendering.ReflectionProbeTimeSlicingMode.AllFacesAtOnce;
 
             probe.RenderProbe();

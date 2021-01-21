@@ -64,17 +64,6 @@ public class OptionController : MonoBehaviour
 
         language.AddOptions(options);
 
-        resolutions.ClearOptions();
-        options = new List<Dropdown.OptionData>();
-
-
-        foreach (Resolution curres in Screen.resolutions)
-        {
-            options.Add(new Dropdown.OptionData(curres.width + "x" + curres.height + "x" +curres.refreshRate+"hz"));
-        }
-
-        resolutions.AddOptions(options);
-
 
         quality.value = QualitySettings.GetQualityLevel();
         Debug.Log("Language loaded was " + PlayerPrefs.GetInt("Lang", 0));
@@ -85,10 +74,14 @@ public class OptionController : MonoBehaviour
 
         fullscreen.isOn = (PlayerPrefs.GetInt("Fullscreen", 0) == 1);
 
+        ReSetResolutions();
 
+        resolutions.value = PlayerPrefs.GetInt("Res", 0);
+
+        vsync.isOn = (PlayerPrefs.GetInt("Vsync", 1) == 1);
         framelimit.text = PlayerPrefs.GetInt("Framerate", 60).ToString();
         frame.isOn = (PlayerPrefs.GetInt("Frame", 0) == 1);
-        vsync.isOn = (PlayerPrefs.GetInt("Vsync", 1) == 1);
+        
 
         //////////////////////MUSIC SETUP
         ///
@@ -103,6 +96,7 @@ public class OptionController : MonoBehaviour
         ///
         debug.isOn = (PlayerPrefs.GetInt("Debug", 0) == 1);
         tuto.isOn = (PlayerPrefs.GetInt("Tutorials", 1) == 1);
+
     }
 
     private void Start()
@@ -113,14 +107,34 @@ public class OptionController : MonoBehaviour
         voice.value = PlayerPrefs.GetFloat("VoiceVolume", 1);
         master.value = PlayerPrefs.GetFloat("MainVolume", 1);
 
+        if (PlayerPrefs.GetInt("Vsync", 1) == 1)
+        {
+            QualitySettings.vSyncCount = 1;
+            framesettings.SetActive(false);
+            Application.targetFrameRate = -1;
+        }
+        else
+        {
+            QualitySettings.vSyncCount = 0;
+            int value;
+            if (!int.TryParse(framelimit.text, out value))
+            {
+                value = 60;
+                framelimit.text = 60.ToString();
+            }
+            if (value < 15)
+            {
+                value = 15;
+                framelimit.text = 15.ToString();
+            }
+
+            Application.targetFrameRate = value;
+            framesettings.SetActive(true);
+        }
+
         startupdone = true;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     //////////////////////////////////////////////////////////////////////////// TABS
     ///
 
@@ -158,7 +172,19 @@ public class OptionController : MonoBehaviour
     }
 
 
+    public void ReSetResolutions()
+    {
+        resolutions.ClearOptions();
+        List<Dropdown.OptionData> options = new List<Dropdown.OptionData>();
 
+
+        foreach (Resolution curres in Screen.resolutions)
+        {
+            options.Add(new Dropdown.OptionData(curres.width + "x" + curres.height + "x" + curres.refreshRate + "hz"));
+        }
+
+        resolutions.AddOptions(options);
+    }
 
 
 
@@ -180,10 +206,14 @@ public class OptionController : MonoBehaviour
     public void SetFull(bool Value)
     {
         Screen.fullScreen = Value;
+
         PlayerPrefs.SetInt("Fullscreen", Value ? 1 : 0);
 
         if (startupdone)
+        {
             player.PlayOneShot(click);
+            ReSetResolutions();
+        }
     }
 
 
@@ -226,23 +256,24 @@ public class OptionController : MonoBehaviour
     }
 
     public void SetVsync (bool Value)
-    {
-        if (Value == true)
-        {
-            QualitySettings.vSyncCount = 1;
-            framesettings.SetActive(false);
-            PlayerPrefs.SetInt("Frame", 0);
-            PlayerPrefs.SetInt("Vsync", 1);
-        }
-        else
-        {
-            QualitySettings.vSyncCount = 0;
-            PlayerPrefs.SetInt("Vsync", 0);
-            framesettings.SetActive(true);
-        }
-
+    { 
         if (startupdone)
+        {
             player.PlayOneShot(click);
+            if (Value == true)
+            {
+                QualitySettings.vSyncCount = 1;
+                framesettings.SetActive(false);
+                PlayerPrefs.SetInt("Frame", 0);
+                PlayerPrefs.SetInt("Vsync", 1);
+            }
+            else
+            {
+                QualitySettings.vSyncCount = 0;
+                PlayerPrefs.SetInt("Vsync", 0);
+                framesettings.SetActive(true);
+            }
+        }
     }
 
     public void SetFrame(bool Value)
@@ -265,19 +296,23 @@ public class OptionController : MonoBehaviour
     }
     public void SetFrameLimit(string valuestr)
     {
-        int value;
-        if (!int.TryParse(valuestr, out value))
+        if (!(PlayerPrefs.GetInt("Vsync", 1) == 1))
         {
-            value = 60;
-            framelimit.text = 60.ToString();
+            int value;
+            if (!int.TryParse(valuestr, out value))
+            {
+                value = 60;
+                framelimit.text = 60.ToString();
+            }
+            if (value < 15)
+            {
+                value = 15;
+                framelimit.text = 15.ToString();
+            }
+
+            Application.targetFrameRate = value;
+            PlayerPrefs.SetInt("Framerate", value);
         }
-        if (value < 15)
-        {
-            value = 15;
-            framelimit.text = 15.ToString();
-        }
-        Application.targetFrameRate = value;
-        PlayerPrefs.SetInt("Framerate", value);
 
         if (startupdone)
             player.PlayOneShot(click);

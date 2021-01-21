@@ -6,16 +6,15 @@ public class EV_ElevJanitor : Event_Parent
 {
     public Transform decal1, decal2;
     public EV_Puppet_Controller janitor;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
+    public override void EventLoad()
     {
-        
+        base.EventLoad();
+        if (GameController.instance.getValue(x, y, 0) == 0)
+        {
+            GameController.instance.getCutsceneObject(x, y, 0).GetComponent<Object_Door>().DoorSwitch();
+            GameController.instance.setValue(x, y, 0, 1);
+        }
     }
 
     public override void EventStart()
