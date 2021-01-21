@@ -61,7 +61,7 @@ public class KeypadController : MonoBehaviour
     {
         GameController.instance.MenuSFX.PlayOneShot(buttonClick);
         objectKeypad.checkCode(currentCode);
-        SCP_UI.instance.ToggleKeypad(null);
+        //SCP_UI.instance.ToggleKeypad(null);
     }
 
 

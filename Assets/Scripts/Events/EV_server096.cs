@@ -141,6 +141,7 @@ public class EV_server096 : Event_Parent
             isBlackOut = true;
             GameController.instance.playercache.FakeBlink(0.25f);
             lights.SetColor("_EmissionColor", noLights);
+            if(probe!=null)
             probe.RenderProbe();
         }
         if (!shouldBlackOut && isBlackOut)
@@ -150,7 +151,8 @@ public class EV_server096 : Event_Parent
             isBlackOut = false;
             GameController.instance.playercache.FakeBlink(0.25f);
             lights.SetColor("_EmissionColor", oldLights);
-            probe.RenderProbe();
+            if (probe != null)
+                probe.RenderProbe();
         }
 
         GameController.instance.setValue(x, y, 1, leverPump.On ? 1 : 0);

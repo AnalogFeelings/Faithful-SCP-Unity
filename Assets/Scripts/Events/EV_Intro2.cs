@@ -277,8 +277,11 @@ public class EV_Intro2 : MonoBehaviour
                         Timer = 1.5f;
                         eventstat = 13;
                         ActiveTimer2 = true;
-                        RerenderProbe1.GetComponent<ReflectionProbe>().RenderProbe();
-                        RerenderProbe2.GetComponent<ReflectionProbe>().RenderProbe();
+                        if (GetComponent<ReflectionProbe>() != null)
+                        {
+                            RerenderProbe1.GetComponent<ReflectionProbe>().RenderProbe();
+                            RerenderProbe2.GetComponent<ReflectionProbe>().RenderProbe();
+                        }
                         break;
                     }
                 case 13:

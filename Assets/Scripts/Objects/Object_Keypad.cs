@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Object_Keypad : Object_Interact
+public class Object_Keypad : Object_Captive
 {
     public GameObject Door01, Door02;
     public string code;
@@ -19,8 +19,14 @@ public class Object_Keypad : Object_Interact
         }
     }
 
-    public override void Pressed()
+    public override void StartCapture()
     {
+        SCP_UI.instance.ToggleKeypad(this);
+    }
+
+    public override void EndCaptive()
+    {
+        base.EndCaptive();
         SCP_UI.instance.ToggleKeypad(this);
     }
 
@@ -39,7 +45,8 @@ public class Object_Keypad : Object_Interact
             SubtitleEngine.instance.playSub("playStrings", "play_button_wrongcode");
             soundsource.PlayOneShot(Rejected);
         }
-
     }
+
+
 
 }

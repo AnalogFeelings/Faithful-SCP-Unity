@@ -25,7 +25,7 @@ public class Item_Spawner : MonoBehaviour
                 if (gend < table[i].items[j].Rate)
                 {
                     GameObject newObject;
-                    newObject = Instantiate(GameController.instance.itemSpawner, positions[i].position, Quaternion.identity);
+                    newObject = Instantiate(GameController.instance.itemSpawner, positions[i].position, positions[i].rotation);
                     Helper(newObject, table[i].items[j].Spawn, positions[i].position);
                     j = table[i].items.Length + 1;
                 }

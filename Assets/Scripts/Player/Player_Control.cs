@@ -56,7 +56,7 @@ public class Player_Control : MonoBehaviour
     Vector3 holdCam, fallSpeed, movement, HoldPos, OriPos, totalmove, headPos, forceLook;
     Quaternion toAngle;
     private CharacterController _controller;
-    bool Grounded = true, isSmoke = false, objectLock=false,fakeBlink, isRunning, isTired = false, isLooking=false, cognitoEffect, onBlink, cameraNextFrame;
+    bool Grounded = true, isSmoke = false, objectLock=false,fakeBlink, isRunning, isTired = false, isLooking=false, cognitoEffect, onBlink, cameraNextFrame, isCaptive = false;
     Camera PlayerCam;
     Image eyes, blinkbar, runbar, batbar, overlay, handEquip, eyeIcon;
     RectTransform hand_rect, hud_rect;
@@ -121,6 +121,8 @@ public class Player_Control : MonoBehaviour
     int currentNode;
     Quaternion PathAngle;
     public float NodeDistance;
+
+    private Object_Captive currCaptive;
 
 
 
@@ -188,6 +190,7 @@ public class Player_Control : MonoBehaviour
             if (IsNoClip == false)
             {
                 ACT_Effects();
+                ACT_CaptiveObject();
                 if (!noMasterController)
                     ACT_Blinking();
                 ACT_Zombie();
@@ -242,7 +245,39 @@ public class Player_Control : MonoBehaviour
         }
     }
 
+    public void CaptureObject(Object_Captive newCaptive)
+    {
+        Freeze = true;
+        ForceLook(newCaptive.transform.position, 4f);
+        checkObjects = false;
+        CameraObj.GetComponent<Player_MouseLook>().inputActive = false;
 
+        currCaptive = newCaptive;
+        isCaptive = true;
+    }
+
+    void StopCapture()
+    {
+        if(isCaptive)
+        {
+            Freeze = false;
+            StopLook();
+            checkObjects = true;
+
+            CameraObj.GetComponent<Player_MouseLook>().inputActive = true;
+            currCaptive.EndCaptive();
+            isCaptive = false;
+            currCaptive = null;
+        }
+    }
+
+    void ACT_CaptiveObject()
+    {
+        if(isCaptive && SCPInput.instance.playerInput.Gameplay.InteractNo.triggered)
+        {
+            StopCapture();
+        }
+    }
 
 
     void ACT_Move()
@@ -626,12 +661,13 @@ public class Player_Control : MonoBehaviour
                 float currdistance;
                 for (int i = 0; i < Interact.Length; i++)
                 {
+                    //
                     Vector3 closePoint = Interact[i].ClosestPoint(handPos.transform.position);
-                    currdistance = Vector3.Distance(handPos.transform.position, closePoint);
-                    Debug.DrawRay(closePoint, (headPos - new Vector3(0.0f, 0.4f, 0.0f)) - closePoint, new Color(255, 255, 255, 1.0f), 5);
+                    currdistance = Vector3.Distance(headPos - new Vector3(0.0f, 0.2f, 0.0f), closePoint);
+                    Debug.DrawRay((headPos - new Vector3(0.0f, 0.2f, 0.0f)), (closePoint - (headPos - new Vector3(0.0f, 0.2f, 0.0f))).normalized* currdistance, new Color(255, 255, 255, 1.0f));
                     if (currdistance < lastdistance)
                     {
-                        if (!Physics.Raycast(closePoint, (headPos - new Vector3(0.0f, 0.4f, 0.0f)) - closePoint, currdistance, Ground, QueryTriggerInteraction.Ignore))
+                        if (!Physics.Raycast((headPos - new Vector3(0.0f, 0.2f, 0.0f)), (closePoint - (headPos - new Vector3(0.0f, 0.2f, 0.0f))).normalized, currdistance, Ground, QueryTriggerInteraction.Ignore))
                         {
                             lastdistance = currdistance;
                             InterHold = Interact[i];
@@ -639,7 +675,7 @@ public class Player_Control : MonoBehaviour
                     }
                 }
             }
-            else
+            /*else
             {
                 lastdistance = float.PositiveInfinity;
                 Interact = Physics.OverlapSphere(transform.position, 0.8f, InteractiveLayer);
@@ -660,7 +696,7 @@ public class Player_Control : MonoBehaviour
                 }
                 else
                     InterHold = null;
-            }
+            }*/
         }
 
 
@@ -776,6 +812,7 @@ public class Player_Control : MonoBehaviour
     {
         if (isGameplay && !godmode)
         {
+            StopCapture();
             GameController.instance.PlayerDeath();
             _controller.enabled = false;
             DeathCol.SetActive(true);
@@ -819,7 +856,7 @@ public class Player_Control : MonoBehaviour
     {
         if (isGameplay && !godmode && !noMasterController)
         {
-
+            StopCapture();
             GameController.instance.FakeDeath();
             _controller.enabled = false;
             DeathCol.SetActive(true);

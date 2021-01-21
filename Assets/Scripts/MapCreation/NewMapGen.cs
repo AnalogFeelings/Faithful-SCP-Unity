@@ -303,6 +303,7 @@ public class NewMapGen : MonoBehaviour
         mapfil[0, mapSize.ySize /2].angle = 90;
         mapfil[0, mapSize.ySize /2].Zone = 2;
         mapfil[0, mapSize.ySize /2].type = RoomType.EndWay;
+        mapfil[0, mapSize.ySize / 2].customFog = -1;
 
         if (spawnspecial)
         SpecialRoomSpawn();

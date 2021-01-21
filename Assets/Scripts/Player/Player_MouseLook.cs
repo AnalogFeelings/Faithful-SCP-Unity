@@ -9,10 +9,7 @@ public class Player_MouseLook : MonoBehaviour
     float inspeed=3;
     bool Invert = false;
     public bool Instant;
-    private void Start()
-    {
-
-    }
+    public bool inputActive = true;
 
     void LateUpdate()
     {
@@ -26,12 +23,14 @@ public class Player_MouseLook : MonoBehaviour
         }
 
         //Debug.Log("Mouse Vector = " + SCPInput.instance.playerInput.Gameplay.Look.ReadValue<Vector2>());
-
+        if (inputActive == true)
+        {
             rotation.y += (SCPInput.instance.playerInput.Gameplay.Look.ReadValue<Vector2>().x * inspeed) * Time.timeScale;
             if (Invert)
                 rotation.x += (SCPInput.instance.playerInput.Gameplay.Look.ReadValue<Vector2>().y * inspeed) * Time.timeScale;
             else
                 rotation.x += -(SCPInput.instance.playerInput.Gameplay.Look.ReadValue<Vector2>().y * inspeed) * Time.timeScale;
+        }
         rotation.x = Mathf.Clamp(rotation.x, -85f, 75f);
 
 

@@ -204,9 +204,9 @@ public class SCP_UI : MonoBehaviour
             keypad.disableKeypad();
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
-            GameController.instance.player.GetComponent<Player_Control>().Freeze = false;
+            /*GameController.instance.player.GetComponent<Player_Control>().Freeze = false;
             GameController.instance.player.GetComponent<Player_Control>().checkObjects = true;
-            GameController.instance.player.GetComponent<Player_Control>().StopLook();
+            GameController.instance.player.GetComponent<Player_Control>().StopLook();*/
             currMenu = Menu.None;
             return;
         }
@@ -219,9 +219,9 @@ public class SCP_UI : MonoBehaviour
             currMenu = Menu.Keypad;
 
             //SCP_UI.instance.ToggleScreen();
-            GameController.instance.player.GetComponent<Player_Control>().Freeze = true;
-            GameController.instance.player.GetComponent<Player_Control>().checkObjects = false;
-            GameController.instance.player.GetComponent<Player_Control>().ForceLook(keypadObject.transform.position, 4f);
+            /*GameController.instance.player.GetComponent<Player_Control>().Freeze = true;
+            
+            GameController.instance.player.GetComponent<Player_Control>().ForceLook(keypadObject.transform.position, 4f);*/
             return;
         }
     }

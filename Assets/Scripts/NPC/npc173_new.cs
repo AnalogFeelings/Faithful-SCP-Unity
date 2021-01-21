@@ -225,9 +225,9 @@ public class npc173_new : Roam_NPC
                     currentPathNode++;
             }
 
-            if (Physics.Raycast(transform.position + (Vector3.up * 0.3f), (currentPoint - transform.position).normalized, out colHit, distance, groundMask))
+            if (Physics.Raycast(transform.position + (Vector3.up * 0.75f), (currentPoint - transform.position).normalized, out colHit, distance, groundMask))
             {
-                nextMove = colHit.point - (((currentPoint - transform.position).normalized) * (controller.radius + 0.2f));
+                nextMove = colHit.point + (((transform.position - currentPoint).normalized) * (controller.radius + 0.2f));
                 nextMove -= (Vector3.up * 0.6f);
                 needsPath = true;
             }
@@ -235,15 +235,14 @@ public class npc173_new : Roam_NPC
 
             if (distanceTarget < targetSnap)
             {
-                if (Physics.Raycast(transform.position + (Vector3.up * 0.3f), (currentTarget - transform.position).normalized, out colHit, distanceTarget, groundMask))
+                if (Physics.Raycast(transform.position + (Vector3.up * 0.75f), (currentTarget - transform.position).normalized, out colHit, distanceTarget, groundMask))
                 {
                     needsPath = true;
                     newTarget = true;
-                    nextMove = currentTarget - (((currentTarget - transform.position).normalized) * (controller.radius + 0.5f));
+                    nextMove = colHit.point + (((transform.position-currentTarget).normalized) * (controller.radius + 0.5f));
                     currTimer = targetSnap * currStepWait;
                     //Debug.Log("Snap! " + distanceTarget);
                 }
-
             }
 
             nextRotation = Quaternion.LookRotation(new Vector3(nextMove.x, transform.position.y, nextMove.z) - transform.position);
