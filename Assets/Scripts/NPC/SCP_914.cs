@@ -53,27 +53,27 @@ public class SCP_914 : MonoBehaviour
         {
             case 4:
                 {
-                    Knob.transform.localRotation = Quaternion.Euler(0, 0, 83f);
+                    Knob.transform.localRotation = Quaternion.Euler(0, 180, -83f);
                     break;
                 }
             case 3:
                 {
-                    Knob.transform.localRotation = Quaternion.Euler(0, 0, 43.5f);
+                    Knob.transform.localRotation = Quaternion.Euler(0, 180, -43.5f);
                     break;
                 }
             case 2:
                 {
-                    Knob.transform.localRotation = Quaternion.Euler(0, 0, 0f);
+                    Knob.transform.localRotation = Quaternion.Euler(0, 180, 0f);
                     break;
                 }
             case 1:
                 {
-                    Knob.transform.localRotation = Quaternion.Euler(0, 0, -44f);
+                    Knob.transform.localRotation = Quaternion.Euler(0, 180, 44f);
                     break;
                 }
             case 0:
                 {
-                    Knob.transform.localRotation = Quaternion.Euler(0, 0, -83f);
+                    Knob.transform.localRotation = Quaternion.Euler(0, 180, 83f);
                     break;
                 }
         }

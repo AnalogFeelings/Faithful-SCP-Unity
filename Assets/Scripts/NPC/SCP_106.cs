@@ -138,7 +138,7 @@ public class SCP_106 : Roam_NPC
                     {
                         float dot = Vector3.Dot(Player.transform.forward, (transform.position - Player.transform.position).normalized);
                         Debug.Log("Dot product of lookAt = " + dot + " using a star " + usingAStar + " distance to latest point " + (usingAStar ? _navMeshagent.remainingDistance : Mathf.Infinity) + " radius " + _navMeshagent.radius); 
-                        if (dot < 0 && ((!usingAStar && PlayerDistance > 8) || (usingAStar && (_navMeshagent.remainingDistance < _navMeshagent.radius) && PlayerDistance > 8)))
+                        if ((dot < 0 && ((!usingAStar && PlayerDistance > 8)) || (usingAStar && (_navMeshagent.remainingDistance < _navMeshagent.radius) && PlayerDistance > 8)))
                             UnSpawn();
                     }
 
@@ -190,6 +190,7 @@ public class SCP_106 : Roam_NPC
 
     public override void UnSpawn()
     {
+        Debug.Log("SCP-106 Unspawning");
         _navMeshagent.enabled = false;
         transform.position = (new Vector3(0, -10, 0));
         data.isActive = false;
@@ -212,7 +213,8 @@ public class SCP_106 : Roam_NPC
         {
             col.enabled = false;
             anim.SetBool("move", false);
-            anim.SetTrigger("spawn");
+            //anim.SetTrigger("spawn");
+            anim.PlayInFixedTime("Base Layer.106_2_skeleton|106_2_rise", 0, 0.1f);
             transform.position = here;
             _navMeshagent.enabled = true;
             _navMeshagent.Warp(here);
@@ -227,7 +229,7 @@ public class SCP_106 : Roam_NPC
             RaycastHit ray;
             if (Physics.Raycast(transform.position + (Vector3.up*0.2f), Vector3.down, out ray, 1.5f, Ground, QueryTriggerInteraction.Ignore))
             {
-                DecalSystem.instance.Decal(here+(Vector3.up*0.1f), new Vector3(90f, 0, 0), 6f, false, 5f, 2, 0);
+                DecalSystem.instance.Decal(ray.point+(Vector3.up*0.05f), new Vector3(90f, 0, 0), 6f, false, 5f, 2, 0);
             }
             
             if (isChase == false)
@@ -254,6 +256,7 @@ public class SCP_106 : Roam_NPC
     {
       if (!Escaped || (Escaped && PlayerDistance < 7))
       {
+            Debug.Log("SCP 106 getting path");
             _navMeshagent.SetDestination(Player.transform.position);
       }
 

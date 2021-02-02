@@ -15,7 +15,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8922125892657222201
 Transform:
   m_ObjectHideFlags: 0
@@ -75,6 +75,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eeb5dc026fdf4b488bc7ae0138ab719, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PathHandler: {fileID: 0}
   m_AgentTypeID: 0
   m_StartPoint: {x: 0, y: 0, z: -2}
   m_EndPoint: {x: 0, y: 0, z: 2}
@@ -99,7 +100,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6687435008537119840
 Transform:
   m_ObjectHideFlags: 0
@@ -132,10 +133,10 @@ ReflectionProbe:
   m_BoxSize: {x: 4.123934, y: 10, z: 15.090111}
   m_BoxOffset: {x: -0.075460374, y: 0, z: 0.0025024414}
   m_NearClip: 0.3
-  m_FarClip: 1000
-  m_ShadowDistance: 100
+  m_FarClip: 30
+  m_ShadowDistance: 0
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 16495927
@@ -224,7 +225,7 @@ Light:
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 12100000, guid: 055403e8b723c494a9d89d3e0a8d5da7, type: 2}
-  m_RenderMode: 0
+  m_RenderMode: 2
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -282,6 +283,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eeb5dc026fdf4b488bc7ae0138ab719, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PathHandler: {fileID: 0}
   m_AgentTypeID: 0
   m_StartPoint: {x: 0, y: 0, z: -2}
   m_EndPoint: {x: 0, y: 0, z: 2}
@@ -367,7 +369,7 @@ Light:
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 12100000, guid: 055403e8b723c494a9d89d3e0a8d5da7, type: 2}
-  m_RenderMode: 0
+  m_RenderMode: 2
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -594,3 +596,4 @@ MonoBehaviour:
   Room: {fileID: 7613925959125825213}
   Lights: {fileID: 170857923461783770}
   Probes: {fileID: 4826137117712208162}
+  cutsceneReferences: []

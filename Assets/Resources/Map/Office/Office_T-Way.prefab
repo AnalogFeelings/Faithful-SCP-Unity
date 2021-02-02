@@ -43,6 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eeb5dc026fdf4b488bc7ae0138ab719, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PathHandler: {fileID: 0}
   m_AgentTypeID: 0
   m_StartPoint: {x: 0, y: 0, z: -2}
   m_EndPoint: {x: 0, y: 0, z: 2}
@@ -101,10 +102,10 @@ ReflectionProbe:
   m_BoxSize: {x: 14.439013, y: 10, z: 8.303162}
   m_BoxOffset: {x: -0.011671066, y: 0, z: 2.9593525}
   m_NearClip: 0.3
-  m_FarClip: 1000
-  m_ShadowDistance: 100
+  m_FarClip: 30
+  m_ShadowDistance: 0
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 16495927
@@ -172,6 +173,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eeb5dc026fdf4b488bc7ae0138ab719, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PathHandler: {fileID: 0}
   m_AgentTypeID: 0
   m_StartPoint: {x: 0, y: 0, z: -2}
   m_EndPoint: {x: 0, y: 0, z: 2}
@@ -230,10 +232,10 @@ ReflectionProbe:
   m_BoxSize: {x: 14.311818, y: 10, z: 5.3008623}
   m_BoxOffset: {x: 0.20779133, y: 0, z: 0.05498743}
   m_NearClip: 0.3
-  m_FarClip: 1000
-  m_ShadowDistance: 100
+  m_FarClip: 30
+  m_ShadowDistance: 0
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 16495927
@@ -273,7 +275,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3815225701404223190
 Transform:
   m_ObjectHideFlags: 0
@@ -449,6 +451,7 @@ MonoBehaviour:
   Room: {fileID: 5126466894288700612}
   Lights: {fileID: 7696718084799564663}
   Probes: {fileID: 4999433885308749998}
+  cutsceneReferences: []
 --- !u!1 &5490457012030139682
 GameObject:
   m_ObjectHideFlags: 0
@@ -625,7 +628,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5375543577801368564
 Transform:
   m_ObjectHideFlags: 0
@@ -744,6 +747,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eeb5dc026fdf4b488bc7ae0138ab719, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PathHandler: {fileID: 0}
   m_AgentTypeID: 0
   m_StartPoint: {x: 0, y: 0, z: -2}
   m_EndPoint: {x: 0, y: 0, z: 2}

@@ -334,6 +334,8 @@ public class GameController : MonoBehaviour
             GUI.Label(new Rect(20, 170, 300, 20), "Player X " + playercache.transform.position.x + " Y " + playercache.transform.position.y + " Z " + playercache.transform.position.z);
             GUI.Label(new Rect(20, 185, 300, 20), "Player Rotation " + playercache.transform.rotation.eulerAngles.y);
             GUI.Label(new Rect(20, 200, 300, 20), "Current room " + currentRoom);
+            GUI.Label(new Rect(20, 215, 300, 20), "Asfixia " +playercache.AsfixiaRead);
+            GUI.Label(new Rect(20, 230, 300, 20), "Health " + playercache.Health);
         }
     }
 
@@ -788,12 +790,14 @@ public class GameController : MonoBehaviour
 
     void PlayerEvents()
     {
+        Debug.Log("Executing room events @ " + SCP_Map[xPlayer, yPlayer].roomName);
         if (Binary_Map[xPlayer, yPlayer] != 0)
         {
             currentRoom = SCP_Map[xPlayer, yPlayer].roomName;
 
             if (SCP_Map[xPlayer, yPlayer].Event != -1)
             {
+                Debug.Log("Executing room event");
                 if (SCP_Map[xPlayer, yPlayer].eventDone != true)
                     rooms[xPlayer, yPlayer].GetComponent<EventHandler>().EventStart();
             }
@@ -807,6 +811,7 @@ public class GameController : MonoBehaviour
 
             if (roomLookup[SCP_Map[xPlayer, yPlayer].roomName].music != -1 && (RoomMusicChange == false || currentMusic != roomLookup[SCP_Map[xPlayer, yPlayer].roomName].music))
             {
+                Debug.Log("Changing music at room");
                 ChangeMusic(RoomMusic[roomLookup[SCP_Map[xPlayer, yPlayer].roomName].music]);
                 currentMusic = roomLookup[SCP_Map[xPlayer, yPlayer].roomName].music;
                 RoomMusicChange = true;
@@ -822,6 +827,7 @@ public class GameController : MonoBehaviour
 
             if (roomLookup[SCP_Map[xPlayer, yPlayer].roomName].hasAmbiance)
             {
+                Debug.Log("Handling ambiance");
                 AmbianceHandler handler = rooms[xPlayer, yPlayer].GetComponent<AmbianceHandler>();
                 {
                     if (roomAmbiance_chg == false || roomAmbiance_amb != handler.Ambiance)
@@ -853,7 +859,7 @@ public class GameController : MonoBehaviour
                 roomAmbiance_src.Stop();
                 roomAmbiance_chg = false;
             }
-
+            Debug.Log("Room events executed @ " + SCP_Map[xPlayer, yPlayer].roomName);
         }
 
     }
@@ -1522,8 +1528,10 @@ public class GameController : MonoBehaviour
 
     IEnumerator ShowRoom(int i, int j)
     {
+        Debug.Log("Showing room " + rooms[i, j].name + " en x" + i + " y " + j);
         if (SCP_Map[i, j].Event != -1)
         {
+            Debug.Log("Loading events " + rooms[i, j].name);
             rooms[i, j].GetComponent<EventHandler>().EventLoad(i, j, SCP_Map[i, j].eventDone);
         }
         culllookup[i, j, 1] = 1;
@@ -1532,15 +1540,18 @@ public class GameController : MonoBehaviour
         yield return null;
 
         RoomHolder hold = rooms[i, j];
+        Debug.Log("Activating lights " + rooms[i, j].name);
         hold.Lights.SetActive(true);
 
         Renderer[] rs = hold.Room.GetComponentsInChildren<Renderer>();
+        Debug.Log("Activating renderers " + rooms[i, j].name);
         foreach (Renderer r in rs)
             r.enabled = true;
 
         if (hold.Probes != null)
         {
             hold.Probes.SetActive(true);
+            Debug.Log("Rendering probes " + rooms[i, j].name);
             yield return StartCoroutine(RenderProbe(hold.Probes.GetComponentsInChildren<ReflectionProbe>()));
         }
     }
@@ -1550,15 +1561,22 @@ public class GameController : MonoBehaviour
         foreach (ReflectionProbe probe in probes)
         {
             bool lazy = true;
-            if (probe == null)
-                yield break;
-            probe.timeSlicingMode = lazy ? UnityEngine.Rendering.ReflectionProbeTimeSlicingMode.IndividualFaces : UnityEngine.Rendering.ReflectionProbeTimeSlicingMode.AllFacesAtOnce;
-
-            probe.RenderProbe();
-            int waitFrames = lazy ? 6 : 1;
-            for (int i = 0; i < waitFrames;i++)
+            if (probe != null)
             {
-                yield return null;
+                int timeout = 0;
+                probe.timeSlicingMode = lazy ? UnityEngine.Rendering.ReflectionProbeTimeSlicingMode.IndividualFaces : UnityEngine.Rendering.ReflectionProbeTimeSlicingMode.AllFacesAtOnce;
+                int renderID;
+                renderID = probe.RenderProbe();
+                //int waitFrames = lazy ? 6 : 1;
+                /*for (int i = 0; i < waitFrames;i++)
+                {
+                    yield return null;
+                }*/
+                while (!probe.IsFinishedRendering(renderID) && timeout < 10)
+                {
+                    timeout++;
+                    yield return null;
+                }
             }
 
         }

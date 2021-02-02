@@ -77,7 +77,7 @@ public class PD_Teleports : MonoBehaviour
                 {
                     place = 2;
                 }
-                if (chance > 75 && chance < 100)
+                if (chance > 75 && chance < 101)
                 {
                     place = 3;
                 }

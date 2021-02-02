@@ -62,6 +62,7 @@ public class Player_Control : MonoBehaviour
     RectTransform hand_rect, hud_rect;
     public bool Freeze = false, isGameplay = false, Crouch = false, onCam = false, godmode = false, checkObjects = true, IsPuttingOn=false, hasZombie=true, allowZombie=true, allowMove=true;
     public bool noMasterController = false;
+    bool playedCough = false;
 
     [Header("Movement")]
     public float GroundDistance = 0.2f;
@@ -82,7 +83,7 @@ public class Player_Control : MonoBehaviour
 
     [Header("Audio")]
     public AudioReverbZone Reverb;
-    public AudioClip[] Conch, CurrentStep, Deaths, Breath, Concrete, Metal, PD, Forest, zombieVoice;
+    public AudioClip[] Conch, CurrentStep, Deaths, Breath, Concrete, Metal, PD, Forest, zombieVoice, coughs;
     public AudioSource sfx, va;
     
 
@@ -124,7 +125,7 @@ public class Player_Control : MonoBehaviour
 
     private Object_Captive currCaptive;
 
-
+    public float AsfixiaRead { get { return AsfixTimer; } }
 
     //Debug Values
     bool IsNoClip = false;
@@ -150,6 +151,8 @@ public class Player_Control : MonoBehaviour
         _groundChecker = transform.GetChild(0);
         PlayerCam = CameraObj.GetComponent<Camera>();
         speed = Basespeed;
+        RunningTimer = RunningTimerBase;
+        AsfixTimer = AsfixiaTimer;
         if (!noMasterController)
         {
             eyes = SCP_UI.instance.eyes;
@@ -190,6 +193,7 @@ public class Player_Control : MonoBehaviour
             if (IsNoClip == false)
             {
                 ACT_Effects();
+                ACT_HUD();
                 ACT_CaptiveObject();
                 if (!noMasterController)
                     ACT_Blinking();
@@ -230,7 +234,6 @@ public class Player_Control : MonoBehaviour
         {
             if (!IsNoClip)
             {
-                ACT_HUD();
                 if (isLooking)
                     ACT_ForceLook();
 
@@ -239,6 +242,13 @@ public class Player_Control : MonoBehaviour
                 {
                     va.clip = Breath[Random.Range(0, Breath.Length)];
                     va.Play();
+                }
+
+                if(AsfixTimer<0 && !playedCough && !va.isPlaying)
+                {
+                    va.clip = coughs[Random.Range(0, Breath.Length)];
+                    va.Play();
+                    playedCough = true;
                 }
             }
 
@@ -437,7 +447,7 @@ public class Player_Control : MonoBehaviour
 
                 hand_rect.localPosition = pos;
 
-                if (SCPInput.instance.playerInput.Gameplay.InteractNo.triggered)
+                if (SCPInput.instance.playerInput.Gameplay.InteractNo.triggered && currCaptive == null)
                 {
                     if (equipment[(int)bodyPart.Hand] != null)
                     {
@@ -653,7 +663,7 @@ public class Player_Control : MonoBehaviour
         if (!objectLock)
         {
             float lastdistance = float.PositiveInfinity;
-            Interact = Physics.OverlapCapsule(transform.position, handPos.transform.position, handSize * (Freeze ? 1.5f:1f), InteractiveLayer);
+            Interact = Physics.OverlapCapsule(CameraObj.transform.position, handPos.transform.position, handSize * (Freeze ? 1.5f:1f), InteractiveLayer);
             //Interact = Physics.OverlapSphere(handPos.transform.position, handSize, InteractiveLayer);
             if (Interact.Length != 0)
             {
@@ -663,11 +673,18 @@ public class Player_Control : MonoBehaviour
                 {
                     //
                     Vector3 closePoint = Interact[i].ClosestPoint(handPos.transform.position);
-                    currdistance = Vector3.Distance(headPos - new Vector3(0.0f, 0.2f, 0.0f), closePoint);
-                    Debug.DrawRay((headPos - new Vector3(0.0f, 0.2f, 0.0f)), (closePoint - (headPos - new Vector3(0.0f, 0.2f, 0.0f))).normalized* currdistance, new Color(255, 255, 255, 1.0f));
+                    //currdistance = Vector3.Distance(headPos - new Vector3(0.0f, 0.2f, 0.0f), closePoint);
+                    currdistance = Vector3.Distance(handPos.transform.position, closePoint);
+                    Debug.DrawRay(closePoint, Vector3.up, Color.black);
+                    Debug.DrawRay(headPos, closePoint - headPos, new Color(255, 255, 255, 1.0f));
                     if (currdistance < lastdistance)
                     {
-                        if (!Physics.Raycast((headPos - new Vector3(0.0f, 0.2f, 0.0f)), (closePoint - (headPos - new Vector3(0.0f, 0.2f, 0.0f))).normalized, currdistance, Ground, QueryTriggerInteraction.Ignore))
+                        /*if (!Physics.Raycast(handPos.transform.position, (closePoint - handPos.transform.position).normalized, currdistance, Ground, QueryTriggerInteraction.Ignore))
+                        {
+                            lastdistance = currdistance;
+                            InterHold = Interact[i];
+                        }
+                        else */if (!Physics.Raycast((headPos - new Vector3(0.0f, 0.2f, 0.0f)), (closePoint - (headPos - new Vector3(0.0f, 0.2f, 0.0f))).normalized, Vector3.Distance(headPos - new Vector3(0.0f, 0.2f, 0.0f), closePoint), Ground, QueryTriggerInteraction.Ignore))
                         {
                             lastdistance = currdistance;
                             InterHold = Interact[i];
@@ -675,28 +692,6 @@ public class Player_Control : MonoBehaviour
                     }
                 }
             }
-            /*else
-            {
-                lastdistance = float.PositiveInfinity;
-                Interact = Physics.OverlapSphere(transform.position, 0.8f, InteractiveLayer);
-                if (Interact.Length != 0)
-                {
-                    InterHold = null;
-                    float currdistance;
-                    for (int i = 0; i < Interact.Length; i++)
-                    {
-                        currdistance = Vector3.Distance(transform.position, Interact[i].transform.position);
-                        Debug.DrawRay(Interact[i].transform.position, (headPos - new Vector3(0.0f, 0.4f, 0.0f)) - Interact[i].transform.position, new Color(255, 255, 255, 1.0f), 5);
-                        if (currdistance < lastdistance)
-                        {
-                            lastdistance = currdistance;
-                            InterHold = Interact[i];
-                        }
-                    }
-                }
-                else
-                    InterHold = null;
-            }*/
         }
 
 
@@ -780,16 +775,24 @@ public class Player_Control : MonoBehaviour
             {
                 if (AsfixTimer <= 0.0f)
                 {
-                    Health -= (Time.deltaTime) * 20;
+                    Health -= (Time.deltaTime) * 2.5f;
                 }
             }
 
         }
         else
         {
-            eyeIcon.color = Color.white;
-            AsfixTimer = AsfixiaTimer;
-            BlinkMult = currentBlinkMult;
+            if (AsfixTimer < 0)
+                AsfixTimer = 0;
+            AsfixTimer += Time.deltaTime*2;
+            if (AsfixTimer>AsfixiaTimer)
+            {
+                AsfixTimer = AsfixiaTimer;
+                playedCough = false;
+                eyeIcon.color = Color.white;
+                BlinkMult = currentBlinkMult;
+            }
+            
         }
 
 

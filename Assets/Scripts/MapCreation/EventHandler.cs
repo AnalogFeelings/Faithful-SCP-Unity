@@ -59,7 +59,6 @@ public class EventHandler : MonoBehaviour
         
         if (Spawned == false)
         {
-            //Debug.Log(EventChosen);
             if (EventChosen == -2)
                 InternalLoad(UniqueHandler, x, y, UniquePos);
 
@@ -95,20 +94,24 @@ public class EventHandler : MonoBehaviour
 
     public void EventStart()
     {
-        Debug.Log("Evento Iniciado");
-        Event.GetComponent<Event_Parent>().EventStart();
+        if (Event)
+        {
+            Debug.Log("Evento iniciado " + Event.name);
+            Event.GetComponent<Event_Parent>().EventStart();
+        }
     }
 
     public void EventUnLoad()
     {
         if (Event)
         {
+            Debug.Log("Eliminando evento " + Event.name);
             Event.GetComponent<Event_Parent>().EventUnLoad();
             Destroy(Event);
         }
         Event = null;
         Spawned = false;
-        Debug.Log("Evento Eliminado");
+        
 
     }
 

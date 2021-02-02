@@ -137,11 +137,13 @@ public class npc173_new : Roam_NPC
                 }
                 if (teleTimer < 0)
                 {
-                    /*do
-                    {*/
+                    Debug.Log("Preparing for 173 teleport");
+                    do
+                    {
                         currentTarget = GameController.instance.GetPatrol(GameController.instance.player.transform.position, currMaxTele, currMinTele);
-                    //}
-                    //while (!GameController.instance.PlayerNotHere(currentTarget));
+                    }
+                    while (!GameController.instance.PlayerNotHere(currentTarget));
+                    Debug.Log("Teleporting 173 teleported!");
                     Spawn(true, currentTarget);
                     teleTimer = currTeleCool;
                 }
@@ -165,7 +167,8 @@ public class npc173_new : Roam_NPC
 
             if (needsPath)
             {
-                currentPathNode = 1;
+                currentPathNode = 0;
+                Debug.Log("SCP 173 getting path");
                 hasPath = NavMesh.CalculatePath(transform.position, currentTarget, NavMesh.AllAreas, path);
                 needsPath = !hasPath;
                 newTarget = !hasPath;
@@ -177,14 +180,14 @@ public class npc173_new : Roam_NPC
 
     void ACT_Move()
     {
-        float distance, distanceTarget;
+        float distance=0, distanceTarget;
         if (hasPath && !needsPath && currentPathNode < path.corners.Length && !doScramble)
         {
             
             onPath = true;
             do
             {
-
+                //Debug.Log("173 Moving on path");
                 currentPoint = path.corners[currentPathNode];
                 if (currentPathNode == (path.corners.Length - 1))
                 {
@@ -202,7 +205,7 @@ public class npc173_new : Roam_NPC
             needsPath = true;
             currentPoint = transform.position + Random.insideUnitSphere * 5;
             currentPoint.y = transform.position.y;
-            //Debug.Log("Random Point!");
+            Debug.Log("173 Random Point!");
         }
 
         distanceTarget = Vector3.Distance(currentTarget, transform.position);
@@ -344,7 +347,7 @@ public class npc173_new : Roam_NPC
 
     private void OnTriggerStay(Collider other)
     {
-        if ((CanMove() && (other.gameObject.CompareTag("Player")) && GameController.instance.isAlive && !GameController.instance.playercache.godmode))
+        if ((CanMove() && (other.gameObject.CompareTag("Player")) && data.isActive && GameController.instance.isAlive && !GameController.instance.playercache.godmode))
         {
             GameController.instance.playercache.playerWarp(new Vector3(transform.position.x, GameController.instance.player.transform.position.y, transform.position.z) + (transform.forward * (controller.radius + 0.7f)), 180);
 
@@ -391,29 +394,29 @@ public class npc173_new : Roam_NPC
                 data.isActive = beActive;
 
                 NavMeshHit here;
-
+                Debug.Log("173 Trying to spawn");
                 if (NavMesh.SamplePosition(warppoint, out here, 0.5f, NavMesh.AllAreas))
                 {
                     transform.position = warppoint;
 
-                    //Debug.Log("I tried to spawn and it worked");
+                    Debug.Log("173 I tried to spawn and it worked");
                 }
                 else if (NavMesh.SamplePosition(warppoint, out here, 15f, NavMesh.AllAreas))
                 {
                     transform.position = here.position;
                     data.isActive = beActive;
-                    //Debug.Log("I tried to spawn and it worked kinda");
+                    Debug.Log("173 I tried to spawn and it worked kinda");
                 }
                 else
-                    //Debug.Log("I failed to spawn :C ");
+                    Debug.Log("173 I failed to spawn :C ");
 
                 if (beActive)
                 {
                     GameController.instance.GlobalSFX.PlayOneShot(teleportClip);
                 }
             }
-            //else
-                //Debug.Log("Im too close to respawn!");
+            else
+                Debug.Log("173 Im too close to respawn!");
         }
     }
 

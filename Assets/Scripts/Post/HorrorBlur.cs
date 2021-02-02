@@ -21,7 +21,7 @@ public sealed class HorrorBlurRenderer : PostProcessEffectRenderer<HorrorBlur>
 
         if (accumText == null || !accumText.IsCreated())
         {
-            Debug.Log("Creating render texture");
+            //Debug.Log("Creating render texture");
             accumText = new RenderTexture(context.width, context.height, 0);
             accumText.hideFlags = HideFlags.HideAndDontSave;
             accumText.Create();
@@ -58,7 +58,6 @@ public sealed class HorrorBlurRenderer : PostProcessEffectRenderer<HorrorBlur>
     public override void Release()
     {
         RuntimeUtilities.Destroy(accumText);
-        Debug.Log("Destroying render texture");
-
+        //Debug.Log("Destroying render texture");
     }
 }

@@ -1046,6 +1046,7 @@ public class NewMapGen : MonoBehaviour
 
         if (data.hasItem)
             temp.items = 1;
+        else temp.items = 0;
 
 
         return (temp);
@@ -1100,7 +1101,6 @@ public class NewMapGen : MonoBehaviour
                 if (currtype.Count == 0)
                     return;
                     //throw new System.Exception("EMPTY LOOKUP TABLE AT " + speciallist[i].type);
-
                 chance = Random.Range(0, currtype.Count);
                 if ((mapfil[currtype[chance].xPos, currtype[chance].yPos].isSpecial == false) && mapfil[currtype[chance].xPos, currtype[chance].yPos].Zone == speciallist[i].Zone)
                 {
@@ -1114,7 +1114,7 @@ public class NewMapGen : MonoBehaviour
                         mapfil[currtype[chance].xPos, currtype[chance].yPos].hasAmbiance = true;*/
 
                     mapfil[currtype[chance].xPos, currtype[chance].yPos] = SetRoomValues(speciallist[i], mapfil[currtype[chance].xPos, currtype[chance].yPos]);
-
+                    mapfil[currtype[chance].xPos, currtype[chance].yPos].isSpecial = true;
                     spawned = true;
                     break;
                 }
