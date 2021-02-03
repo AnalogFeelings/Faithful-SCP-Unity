@@ -336,6 +336,8 @@ public class GameController : MonoBehaviour
             GUI.Label(new Rect(20, 200, 300, 20), "Current room " + currentRoom);
             GUI.Label(new Rect(20, 215, 300, 20), "Asfixia " +playercache.AsfixiaRead);
             GUI.Label(new Rect(20, 230, 300, 20), "Health " + playercache.Health);
+            GUI.Label(new Rect(20, 245, 300, 20), "Zombie " + playercache.zombieTimer);
+            GUI.Label(new Rect(20, 260, 300, 20), "IsDebug " + GlobalValues.debug);
         }
     }
 
@@ -494,6 +496,12 @@ public class GameController : MonoBehaviour
 
     void Update()
     {
+        if (SCPInput.instance.playerInput.Gameplay.DebugF1.triggered)
+        {
+            DebugFlag = !DebugFlag;
+        }
+
+
         if (isAlive)
         {
             if (SCPInput.instance.playerInput.Gameplay.Pause.triggered)
@@ -688,10 +696,7 @@ public class GameController : MonoBehaviour
             }
         }*/
 
-        if (SCPInput.instance.playerInput.Gameplay.DebugF1.triggered)
-        {
-            DebugFlag = !DebugFlag;
-        }
+
 
         if (npcController != null)
         {
@@ -1415,12 +1420,15 @@ public class GameController : MonoBehaviour
         {
             if (GlobalValues.isNew && !spawnHere)
             {
-                player = Instantiate(origplayer, WorldAnchor.transform.position+(Vector3.up*0.5f), Quaternion.identity);
+                player = Instantiate(origplayer, WorldAnchor.transform.position + (Vector3.up * 0.5f), Quaternion.identity);
                 Debug.Log("Spawning at anchor " + WorldAnchor.transform + " es nuevo " + GlobalValues.isNew + " !spawnhere " + spawnHere);
             }
             else
             {
-                player = Instantiate(origplayer, here, Quaternion.Euler(0,SaveSystem.instance.playData.angle,0));
+                if(!GlobalValues.isNew)
+                    player = Instantiate(origplayer, here, Quaternion.Euler(0,SaveSystem.instance.playData.angle,0));
+                else
+                    player = Instantiate(origplayer, here, Quaternion.identity);
                 Debug.Log("Spawning here at " + here);
             }
         }
