@@ -113,7 +113,8 @@ public class ItemController : MonoBehaviour
 
                 if (items[item.itemFileName] is Equipable_Wear && ((Equipable_Wear)items[item.itemFileName]).autoEquip)
                 {
-                    currInv = 0;
+                    ChangeInv(inv);
+                    currInv = inv;
                     currhover = i;
                     slots[i].Use(true);
                 }

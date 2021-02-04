@@ -47,7 +47,7 @@ public class EfectTable
 
 public class Player_Control : MonoBehaviour
 {
-    float InputX, InputY, BlinkingTimer, BlinkMult = 1, currentBlinkMult = 1, RunMult = 1, CloseTimer, AsfixTimer, speed, lastBob=0, headBob, RunningTimer, OpenTimer=1, lookingForce = 3f, InternalTimer;
+    float InputX, InputY, BlinkingTimer, BlinkMult = 1, currentBlinkMult = 1, RunMult = 1, CloseTimer, AsfixTimer, speed, lastBob=0, headBob, RunningTimer, OpenTimer=1, lookingForce = 3f, InternalTimer, InternalTimerPain;
 
     private GameObject hand, CinemaLoaded;
     private Transform _groundChecker;
@@ -63,13 +63,14 @@ public class Player_Control : MonoBehaviour
     public bool Freeze = false, isGameplay = false, Crouch = false, onCam = false, godmode = false, checkObjects = true, IsPuttingOn=false, hasZombie=true, allowZombie=true, allowMove=true;
     public bool noMasterController = false;
     bool playedCough = false;
+    const float stepMiddle = (Mathf.PI / 2)*3;
 
     [Header("Movement")]
     public float GroundDistance = 0.2f;
     public float Gravity = -9.81f, maxfallspeed, Basespeed = 3, crouchspeed = 2, runSpeed = 4, speedMul=1, forceWalkSpeed = 1.6f;
     [Header("Camera")]
     public float HurtDivisor = 3;
-    public float baseAmplitude, bobSpeed, headBobmult = 20, Camplitude, Cspeed, hamplitude;
+    public float baseAmplitude, bobSpeed, headBobmult = 20, Camplitude, Cspeed, hamplitude, crouchMoveSpeed=30f;
     [Header("Gimmicks")]
     public float BlinkingTimerBase;
     public float ClosedEyes, BaseBlinkMult = 0.75f, AsfixiaTimer, RunningTimerBase, OpenMulti, CollisionSphere, Health = 100, bloodloss = 0, handLength, handSize, zombieVirusMaxTime, zombieVirusFull;
@@ -171,6 +172,9 @@ public class Player_Control : MonoBehaviour
 
         hand_rect = hand.GetComponent<RectTransform>();
         hud_rect = SCP_UI.instance.HUD.GetComponent<RectTransform>();
+
+        InternalTimer = Mathf.PI / 2;
+        InternalTimerPain = Mathf.PI / 2;
     }
 
     private void Start()
@@ -357,7 +361,7 @@ public class Player_Control : MonoBehaviour
 
     void ACT_Walk()
     {
-        if(lastBob > 0 && headBob < 0)
+        if(lastBob < stepMiddle && InternalTimer > stepMiddle)
         {
             RaycastHit hit;
             if (Physics.Raycast(transform.position, Vector3.down, out hit, 2, Ground, QueryTriggerInteraction.Ignore))
@@ -404,7 +408,7 @@ public class Player_Control : MonoBehaviour
 
             }
         }
-        lastBob = headBob;
+        lastBob = InternalTimer;
     }
 
     void ACT_HUD()
@@ -487,8 +491,8 @@ public class Player_Control : MonoBehaviour
                 headPos.x = CrouchHead.transform.position.x;
                 headPos.z = CrouchHead.transform.position.z;
 
-                if (Vector3.Distance(headPos, CrouchHead.transform.position) > 0.005f)
-                    headPos.y = Mathf.Lerp(headPos.y, CrouchHead.transform.position.y, 15.0f * Time.deltaTime);
+                //if (Vector3.Distance(headPos, CrouchHead.transform.position) > 0.005f)
+                headPos.y = Mathf.Lerp(headPos.y, CrouchHead.transform.position.y, crouchMoveSpeed * Time.deltaTime);
                 if (Vector3.Distance(headPos, CrouchHead.transform.position) > 2)
                     headPos.y = CrouchHead.transform.position.y;
             }
@@ -497,14 +501,17 @@ public class Player_Control : MonoBehaviour
                 headPos.x = DefHead.transform.position.x;
                 headPos.z = DefHead.transform.position.z;
 
-                if (Vector3.Distance(headPos, DefHead.transform.position) > 0.005f)
-                    headPos.y = Mathf.Lerp(headPos.y, DefHead.transform.position.y, 15.0f * Time.deltaTime);
-                else
-                    headPos.y = DefHead.transform.position.y;
+                //if (Vector3.Distance(headPos, DefHead.transform.position) > 0.005f)
+                headPos.y = Mathf.Lerp(headPos.y, DefHead.transform.position.y, crouchMoveSpeed * Time.deltaTime);
+                /*else
+                    headPos.y = DefHead.transform.position.y;*/
 
                 if (Vector3.Distance(headPos, DefHead.transform.position) > 2)
                     headPos.y = DefHead.transform.position.y;
             }
+
+            //Debug.Log("Expected pos = " + headPos + " Internal Timer " + InternalTimer + " headBob " + headBob + " ((101 - Health) / HurtDivisor) = " + ((101 - Health) / HurtDivisor));
+            Debug.DrawRay(headPos, transform.forward);
 
             if (cognitoEffect)
             {
@@ -513,48 +520,69 @@ public class Player_Control : MonoBehaviour
 
             if ((((InputX != 0 || InputY != 0)) || walkAnim) && !Freeze)
             {
-                InternalTimer += Time.deltaTime;
-
-                headBob = baseAmplitude * Mathf.Sin((speed * bobSpeed) * InternalTimer);
-                HoldPos = headPos;
-                HoldPos.y = Mathf.Lerp(HoldPos.y, HoldPos.y + headBob, headBobmult);
-                if (Vector3.Distance(CameraObj.transform.position, headPos) > 2)
-                    CameraObj.transform.position = headPos;
+                InternalTimer += Time.deltaTime * (speed * bobSpeed);
+                if (!GameController.instance.isPocket)
+                    InternalTimerPain += (((101 - Health) / HurtDivisor) * (speed / 2)) * Time.deltaTime;
                 else
-                    CameraObj.transform.position = HoldPos;
+                    InternalTimerPain += (((101 - 50) / HurtDivisor) * (speed / 2)) * Time.deltaTime;
+
+                headBob = baseAmplitude * Mathf.Sin(InternalTimer);
+                HoldPos = headPos;
+
+                HoldPos.y = Mathf.MoveTowards(HoldPos.y, headPos.y + headBob, headBobmult * Time.deltaTime);
+
+                /*if (Vector3.Distance(CameraObj.transform.position, headPos) > 2)
+                    CameraObj.transform.position = headPos;
+                else*/
+                CameraObj.transform.position = HoldPos;
                 float z = CameraObj.transform.eulerAngles.z;
+
                 z = (z > 180) ? z - 360 : z;
 
                 if (Health < 80)
                 {
-                    if (!GameController.instance.isPocket)
-                        CameraObj.transform.rotation = Quaternion.Euler(CameraObj.transform.eulerAngles.x, CameraObj.transform.eulerAngles.y, Mathf.Lerp(z, 0 + (hamplitude * Mathf.Sin((((101 - Health) / HurtDivisor) * (speed / 2)) * InternalTimer)), 10 * Time.deltaTime));
-                    else
-                        CameraObj.transform.rotation = Quaternion.Euler(CameraObj.transform.eulerAngles.x, CameraObj.transform.eulerAngles.y, Mathf.Lerp(z, 0 + (hamplitude * Mathf.Sin((((101 - 50) / HurtDivisor) * 0.5f) * InternalTimer)), 10 * Time.deltaTime));
+                   // if (!GameController.instance.isPocket)
+                    CameraObj.transform.rotation = Quaternion.Euler(CameraObj.transform.eulerAngles.x, CameraObj.transform.eulerAngles.y, Mathf.MoveTowards(z, 0 + ((hamplitude * ((101 - Health) / HurtDivisor)) * Mathf.Sin(InternalTimerPain)), 10 * Time.deltaTime));
                 }
-                else
-                    if (CameraObj.transform.eulerAngles.z > 0.0001f)
+                else if (CameraObj.transform.eulerAngles.z > 0.0001f)
                     CameraObj.transform.rotation = Quaternion.Euler(CameraObj.transform.eulerAngles.x, CameraObj.transform.eulerAngles.y, Mathf.Lerp(z, 0, 10 * Time.deltaTime));
 
+                if (InternalTimer > Mathf.PI * 2)
+                {
+                    InternalTimer -= Mathf.PI * 2;
+                }
+
+                if (InternalTimerPain > Mathf.PI * 2)
+                {
+                    InternalTimerPain -= Mathf.PI * 2;
+                }
 
             }
             else
             {
-                {
-                    if (Vector3.Distance(CameraObj.transform.position, headPos) > 0.005f)
-                        CameraObj.transform.position = new Vector3(headPos.x, Mathf.Lerp(CameraObj.transform.position.y, headPos.y, 15.0f * Time.deltaTime), headPos.z);
-                    else
-                        CameraObj.transform.position = headPos;
+                InternalTimer = Mathf.PI / 2;
+                
+                HoldPos = headPos;
+                headBob = Mathf.Lerp(headBob, baseAmplitude, headBobmult * Time.deltaTime);
 
-                    if (Vector3.Distance(CameraObj.transform.position, headPos) > 2)
-                        CameraObj.transform.position = headPos;
-                }
+                HoldPos.y = headPos.y + headBob;
+                CameraObj.transform.position = HoldPos;
+                //CameraObj.transform.position = new Vector3(headPos.x, Mathf.MoveTowards(CameraObj.transform.position.y, headPos.y+ baseAmplitude, (headBobmult/3) * Time.deltaTime), headPos.z);
+                /*if (Vector3.Distance(CameraObj.transform.position, headPos) > 0.005f)
+                    
+                else
+                    CameraObj.transform.position = headPos;*/
+
+                if (Vector3.Distance(CameraObj.transform.position, headPos) > 2)
+                    CameraObj.transform.position = headPos;
+
             }
         }
         else
         {
             cameraNextFrame = false;
-
+            /*if (Vector3.Distance(CameraObj.transform.position, headPos) > 2)
+                CameraObj.transform.position = headPos;*/
         }
 
     }
