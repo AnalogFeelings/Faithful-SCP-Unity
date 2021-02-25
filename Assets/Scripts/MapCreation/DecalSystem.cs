@@ -3,14 +3,39 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+[System.Serializable]
+public class GameDecal
+{
+    public enum Kind
+    {
+        OnlyPBR, OnlyNormals, PBRNormals, Plane
+    }
+    public Kind decalType;
+    public float Duration;
+    public float time;
+    public bool Instant;
+    public float Scale;
+    public Vector3 rotation;
+    public int h, v;
+    public Vector3 position;
+    public bool isPermanent;
+}
+
+
+
+
 public class DecalSystem : MonoBehaviour
 {
+    public const int maxDecals = 1024;
     public static DecalSystem instance = null;
 
     public Material DecalAtlas;
-    public Decal[] DecalPool;
-    public GameObject DecalPrefab;
+    public GameDecal[] DecalPool;
     int currDecal = 0;
+    int currMaxDecals = 0;
+    public int avaiDecals { get { return currMaxDecals; } }
+    BoundingSphere[] spheres;
+    CullingGroup decalsGroup;
     // Start is called before the first frame update
 
     private void Awake()
@@ -23,7 +48,14 @@ public class DecalSystem : MonoBehaviour
 
     void Start()
     {
-        DecalPool = new Decal[100];
+        DecalPool = new GameDecal[maxDecals];
+        decalsGroup = new CullingGroup();
+        spheres = new BoundingSphere[maxDecals];
+        decalsGroup.SetBoundingSpheres(spheres);
+        decalsGroup.SetBoundingSphereCount(0);
+        decalsGroup.targetCamera = Camera.main;
+        currMaxDecals = 0;
+        currDecal = 0;
 
         /*for (int j = 0; j < 10; j++)
         {
@@ -36,14 +68,18 @@ public class DecalSystem : MonoBehaviour
         Decal(new Vector3(transform.position.x, transform.position.y, transform.position.z - 1.7f), new Vector3(90f, 0, 0), 1f, true, 6f, 0, 3);*/
     }
 
-    public void Decal(Vector3 position, Vector3 rotation, float scale, bool Instant, float Time, int h, int v)
+    public void Decal(Vector3 position, Vector3 rotation, float scale, bool Instant, float Time, int h, int v, bool isPermanent = false)
     {
-        if (DecalPool[currDecal] == null)
+
+        while (DecalPool[currDecal] != null && DecalPool[currDecal].isPermanent)
         {
-            GameObject thisDecal = Instantiate(DecalPrefab, transform);
-            DecalPool[currDecal] = thisDecal.GetComponent<Decal>();
+            currDecal++;
         }
 
+        if(DecalPool[currDecal] == null)
+            DecalPool[currDecal] = new GameDecal();
+
+        spheres[currDecal] = new BoundingSphere(position, scale);
         DecalPool[currDecal].Scale = scale;
         DecalPool[currDecal].rotation = rotation;
         DecalPool[currDecal].Instant = Instant;
@@ -51,18 +87,29 @@ public class DecalSystem : MonoBehaviour
         DecalPool[currDecal].h = h;
         DecalPool[currDecal].v = v;
         DecalPool[currDecal].position = position;
-
-        DecalPool[currDecal].SetDecal();
+        DecalPool[currDecal].isPermanent = isPermanent;
 
         currDecal++;
-        if (currDecal == 100)
+
+        if (currDecal > currMaxDecals)
+        {
+            currMaxDecals = currDecal;
+            decalsGroup.SetBoundingSphereCount(currMaxDecals);
+        }
+
+        if (currDecal == maxDecals)
             currDecal = 0;
     }
 
+    private void OnDisable()
+    {
+        decalsGroup.Dispose();
+        decalsGroup = null;
+    }
 
     public void SpawnDecal(Vector3 here)
     {
-        Vector2[] uvs;
+        /*Vector2[] uvs;
         GameObject plane = GameObject.CreatePrimitive(PrimitiveType.Quad);
         plane.transform.position = here;
         plane.transform.parent = transform;
@@ -80,7 +127,7 @@ public class DecalSystem : MonoBehaviour
          *UV 2 ESQUINA INFERIOR DERECHA
          *UV 3 ESQUINA SUPERIOR IZQUIERDA
          * */
-
+         /*
         float uvH = 0.33f * (Random.Range(0, 4));
         float uvV = 0.25f * (Random.Range(0, 5));
 
@@ -90,35 +137,7 @@ public class DecalSystem : MonoBehaviour
         uvs[3] = new Vector2(uvH + 0.33f, uvV);
 
         mesh.uv = uvs;
-        render.material = DecalAtlas;
+        render.material = DecalAtlas;*/
     }
 
-    public void CombineDecals()
-    {
-        MeshFilter[]
-        meshFilters = GetComponentsInChildren<MeshFilter>();
-        CombineInstance[] combine = new CombineInstance[meshFilters.Length];
-
-        int i = 0;
-        while (i < meshFilters.Length)
-        {
-            combine[i].mesh = meshFilters[i].sharedMesh;
-            combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
-            meshFilters[i].gameObject.SetActive(false);
-
-            i++;
-        }
-        GetComponent<MeshFilter>().mesh = new Mesh();
-        GetComponent<MeshFilter>().mesh.CombineMeshes(combine);
-        transform.gameObject.SetActive(true);
-
-        foreach (Transform child in this.transform)
-            Destroy(child.gameObject);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

@@ -64,11 +64,11 @@ public static class Localization
     static Dictionary<int, Language> def_langs = new Dictionary<int, Language>()
     {
         {10, new Language ("English", "EN", 10) },
-        {34, new Language ("Español", "ES", 34) },
+        /*{34, new Language ("Español", "ES", 34) },
         {15, new Language ("Deutsch", "DE", 15) },
         {6, new Language ("简体中文", "CH", 6) },
         {40, new Language ("简体中文", "CH", 6) },
-        {41, new Language ("简体中文", "CH", 6) },
+        {41, new Language ("简体中文", "CH", 6) },*/
     };
 
     static Dictionary<int, Language> langs;
@@ -369,12 +369,13 @@ public static class Localization
         Debug.Log("Parsing Languages, detected " + langs.Count);
         foreach (var lang in langs)
         {
-            number++;
             if (!langList.ContainsValue(lang.Value))
             {
-                Debug.Log("Language " + lang.Value.name);
+                number++;
+                Debug.Log("Language " + lang.Value.name + " number" + number);
                 langList.Add(number, lang.Value);
             }
+
         }
 
         return (langList);

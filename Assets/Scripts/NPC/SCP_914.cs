@@ -5,6 +5,7 @@ using UnityEngine;
 public class ChanceTable
 {
     public Item Spawn;
+    public string SpawnName;
     public int Rate;
 }
 

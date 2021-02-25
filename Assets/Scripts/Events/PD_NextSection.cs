@@ -12,7 +12,7 @@ public class PD_NextSection : MonoBehaviour
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
         if (trigger.GetState())
         {

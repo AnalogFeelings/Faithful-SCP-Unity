@@ -19,7 +19,7 @@ public static class GlobalValues
     static public int renderTime = 0;
     static public bool debug = true;
     static public bool debugconsole = false;
-    static public bool isNew = true;
+    static public bool isNewGame = true;
     static public bool hasSaved = false;
     static public bool playIntro = false;
     static public string pathfile;
@@ -30,11 +30,8 @@ public static class GlobalValues
     public const string fileExtension = ".scp";
     public const string metaExtension = ".meta";
     static public int sceneReturn = -1;
-    static public string saveFileVer = "0.1.5";
+    static public string saveFileVer = "0.3.0";
 
-
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~UI DEUTSCH STRINGS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     static public string getRandomString(int min, int max)
     {
         string myString = "";
@@ -45,5 +42,8 @@ public static class GlobalValues
         }
         return myString;
     }
+
+    public static readonly int[] sceneTable = new int[3] { 1, 3, 6};
+
 
 }

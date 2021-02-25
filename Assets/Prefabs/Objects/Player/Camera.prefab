@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 7665070325468356731}
   - component: {fileID: 7665070325468356614}
   - component: {fileID: 6038720004902448183}
-  - component: {fileID: 5047649508498007981}
   - component: {fileID: 2934010242552206170}
   m_Layer: 17
   m_Name: Camera
@@ -102,6 +101,8 @@ MonoBehaviour:
   rotation: {x: 0, y: 0, z: 0}
   addedRota: {x: 0, y: 0, z: 0, w: 1}
   speed: 3
+  Instant: 0
+  inputActive: 1
 --- !u!124 &6038720004902448183
 Behaviour:
   m_ObjectHideFlags: 0
@@ -110,28 +111,6 @@ Behaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7665070325468356730}
   m_Enabled: 1
---- !u!114 &5047649508498007981
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7665070325468356730}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4f6da30abc36e245ad9746d65b8e899, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shader: {fileID: 4800000, guid: 15849d826a9fd7046b7e8015909dbe50, type: 3}
-  maskReplacementShader: {fileID: 4800000, guid: 7a635f47f225cb94484e3a8e2d72e5e1,
-    type: 3}
-  downscale: 1
-  blurIterations: 1
-  scatterDistance: 0.4
-  scatterIntensity: 1
-  softDepthBias: 0.05
-  affectDirect: 0.5
-  camName: SSSSSMaskRenderCamera
 --- !u!114 &2934010242552206170
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -191,4 +170,8 @@ MonoBehaviour:
   breakBeforeColorGrading: 0
   m_BeforeTransparentBundles: []
   m_BeforeStackBundles: []
-  m_AfterStackBundles: []
+  m_AfterStackBundles:
+  - assemblyQualifiedName: NightVision, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  - assemblyQualifiedName: HorrorBlur, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null

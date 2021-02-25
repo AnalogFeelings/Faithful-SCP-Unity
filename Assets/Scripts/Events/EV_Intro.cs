@@ -20,12 +20,21 @@ public class EV_Intro : MonoBehaviour
     int LastState = -1;
     int Conver = -1;
 
+    bool introEventStart = false;
+
     public float Timer1, Timer1_5, Timer2, Timer3, Timer, TimerSecondary, LastTimer,Refuse1,Refuse2,Refuse3, RunawayTimer;
     bool StopTimer = false, StopTimer2 = false, ActiveTimer = true, ActiveTimer2 = true, Check1 = false, Check2 = false, Check3 = false, Check4 = false, runningAway, back1 = false, Start = false, grabbed = false;
 
+    private void Awake()
+    {
+        GameController.instance.startGame.AddListener(StartEvent);
+    }
+    private void OnDestroy()
+    {
+        GameController.instance.startGame.RemoveListener(StartEvent);
+    }
 
-
-    void OnEnable()
+    void StartEvent()
     {
         if (GlobalValues.playIntro)
         {
@@ -34,6 +43,7 @@ public class EV_Intro : MonoBehaviour
             GameController.instance.StopTimer = false;
             GameController.instance.doGameplay = false;
             GameController.instance.playercache.playerWarp(playerPos.transform.position, playerPos.transform.eulerAngles.y);
+            introEventStart = true;
         }
         else
         {
@@ -46,7 +56,7 @@ public class EV_Intro : MonoBehaviour
             GameController.instance.canSave = true;
             GameController.instance.CullerFlag = true;
             Destroy(introZone);
-            if (GlobalValues.isNew)
+            if (!SaveSystem.instance.playData.worldsCreateds[(int)GameController.instance.worldName])
                 GameController.instance.SetMapPos(0, 10);
             DestroyImmediate(this);
         }
@@ -64,7 +74,14 @@ public class EV_Intro : MonoBehaviour
             ActiveTimer = false;
         }
     }
-    void Update()
+
+    private void Update()
+    {
+        if (introEventStart)
+            IntroUpdate();
+    }
+
+    void IntroUpdate()
     {
         if (ActiveTimer)
             Timer -= Time.deltaTime;

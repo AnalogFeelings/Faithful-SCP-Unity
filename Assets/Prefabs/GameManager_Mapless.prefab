@@ -31714,14 +31714,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NPC_Prefabs:
   - {fileID: 3400218257497486907, guid: 7c0f6c213cbadf040be30739f0031a92, type: 3}
+  Simp_Prefabs: []
   SCP_Prefabs:
-  - {fileID: 3445320180705745860, guid: 7de220a0bac35d7439befd10bc133424, type: 3}
+  - {fileID: 4188069710543728415, guid: 39d117beca400db4f9f4bf3557429982, type: 3}
   - {fileID: 9014384198852189640, guid: 557ebaffbf2e5d244bb49520c999719e, type: 3}
   npcCamText: {fileID: 0}
-  spawnTable: 0101
+  spawnTable: 0000
   spawnPos:
   - {fileID: 0}
   - {fileID: 0}
+  spawnSimps: 
   Zone3_Main: 0
   Zone2_Main: 1
   Zone1_Main: 2
@@ -31910,13 +31912,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Death: 0
+  worldName: 0
   isAlive: 1
-  isPocket: 1
   canSave: 0
   debugCamera: 0
   holdRoom: 0
   CreateMap: 0
   ShowMap: 0
+  controlFog: 1
+  customFog: 0
+  defaultFog: 15
+  fogSpeed: 3
+  toFog: 15
   doGameplay: 0
   spawnPlayer: 1
   spawnHere: 1
@@ -31938,6 +31945,7 @@ MonoBehaviour:
   CullerFlag: 0
   DebugFlag: 0
   currZone: 0
+  roomsize: 15.3
   doorTable: []
   persTable: []
   playerSpawn: {fileID: 0}
@@ -32001,6 +32009,7 @@ MonoBehaviour:
   globalInts: 
   globalBools: 
   globalFloats: []
+  globalStrings: []
   mapFull: {fileID: 8976056094837460333}
   tile: {fileID: 11400000, guid: e1e405f7b0402934b9650020b2cce8d7, type: 2}
   LowQ: {fileID: 11400000, guid: 78583baa809781c4f97117e03889cf97, type: 2}
@@ -32041,28 +32050,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playData:
-    doorState: []
-    persState: []
     saveName: 
     saveSeed: 
-    angle: 0
     Health: 0
     bloodLoss: 0
+    zombieTime: 0
+    leftRun: 0
+    leftBlink: 0
     savedSize:
       xSize: 0
       ySize: 0
-    pX: 0
-    pY: 0
-    pZ: 0
     mapX: 0
     mapY: 0
-    worldItems: []
-    npcData: []
-    mainData: []
+    currentWorld: 0
+    worlds: []
+    worldsCreateds: 
     holdRoom: 0
+    seedState:
+      s0: 0
+      s1: 0
+      s2: 0
+      s3: 0
     globalInts: 
     globalBools: 
     globalFloats: []
+    globalStrings: []
 --- !u!1 &8976056096473486967
 GameObject:
   m_ObjectHideFlags: 0

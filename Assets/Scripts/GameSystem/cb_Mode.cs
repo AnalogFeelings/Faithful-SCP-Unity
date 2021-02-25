@@ -9,7 +9,7 @@ public class cb_Mode : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (GlobalValues.isNew)
+        if (GlobalValues.isNewGame)
         {
             GameController.instance.globalBools.Add(false); //HEAVYZONE LOCK
             GameController.instance.globalBools.Add(false); //LIGHTZONE LOCK
@@ -19,6 +19,7 @@ public class cb_Mode : MonoBehaviour
             GameController.instance.globalBools.Add(false); //PocketOnce
 
             GameController.instance.globalStrings.Add(getRandomString(4));//Maintenance code
+            GameController.instance.globalStrings.Add(getRandomString(4));//Maynard code
 
             GameController.instance.globalFloats.Add(Random.Range(840, 1050)); //LARRY TIMER
             GameController.instance.globalFloats.Add(180); //AMBIANCETIMER

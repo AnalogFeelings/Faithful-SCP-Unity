@@ -7,31 +7,21 @@ public class Equipable_Radio : Equipable_Elec
 {
     public override void Use(ref gameItem currItem)
     {
-        Player_Control player = GameController.instance.player.GetComponent<Player_Control>();
-
         this.part = bodyPart.Hand;
-
-        if (player.equipment[(int)this.part] == null || ItemController.instance.items[player.equipment[(int)this.part].itemFileName].itemName != this.itemName)
-        {
-            player.ACT_Equip(currItem);
-            SCP_UI.instance.radio.StartRadio();
-        }
-        else
-        {
-            player.ACT_UnEquip(part);
-        }
-
+        base.Use(ref currItem);
     }
 
-    public override bool Mix(ref gameItem currItem, ref gameItem toMix)
+    public override void OnEquip(ref gameItem currItem)
     {
-        if (ItemController.instance.items[toMix.itemFileName].itemName.Equals("bat_nor"))
-        {
-            currItem.valFloat = 100;
-            return (true);
-        }
-        else
-            return (false);
+        base.OnEquip(ref currItem);
+        SCP_UI.instance.radio.StartRadio();
     }
+
+    public override void OnDequip(ref gameItem currItem)
+    {
+        base.OnDequip(ref currItem);
+        SCP_UI.instance.radio.StopRadio();
+    }
+
 
 }

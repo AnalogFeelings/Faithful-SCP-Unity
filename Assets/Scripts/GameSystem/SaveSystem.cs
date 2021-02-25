@@ -5,6 +5,12 @@ using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 
 
+
+
+[System.Serializable]
+public enum Worlds { facility, pocket, russia, dontCare=-1 };
+
+
 /// <summary>
 /// Items del juego
 /// </summary>
@@ -56,28 +62,40 @@ public class saveMeta
     }
 }
 
-
-
 [System.Serializable]
-public class SaveData
+public class WorldData
 {
-    public List<savedDoor> doorState;
-    public List<savedObject> persState;
-    public string saveName;
-    public string saveSeed;
-    public room[,] savedMap;
-    public int[,] navMap;
-    public float angle;
-    public float Health, bloodLoss, zombieTime;
-    public MapSize savedSize;
-    public float pX, pY, pZ;
-    public int mapX, mapY;
-    public List<gameItem[]> items;
-    public List<bool[]> equips;
     public ItemList[] worldItems;
     public NPC_Data[] npcData;
     public NPC_Data[] mainData;
     public bool[] simpData;
+
+    public List<savedDoor> doorState;
+    public List<savedObject> persState;
+
+    public SeriVector playerPos;
+    public float angle;
+}
+
+[System.Serializable]
+public class SaveData
+{
+    
+    public string saveName;
+    public string saveSeed;
+    public room[,] savedMap;
+    public int[,] navMap;
+    public MapSize savedSize;
+    public float Health, bloodLoss, zombieTime, leftRun, leftBlink;
+    
+    public int mapX, mapY;
+    public List<gameItem[]> items;
+    public List<bool[]> equips;
+
+    public Worlds currentWorld;
+    public WorldData[] worlds;
+    public bool[] worldsCreateds;
+    
     public bool holdRoom;
     public Random.State seedState;
 
@@ -90,6 +108,8 @@ public class SaveData
 
 public class SaveSystem : MonoBehaviour
 {
+    public const int worldQ = 3;
+
     public SaveData playData = new SaveData();
     public static SaveSystem instance = null;
 
@@ -126,14 +146,14 @@ public class SaveSystem : MonoBehaviour
         }
     }
 
-    public void LoadState()
+    public  void LoadState()
     {
         /*string[] filePaths = GetFilePaths();
 
         if (filePaths.Length > 0)
         {*/
-            playData = LoadSaveFile(GlobalValues.pathfile);
-            Debug.Log("Lo cargue! " + GlobalValues.pathfile);
+        playData = LoadSaveFile(GlobalValues.pathfile);
+        Debug.Log("Lo cargue! " + GlobalValues.pathfile);
         /*}
         else
             Debug.Log("No encontre nada");*/

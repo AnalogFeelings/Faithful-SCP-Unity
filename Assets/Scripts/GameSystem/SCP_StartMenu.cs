@@ -145,7 +145,7 @@ public class SCP_StartMenu : MonoBehaviour
         if (string.IsNullOrWhiteSpace(seedString.text))
             GlobalValues.mapseed = GlobalValues.getRandomString(5, 9);
 
-        GlobalValues.isNew = true;
+        GlobalValues.isNewGame = true;
         GlobalValues.hasSaved = false;
         GlobalValues.LoadType = LoadType.newgame;
         Load_CB();
@@ -185,7 +185,7 @@ public class SCP_StartMenu : MonoBehaviour
         GlobalValues.playername = "[REDACTED]";
         GlobalValues.design = "D-9341";
         GlobalValues.debug = false;
-        if (GlobalValues.isNew)
+        if (GlobalValues.isNewGame)
             LoadingSystem.instance.LoadLevelHalf(1, true, 1, 255, 255, 255);
         else
             LoadingSystem.instance.LoadLevelHalf(1, true, 1, 0, 0, 0);

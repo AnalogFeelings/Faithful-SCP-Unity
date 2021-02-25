@@ -19,7 +19,7 @@ public class CameraPooling : MonoBehaviour
                 screen.material = GameController.instance.cameraPool[i].Mats;
                 GameController.instance.cameraPool[i].isUsing = true;
                 renderIndex = i;
-                Debug.Log("Tengo camara! " + renderIndex);
+                //Debug.Log("Tengo camara! " + renderIndex);
                 break;
             }
         }
