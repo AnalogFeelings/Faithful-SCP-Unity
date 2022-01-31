@@ -22,4 +22,14 @@ public class Equipable_Wear : Item
 
     }
 
+    public virtual void OnEquip(ref gameItem currItem)
+    {
+
+    }
+
+    public virtual void OnDequip(ref gameItem currItem)
+    {
+
+    }
+
 }

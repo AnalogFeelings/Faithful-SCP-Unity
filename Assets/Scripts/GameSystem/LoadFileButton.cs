@@ -54,7 +54,7 @@ public class LoadFileButton : MonoBehaviour
     {
         GlobalValues.pathfile = meta.savepath;
         GlobalValues.mapname = SaveName;
-        GlobalValues.isNew = false;
+        GlobalValues.isNewGame = false;
         GlobalValues.playIntro = false;
         GlobalValues.hasSaved = true;
         GlobalValues.LoadType = LoadType.loadgame;

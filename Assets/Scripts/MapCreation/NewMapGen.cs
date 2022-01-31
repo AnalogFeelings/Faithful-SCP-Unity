@@ -1229,7 +1229,7 @@ public class NewMapGen : MonoBehaviour
             DecalSystem.instance.SpawnDecal(new Vector3((roomsize * i) + xDecal, 0.05f, (roomsize * j) + yDecal));
 
 
-        if (mapfil[i, j].Event == -1 && GlobalValues.isNew)
+        if (mapfil[i, j].Event == -1 && !SaveSystem.instance.playData.worldsCreateds[(int)GameController.instance.worldName])
         {
             if (room_.hasEvents)
             {
@@ -1246,7 +1246,7 @@ public class NewMapGen : MonoBehaviour
 
                 for (int z = 0; z < eventList.Count; z++)
                 {
-                    Debug.Log(eventList[z]);
+                    //Debug.Log(eventList[z]);
                     if (eventList[z] == evName)
                         found = true;
                 }
@@ -1254,7 +1254,7 @@ public class NewMapGen : MonoBehaviour
                 if (!found)
                 {
                     eventList.Add(evName);
-                    Debug.Log("Agregando " + evName);
+                    //Debug.Log("Agregando " + evName);
                     mapobjects[i, j].GetComponent<EventHandler>().EventSpecial();
                     mapfil[i, j].Event = -2;
                 }

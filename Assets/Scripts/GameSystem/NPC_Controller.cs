@@ -192,8 +192,9 @@ public class NPC_Controller : MonoBehaviour
 
     public bool[] getActiveSimps()
     {
-        bool[] helper = new bool[simpList.Length];
-        for (int i = 0; i < simpList.Length; i++)
+        Debug.Log("Simp size = " + Simp_Prefabs.Length);
+        bool[] helper = new bool[Simp_Prefabs.Length];
+        for (int i = 0; i < Simp_Prefabs.Length; i++)
         {
             helper[i] = simpList[i].isActive;
             //Debug.Log("Obteniendo datos NPC " + i + " de " + NPCS.Count + " tipo " + NPCS[i].data.type);
@@ -206,7 +207,10 @@ public class NPC_Controller : MonoBehaviour
         NPC_Data[] helper = new NPC_Data[mainList.Length];
         for (int i = 0; i < mainList.Length; i++)
         {
-            helper[i] = mainList[i].getData();
+            if (spawnTable[i] == true)
+            {
+                helper[i] = mainList[i].getData();
+            }
         }
         return (helper);
     }

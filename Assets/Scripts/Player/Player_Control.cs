@@ -180,9 +180,9 @@ public class Player_Control : MonoBehaviour
     private void Start()
     {
         CameraObj.transform.rotation = Quaternion.identity;
-        if (!noMasterController && GlobalValues.isNew == false)
+        if (!noMasterController && SaveSystem.instance.playData.worldsCreateds[(int)GameController.instance.worldName])
         {
-            CameraObj.GetComponent<Player_MouseLook>().rotation = new Vector3(0, SaveSystem.instance.playData.angle, 0);
+            CameraObj.GetComponent<Player_MouseLook>().rotation = new Vector3(0, SaveSystem.instance.playData.worlds[(int)GameController.instance.worldName].angle, 0);
         }
         //handPos.transform.position = CameraObj.transform.position + (CameraObj.transform.forward * 0.5f);
 
@@ -316,7 +316,7 @@ public class Player_Control : MonoBehaviour
             Crouch = true;
 
         //Debug.Log("Held Value " + SCPInput.instance.playerInput.Gameplay.RunHold.ReadValue<float>());
-        isRunning = (SCPInput.instance.playerInput.Gameplay.RunHold.ReadValue<float>() > 0 && !Crouch && RunningTimer > 0.2f && (!GameController.instance.isPocket));
+        isRunning = (SCPInput.instance.playerInput.Gameplay.RunHold.ReadValue<float>() > 0 && !Crouch && RunningTimer > 0.2f && (GameController.instance.worldName != Worlds.pocket));
 
         speed = Basespeed;
         if (Crouch)
@@ -325,7 +325,7 @@ public class Player_Control : MonoBehaviour
         if (isRunning)
             speed = runSpeed;
 
-        if (GameController.instance.isPocket)
+        if (GameController.instance.worldName==Worlds.pocket)
         {
             speed = crouchspeed+0.5f;
         }
@@ -521,7 +521,7 @@ public class Player_Control : MonoBehaviour
             if ((((InputX != 0 || InputY != 0)) || walkAnim) && !Freeze)
             {
                 InternalTimer += Time.deltaTime * (speed * bobSpeed);
-                if (!GameController.instance.isPocket)
+                if (GameController.instance.worldName != Worlds.pocket)
                     InternalTimerPain += (((101 - Health) / HurtDivisor) * (speed / 2)) * Time.deltaTime;
                 else
                     InternalTimerPain += (((101 - 50) / HurtDivisor) * (speed / 2)) * Time.deltaTime;
@@ -992,16 +992,6 @@ public class Player_Control : MonoBehaviour
     {
         Equipable_Wear itemData = (Equipable_Wear)ItemController.instance.items[item.itemFileName];
 
-        if (itemData is Equipable_Nav)
-        {
-            SCP_UI.instance.SNav.SetActive(false);
-        }
-
-        if (itemData is Equipable_Radio)
-        {
-            SCP_UI.instance.radio.StopRadio();
-        }
-
         if (equipment[(int)itemData.part] != null)
             ACT_UnEquip(itemData.part);
 
@@ -1077,6 +1067,9 @@ public class Player_Control : MonoBehaviour
                     break;
                 }
         }
+
+        itemData.OnEquip(ref item);
+
         if (itemData.hasEffect)
             SetEffect(itemData);
         ReloadEquipment();
@@ -1291,6 +1284,9 @@ public class Player_Control : MonoBehaviour
     public void ACT_UnEquip(bodyPart where)
     {
         Equipable_Wear itemData = (Equipable_Wear)ItemController.instance.items[equipment[(int)where].itemFileName];
+
+        itemData.OnDequip(ref equipment[(int)where]);
+
         SCP_UI.instance.ItemSFX(itemData.SFX);
 
         if (itemData.hasEffect)
@@ -1323,20 +1319,11 @@ public class Player_Control : MonoBehaviour
             currEffect.Clear();
         }
 
-        if (itemData is Document_Equipable)
+        /*if (itemData is Document_Equipable)
         {
             Resources.UnloadAsset(itemData.Overlay);
-        }
+        }*/
 
-        if (itemData is Equipable_Nav)
-        {
-            SCP_UI.instance.SNav.SetActive(false);
-        }
-
-        if (itemData is Equipable_Radio)
-        {
-            SCP_UI.instance.radio.StopRadio();
-        }
 
         if (where != bodyPart.Hand)
         {
@@ -1417,7 +1404,7 @@ public class Player_Control : MonoBehaviour
         }
         else
         {
-            SCP_UI.instance.bottomScrible.text = "";
+            //SCP_UI.instance.bottomScrible.text = "";
             handEquip.sprite = null;
             handEquip.SetNativeSize();
             handEquip.color = Color.clear;
@@ -1439,7 +1426,7 @@ public class Player_Control : MonoBehaviour
     {
         _controller.enabled = false;
         transform.position = here;
-        Debug.Log("body pos " + transform.position + " head pos " + CrouchHead.transform.position);
+        //Debug.Log("body pos " + transform.position + " head pos " + CrouchHead.transform.position);
         if (Crouch)
             CameraObj.transform.position = CrouchHead.transform.position;
         else

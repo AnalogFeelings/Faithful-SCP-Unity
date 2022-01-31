@@ -8,6 +8,7 @@ public class EV_Intro2 : MonoBehaviour
     public Transform[] path1, path2, path3, path4, path5;
     public Transform ata1, ata2, ata3, ataFinal, TeleportAnchor, LookLeft, LookRight;
     GameObject objPlayer;
+    public EV_Intro firstEvent;
     EV_Puppet_Controller d1_, d2_, sci_, guard_, sci2_;
     public AudioClip[] Dialogs, Refuse, NewAmbiance, Horror, GeneralSFX, Alarm, guardExit, guardWhat;
     public AudioClip MusicChange, classd1, classd2, guardDies;
@@ -320,7 +321,7 @@ public class EV_Intro2 : MonoBehaviour
 
    
                         
-                        GameController.instance.startEv.GetComponent<EV_Intro>().End();
+                        firstEvent.End();
 
                         if (GameController.instance.isAlive)
                         {

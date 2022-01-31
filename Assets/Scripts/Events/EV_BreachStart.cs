@@ -27,6 +27,9 @@ public class EV_BreachStart : Event_Parent
         ded.AnimTrigger(-7, true);
         ded.DeactivateCollision();
         GameController.instance.QuickSave();
+
+        DecalSystem.instance.Decal(Anchor2.transform.position+Vector3.right*0.1f, Anchor2.transform.rotation.eulerAngles, 6f, false, 5f, 2, 0);
+        DecalSystem.instance.Decal(Anchor2.transform.position, Anchor2.transform.rotation.eulerAngles, 6f, false, 5f, 2, 0);
     }
 
     void Update()

@@ -277,7 +277,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 772443387}
   m_HandleRect: {fileID: 772443386}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -1511,7 +1511,6 @@ GameObject:
   - component: {fileID: 299088542}
   - component: {fileID: 299088546}
   - component: {fileID: 299088545}
-  - component: {fileID: 299088547}
   m_Layer: 17
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1659,23 +1658,14 @@ MonoBehaviour:
   m_ShowCustomSorter: 0
   breakBeforeColorGrading: 0
   m_BeforeTransparentBundles: []
-  m_BeforeStackBundles: []
+  m_BeforeStackBundles:
+  - assemblyQualifiedName: NightVision, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  - assemblyQualifiedName: Assets.Pixelation.Scripts.Pixelationv2, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   m_AfterStackBundles:
   - assemblyQualifiedName: HorrorBlur, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
---- !u!114 &299088547
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 299088541}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a8e47b3e8ac3fa141abb6c46ee089ffa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  skinLookup: {fileID: 2800000, guid: 983458ea1b3f1854dbdfab9d0da1eba7, type: 3}
 --- !u!1 &312791245
 GameObject:
   m_ObjectHideFlags: 0
@@ -3966,7 +3956,7 @@ Light:
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 2.5
-  m_Range: 18.839495
+  m_Range: 35.908848
   m_SpotAngle: 60.910625
   m_InnerSpotAngle: 45.819912
   m_CookieSize: 10
@@ -3974,9 +3964,9 @@ Light:
     m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
-    m_Strength: 1
-    m_Bias: 0.05
-    m_NormalBias: 0.4
+    m_Strength: 0.162
+    m_Bias: 0.03
+    m_NormalBias: 0
     m_NearPlane: 0.2
     m_CullingMatrixOverride:
       e00: 1
@@ -3996,7 +3986,7 @@ Light:
       e32: 0
       e33: 1
     m_UseCullingMatrixOverride: 0
-  m_Cookie: {fileID: 0}
+  m_Cookie: {fileID: 2800000, guid: c0a273b456163ce42b8bc5c72a5ab701, type: 2}
   m_DrawHalo: 0
   m_Flare: {fileID: 0}
   m_RenderMode: 0
@@ -4061,13 +4051,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NGSS_DISABLE_ON_PLAY: 0
   NGSS_NO_UPDATE_ON_PLAY: 0
-  NGSS_MANAGE_GLOBAL_SETTINGS: 1
+  NGSS_MANAGE_GLOBAL_SETTINGS: 0
   NGSS_PCSS_ENABLED: 1
   NGSS_SAMPLING_TEST: 10
   NGSS_SAMPLING_FILTER: 30
   NGSS_NOISE_SCALE: 1
   NGSS_SHADOWS_OPACITY: 1
-  NGSS_SHADOWS_SOFTNESS: 1
+  NGSS_SHADOWS_SOFTNESS: 0.162
   NGSS_SHADOWS_DITHERING: 1
   NGSS_SHADOWS_RESOLUTION: 256
 --- !u!1 &820967285

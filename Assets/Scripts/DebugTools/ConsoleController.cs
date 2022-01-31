@@ -67,8 +67,9 @@ public class ConsoleController
         registerCommand("playtuto", playtuto, "Shows the specified tutorial card. Usage: playtuto [identifier] (NO BRACKETS)");
         registerCommand("subtitlecheck", subcheck, "Adds missing subtitles from the current language pack");
         registerCommand("give", give, "Gives you the specified item.");
-        registerCommand("safeplace", safeplace, "Tests the world change function");
-        registerCommand("safereturn", safereturn, "Tests the world return function");
+        registerCommand("gopocket", goPocket, "Tests the Pocket Dimension");
+        //registerCommand("safeplace", safeplace, "Tests the world change function");
+        //registerCommand("safereturn", safereturn, "Tests the world return function");
         registerCommand("goto", teleportCoord, "Teleports to the x and y coordinate");
         registerCommand("teleport", teleportRoom, "Teleports to room with this name");
         registerCommand("spawn106", spawn106, "Spawns SCP-106 at the center of the current room");
@@ -457,6 +458,12 @@ public class ConsoleController
     {
         GameController.instance.GoSafePlace();
     }
+
+    void goPocket(string[] args)
+    {
+        GameController.instance.GoPocket();
+    }
+
     void safereturn(string[] args)
     {
         GameController.instance.WorldReturn();

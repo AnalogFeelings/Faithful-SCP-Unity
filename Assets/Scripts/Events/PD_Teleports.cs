@@ -50,10 +50,11 @@ public class PD_Teleports : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        /*if (Input.GetKeyDown(KeyCode.F11) && GlobalValues.debugconsole)
+        //Debug.Log("Is debug triffered? " + SCPInput.instance.playerInput.Gameplay.DebugF1.triggered + " console " + GlobalValues.debugconsole);
+        if (SCPInput.instance.playerInput.Gameplay.DebugF1.triggered)
         {
             StartCoroutine(Escape());
-        }*/
+        }
     }
 
     public void Teleport()
@@ -121,8 +122,9 @@ public class PD_Teleports : MonoBehaviour
         Debug.Log("CoroutineDone");
 
         GlobalValues.worldState.items = ItemController.instance.GetItems();
+        GlobalValues.worldState = GameController.instance.QuickSave();
 
-        GlobalValues.isNew = false;
+        GlobalValues.isNewGame = false;
         GlobalValues.LoadType = LoadType.otherworld;
         LoadingSystem.instance.LoadLevelHalf(1, true, 2, (int)fadecolor.r, (int)fadecolor.g, (int)fadecolor.b, true);
     }

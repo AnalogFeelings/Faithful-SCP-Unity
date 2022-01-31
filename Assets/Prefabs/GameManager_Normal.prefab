@@ -360,6 +360,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &5415390143177930581
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8154591446075404779}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3841da1cd83429542a0a0dc45daba6a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_CubeMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &7018069560751928975
 GameObject:
   m_ObjectHideFlags: 0
@@ -417,8 +430,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Death: 0
+  worldName: 0
   isAlive: 1
-  isPocket: 0
   canSave: 0
   debugCamera: 0
   holdRoom: 0
@@ -443,9 +456,11 @@ MonoBehaviour:
     type: 3}
   player: {fileID: 0}
   playercache: {fileID: 0}
-  startEv: {fileID: 0}
   itemSpawner: {fileID: 1675467432282071768, guid: f17e077e8125f89458e5590c05ca35c4,
     type: 3}
+  startGame:
+    m_PersistentCalls:
+      m_Calls: []
   WorldAnchor: {fileID: 0}
   CullerFlag: 0
   DebugFlag: 0
@@ -555,26 +570,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playData:
-    doorState: []
-    persState: []
     saveName: 
     saveSeed: 
-    angle: 0
-    Health: 0
-    bloodLoss: 0
-    zombieTime: 0
     savedSize:
       xSize: 0
       ySize: 0
-    pX: 0
-    pY: 0
-    pZ: 0
+    Health: 0
+    bloodLoss: 0
+    zombieTime: 0
+    leftRun: 0
+    leftBlink: 0
     mapX: 0
     mapY: 0
-    worldItems: []
-    npcData: []
-    mainData: []
-    simpData: 
+    currentWorld: 0
+    worlds: []
+    worldsCreateds: 
     holdRoom: 0
     seedState:
       s0: 0
@@ -32533,6 +32543,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7018069560751928961}
     m_Modifications:
+    - target: {fileID: 1175400616492169352, guid: 007de4b8cbd175244817c798271bb197,
+        type: 3}
+      propertyPath: DecalAtlas
+      value: 
+      objectReference: {fileID: 2100000, guid: f95731d585480e0439717bc83247dab0, type: 2}
     - target: {fileID: 1175400616492169353, guid: 007de4b8cbd175244817c798271bb197,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -32595,6 +32610,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 007de4b8cbd175244817c798271bb197, type: 3}
+--- !u!1 &8154591446075404779 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1175400616492169399, guid: 007de4b8cbd175244817c798271bb197,
+    type: 3}
+  m_PrefabInstance: {fileID: 7018069560742447452}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8154591446075404757 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1175400616492169353, guid: 007de4b8cbd175244817c798271bb197,
@@ -32860,12 +32881,6 @@ PrefabInstance:
       objectReference: {fileID: 7018069560751928960}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 049874557cdacee40b2ac94e53a7c76f, type: 3}
---- !u!224 &459801740711833583 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 7423262775878412602, guid: 049874557cdacee40b2ac94e53a7c76f,
-    type: 3}
-  m_PrefabInstance: {fileID: 7018069561138267861}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &112 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7018069561138267813, guid: 049874557cdacee40b2ac94e53a7c76f,
@@ -32878,6 +32893,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fa5c7ac0bc11e54d99fb483e2557f2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &459801740711833583 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 7423262775878412602, guid: 049874557cdacee40b2ac94e53a7c76f,
+    type: 3}
+  m_PrefabInstance: {fileID: 7018069561138267861}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7018069561190604268
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -32889,6 +32910,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AfterStackBundles.Array.size
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2934010242552206170, guid: aeb3408b34da18f41be8741cf8e79afd,
+        type: 3}
+      propertyPath: m_BeforeStackBundles.Array.size
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2934010242552206170, guid: aeb3408b34da18f41be8741cf8e79afd,
         type: 3}
@@ -32919,6 +32945,17 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AfterStackBundles.Array.data[0].assemblyQualifiedName
       value: HorrorBlur, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      objectReference: {fileID: 0}
+    - target: {fileID: 2934010242552206170, guid: aeb3408b34da18f41be8741cf8e79afd,
+        type: 3}
+      propertyPath: m_BeforeStackBundles.Array.data[0].assemblyQualifiedName
+      value: NightVision, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      objectReference: {fileID: 0}
+    - target: {fileID: 2934010242552206170, guid: aeb3408b34da18f41be8741cf8e79afd,
+        type: 3}
+      propertyPath: m_BeforeStackBundles.Array.data[1].assemblyQualifiedName
+      value: Assets.Pixelation.Scripts.Pixelationv2, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
       objectReference: {fileID: 0}
     - target: {fileID: 5047649508498007981, guid: aeb3408b34da18f41be8741cf8e79afd,
         type: 3}

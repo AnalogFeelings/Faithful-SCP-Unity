@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using Pixelplacement;
 using Pixelplacement.TweenSystem;
 using UnityEngine.Tilemaps;
+using UnityEngine.Events;
 
 public enum DeathEvent {none, pocketDimension, zombie008 };
 
@@ -51,7 +52,8 @@ public class GameController : MonoBehaviour
     [HideInInspector]
     public DeathEvent Death;
     public static GameController instance = null;
-    public bool isAlive = true, isPocket;
+    public Worlds worldName;
+    public bool isAlive = true;
     int doorCounter = 0;
     int persCounter = 0;
     public bool canSave = false, debugCamera, holdRoom = false;
@@ -77,7 +79,9 @@ public class GameController : MonoBehaviour
     public GameObject player;
     [HideInInspector]
     public Player_Control playercache;
-    public GameObject startEv, itemSpawner;
+    public GameObject itemSpawner;
+    public UnityEvent startGame=new UnityEvent();
+
 
     [HideInInspector]
     [System.NonSerialized]
@@ -202,22 +206,42 @@ public class GameController : MonoBehaviour
         persParent = new GameObject("persParent");
 
 
-        //Define globals into dictionary
+        if (GlobalValues.debug)
+        {
+            Localization.CheckLangs();
+            Localization.SetLanguage(-1);
+        }
 
     }
 
     private void Start()
     {
-        itemData = new ItemList[100];
+        
         roomAmbiance_obj = Instantiate(roomAmbiance_obj);
         roomAmbiance_src = roomAmbiance_obj.GetComponent<AudioSource>();
         MenuSFX.ignoreListenerPause = true;
+
+        if(GlobalValues.isNewGame)
+        {
+            Debug.Log("Creando mundos");
+            SaveSystem.instance.playData.worlds = new WorldData[SaveSystem.worldQ];
+            SaveSystem.instance.playData.worldsCreateds = new bool[SaveSystem.worldQ];
+            for (int i = 0; i < SaveSystem.worldQ; i++)
+            {
+                Debug.Log("i = " + i);
+                SaveSystem.instance.playData.worldsCreateds[i] = false;
+                SaveSystem.instance.playData.worlds[i] = new WorldData();
+                SaveSystem.instance.playData.worlds[i].worldItems = new ItemList[100];
+            }
+        }
+
+        itemData = new ItemList[100];
 
 
         Time.timeScale = 0;
         doGameplay = false;
 
-        if (!GlobalValues.debug)
+        if (!GlobalValues.debug && worldName!=Worlds.dontCare)
         {
             switch (GlobalValues.LoadType)
             {
@@ -232,15 +256,20 @@ public class GameController : MonoBehaviour
 
                 case LoadType.loadgame:
                     {
-                        spawnHere = false;
                         SaveSystem.instance.LoadState();
+                        Debug.Log("World name = " + worldName + " isCreated? " + SaveSystem.instance.playData.worldsCreateds[(int)worldName]);
+                        if (SaveSystem.instance.playData.worldsCreateds[(int)worldName])
+                            spawnHere = false;
                         LoadGame();
                         break;
                     }
                 case LoadType.otherworld:
                     {
-                        spawnHere = false;
+                        
                         SaveSystem.instance.playData = GlobalValues.worldState;
+                        Debug.Log("World name = " + worldName + " isCreated? " + SaveSystem.instance.playData.worldsCreateds[(int)worldName]);
+                        if (SaveSystem.instance.playData.worldsCreateds[(int)worldName])
+                            spawnHere = false;
                         LoadGame();
                         break;
                     }
@@ -266,6 +295,30 @@ public class GameController : MonoBehaviour
                     }
             }
         }
+
+        if (worldName == Worlds.dontCare)
+        {
+
+
+            SaveSystem.instance.playData = GlobalValues.worldState;
+
+            ItemController.instance.EmptyItems();
+            ItemController.instance.LoadItems(SaveSystem.instance.playData.items, SaveSystem.instance.playData.equips);
+            globalInts = SaveSystem.instance.playData.globalInts;
+            globalFloats = SaveSystem.instance.playData.globalFloats;
+            globalStrings = SaveSystem.instance.playData.globalStrings;
+            globalBools = SaveSystem.instance.playData.globalBools;
+            spawnHere = true;
+            Debug.Log("Iniciando spawn mapless, con spawnHere valor " + spawnHere);
+
+
+            GL_SpawnPlayer(playerSpawn.position);
+            GL_Start();
+            GL_AfterPost();
+
+        }
+
+
         if (GlobalValues.debug && mapless)
         {
             GlobalValues.LoadType = LoadType.mapless;
@@ -302,15 +355,6 @@ public class GameController : MonoBehaviour
             mapCreate.mapgenseed = GUI.TextField(new Rect(20, 40, 80, 20), mapCreate.mapgenseed);
             playIntro = GUI.Toggle(new Rect(120, 40, 80, 20), playIntro, "Iniciar Intro");
 
-            /* if (playIntro)
-             {
-                 GlobalValues.playIntro = true;
-             }
-             else
-             {
-                 GlobalValues.playIntro = true;
-             }*/
-
             if (GUI.Button(new Rect(220, 40, 80, 20), "Iniciar"))
             {
                 NewGame();
@@ -329,7 +373,7 @@ public class GameController : MonoBehaviour
             GUI.Label(new Rect(20, 65, 300, 20), "This Zone " + currZone);
             GUI.Label(new Rect(20, 90, 300, 20), "Is Gameplay? " + doGameplay);
             GUI.Label(new Rect(20, 115, 300, 20), "Is Rooom hold? " + holdRoom);
-            GUI.Label(new Rect(20, 130, 300, 20), "Is Pocket? " + isPocket);
+            GUI.Label(new Rect(20, 130, 300, 20), "Is Pocket? " + (worldName == Worlds.pocket));
             GUI.Label(new Rect(20, 155, 300, 20), "is Alive? " + isAlive);
             GUI.Label(new Rect(20, 170, 300, 20), "Player X " + playercache.transform.position.x + " Y " + playercache.transform.position.y + " Z " + playercache.transform.position.z);
             GUI.Label(new Rect(20, 185, 300, 20), "Player Rotation " + playercache.transform.rotation.eulerAngles.y);
@@ -358,47 +402,51 @@ public class GameController : MonoBehaviour
 
     public void LoadQuickSave()
     {
-        if (GlobalValues.LoadType != LoadType.mapless)
-        {
-            LoadingSystem.instance.FadeOut(0.1f, new Vector3Int(0, 0, 0));
-            GlobalValues.isNew = false;
-            SCP_UI.instance.ToggleDeath();
+        /*if (GlobalValues.LoadType != LoadType.mapless)
+        {*/
+        SaveSystem.instance.LoadState();
+        if(worldName!=SaveSystem.instance.playData.currentWorld)
+            LoadingSystem.instance.LoadLevelHalf(GlobalValues.sceneTable[(int)SaveSystem.instance.playData.currentWorld], true, 1, 0, 0, 0);
 
-            DestroyImmediate(itemParent);
-            DestroyImmediate(eventParent);
 
-            itemParent = new GameObject("itemParent");
-            eventParent = new GameObject("eventParent");
-            //npcParent = new GameObject("npcParent");
+        LoadingSystem.instance.FadeOut(0.1f, new Vector3Int(0, 0, 0));
+        SCP_UI.instance.ToggleDeath();
 
-            SaveSystem.instance.LoadState();
+        DestroyImmediate(itemParent);
+        DestroyImmediate(eventParent);
 
-            GL_Loading();
+        itemParent = new GameObject("itemParent");
+        eventParent = new GameObject("eventParent");
 
-            Camera.main.gameObject.transform.parent = null;
 
-            doorParent.BroadcastMessage("resetState");
-            persParent.BroadcastMessage("resetState");
 
-            DestroyImmediate(player);
-            npcController.DeleteNPC();
 
-            StartCoroutine(ReloadLevel());
-        }
-        else
+        GL_Loading();
+
+        Camera.main.gameObject.transform.parent = null;
+
+        doorParent.BroadcastMessage("resetState");
+        persParent.BroadcastMessage("resetState");
+
+        DestroyImmediate(player);
+        npcController.DeleteNPC();
+
+        StartCoroutine(ReloadLevel());
+        //}
+        /*else
         {
             
             GlobalValues.isNew = false;
             GlobalValues.LoadType = LoadType.loadgame;
             GlobalValues.debug = false;
             LoadingSystem.instance.LoadLevelHalf(GlobalValues.sceneReturn, true, 1, 0, 0, 0);
-        }
+        }*/
 
     }
 
     public int GetDoorID()
     {
-        if (GlobalValues.isNew)
+        if (!SaveSystem.instance.playData.worldsCreateds[(int)worldName])
         {
             doorTable.Add(new savedDoor(doorTable.Count));
             return (doorTable.Count - 1);
@@ -412,7 +460,7 @@ public class GameController : MonoBehaviour
 
     public int GetDoorState(int id)
     {
-        if (GlobalValues.isNew)
+        if (!SaveSystem.instance.playData.worldsCreateds[(int)worldName])
             return (-1);
         else
         {
@@ -430,7 +478,7 @@ public class GameController : MonoBehaviour
 
     public int GetObjectID()
     {
-        if (GlobalValues.isNew)
+        if (!SaveSystem.instance.playData.worldsCreateds[(int)worldName])
         {
             persTable.Add(new savedObject(persTable.Count));
             return (persTable.Count - 1);
@@ -444,7 +492,7 @@ public class GameController : MonoBehaviour
 
     public int GetObjectState(int id)
     {
-        if (GlobalValues.isNew)
+        if (!SaveSystem.instance.playData.worldsCreateds[(int)worldName])
             return (-1);
         else
         {
@@ -640,7 +688,7 @@ public class GameController : MonoBehaviour
     public void HorrorUpdate(float value)
     {
         //Debug.Log("Horror Update " + value);
-        if (!isPocket)
+        if (worldName!=Worlds.pocket)
         {
             HorrorFov.fieldOfView = 65 + (7 * value);
         }
@@ -724,6 +772,7 @@ public class GameController : MonoBehaviour
     {
         xPlayer = x;
         yPlayer = y;
+        Debug.Log("Map Pos = " + x + " " + y);
         if (doGameplay)
         {
             if (SCP_Map[x, y].Event != -1)
@@ -1016,23 +1065,24 @@ public class GameController : MonoBehaviour
         {
             case DeathEvent.pocketDimension:
                 {
-                    GlobalValues.worldState = QuickSave();
+                    SaveSystem.instance.playData = QuickSave();
+
+                    GlobalValues.worldState = SaveSystem.instance.playData;
 
                     SeriVector temp = new SeriVector(0, 0, 0);
 
 
                     LoadingSystem.instance.FadeOut(1.5f, new Vector3Int(0, 0, 0));
                     yield return new WaitForSeconds(3);
-
-                    GlobalValues.worldState.mainData[(int)npc.scp106].Pos = temp;
-                    GlobalValues.worldState.mainData[(int)npc.scp106].isActive = false;
+                    SaveSystem.instance.playData.worlds[(int)worldName].mainData[(int)npc.scp106].Pos = temp;
+                    SaveSystem.instance.playData.worlds[(int)worldName].mainData[(int)npc.scp106].isActive = false;
 
                     GoPocket();
                     break;
                 }
             case DeathEvent.zombie008:
                 {
-                    GlobalValues.worldState = QuickSave();
+                    //GlobalValues.worldState = QuickSave();
                     //LoadingSystem.instance.FadeOut(1.5f, new Vector3Int(0, 0, 0));
                     yield return new WaitForSeconds(3);
 
@@ -1078,32 +1128,32 @@ public class GameController : MonoBehaviour
 
     public void GoSafePlace()
     {
-        GlobalValues.worldState = QuickSave();
+        SaveSystem.instance.playData = QuickSave();
         GlobalValues.LoadType = LoadType.mapless;
         GlobalValues.sceneReturn = SceneManager.GetActiveScene().buildIndex;
         SceneManager.LoadScene("SafePlace");
     }
     public void GoPocket()
     {
-        GlobalValues.LoadType = LoadType.mapless;
-        GlobalValues.isNew = false;
+        SaveSystem.instance.playData = QuickSave();
+
+        GlobalValues.worldState = SaveSystem.instance.playData;
+        GlobalValues.LoadType = LoadType.otherworld;
         GlobalValues.sceneReturn = SceneManager.GetActiveScene().buildIndex;
         Debug.Log("Scene" + SceneManager.GetActiveScene().name);
         LoadingSystem.instance.LoadLevel(3);
     }
     public void GoZombie008()
     {
-        GlobalValues.LoadType = LoadType.mapless;
-        GlobalValues.isNew = false;
+        GlobalValues.LoadType = LoadType.otherworld;
         //GlobalValues.sceneReturn = SceneManager.GetActiveScene().buildIndex;
         //Debug.Log("Scene" + SceneManager.GetActiveScene().name);
         LoadingSystem.instance.LoadLevel(4);
     }
     public void WorldReturn()
     {
-        GlobalValues.worldState.items = ItemController.instance.GetItems();
+        SaveSystem.instance.playData.items = ItemController.instance.GetItems();
 
-        GlobalValues.isNew = false;
         GlobalValues.LoadType = LoadType.otherworld;
         LoadingSystem.instance.LoadLevelHalf(1);
     }
@@ -1228,24 +1278,27 @@ public class GameController : MonoBehaviour
 
     public SaveData QuickSave()
     {
-        SaveData playData = new SaveData();
+        SaveData playData = SaveSystem.instance.playData;
         Debug.Log("Salvando");
         playData.savedMap = SCP_Map;
         playData.saveName = GlobalValues.mapname;
         playData.saveSeed = GlobalValues.mapseed;
-        playData.doorState = doorTable;
-        playData.persState = persTable;
-        playData.savedSize = mapSize;
-        playData.pX = player.transform.position.x;
-        playData.pY = player.transform.position.y;
-        playData.pZ = player.transform.position.z;
+        playData.worlds[(int)worldName].doorState = doorTable;
+        playData.worlds[(int)worldName].persState = persTable;
+        
+        playData.worlds[(int)worldName].playerPos = SeriVector.fromVector3(player.transform.position);
         playData.equips = ItemController.instance.GetEquips();
         playData.items = ItemController.instance.GetItems();
-        playData.navMap = nav_Map;
-        playData.angle = Camera.main.gameObject.transform.eulerAngles.y;
-        playData.mapX = xPlayer;
-        playData.mapY = yPlayer;
-        playData.holdRoom = holdRoom;
+        playData.worlds[(int)worldName].angle = Camera.main.gameObject.transform.eulerAngles.y;
+        if (ShowMap)
+        {
+            playData.navMap = nav_Map;
+            playData.mapX = xPlayer;
+            playData.mapY = yPlayer;
+            playData.holdRoom = holdRoom;
+            Debug.Log("Saved size = " + mapSize);
+            playData.savedSize = mapSize;
+        }
         playData.globalBools = globalBools;
         playData.globalFloats = globalFloats;
         playData.seedState = Random.state;
@@ -1255,12 +1308,13 @@ public class GameController : MonoBehaviour
         playData.bloodLoss = playercache.bloodloss;
         playData.zombieTime = (playercache.hasZombie == false ? -1 : playercache.zombieTimer);
 
-        playData.npcData = npcController.getData();
-        playData.mainData = npcController.getMain();
-        playData.simpData = npcController.getActiveSimps();
+        playData.worlds[(int)worldName].npcData = npcController.getData();
+        playData.worlds[(int)worldName].mainData = npcController.getMain();
+        playData.worlds[(int)worldName].simpData = npcController.getActiveSimps();
+        playData.worlds[(int)worldName].worldItems = itemData;
+        playData.worldsCreateds[(int)worldName] = true;
 
 
-        playData.worldItems = itemData;
         return (playData);
     }
 
@@ -1289,11 +1343,14 @@ public class GameController : MonoBehaviour
 
         depth = HorrorVol.sharedProfile.GetSetting<DepthOfField>();
         depth.focusDistance.Override(2f);
-        CullerFlag = false;
-        CullerOn = false;
+        if (ShowMap)
+        {
+            CullerFlag = false;
+            CullerOn = false;
 
-        Zone3limit = mapCreate.zone3_limit;
-        Zone2limit = mapCreate.zone2_limit;
+            Zone3limit = mapCreate.zone3_limit;
+            Zone2limit = mapCreate.zone2_limit;
+        }
     }
 
 
@@ -1329,6 +1386,22 @@ public class GameController : MonoBehaviour
                 yield return StartCoroutine(HidAfterProbeRendering());
             }
         }
+
+        GL_Spawning();
+
+        if (!GlobalValues.debug)
+        {
+            LoadingSystem.instance.loadbar = 1f;
+            LoadingSystem.instance.canClick = true;
+
+            while (!LoadingSystem.instance.isLoadingDone)
+            {
+                yield return null;
+            }
+        }
+
+        GL_Start();
+        GL_AfterPost();
     }
 
     void GL_NewStart()
@@ -1344,18 +1417,22 @@ public class GameController : MonoBehaviour
 
     void GL_LoadStart()
     {
+        
         GL_Loading();
+        if (ShowMap)
+        {
+            zoneAmbiance = 3;
+            zoneMusic = 3;
 
-        zoneAmbiance = 3;
-        zoneMusic = 3;
+            mapCreate.mapfil = SaveSystem.instance.playData.savedMap;
+            Debug.Log("Saved map size " + SaveSystem.instance.playData.savedMap);
+            mapCreate.mapSize = SaveSystem.instance.playData.savedSize;
 
-        mapCreate.mapfil = SaveSystem.instance.playData.savedMap;
-        mapCreate.mapSize = SaveSystem.instance.playData.savedSize;
+            GlobalValues.mapseed = SaveSystem.instance.playData.saveSeed;
+            GlobalValues.mapname = SaveSystem.instance.playData.saveName;
 
-        GlobalValues.mapseed = SaveSystem.instance.playData.saveSeed;
-        GlobalValues.mapname = SaveSystem.instance.playData.saveName;
-
-        mapCreate.LoadingSave();
+            mapCreate.LoadingSave();
+        }
 
     }
 
@@ -1364,11 +1441,18 @@ public class GameController : MonoBehaviour
 
     void GL_Loading()
     {
-        itemData = SaveSystem.instance.playData.worldItems;
+        if (SaveSystem.instance.playData.worldsCreateds[(int)worldName])
+        {
+            itemData = SaveSystem.instance.playData.worlds[(int)worldName].worldItems;
+            doorTable = SaveSystem.instance.playData.worlds[(int)worldName].doorState;
+            persTable = SaveSystem.instance.playData.worlds[(int)worldName].persState;
+        }
+
+        nav_Map = SaveSystem.instance.playData.navMap;
+        mapSize = SaveSystem.instance.playData.savedSize;
         mapCreate.mapfil = SaveSystem.instance.playData.savedMap;
-        doorTable = SaveSystem.instance.playData.doorState;
-        persTable = SaveSystem.instance.playData.persState;
         SCP_Map = SaveSystem.instance.playData.savedMap;
+
         ItemController.instance.EmptyItems();
         ItemController.instance.LoadItems(SaveSystem.instance.playData.items, SaveSystem.instance.playData.equips);
         holdRoom = SaveSystem.instance.playData.holdRoom;
@@ -1381,35 +1465,39 @@ public class GameController : MonoBehaviour
 
     void GL_AfterPost()
     {
-
+        
         if (ShowMap)
         {
             if (GlobalValues.LoadType != LoadType.mapless)
             {
-                if (!GlobalValues.isNew)
+                if (SaveSystem.instance.playData.worldsCreateds[(int)worldName])
                 {
                     doGameplay = true;
                     StopTimer = true;
                     LoadItems();
-                    Camera.main.gameObject.transform.rotation = Quaternion.Euler(0, SaveSystem.instance.playData.angle, 0);
+                    Camera.main.gameObject.transform.rotation = Quaternion.Euler(0, SaveSystem.instance.playData.worlds[(int)worldName].angle, 0);
                     SetMapPos(SaveSystem.instance.playData.mapX, SaveSystem.instance.playData.mapY);
                     ItemController.instance.SetEquips();
                     Random.state = SaveSystem.instance.playData.seedState;
                 }
-                Debug.Log("Showing map");
+                Debug.Log("Showing map x" + xPlayer + " y " + yPlayer);
                 var e = ShowRoom(xPlayer, yPlayer);
                 while (e.MoveNext()) { }
             }
         }
 
+        if (startGame != null)
+            startGame.Invoke();
+
         isStart = true;
         HorrorFov = Camera.main;
         LoadUserValues();
 
-        if(startEv!=null)
-            startEv.SetActive(true);
-
+        
+        SCP_UI.instance.EnableMenu();
         PlayHorror(Z1[0], player.transform, npc.none);
+
+        GlobalValues.isNewGame = false;
     }
 
     void GL_SpawnPlayer(Vector3 here)
@@ -1418,15 +1506,15 @@ public class GameController : MonoBehaviour
         deathmsg = "";
         if (spawnPlayer)
         {
-            if (GlobalValues.isNew && !spawnHere)
+            if (worldName!=Worlds.dontCare && !SaveSystem.instance.playData.worldsCreateds[(int)worldName] && !spawnHere)
             {
                 player = Instantiate(origplayer, WorldAnchor.transform.position + (Vector3.up * 0.5f), Quaternion.identity);
-                Debug.Log("Spawning at anchor " + WorldAnchor.transform + " es nuevo " + GlobalValues.isNew + " !spawnhere " + spawnHere);
+                Debug.Log("Spawning at anchor " + WorldAnchor.transform + " es nuevo " + !SaveSystem.instance.playData.worldsCreateds[(int)worldName] + " !spawnhere " + spawnHere);
             }
             else
             {
-                if(!GlobalValues.isNew)
-                    player = Instantiate(origplayer, here, Quaternion.Euler(0,SaveSystem.instance.playData.angle,0));
+                if(worldName != Worlds.dontCare && SaveSystem.instance.playData.worldsCreateds[(int)worldName])
+                    player = Instantiate(origplayer, here, Quaternion.Euler(0,SaveSystem.instance.playData.worlds[(int)worldName].angle,0));
                 else
                     player = Instantiate(origplayer, here, Quaternion.identity);
                 Debug.Log("Spawning here at " + here);
@@ -1434,7 +1522,7 @@ public class GameController : MonoBehaviour
         }
 
         playercache = player.GetComponent<Player_Control>();
-        if (!GlobalValues.isNew || GlobalValues.LoadType == LoadType.mapless && GlobalValues.debug == false)
+        if (!GlobalValues.isNewGame || GlobalValues.LoadType == LoadType.mapless && GlobalValues.debug == false)
         {
             playercache.Health = SaveSystem.instance.playData.Health;
             playercache.bloodloss = SaveSystem.instance.playData.bloodLoss;
@@ -1449,13 +1537,12 @@ public class GameController : MonoBehaviour
 
     void GL_Start()
     {
-        if (!GlobalValues.isNew && GlobalValues.LoadType != LoadType.mapless)
+        if (worldName != Worlds.dontCare && SaveSystem.instance.playData.worldsCreateds[(int)worldName] && GlobalValues.LoadType != LoadType.mapless)
         {
             Debug.Log("Spawning inplaces");
-            npcController.ResetNPC(SaveSystem.instance.playData.npcData, SaveSystem.instance.playData.mainData, SaveSystem.instance.playData.simpData);
+            npcController.ResetNPC(SaveSystem.instance.playData.worlds[(int)worldName].npcData, SaveSystem.instance.playData.worlds[(int)worldName].mainData, SaveSystem.instance.playData.worlds[(int)worldName].simpData);
         }
         Camera.main.enabled = true;
-        SCP_UI.instance.EnableMenu();
         playercache.isGameplay = true;
     }
 
@@ -1463,10 +1550,10 @@ public class GameController : MonoBehaviour
     {
         Vector3 here = playerSpawn.position;
         bool origSpawn = spawnHere;
-        if (!GlobalValues.isNew && GlobalValues.LoadType != LoadType.mapless)
+        if (worldName != Worlds.dontCare && SaveSystem.instance.playData.worldsCreateds[(int)worldName] && GlobalValues.LoadType != LoadType.mapless)
         {
             spawnHere = true;
-            here = new Vector3(SaveSystem.instance.playData.pX, SaveSystem.instance.playData.pY, SaveSystem.instance.playData.pZ);
+            here = SaveSystem.instance.playData.worlds[(int)worldName].playerPos.toVector3();
         }
 
 
@@ -1476,17 +1563,19 @@ public class GameController : MonoBehaviour
 
 
         spawnHere = origSpawn;
-
-        Map_Prepare();
-
-        if (!GlobalValues.isNew)
+        Debug.Log("Voy a mostrar el mapa? " + ShowMap);
+        if (ShowMap)
         {
-            nav_Map = SaveSystem.instance.playData.navMap;
-            SetMapPos(SaveSystem.instance.playData.mapX, SaveSystem.instance.playData.mapY);
-        }
-        else
-            SetMapPos(0, 10);
+            Map_Prepare();
 
+            if (SaveSystem.instance.playData.worldsCreateds[(int)worldName] && ShowMap)
+            {
+                nav_Map = SaveSystem.instance.playData.navMap;
+                SetMapPos(SaveSystem.instance.playData.mapX, SaveSystem.instance.playData.mapY);
+            }
+            else
+                SetMapPos(0, 10);
+        }
     }
 
 
@@ -1610,21 +1699,6 @@ public class GameController : MonoBehaviour
             }
         }
 
-        GL_Spawning();
-
-        if (!GlobalValues.debug)
-        {
-            LoadingSystem.instance.loadbar = 1f;
-            LoadingSystem.instance.canClick = true;
-
-            while (!LoadingSystem.instance.isLoadingDone)
-            {
-                yield return null;
-            }
-        }
-       
-        GL_Start();
-        GL_AfterPost();
     }
 
     IEnumerator ReloadLevel()

@@ -12,6 +12,7 @@ public class SCP_UI : MonoBehaviour
     public static SCP_UI instance = null;
     public Image eyes, eyegraphics, infectiongraphic;
     public Canvas PauseM;
+    public Transform CanvasPos;
     public GameObject canvas, SNav, notifprefab;
     public Canvas Inventory, Death, Screen, Options;
     public Image ScreenText;
@@ -19,7 +20,7 @@ public class SCP_UI : MonoBehaviour
     public EventSystem menu;
     public AudioClip[] inventory;
     public AudioClip menublip;
-    public Text Info1, Info2, DeathMSG, bottomScrible;
+    public Text Info1, Info2, DeathMSG;
     public Button save;
     public RadioController radio;
     public KeypadController keypad;

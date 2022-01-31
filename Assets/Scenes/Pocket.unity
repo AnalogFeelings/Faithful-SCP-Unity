@@ -16123,6 +16123,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 7b8ca1e8118b71d448ef6710ca8842fd,
         type: 2}
+    - target: {fileID: 2227722751124853546, guid: 56e73b1261161d141ad5f75fca6a8344,
+        type: 3}
+      propertyPath: itemOG
+      value: 
+      objectReference: {fileID: 11400000, guid: 797e283f5c80fbd4ea0a429c2ed0d447,
+        type: 2}
     - target: {fileID: 2227722751124853547, guid: 56e73b1261161d141ad5f75fca6a8344,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -17056,10 +17062,10 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 2
-  MaxDistance: 500
+  MinDistance: 2.3467712
+  MaxDistance: 9.636507
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 2
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -17067,23 +17073,77 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
+      time: 0.012794426
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: -78.19029
+      outSlope: -78.19029
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.025588851
+      value: 0.5
+      inSlope: -19.547573
+      outSlope: -19.547573
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.051177703
+      value: 0.25
+      inSlope: -4.8868933
+      outSlope: -4.8868933
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.102355406
+      value: 0.125
+      inSlope: -1.2217233
+      outSlope: -1.2217233
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.20471081
+      value: 0.0625
+      inSlope: -0.30543083
+      outSlope: -0.30543083
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.40942162
+      value: 0.03125
+      inSlope: -0.07635771
+      outSlope: -0.07635771
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.82216966
+      value: 0
+      inSlope: -0.019089427
+      outSlope: -0.019089427
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
     - serializedVersion: 3
       time: 1
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: 0.13153696
+      outSlope: 0.13153696
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 1
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -20580,7 +20640,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1699289792}
   m_LocalRotation: {x: 0.7070741, y: 0.006797828, z: -0.006797828, w: 0.7070741}
-  m_LocalPosition: {x: -22.96, y: 41.695423, z: -13.516}
+  m_LocalPosition: {x: -23.34, y: 41.695423, z: -13.51}
   m_LocalScale: {x: 2.7391207, y: 1.0000007, z: 2.5961008}
   m_Children: []
   m_Father: {fileID: 1369193059}
@@ -24937,11 +24997,60 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 65c81bd039cf3764d86971a43f4fd3e1,
         type: 2}
+    - target: {fileID: 8976056096064272481, guid: e45c8ded17e54b6449fde995021e4ab8,
+        type: 3}
+      propertyPath: SCP_Prefabs.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8976056096064272481, guid: e45c8ded17e54b6449fde995021e4ab8,
+        type: 3}
+      propertyPath: NPC_Prefabs.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8976056096064272481, guid: e45c8ded17e54b6449fde995021e4ab8,
+        type: 3}
+      propertyPath: Simp_Prefabs.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8976056096064272481, guid: e45c8ded17e54b6449fde995021e4ab8,
+        type: 3}
+      propertyPath: spawnTable.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8976056096064272481, guid: e45c8ded17e54b6449fde995021e4ab8,
+        type: 3}
+      propertyPath: SCP_Prefabs.Array.data[2]
+      value: 
+      objectReference: {fileID: 9014384198852189640, guid: 557ebaffbf2e5d244bb49520c999719e,
+        type: 3}
+    - target: {fileID: 8976056096064272481, guid: e45c8ded17e54b6449fde995021e4ab8,
+        type: 3}
+      propertyPath: SCP_Prefabs.Array.data[3]
+      value: 
+      objectReference: {fileID: 9014384198852189640, guid: 557ebaffbf2e5d244bb49520c999719e,
+        type: 3}
+    - target: {fileID: 8976056096064272481, guid: e45c8ded17e54b6449fde995021e4ab8,
+        type: 3}
+      propertyPath: NPC_Prefabs.Array.data[1]
+      value: 
+      objectReference: {fileID: 3400218257497486907, guid: 7c0f6c213cbadf040be30739f0031a92,
+        type: 3}
+    - target: {fileID: 8976056096064272481, guid: e45c8ded17e54b6449fde995021e4ab8,
+        type: 3}
+      propertyPath: Simp_Prefabs.Array.data[0]
+      value: 
+      objectReference: {fileID: 5849899412900113291, guid: 2a4ec6693f59bdf4cb1c17f3755264f2,
+        type: 3}
     - target: {fileID: 8976056096245895824, guid: e45c8ded17e54b6449fde995021e4ab8,
         type: 3}
       propertyPath: playerSpawn
       value: 
       objectReference: {fileID: 1392152485}
+    - target: {fileID: 8976056096245895824, guid: e45c8ded17e54b6449fde995021e4ab8,
+        type: 3}
+      propertyPath: worldName
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8976056096245895825, guid: e45c8ded17e54b6449fde995021e4ab8,
         type: 3}
       propertyPath: m_LocalPosition.x
