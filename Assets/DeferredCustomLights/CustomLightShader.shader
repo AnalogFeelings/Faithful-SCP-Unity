@@ -100,8 +100,14 @@ void DeferredCalculateLightParams (
 	float3 tolight = wpos - lightPos;
 	half3 lightDir = -normalize (tolight);
 	
-	float att = dot(tolight, tolight) * _CustomLightInvSqRadius;
-	float atten = tex2D (_LightTextureB0, att.rr).UNITY_ATTEN_CHANNEL;
+	//float att = dot(tolight, tolight) * ;
+	float toLightDot = dot(tolight, tolight);
+
+	fixed sqrAtt = max(toLightDot, 0.00001);
+
+	float att = saturate(1 - max(toLightDot * _CustomLightInvSqRadius, 0.00001));
+
+	float atten = att / sqrAtt;
 
 	outWorldPos = wpos;
 	outUV = uv;

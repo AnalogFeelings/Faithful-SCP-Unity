@@ -24,7 +24,7 @@ public class SCP_096 : Roam_NPC
     public ShyGuyDifficultyLevels[] levels;
     public Animator animator;
     public BoxCollider faceCol;
-    public float viewLimit, cryTimer, normalSpeed, panicSpeed, accel, maxFallSpeed, gravity, normalTurn=1f, runTurn;
+    public float viewLimit, cryTimer, normalSpeed, panicSpeed, accel, panicAccel, turn, panicTurn;
     public LayerMask ground, doors, playerMask;
     public bool debugIsTargeting;
     scp096State state, currAnim;
@@ -158,6 +158,8 @@ public class SCP_096 : Roam_NPC
             case scp096State.patrol:
                 {
                     agent.speed = normalSpeed;
+                    agent.acceleration = accel;
+                    agent.angularSpeed = turn;
                     if (!agent.hasPath||agent.pathStatus==NavMeshPathStatus.PathInvalid)
                         agent.SetDestination(getRandomPoint());
 
@@ -172,6 +174,8 @@ public class SCP_096 : Roam_NPC
             case scp096State.run:
                 {
                     agent.speed = panicSpeed;
+                    agent.acceleration = panicAccel;
+                    agent.angularSpeed = panicTurn;
 
                     if (Time.frameCount % framerate == 0)
                     {

@@ -12,7 +12,7 @@ public class EV_Tunnel173 : Event_Parent
     public override void EventUpdate()
     {
         base.EventUpdate();
-        if(trigger.GetState())
+        if(trigger.GetState()&&!isTimer)
         {
             isTimer = true;
             Timer = 2;

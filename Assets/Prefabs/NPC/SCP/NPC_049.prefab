@@ -196,17 +196,17 @@ NavMeshAgent:
   m_AgentTypeID: 0
   m_Radius: 0.5
   m_Speed: 0.75
-  m_Acceleration: 10
+  m_Acceleration: 4
   avoidancePriority: 50
   m_AngularSpeed: 250
-  m_StoppingDistance: 0
+  m_StoppingDistance: 0.1
   m_AutoTraverseOffMeshLink: 0
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 23
-  m_ObstacleAvoidanceType: 0
+  m_ObstacleAvoidanceType: 3
 --- !u!114 &8680764321638132987
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -271,7 +271,7 @@ MonoBehaviour:
   animator: {fileID: 6019327152740774024}
   viewLimit: -0.5
   normalSpeed: 1
-  chaseSpeed: 2.5
+  chaseSpeed: 2.4
   listeningRange: 30
   closeRange: 15
   ground:
@@ -435,17 +435,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 8680764321638132989}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03bc8063c9e95401f9a8a38bc716750d, type: 3}
+  m_Script: {fileID: 11500000, guid: b36924ced43b35a40a8ac64df1c3df7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Method: 1
   m_Curve:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  areaDoorName: 
+  stopAtDoors: 1
 --- !u!1001 &8680764321912272616
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -458,6 +476,11 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 7a9d6a3003ffea14389ecb9f9db81ad2, type: 2}
+    - target: {fileID: -4216859302048453862, guid: 26e2f72d2c55dfa41bbd334351c10d71,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 26e2f72d2c55dfa41bbd334351c10d71,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -475,6 +498,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 26e2f72d2c55dfa41bbd334351c10d71,
         type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -4216859302048453862, guid: 26e2f72d2c55dfa41bbd334351c10d71,
+        type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
@@ -486,16 +514,6 @@ PrefabInstance:
     - target: {fileID: -4216859302048453862, guid: 26e2f72d2c55dfa41bbd334351c10d71,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -4216859302048453862, guid: 26e2f72d2c55dfa41bbd334351c10d71,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -4216859302048453862, guid: 26e2f72d2c55dfa41bbd334351c10d71,
-        type: 3}
-      propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 26e2f72d2c55dfa41bbd334351c10d71,
