@@ -179,7 +179,8 @@ public class SubtitleEngine : MonoBehaviour
             }
         //}
 
-        updateSubtitles();
+        if (current[0] != null)
+            updateSubtitles();
 
         for (int i = 0; i < 3; i++)
         {

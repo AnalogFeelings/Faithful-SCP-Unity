@@ -15,17 +15,17 @@ public class npc_zombieGuard : Map_NPC
     AudioSource voiceSource;
     public AudioClip Hit;
     public Animator animator;
-    public float viewLimit, listeningRange, closeRange, timeToHit, timeToIdle, dampSpeed = 0.1f;
+    public float viewLimit, listeningRange, closeRange, timeToHit, timeToIdle;
     public LayerMask ground, playerMask, soundLayer;
     public bool debugIsTargeting;
     zombieState state, currAnim;
-    float Timer, framerate = 15, distanceFromPlayer = Mathf.Infinity, intMoveSpeed=0, refMoveSpeed=0;
+    float Timer, framerate = 15, distanceFromPlayer = Mathf.Infinity;
     int currNode, currSoundLevel;
     bool onPath, seePlayer, foundSound, hasPath;
     Vector3 currTarget;
 
     // Start is called before the first frame update
-    void Awake()
+    void Start()
     {
         state = zombieState.idle;
         currAnim = zombieState.idle;
@@ -59,8 +59,7 @@ public class npc_zombieGuard : Map_NPC
 
     private void LateUpdate()
     {
-        intMoveSpeed = Mathf.SmoothDamp(intMoveSpeed, agent.isOnOffMeshLink ? 1 : agent.desiredVelocity.magnitude, ref refMoveSpeed, Time.deltaTime * dampSpeed);
-        animator.SetFloat("moveSpeed", intMoveSpeed);
+        animator.SetFloat("moveSpeed", agent.isOnOffMeshLink ? 1 : agent.desiredVelocity.magnitude);
 
         animator.SetBool("isActive", data.isActive);
 
