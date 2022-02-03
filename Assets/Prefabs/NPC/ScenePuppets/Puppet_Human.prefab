@@ -104,6 +104,8 @@ MonoBehaviour:
   pushSpeed: 0.125
   rotationSpeed: 3
   lerpTime: 1.33
+  doorDis: 1.2
+  animDampSpeed: 3
   _controller: {fileID: 1795211195521787222}
   Puppet_Mesh: {fileID: 2828936842300470754}
   DoorLay:
@@ -114,6 +116,7 @@ MonoBehaviour:
     m_Bits: 4096
   PushOver: 0
   isDebuging: 0
+  canDoor: 1
   ikManager: {fileID: 7918128795355881109}
 --- !u!82 &5324466816466756989
 AudioSource:
@@ -269,6 +272,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: bb31dbcb8c5b1854c8d82c23b9eec0d8,
         type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4216859302048453862, guid: bb31dbcb8c5b1854c8d82c23b9eec0d8,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -284,6 +292,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: bb31dbcb8c5b1854c8d82c23b9eec0d8,
         type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -4216859302048453862, guid: bb31dbcb8c5b1854c8d82c23b9eec0d8,
+        type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
@@ -295,16 +308,6 @@ PrefabInstance:
     - target: {fileID: -4216859302048453862, guid: bb31dbcb8c5b1854c8d82c23b9eec0d8,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -4216859302048453862, guid: bb31dbcb8c5b1854c8d82c23b9eec0d8,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -4216859302048453862, guid: bb31dbcb8c5b1854c8d82c23b9eec0d8,
-        type: 3}
-      propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: bb31dbcb8c5b1854c8d82c23b9eec0d8,
@@ -329,6 +332,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1401826838451548927, guid: bb31dbcb8c5b1854c8d82c23b9eec0d8,
         type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.42417544
+      objectReference: {fileID: 0}
+    - target: {fileID: 1401826838451548927, guid: bb31dbcb8c5b1854c8d82c23b9eec0d8,
+        type: 3}
       propertyPath: m_LocalRotation.x
       value: -0.559797
       objectReference: {fileID: 0}
@@ -341,11 +349,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalRotation.z
       value: 0.5675569
-      objectReference: {fileID: 0}
-    - target: {fileID: 1401826838451548927, guid: bb31dbcb8c5b1854c8d82c23b9eec0d8,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: -0.42417544
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bb31dbcb8c5b1854c8d82c23b9eec0d8, type: 3}

@@ -34,7 +34,9 @@ public class EV_Storage939 : Event_Parent
         base.EventLoad();
         if (isStarted)
         {
+            
             int firstSCP = GameController.instance.getValue(x, y, 3);
+            Debug.Log("Dynamic NPC number = " + firstSCP);
 
             ((NPC_939)GameController.instance.npcController.NPCS[firstSCP]).NpcDisable();
             ((NPC_939)GameController.instance.npcController.NPCS[firstSCP + 1]).NpcDisable();
@@ -118,6 +120,7 @@ public class EV_Storage939 : Event_Parent
         }
 
         int firstSCP = GameController.instance.getValue(x, y, 3);
+        Debug.Log("Dynamic NPC number loaded = " + firstSCP);
 
         ((NPC_939)GameController.instance.npcController.NPCS[firstSCP]).patrol = path1;
         ((NPC_939)GameController.instance.npcController.NPCS[firstSCP]).Hello = hello1;

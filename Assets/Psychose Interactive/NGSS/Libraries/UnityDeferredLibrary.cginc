@@ -234,8 +234,12 @@ void UnityDeferredCalculateLightParams (
         // negative bias because http://aras-p.info/blog/2010/01/07/screenspace-vs-mip-mapping/
         float atten = tex2Dbias (_LightTexture0, float4(uvCookie.xy / uvCookie.w, 0, -8)).w;
         atten *= uvCookie.w < 0;
-        float att = dot(tolight, tolight) * _LightPos.w;
-        atten *= tex2D (_LightTextureB0, att.rr).r;
+        float toLightDot = dot(tolight, tolight);
+
+        fixed sqrAtt = max(toLightDot, 0.00001);
+
+        float att = saturate(1 - max(toLightDot * _LightPos.w, 0.00001));
+        atten *= att / sqrAtt;
 
         atten *= UnityDeferredComputeShadow (wpos, fadeDist, uv);
 
@@ -255,8 +259,14 @@ void UnityDeferredCalculateLightParams (
         float3 tolight = wpos - _LightPos.xyz;
         half3 lightDir = -normalize (tolight);
 
-        float att = dot(tolight, tolight) * _LightPos.w;
-        float atten = tex2D (_LightTextureB0, att.rr).r;
+        float toLightDot = dot(tolight, tolight);
+
+        fixed sqrAtt = max(toLightDot, 0.00001);
+
+        float att = saturate(1 - max(toLightDot * _LightPos.w, 0.00001));
+
+        float atten = att / sqrAtt;
+
 
         atten *= UnityDeferredComputeShadow (tolight, fadeDist, uv);
 

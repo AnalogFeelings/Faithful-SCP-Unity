@@ -75,6 +75,7 @@ public class ConsoleController
         registerCommand("spawn106", spawn106, "Spawns SCP-106 at the center of the current room");
         registerCommand("spawn173", spawn173, "Spawns SCP-173 at the center of the current room");
         registerCommand("spawn049", spawn049, "Spawns SCP-049 at the center of the current room");
+        registerCommand("spawn096", spawn096, "Spawns SCP-096 at the center of the current room");
         registerCommand("spawn513", spawn513, "Activates SCP-513");
         registerCommand("health", sethealth, "Sets the player current health [0 - 100]");
         registerCommand(repeatCmdName, repeatCommand, "Repeat last command.");
@@ -413,6 +414,10 @@ public class ConsoleController
     void spawn049(string[] args)
     {
         GameController.instance.CL_spawn049();
+    }
+    void spawn096(string[] args)
+    {
+        GameController.instance.CL_spawn096();
     }
 
 

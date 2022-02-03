@@ -24,7 +24,7 @@ public class Object_Door : MonoBehaviour
     [SerializeField]
     private NavMeshObstacle carveMesh;
     [SerializeField]
-    private Unity.AI.Navigation.NavMeshLink doorLink;
+    private NavMeshLink doorLink;
     [SerializeField]
     private bool UseParticle = false;
 

@@ -1,5 +1,5 @@
 SCP - Remake
-Unity 2020.3.XX LTS
+
 ---------------------------------------
 Aqui iria la documentacion...
 Si tuviera ganas de escribir una
