@@ -7,7 +7,7 @@
       "dependencies": {
         "com.unity.postprocessing": "2.1.7"
       },
-      "hash": "077490ce80adc8912978cdcc6301451259e06bdf"
+      "hash": "c5f9c370f68fc54c5037d3794ffd318964ef1ad1"
     },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
@@ -44,6 +44,15 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
+    "com.unity.ide.visualstudio": {
+      "version": "2.0.14",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.test-framework": "1.1.9"
+      },
+      "url": "https://packages.unity.com"
+    },
     "com.unity.ide.vscode": {
       "version": "1.2.4",
       "depth": 0,
@@ -58,6 +67,22 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
+    "com.unity.multiplayer-hlapi": {
+      "version": "1.1.1",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.nuget.mono-cecil": "1.10.1"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.nuget.mono-cecil": {
+      "version": "1.10.1",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
     "com.unity.postprocessing": {
       "version": "3.2.0",
       "depth": 0,
@@ -67,8 +92,24 @@
       },
       "url": "https://packages.unity.com"
     },
+    "com.unity.sysroot": {
+      "version": "1.0.0",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.sysroot.linux-x86_64": {
+      "version": "1.0.0",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.sysroot": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
     "com.unity.test-framework": {
-      "version": "1.1.29",
+      "version": "1.1.30",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -79,7 +120,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.timeline": {
-      "version": "1.2.18",
+      "version": "1.4.8",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -87,6 +128,16 @@
         "com.unity.modules.animation": "1.0.0",
         "com.unity.modules.audio": "1.0.0",
         "com.unity.modules.particlesystem": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.toolchain.win-x86_64-linux-x86_64": {
+      "version": "1.0.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.sysroot": "1.0.0",
+        "com.unity.sysroot.linux-x86_64": "1.0.0"
       },
       "url": "https://packages.unity.com"
     },
@@ -232,6 +283,18 @@
       "depth": 0,
       "source": "builtin",
       "dependencies": {
+        "com.unity.modules.ui": "1.0.0",
+        "com.unity.modules.imgui": "1.0.0",
+        "com.unity.modules.jsonserialize": "1.0.0",
+        "com.unity.modules.uielementsnative": "1.0.0"
+      }
+    },
+    "com.unity.modules.uielementsnative": {
+      "version": "1.0.0",
+      "depth": 1,
+      "source": "builtin",
+      "dependencies": {
+        "com.unity.modules.ui": "1.0.0",
         "com.unity.modules.imgui": "1.0.0",
         "com.unity.modules.jsonserialize": "1.0.0"
       }

@@ -28,6 +28,55 @@ MonoBehaviour:
   lumContrib:
     overrideState: 1
     value: 0.633
+--- !u!114 &-7147657536821737867
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1cb7e9e120078f43bce4f0b1be547a7, type: 3}
+  m_Name: AmbientOcclusion
+  m_EditorClassIdentifier: 
+  active: 1
+  enabled:
+    overrideState: 1
+    value: 1
+  mode:
+    overrideState: 1
+    value: 1
+  intensity:
+    overrideState: 1
+    value: 1
+  color:
+    overrideState: 0
+    value: {r: 0, g: 0, b: 0, a: 1}
+  ambientOnly:
+    overrideState: 1
+    value: 0
+  noiseFilterTolerance:
+    overrideState: 0
+    value: 0
+  blurTolerance:
+    overrideState: 0
+    value: -4.6
+  upsampleTolerance:
+    overrideState: 0
+    value: -12
+  thicknessModifier:
+    overrideState: 0
+    value: 1
+  directLightingStrength:
+    overrideState: 0
+    value: 0
+  radius:
+    overrideState: 0
+    value: 0.25
+  quality:
+    overrideState: 0
+    value: 2
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38,13 +87,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8e6292b2c06870d4495f009f912b9600, type: 3}
-  m_Name: Main Camera Profile
+  m_Name: MainMenuProfile
   m_EditorClassIdentifier: 
   settings:
   - {fileID: 114724761095073246}
   - {fileID: 114529369473363974}
   - {fileID: 114516339455837498}
   - {fileID: -7489551172637675547}
+  - {fileID: -7147657536821737867}
 --- !u!114 &114516339455837498
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -115,11 +165,11 @@ MonoBehaviour:
     overrideState: 0
     value: 0
   postExposure:
-    overrideState: 1
-    value: -0.47
-  contrast:
     overrideState: 0
     value: 0
+  contrast:
+    overrideState: 0
+    value: 0.7
   mixerRedOutRedIn:
     overrideState: 0
     value: 100
@@ -148,14 +198,14 @@ MonoBehaviour:
     overrideState: 0
     value: 100
   lift:
-    overrideState: 0
-    value: {x: 1, y: 1, z: 1, w: 0}
+    overrideState: 1
+    value: {x: 1, y: 1, z: 1, w: -0.15161088}
   gamma:
     overrideState: 1
-    value: {x: 1, y: 1, z: 1, w: 0.19567455}
+    value: {x: 1, y: 1, z: 1, w: 0.018795198}
   gain:
     overrideState: 1
-    value: {x: 1, y: 1, z: 1, w: 0.46343988}
+    value: {x: 1, y: 1, z: 1, w: 0.6253946}
   masterCurve:
     overrideState: 0
     value:
