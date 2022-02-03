@@ -6,33 +6,25 @@ using UnityEngine.AI;
 public class SCP_106 : Roam_NPC
 {
     NavMeshAgent _navMeshagent;
-    [SerializeField]
-    private LayerMask Ground;
+    public LayerMask Ground;
     float PlayerDistance= 20, timer, ambianceTimer;
-    [SerializeField]
-    private GameObject Player, Eyes;
+    public GameObject Player, Eyes;
     bool playedHorror, usingAStar = true, isSpawn = false, isBlocked = false, isOut = false, isPath, pathInvalid, eyesActive = true;
     Quaternion toAngle, realAngle;
-    [SerializeField]
-    private float normalSpeed, crawlSpeed, spawntimer, Distance;
-    private float speed;
+    public float speed, spawntimer, Distance;
     float escapeTimer;
     bool Escaped=false, lastDest, isChase=false;
     AudioSource sfx;
     Vector3 Destination;
     int frameInterval=20;
-    [SerializeField]
-    private AudioClip[] Horror, Sfx;
-    [SerializeField]
-    private AudioClip music;
-    [SerializeField]
-    private Animator anim;
+    public AudioClip[] Horror, Sfx;
+    public AudioClip music;
+    public Animator anim;
     NavMeshHit shit;
     Vector3 velocity;
     Transform[] ActualPath;
     int currentNode;
-    [SerializeField]
-    private CapsuleCollider col;
+    public CapsuleCollider col;
 
 
 
@@ -78,12 +70,6 @@ public class SCP_106 : Roam_NPC
                     pathInvalid = ((_navMeshagent.enabled && !_navMeshagent.pathPending && (_navMeshagent.pathStatus == NavMeshPathStatus.PathPartial || _navMeshagent.pathStatus == NavMeshPathStatus.PathInvalid)));
                 }
 
-                if (isBlocked)
-                    speed = crawlSpeed;
-                else
-                    speed = normalSpeed;
-
-
 
                 timer -= Time.deltaTime;
                 if (timer <= 0 && isSpawn == false)
@@ -120,7 +106,6 @@ public class SCP_106 : Roam_NPC
                     if (usingAStar)
                     {
                         _navMeshagent.enabled = true;
-                        _navMeshagent.speed = speed;
                         if (Time.frameCount % frameInterval == 0)
                             SetDestination();
 
@@ -161,7 +146,7 @@ public class SCP_106 : Roam_NPC
 
                 }
 
-                //bool shouldMove = velocity.magnitude > 0.5f;
+                bool shouldMove = velocity.magnitude > 0.5f;
 
                 // Update animation parameters
                 anim.SetBool("move", isSpawn);

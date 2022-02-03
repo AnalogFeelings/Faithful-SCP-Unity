@@ -10,8 +10,6 @@ public class Object_instaItem : Object_Interact
 
     public Mesh itemMesh;
     public Material[] itemMats;
-    public BoxCollider col;
-    public Rigidbody body;
     // Start is called before the first frame updat
     public void Start()
     {
@@ -27,9 +25,6 @@ public class Object_instaItem : Object_Interact
         MeshRenderer renderer = model.GetComponentInChildren<MeshRenderer>(true);
         itemMesh = mesh.sharedMesh;
         itemMats = renderer.sharedMaterials;
-        col.center = ItemController.instance.items[item.itemFileName].colCenter;
-        col.size = ItemController.instance.items[item.itemFileName].colSize;
-        body.mass = ItemController.instance.items[item.itemFileName].mass;
     }
 
     // Update is called once per frame

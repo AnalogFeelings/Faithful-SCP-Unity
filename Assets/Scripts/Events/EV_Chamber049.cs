@@ -145,8 +145,7 @@ public class EV_Chamber049 : Event_Parent
             GameController.instance.playercache.FakeBlink(0.25f);
             if (GameController.instance.getValue(x, y, 1) != 1)
             {
-                int firstID = GameController.instance.getValue(x, y, 0);
-                GameController.instance.setValue(x, y, 1, 1);
+                int firstID = GameController.instance.getValue(x, y, 1);
 
                 GameController.instance.npcController.NPCS[firstID].NpcEnable();
                 GameController.instance.npcController.NPCS[firstID + 1].NpcEnable();

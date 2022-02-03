@@ -4,88 +4,64 @@ using UnityEngine;
 
 public class LightFlicker : MonoBehaviour
 {
-    public enum WaveFunctions {Sin, Tri, Sqr, Saw, Inv, Noise }
         // Properties
-    public WaveFunctions waveFunction = WaveFunctions.Sin; // possible values: sin, tri(angle), sqr(square), saw(tooth), inv(verted sawtooth), noise (random)
+    public string waveFunction = "sin"; // possible values: sin, tri(angle), sqr(square), saw(tooth), inv(verted sawtooth), noise (random)
     public float varbase = 0.0f; // start
     public float amplitude = 1.0f; // amplitude of the wave
     public float phase = 0.0f; // start point inside on wave cycle
     public float frequency = 0.5f; // cycle frequency per second
     public Light light;
-    public bool shake = true;
-    public Vector3 shakeMult = new Vector3(0.1f,0,0);
+    public float x;
 
     // Keep a copy of the original color
     private Color originalColor;
-    private Vector3 originalPos;
-
+     
     // Store the original color
     void Start() {
         light = GetComponent<Light>();
         originalColor = light.color;
-        originalPos = transform.position;
+        x = transform.position.x;
     }
-
-    void Update()
-    {
-        light.color = originalColor * EvalWave();
-        transform.position = originalPos + (shakeMult * EvalWave());//new Vector3(x + (EvalWave()*shakeMult), transform.position.y, transform.position.z);
+     
+    void Update() {
+      light.color = originalColor * EvalWave();
+      transform.position = new Vector3(x + (EvalWave()/10), transform.position.y, transform.position.z);
     }
-
-    float EvalWave()
-    {
-        float x = (Time.time + phase) * frequency;
+     
+    float EvalWave () {
+      float x = (Time.time + phase)*frequency;
         float y;
-
-        x = Mathf.Floor(x); // normalized value (0..1)
-
-        switch (waveFunction)
-        {
-            case WaveFunctions.Sin:
-                {
-                    y = Mathf.Sin(x * 2 * Mathf.PI);
-                    break;
-                }
-            case WaveFunctions.Tri:
-                {
-                    if (x < 0.5)
-                        y = 4.0f * x - 1.0f;
-                    else
-                        y = -4.0f * x + 3.0f;
-                    break;
-                }
-            case WaveFunctions.Sqr:
-                {
-                    if (x < 0.5)
-                        y = 1.0f;
-                    else
-                        y = -1.0f;
-                    break;
-                }
-            case WaveFunctions.Saw:
-                {
-                    y = x;
-                    break;
-                }
-            case WaveFunctions.Inv:
-                {
-                    y = 1.0f - x;
-                    break;
-                }
-            case WaveFunctions.Noise:
-                {
-                    y = 1 - (Random.value * 2);
-                    break;
-                }
-            default:
-                {
-
-                    y = 1.0f;
-                    break;
-                }
-        }
-
-        return (y * amplitude) + varbase;
+     
+      x = Mathf.Floor(x); // normalized value (0..1)
+     
+      if (waveFunction=="sin") {
+        y = Mathf.Sin(x*2*Mathf.PI);
+      }
+      else if (waveFunction=="tri") {
+        if (x < 0.5)
+          y = 4.0f * x - 1.0f;
+        else
+          y = -4.0f * x + 3.0f;  
+      }    
+      else if (waveFunction=="sqr") {
+        if (x < 0.5)
+          y = 1.0f;
+        else
+          y = -1.0f;  
+      }    
+      else if (waveFunction=="saw") {
+          y = x;
+      }    
+      else if (waveFunction=="inv") {
+        y = 1.0f - x;
+      }    
+      else if (waveFunction=="noise") {
+        y = 1 - (Random.value*2);
+      }
+      else {
+        y = 1.0f;
+      }        
+      return (y*amplitude)+varbase;     
     }
      
 

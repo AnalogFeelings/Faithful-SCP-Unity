@@ -6,10 +6,10 @@ using UnityEngine.AI;
 
 public class EV_Puppet_Controller : MonoBehaviour
 {
-    public float Speed, accel, Distance, Gravity, maxfallspeed, animOffset, stopDistance, pushoverrange, pushSpeed = 0.125f, rotationSpeed=3F, lerpTime, doorDis = 1.2f, animDampSpeed=0.1f;
+    public float Speed, accel, Distance, Gravity, maxfallspeed, animOffset, stopDistance, pushoverrange, pushSpeed = 0.125f, rotationSpeed=3F, lerpTime, doorDis = 1.2f;
     Vector3 movement, currDirection, lastDirection, animMov=Vector3.zero, currPoint;
     Quaternion fromAngle, toAngle, currAngle, movAngle, toMovAngle;
-    float fallSpeed, currentLerpTime = 1f, perc, intMoveX=0, intMoveY=0, refMoveSpeedX=0, refMoveSpeedY=0;
+    float fallSpeed, currentLerpTime = 1f, perc;
     int currentNode = 0, currSeq = 0;
     bool isPath, hasSubs, isRotate, isLook, isSequence = false, isPursuit = false, hasDoor = false, isPushing = false, active = true, isMoving = false, stopRota=false;
     Transform[] ActualPath;
@@ -146,10 +146,9 @@ public class EV_Puppet_Controller : MonoBehaviour
 
     void ACT_Anim()
     {
-        intMoveX = Mathf.SmoothDamp(intMoveX, animMov.x, ref refMoveSpeedX, Time.deltaTime * animDampSpeed);
-        intMoveY = Mathf.SmoothDamp(intMoveY, animMov.z, ref refMoveSpeedY, Time.deltaTime * animDampSpeed);
-        Puppet_Anim.SetFloat("moveX", intMoveX);
-        Puppet_Anim.SetFloat("moveY", intMoveY);
+
+        Puppet_Anim.SetFloat("moveX", animMov.x);
+        Puppet_Anim.SetFloat("moveY", animMov.z);
 
     }
 

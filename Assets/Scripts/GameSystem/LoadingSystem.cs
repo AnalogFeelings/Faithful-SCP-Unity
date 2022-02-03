@@ -140,7 +140,6 @@ public class LoadingSystem : MonoBehaviour
         isLoading = true;
         canClick = false;
         _isClicked = false;
-        _progress = 0;
 
         AsyncOperation operation = SceneManager.LoadSceneAsync(sceneIndex);
         operation.allowSceneActivation = false;
@@ -154,12 +153,8 @@ public class LoadingSystem : MonoBehaviour
             yield return null;
         }
 
+        
         operation.allowSceneActivation = true;
-
-        while (!operation.isDone)
-        {
-            yield return null;
-        }
 
         canClick = true;
 
@@ -176,8 +171,6 @@ public class LoadingSystem : MonoBehaviour
         {
             yield return null;
         }
-
-        SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(sceneIndex));
 
         isLoadingDone = true;
         isLoading = false;
@@ -244,8 +237,6 @@ public class LoadingSystem : MonoBehaviour
         {
             yield return null;
         }
-
-        SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(sceneIndex));
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;

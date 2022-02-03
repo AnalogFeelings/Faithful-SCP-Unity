@@ -1,32 +1,22 @@
-﻿using Unity.AI.Navigation;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
+
 
 public class Object_Door : MonoBehaviour
 {
-    public static int openDoorFlag=0, closedDoorFlag = 8;
-    [SerializeField]
-    private GameObject Door01, Door02;
-    [SerializeField]
-    private float OpenSpeed, DoorEndPos, DoorTime;
-    [SerializeField]
-    private int id;
+    public GameObject Door01, Door02;
+    public float OpenSpeed, DoorEndPos, DoorTime;
+    public int id;
 
-    [SerializeField]
-    private AudioClip[] Open_AUD;
-    [SerializeField]
-    private AudioClip[] SCP_AUD;
-    [SerializeField]
-    private AudioClip[] Close_AUD;
-    [SerializeField]
-    private AudioSource AUD;
+    public AudioClip[] Open_AUD;
+    public AudioClip[] SCP_AUD;
+    public AudioClip[] Close_AUD;
+    public AudioSource AUD;
 
-    [SerializeField]
-    private NavMeshObstacle carveMesh;
-    [SerializeField]
-    private NavMeshLink doorLink;
-    [SerializeField]
-    private bool UseParticle = false;
+    public UnityEngine.AI.NavMeshObstacle carveMesh;
+
+    public bool UseParticle = false;
 
     float LastPos1;
 
@@ -38,8 +28,6 @@ public class Object_Door : MonoBehaviour
 
     private void Awake()
     {
-        openDoorFlag = NavMesh.GetAreaFromName("Walkable");
-        closedDoorFlag = NavMesh.GetAreaFromName("ClosedDoor");
         AUD = GetComponent<AudioSource>();
     }
 
@@ -102,7 +90,6 @@ public class Object_Door : MonoBehaviour
                 Door02.transform.position = Pos2 - (Door02.transform.right * DoorEndPos);
                 IsOpen = true;
                 carveMesh.enabled = false;
-                doorLink.area = openDoorFlag;
                 if (!ignoreSave)
                     GameController.instance.SetDoorState(true, id);
             }
@@ -114,7 +101,6 @@ public class Object_Door : MonoBehaviour
         {
             carveMesh.enabled = false;
             IsOpen = true;
-            doorLink.area = openDoorFlag;
             if (!ignoreSave)
                 GameController.instance.SetDoorState(true, id);
         }
@@ -141,7 +127,6 @@ public class Object_Door : MonoBehaviour
                 Door01.transform.position = Pos1;
                 Door02.transform.position = Pos2;
                 carveMesh.enabled = true;
-                doorLink.area = closedDoorFlag;
 
                 if (UseParticle)
                 {
@@ -158,7 +143,6 @@ public class Object_Door : MonoBehaviour
         else
         {
             carveMesh.enabled = true;
-            doorLink.area = closedDoorFlag;
             IsOpen = false;
             if (!ignoreSave)
                 GameController.instance.SetDoorState(false, id);
@@ -199,8 +183,6 @@ public class Object_Door : MonoBehaviour
                 IsOpen = false;
                 Door01.transform.position = Pos1;
                 Door02.transform.position = Pos2;
-                doorLink.area = closedDoorFlag;
-                carveMesh.enabled = false;
                 if (!ignoreSave)
                     GameController.instance.SetDoorState(false, id);
             }
@@ -210,8 +192,6 @@ public class Object_Door : MonoBehaviour
                 switchOpen = true;
                 Door01.transform.position = Pos1 - (Door01.transform.right * DoorEndPos);
                 Door02.transform.position = Pos2 - (Door02.transform.right * DoorEndPos);
-                doorLink.area = openDoorFlag;
-                carveMesh.enabled = true;
                 if (!ignoreSave)
                     GameController.instance.SetDoorState(true, id);
             }
@@ -277,7 +257,7 @@ public class Object_Door : MonoBehaviour
     /// <returns>true Si la puerta esta abierta</returns>
     public bool GetState()
     {
-        return (IsOpen&&switchOpen);
+        return (IsOpen);
     }
 
 }
