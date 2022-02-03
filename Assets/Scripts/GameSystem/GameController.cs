@@ -1140,7 +1140,7 @@ public class GameController : MonoBehaviour
         GlobalValues.worldState = SaveSystem.instance.playData;
         GlobalValues.LoadType = LoadType.otherworld;
         GlobalValues.sceneReturn = SceneManager.GetActiveScene().buildIndex;
-        //Debug.Log("Scene" + SceneManager.GetActiveScene().name);
+        Debug.Log("Scene" + SceneManager.GetActiveScene().name);
         LoadingSystem.instance.LoadLevel(3);
     }
     public void GoZombie008()
@@ -1171,8 +1171,8 @@ public class GameController : MonoBehaviour
         SCP_UI.instance.LoadValues();
         HorrorFov.gameObject.GetComponent<Player_MouseLook>().LoadValues();
         
-        //Debug.Log(MainVol.profile.GetSetting<ColorGrading>().gamma.value);
-        MainVol.profile.GetSetting<ColorGrading>().gamma.value = new Vector4(1, 1, 1, PlayerPrefs.GetFloat("Gamma", 0)*2.5F);
+        Debug.Log(MainVol.profile.GetSetting<ColorGrading>().gamma.value);
+        MainVol.profile.GetSetting<ColorGrading>().gamma.value = new Vector4(1, 1, 1, PlayerPrefs.GetFloat("Gamma", 0));
         //Debug.Log(PlayerPrefs.GetFloat("Gamma", 0));
 
         switch (PlayerPrefs.GetInt("Post",1))
@@ -1851,11 +1851,6 @@ public class GameController : MonoBehaviour
     {
         Vector3 here = new Vector3(xPlayer * roomsize, 0, yPlayer * roomsize);
         npcController.mainList[(int)npc.scp049].Spawn(true, here);
-    }
-    public void CL_spawn096()
-    {
-        Vector3 here = new Vector3(xPlayer * roomsize, 0, yPlayer * roomsize);
-        npcController.mainList[(int)npc.scp096].Spawn(true, here);
     }
     public void CL_spawn173()
     {

@@ -1,75 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-2861397417265574344
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5369720dfee3bfd4ea30a9e16a96bcd1, type: 3}
-  m_Name: StochasticReflections
-  m_EditorClassIdentifier: 
-  active: 1
-  enabled:
-    overrideState: 1
-    value: 1
-  intensity:
-    overrideState: 1
-    value: 0.8
-  raycastDownsample:
-    overrideState: 0
-    value: 0
-  resolveDownsample:
-    overrideState: 0
-    value: 0
-  rayDistance:
-    overrideState: 1
-    value: 25
-  thickness:
-    overrideState: 1
-    value: 0.93
-  screenFadeSize:
-    overrideState: 1
-    value: 0.85
-  useFresnel:
-    overrideState: 1
-    value: 1
-  BRDFBias:
-    overrideState: 1
-    value: 0.92
-  useMipMap:
-    overrideState: 0
-    value: 1
-  normalization:
-    overrideState: 0
-    value: 1
-  blurring:
-    overrideState: 0
-    value: 1
-  highQualityBlur:
-    overrideState: 0
-    value: 1
-  useTemporal:
-    overrideState: 0
-    value: 1
-  multipleBounces:
-    overrideState: 0
-    value: 1
-  temporalResponseMin:
-    overrideState: 0
-    value: 0.85
-  temporalResponseMax:
-    overrideState: 0
-    value: 1
-  smoothnessRange:
-    overrideState: 0
-    value: 1
-  debugPass:
-    overrideState: 1
-    value: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -87,7 +17,6 @@ MonoBehaviour:
   - {fileID: 114509895219450506}
   - {fileID: 114447778756761050}
   - {fileID: 713298505203970627}
-  - {fileID: -2861397417265574344}
 --- !u!114 &114418485586250844
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -159,7 +88,7 @@ MonoBehaviour:
     value: 0
   postExposure:
     overrideState: 1
-    value: -4.2
+    value: 2.63
   contrast:
     overrideState: 1
     value: 36
@@ -192,13 +121,13 @@ MonoBehaviour:
     value: 100
   lift:
     overrideState: 1
-    value: {x: 1, y: 1, z: 1, w: 0}
+    value: {x: 1, y: 1, z: 1, w: 0.03033375}
   gamma:
     overrideState: 1
-    value: {x: 1, y: 1, z: 1, w: 0.9247053}
+    value: {x: 1, y: 1, z: 1, w: 0.39433756}
   gain:
     overrideState: 1
-    value: {x: 1, y: 1, z: 1, w: -0.5700082}
+    value: {x: 1, y: 1, z: 1, w: 0.13144587}
   masterCurve:
     overrideState: 0
     value:
@@ -1420,7 +1349,7 @@ MonoBehaviour:
     value: 0
   threshold:
     overrideState: 1
-    value: 7.68
+    value: 3.24
   softKnee:
     overrideState: 0
     value: 0.5
@@ -1435,7 +1364,7 @@ MonoBehaviour:
     value: -1
   color:
     overrideState: 1
-    value: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    value: {r: 1, g: 1, b: 1, a: 1}
   fastMode:
     overrideState: 0
     value: 0
@@ -1516,8 +1445,8 @@ MonoBehaviour:
     overrideState: 1
     value: 5.8
   keyValue:
-    overrideState: 1
-    value: 2
+    overrideState: 0
+    value: 1
   eyeAdaptation:
     overrideState: 0
     value: 0

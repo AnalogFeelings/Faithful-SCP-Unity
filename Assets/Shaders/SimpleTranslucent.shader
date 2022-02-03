@@ -1,7 +1,7 @@
 ﻿Shader "Custom/Translucent" {
 	Properties{
 		_MainTex("Base (RGB)", 2D) = "white" {}
-		//_BumpMap("Normal (Normal)", 2D) = "bump" {}
+		_BumpMap("Normal (Normal)", 2D) = "bump" {}
 		_Color("Main Color", Color) = (1,1,1,1)
 		_SpecColor("Specular Color", Color) = (0.5, 0.5, 0.5, 1)
 		_Shininess("Shininess", Range(0.03, 1)) = 0.078125
@@ -19,14 +19,14 @@
 			_SubColor("Subsurface Color", Color) = (1.0, 1.0, 1.0, 1.0)
 	}
 		SubShader{
-			Tags { "RenderType" = "Opaque" }
+			Tags { "RenderType" = "Transparent" }
 			LOD 200
 
 			CGPROGRAM
-			#pragma surface surf Translucent //alpha
+			#pragma surface surf Translucent alpha
 			#pragma exclude_renderers flash
 
-			sampler2D _MainTex, _Thickness;
+			sampler2D _MainTex, _BumpMap, _Thickness;
 			float _Scale, _Power, _Distortion;
 			fixed4 _Color, _SubColor;
 			half _Shininess;
@@ -42,6 +42,7 @@
 				o.Alpha = _Alpha;//tex2D(_Thickness, IN.uv_MainTex).r;
 				o.Gloss = tex.a;
 				o.Specular = _Shininess;
+				o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_MainTex));
 			}
 
 			inline fixed4 LightingTranslucent(SurfaceOutput s, fixed3 lightDir, fixed3 viewDir, fixed atten)
