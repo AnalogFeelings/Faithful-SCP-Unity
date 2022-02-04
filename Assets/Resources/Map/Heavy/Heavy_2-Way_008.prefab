@@ -79,8 +79,8 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 0
-    m_Resolution: 0
+    m_Type: 2
+    m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
     m_Bias: 0.13
@@ -120,6 +120,7 @@ Light:
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!1 &6639366575293754623
@@ -171,8 +172,8 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 0
-    m_Resolution: 0
+    m_Type: 2
+    m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
     m_Bias: 0.13
@@ -212,6 +213,7 @@ Light:
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!1 &8215106918440725618
@@ -263,8 +265,8 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 0
-    m_Resolution: 0
+    m_Type: 2
+    m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
     m_Bias: 0.13
@@ -304,6 +306,7 @@ Light:
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!1 &8215106918641684650
@@ -396,6 +399,7 @@ Light:
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!1 &8215106918812465123
@@ -494,8 +498,8 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 0
-    m_Resolution: 0
+    m_Type: 2
+    m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 0.535
     m_Bias: 0.05
@@ -535,6 +539,7 @@ Light:
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!1 &8215106918952918660
@@ -629,13 +634,13 @@ ReflectionProbe:
   m_Mode: 1
   m_RefreshMode: 2
   m_TimeSlicingMode: 0
-  m_Resolution: 128
+  m_Resolution: 256
   m_UpdateFrequency: 0
   m_BoxSize: {x: 7.1586246, y: 4.0048637, z: 7.207078}
   m_BoxOffset: {x: -0.031594276, y: 0.51690865, z: -0.08443928}
   m_NearClip: 0.3
-  m_FarClip: 30
-  m_ShadowDistance: 0
+  m_FarClip: 100
+  m_ShadowDistance: 40
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_CullingMask:
@@ -711,7 +716,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 0
+    m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -752,6 +757,7 @@ Light:
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!1 &8215106919044643826
@@ -844,6 +850,7 @@ Light:
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!1 &8215106919286005781
@@ -896,7 +903,7 @@ Light:
   m_CookieSize: 10
   m_Shadows:
     m_Type: 2
-    m_Resolution: 0
+    m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 0.208
     m_Bias: 0.05
@@ -936,6 +943,7 @@ Light:
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!1 &8215106919420288112
@@ -988,7 +996,7 @@ Light:
   m_CookieSize: 10
   m_Shadows:
     m_Type: 2
-    m_Resolution: 0
+    m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 0.535
     m_Bias: 0.05
@@ -1028,6 +1036,7 @@ Light:
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!1 &8215106919508545329
@@ -1075,13 +1084,13 @@ ReflectionProbe:
   m_Mode: 1
   m_RefreshMode: 2
   m_TimeSlicingMode: 0
-  m_Resolution: 64
+  m_Resolution: 256
   m_UpdateFrequency: 0
   m_BoxSize: {x: 7.697916, y: 4.0048637, z: 6.2802577}
   m_BoxOffset: {x: 0.23805144, y: -0.19984436, z: -1.4426012}
   m_NearClip: 0.3
-  m_FarClip: 30
-  m_ShadowDistance: 0
+  m_FarClip: 100
+  m_ShadowDistance: 40
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_CullingMask:
@@ -1189,13 +1198,13 @@ ReflectionProbe:
   m_Mode: 1
   m_RefreshMode: 2
   m_TimeSlicingMode: 0
-  m_Resolution: 32
+  m_Resolution: 256
   m_UpdateFrequency: 0
   m_BoxSize: {x: 4.4849663, y: 4.0772, z: 4.3145366}
   m_BoxOffset: {x: 0.14983368, y: 0.108104706, z: 0.1728208}
   m_NearClip: 0.3
-  m_FarClip: 30
-  m_ShadowDistance: 0
+  m_FarClip: 100
+  m_ShadowDistance: 40
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_CullingMask:
@@ -1298,9 +1307,11 @@ MonoBehaviour:
   table:
   - items:
     - Spawn: {fileID: 11400000, guid: 3d0a59cf92c8f6948be26c4162b4533f, type: 2}
+      SpawnName: 
       Rate: 100
   - items:
     - Spawn: {fileID: 11400000, guid: 91dc436c5b1ca704897ebda55977952d, type: 2}
+      SpawnName: 
       Rate: 100
   positions:
   - {fileID: 8215106920074608307}
@@ -1413,6 +1424,7 @@ Light:
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!1 &8215106919812141900
@@ -1566,13 +1578,13 @@ ReflectionProbe:
   m_Mode: 1
   m_RefreshMode: 2
   m_TimeSlicingMode: 0
-  m_Resolution: 64
+  m_Resolution: 256
   m_UpdateFrequency: 0
   m_BoxSize: {x: 8.97308, y: 4.3371744, z: 15.64}
   m_BoxOffset: {x: 2.049406, y: 0.39608455, z: 0.17282057}
   m_NearClip: 0.3
-  m_FarClip: 30
-  m_ShadowDistance: 0
+  m_FarClip: 100
+  m_ShadowDistance: 40
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_CullingMask:
@@ -1674,13 +1686,13 @@ ReflectionProbe:
   m_Mode: 1
   m_RefreshMode: 2
   m_TimeSlicingMode: 0
-  m_Resolution: 64
+  m_Resolution: 256
   m_UpdateFrequency: 0
   m_BoxSize: {x: 3.5161247, y: 4.0048637, z: 11.28944}
   m_BoxOffset: {x: 0.251858, y: -0.19984436, z: -0.27137893}
   m_NearClip: 0.3
-  m_FarClip: 30
-  m_ShadowDistance: 0
+  m_FarClip: 100
+  m_ShadowDistance: 40
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_CullingMask:
@@ -1803,7 +1815,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 0
+    m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 0.553
@@ -1844,6 +1856,7 @@ Light:
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!1 &8215106920426077924
@@ -1891,13 +1904,13 @@ ReflectionProbe:
   m_Mode: 1
   m_RefreshMode: 2
   m_TimeSlicingMode: 0
-  m_Resolution: 32
+  m_Resolution: 256
   m_UpdateFrequency: 0
   m_BoxSize: {x: 4.4849663, y: 4.0772, z: 4.3145366}
   m_BoxOffset: {x: 0.14983368, y: 0.37742615, z: 0.1728208}
   m_NearClip: 0.3
-  m_FarClip: 30
-  m_ShadowDistance: 0
+  m_FarClip: 100
+  m_ShadowDistance: 40
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_CullingMask:
