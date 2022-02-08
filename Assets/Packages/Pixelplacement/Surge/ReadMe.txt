@@ -23,6 +23,3 @@ A unified button solution that operates as expected across any and all platforms
 
 Chooser
 The complete solution for identifying and responding to pointing or gazing.
-
-Communication
-Local area networking made easy.

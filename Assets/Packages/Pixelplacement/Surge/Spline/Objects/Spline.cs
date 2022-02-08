@@ -56,7 +56,6 @@ namespace Pixelplacement
         private float _curvePercentage = 0;
         private int _operatingCurve = 0;
         private float _currentCurve = 0;
-        [SerializeField, Tooltip("Optimize by removing all renderers in built projects.")] private bool _removeRenderers = true;
         private int _previousLength;
         private int _slicesPerCurve = 10;
         private List<SplineReparam> _splineReparams = new List<SplineReparam>();
@@ -115,30 +114,6 @@ namespace Pixelplacement
         }
 
         //Init:
-        void Awake()
-        {
-            Reset();
-
-            //runtime optimizations:
-            if (!Application.isEditor && _removeRenderers)
-            {
-                foreach (var item in GetComponentsInChildren<MeshFilter>())
-                {
-                    Destroy(item);
-                }
-
-                foreach (var item in GetComponentsInChildren<MeshRenderer>())
-                {
-                    Destroy(item);
-                }
-
-                foreach (var item in GetComponentsInChildren<SkinnedMeshRenderer>())
-                {
-                    Destroy(item);
-                }
-            }
-        }
-
         void Reset()
         {
             //if we don't have at least 2 anchors, fix it:
@@ -234,7 +209,7 @@ namespace Pixelplacement
             _lengthDirty = true;
 
             //fire event:
-            if (OnSplineChanged != null) OnSplineChanged();
+            OnSplineChanged?.Invoke();
         }
 
         //Private Methods:
@@ -374,9 +349,9 @@ namespace Pixelplacement
         /// <summary>
         /// Returns a position on the spline at the given percentage with a relative offset.
         /// </summary>
-        public Vector3 GetPosition(float percentage, Vector3 relativeOffset)
+        public Vector3 GetPosition(float percentage, Vector3 relativeOffset, bool normalized = true)
         {
-            percentage = Reparam(percentage);
+            if (normalized) percentage = Reparam(percentage);
 
             //get position and look rotation:
             Vector3 position = GetPosition(percentage);
@@ -396,7 +371,7 @@ namespace Pixelplacement
         }
 
         /// <summary>
-        /// Given a world point and a number of divisions (think granularity or precision) this returns the closest point on the spline.
+        /// Given a world point and a number of divisions (think resolution) this returns the closest point on the spline.
         /// </summary>
         public float ClosestPoint(Vector3 point, int divisions = 100)
         {
@@ -437,9 +412,6 @@ namespace Pixelplacement
         {
             //refs:
             GameObject anchorTemplate = Resources.Load("Anchor") as GameObject;
-
-            //if we have no anchors let's make sure we create a spline segment and not just a single anchor:
-            if (Anchors.Length == 0) count = 2;
 
             //create return array:
             GameObject[] returnObjects = new GameObject[count];

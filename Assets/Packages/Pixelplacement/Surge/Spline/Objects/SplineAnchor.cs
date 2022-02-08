@@ -191,24 +191,48 @@ namespace Pixelplacement
             //hide some things to reduce clutter:
             Anchor.hideFlags = HideFlags.HideInHierarchy;
 
-            foreach (var item in GetComponentsInChildren<Renderer> ())
+            foreach (var item in GetComponentsInChildren<Renderer>())
             {
-                item.sharedMaterial.hideFlags = HideFlags.HideInInspector;
+                if (Application.isEditor)
+                {
+                    item.sharedMaterial.hideFlags = HideFlags.HideInInspector;
+                }
+                else
+                {
+                    Destroy(item);
+                }
             }
 
-            foreach (var item in GetComponentsInChildren<MeshFilter> ())
+            foreach (var item in GetComponentsInChildren<MeshFilter>())
             {
-                item.hideFlags = HideFlags.HideInInspector;
+                if (Application.isEditor)
+                {
+                    item.hideFlags = HideFlags.HideInInspector;
+                }
+                else
+                {
+                    Destroy(item);
+                }
             }
 
-            foreach (var item in GetComponentsInChildren<MeshRenderer> ())
+            foreach (var item in GetComponentsInChildren<MeshRenderer>())
             {
-                item.hideFlags = HideFlags.HideInInspector;
+                if (Application.isEditor)
+                {
+                    item.hideFlags = HideFlags.HideInInspector;
+                }
+                else
+                {
+                    Destroy(item);
+                }
             }
 
-            foreach (var item in GetComponentsInChildren<SkinnedMeshRenderer> ())
+            foreach (var item in GetComponentsInChildren<SkinnedMeshRenderer>())
             {
-                item.hideFlags = HideFlags.HideInInspector;
+                if (Application.isEditor)
+                {
+                    item.hideFlags = HideFlags.HideInInspector;
+                }
             }
 
             //synchronize status variables:

@@ -138,8 +138,6 @@ namespace Pixelplacement
             //scale setup:
             scaleTarget = transform;
             normalScale = transform.localScale;
-            selectedScale = transform.localScale * 1.15f;
-            pressedScale = transform.localScale * 1.25f;
 
             //set initial size on gui collider:
             _rectTransform = GetComponent<RectTransform>();
@@ -398,7 +396,13 @@ namespace Pixelplacement
         {
             if (!interactable) return;
 
-            if (_selectedCount <= 0) return;
+            //handheld devices normally have touch screens which means selection is not a separate phase:
+            if (SystemInfo.deviceType != DeviceType.Handheld)
+            {
+                if (_selectedCount <= 0) return;
+
+            }
+
             if (_pressed) return;
             _pressed = true;
             _released = false;
@@ -581,7 +585,7 @@ namespace Pixelplacement
                     curve = Tween.EaseOutBack;
                     break;
             }
-            _scaleTween = Tween.LocalScale(scaleTarget, selectedScale, scaleDuration, 0, curve, Tween.LoopType.None, null, null, false);
+            _scaleTween = Tween.LocalScale(scaleTarget, Vector3.Scale(normalScale, selectedScale), scaleDuration, 0, curve, Tween.LoopType.None, null, null, false);
         }
 
         private void ScalePressed()
@@ -598,7 +602,7 @@ namespace Pixelplacement
                     curve = Tween.EaseOutBack;
                     break;
             }
-            _scaleTween = Tween.LocalScale(scaleTarget, pressedScale, scaleDuration, 0, curve, Tween.LoopType.None, null, null, false);
+            _scaleTween = Tween.LocalScale(scaleTarget, Vector3.Scale(normalScale, pressedScale), scaleDuration, 0, curve, Tween.LoopType.None, null, null, false);
         }
     }
 }

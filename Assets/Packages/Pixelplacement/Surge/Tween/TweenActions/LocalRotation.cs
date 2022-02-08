@@ -40,7 +40,8 @@ namespace Pixelplacement.TweenSystem
 
         protected override void Operation (float percentage)
         {
-            Quaternion calculatedValue = Quaternion.Euler (TweenUtilities.LinearInterpolateRotational (_start, EndValue, percentage));
+            //Quaternion calculatedValue = Quaternion.Euler (TweenUtilities.LinearInterpolateRotational (_start, EndValue, percentage));
+            Quaternion calculatedValue = Quaternion.LerpUnclamped(Quaternion.Euler(_start), Quaternion.Euler(EndValue), percentage);
             _target.localRotation = calculatedValue;
         }
 

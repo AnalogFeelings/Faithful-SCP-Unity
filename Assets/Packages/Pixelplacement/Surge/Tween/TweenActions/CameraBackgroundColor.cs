@@ -24,7 +24,7 @@ namespace Pixelplacement.TweenSystem
         public CameraBackgroundColor(Camera target, Color endValue, float duration, float delay, bool obeyTimescale, AnimationCurve curve, Tween.LoopType loop, Action startCallback, Action completeCallback)
         {
             //set essential properties:
-            SetEssentials(Tween.TweenType.ImageColor, target.GetInstanceID(), duration, delay, obeyTimescale, curve, loop, startCallback, completeCallback);
+            SetEssentials(Tween.TweenType.CameraBackgroundColor, target.GetInstanceID(), duration, delay, obeyTimescale, curve, loop, startCallback, completeCallback);
 
             //catalog custom properties:
             _target = target;

@@ -12,35 +12,28 @@ using System.Collections;
 using Pixelplacement;
 
 namespace Pixelplacement.TweenSystem
-{
-    public class TweenEngine : MonoBehaviour 
     {
-        //Public Methods:
-        public void ExecuteTween (TweenBase tween)
+    public class TweenEngine : MonoBehaviour
         {
-            StartCoroutine (RunTween (tween));
-        }
-
-        //Coroutines:
-        //execute tween:
-        static IEnumerator RunTween (TweenBase tween)
-        {
-            Tween.activeTweens.Add (tween);
-            //Debug.Log("Nuevo Tween");
-            while (true) 
+            public void ExecuteTween(TweenBase tween) 
             {
-                //tick tween:
-                if (!tween.Tick ())
+                Tween.activeTweens.Add(tween);
+            }
+            
+            private void Update()
+            {
+                foreach (var tween in Tween.activeTweens.ToArray())
                 {
-                    //Debug.Log("Tween ya no hace tick");
-                    //clean up tween:
-                    Tween.activeTweens.Remove (tween);
-                    yield break;
+                    tween.Tick();
                 }
-
-                //loop:
-                yield return null;	
+                
+                // for (int i = Tween.activeTweens.Count - 1; i >= 0; i--)
+                // {
+                //     if (!Tween.activeTweens[i].Tick())
+                //     {
+                //         Tween.activeTweens.RemoveAt(i);
+                //     }
+                // } 
             }
         }
     }
-}

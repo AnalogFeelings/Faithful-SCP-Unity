@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering.PostProcessing;
+using UnityEngine.Rendering.HighDefinition;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using Pixelplacement;
 using Pixelplacement.TweenSystem;
@@ -64,9 +65,9 @@ public class GameController : MonoBehaviour
     public bool doGameplay, spawnPlayer, spawnHere, StopTimer = false, isStart = false, mapless;
 
     [Header("Volumes")]
-    public PostProcessVolume HorrorVol;
-    public PostProcessVolume MainVol;
-    DepthOfField depth;
+    public UnityEngine.Rendering.Volume HorrorVol;
+    public UnityEngine.Rendering.Volume MainVol;
+    //DepthOfField depth;
     TweenBase HorrorTween;
 
     [HideInInspector]
@@ -161,11 +162,9 @@ public class GameController : MonoBehaviour
     public TileBase tile;
 
     [Header("Graphics Settings")]
-    public PostProcessProfile LowQ;
-    public PostProcessProfile MediumQ;
-    public PostProcessProfile HighQ;
+    public HDRenderPipelineAsset HDRPAsset;
 
-    public NGSS_Local shadowQuality;
+    public UnityEngine.ShadowResolution shadowQuality;
 
     [HideInInspector]
     public string deathmsg = "";
@@ -180,7 +179,9 @@ public class GameController : MonoBehaviour
     public NewMapGen mapCreate;
     public GameObject roomAmbiance_obj;
     public CameraPool[] cameraPool;
-   
+
+    public VolumeComponentWithQuality GlobalPostProcessingQualitySettings { get; private set; }
+
 
     /// <summary>
     /// ////////////////////////STARTUP SEQUENCE
@@ -672,7 +673,7 @@ public class GameController : MonoBehaviour
         Horror.PlayOneShot(horrorsound);
         if (HorrorTween != null)
             HorrorTween.Cancel();
-        HorrorTween = Tween.Value(0f, 1f, HorrorUpdate, 1f, 0, Tween.EaseInStrong, Tween.LoopType.None, null, () => HorrorTween = Tween.Value(1f, 0f, HorrorUpdate, 11.0f, 0, Tween.EaseOut), true);
+        HorrorTween = Tween.Value(0f, 1f, HorrorUpdate, 3f, 0f, Tween.EaseInStrong, Tween.LoopType.None, null, () => HorrorTween = Tween.Value(1f, 0f, HorrorUpdate, 11f, 0f, Tween.EaseOutStrong), true);
         if (origin != null)
         {
             currentTarget = origin;
@@ -687,14 +688,14 @@ public class GameController : MonoBehaviour
 
     public void HorrorUpdate(float value)
     {
-        //Debug.Log("Horror Update " + value);
+        Debug.Log("Horror Update " + value);
         if (worldName!=Worlds.pocket)
         {
             HorrorFov.fieldOfView = 65 + (7 * value);
         }
 
         HorrorVol.weight = value;
-        depth.focusDistance.Override(Vector3.Distance(player.transform.position, currentTarget.transform.position) - 1f);
+        //depth.focusDistance.Override(Vector3.Distance(player.transform.position, currentTarget.transform.position) - 1f);
     }
 
 
@@ -1172,26 +1173,26 @@ public class GameController : MonoBehaviour
         HorrorFov.gameObject.GetComponent<Player_MouseLook>().LoadValues();
         
         //Debug.Log(MainVol.profile.GetSetting<ColorGrading>().gamma.value);
-        MainVol.profile.GetSetting<ColorGrading>().gamma.value = new Vector4(1, 1, 1, PlayerPrefs.GetFloat("Gamma", 0)*2.5F);
+        MainVol.profile.Add<LiftGammaGain>().gamma.value = new Vector4(1, 1, 1, PlayerPrefs.GetFloat("Gamma", 0)*2.5F);
         //Debug.Log(PlayerPrefs.GetFloat("Gamma", 0));
 
         switch (PlayerPrefs.GetInt("Post",1))
         {
             case 0:
                 {
-                    HorrorFov.gameObject.GetComponent<PostProcessLayer>().antialiasingMode = PostProcessLayer.Antialiasing.FastApproximateAntialiasing;
+                    HorrorFov.gameObject.GetComponent<HDAdditionalCameraData>().antialiasing = HDAdditionalCameraData.AntialiasingMode.FastApproximateAntialiasing;
                     break;
                 }
             case 1:
                 {
-                    HorrorFov.gameObject.GetComponent<PostProcessLayer>().antialiasingMode = PostProcessLayer.Antialiasing.SubpixelMorphologicalAntialiasing;
-                    HorrorFov.gameObject.GetComponent<PostProcessLayer>().subpixelMorphologicalAntialiasing.quality = SubpixelMorphologicalAntialiasing.Quality.Medium;
+                    HorrorFov.gameObject.GetComponent<HDAdditionalCameraData>().antialiasing = HDAdditionalCameraData.AntialiasingMode.SubpixelMorphologicalAntiAliasing;
+                    HorrorFov.gameObject.GetComponent<HDAdditionalCameraData>().SMAAQuality = HDAdditionalCameraData.SMAAQualityLevel.Low;
                     break;
                 }
             case 2:
                 {
-                    HorrorFov.gameObject.GetComponent<PostProcessLayer>().antialiasingMode = PostProcessLayer.Antialiasing.SubpixelMorphologicalAntialiasing;
-                    HorrorFov.gameObject.GetComponent<PostProcessLayer>().subpixelMorphologicalAntialiasing.quality = SubpixelMorphologicalAntialiasing.Quality.High;
+                    HorrorFov.gameObject.GetComponent<HDAdditionalCameraData>().antialiasing = HDAdditionalCameraData.AntialiasingMode.SubpixelMorphologicalAntiAliasing;
+                    HorrorFov.gameObject.GetComponent<HDAdditionalCameraData>().SMAAQuality = HDAdditionalCameraData.SMAAQualityLevel.High;
                     break;
                 }
         }
@@ -1200,44 +1201,27 @@ public class GameController : MonoBehaviour
         {
             case 3:
                 {
-                    shadowQuality.NGSS_PCSS_ENABLED = true;
-                    shadowQuality.NGSS_SAMPLING_TEST = 6;
-                    shadowQuality.NGSS_SAMPLING_FILTER = 12;
+                    shadowQuality = ShadowResolution.Low;
                     break;
                 }
             case 4:
                 {
-                    shadowQuality.NGSS_PCSS_ENABLED = true;
-                    shadowQuality.NGSS_SAMPLING_TEST = 8;
-                    shadowQuality.NGSS_SAMPLING_FILTER = 12;
+                    shadowQuality = ShadowResolution.Medium;
                     break;
                 }
             case 5:
                 {
-                    shadowQuality.NGSS_PCSS_ENABLED = true;
-                    shadowQuality.NGSS_SAMPLING_TEST = 16;
-                    shadowQuality.NGSS_SAMPLING_FILTER = 24;
+                    shadowQuality = ShadowResolution.High;
                     break;
                 }
             case 6:
                 {
-                    shadowQuality.NGSS_PCSS_ENABLED = true;
-                    shadowQuality.NGSS_SAMPLING_TEST = 24;
-                    shadowQuality.NGSS_SAMPLING_FILTER = 32;
-                    break;
-                }
-            case 7:
-                {
-                    shadowQuality.NGSS_PCSS_ENABLED = true;
-                    shadowQuality.NGSS_SAMPLING_TEST = 24;
-                    shadowQuality.NGSS_SAMPLING_FILTER = 32;
+                    shadowQuality = ShadowResolution.VeryHigh;
                     break;
                 }
             default:
                 {
-                    shadowQuality.NGSS_PCSS_ENABLED = false;
-                    shadowQuality.NGSS_SAMPLING_TEST = 4;
-                    shadowQuality.NGSS_SAMPLING_FILTER = 8;
+                    shadowQuality = ShadowResolution.High;
                     break;
                 }
         }
@@ -1326,23 +1310,23 @@ public class GameController : MonoBehaviour
         {
             case 0:
                 {
-                    MainVol.profile = LowQ;
+                    QualitySettings.SetQualityLevel(1);
                     break;
                 }
             case 1:
                 {
-                    MainVol.profile = MediumQ;
+                    QualitySettings.SetQualityLevel(2);
                     break;
                 }
             case 2:
                 {
-                    MainVol.profile = HighQ;
+                    QualitySettings.SetQualityLevel(3);
                     break;
                 }
         }
 
-        depth = HorrorVol.sharedProfile.GetSetting<DepthOfField>();
-        depth.focusDistance.Override(2f);
+        //depth = DepthOfFieldModeParameter.Equals;
+        //depth.focusDistance.Override(2f);
         if (ShowMap)
         {
             CullerFlag = false;

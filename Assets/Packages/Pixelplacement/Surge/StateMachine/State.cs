@@ -83,24 +83,23 @@ namespace Pixelplacement
         /// </summary>
         public void ChangeState (string state)
         {
-            if (StateMachine == null) return;
             StateMachine.ChangeState (state);
         }
 
         /// <summary>
         /// Change to the next state if possible.
         /// </summary>
-        public GameObject Next ()
+        public GameObject Next (bool exitIfLast = false)
         {
-            return StateMachine.Next ();
+            return StateMachine.Next (exitIfLast);
         }
 
         /// <summary>
         /// Change to the previous state if possible.
         /// </summary>
-        public GameObject Previous ()
+        public GameObject Previous (bool exitIfFirst = false)
         {
-            return StateMachine.Previous ();
+            return StateMachine.Previous (exitIfFirst);
         }
 
         /// <summary>
@@ -109,6 +108,18 @@ namespace Pixelplacement
         public void Exit ()
         {
             StateMachine.Exit ();
+        }
+        
+        protected Coroutine StartCoroutineIfActive(IEnumerator coroutine)
+        {
+            if (gameObject.activeInHierarchy)
+            {
+                return StartCoroutine(coroutine);
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

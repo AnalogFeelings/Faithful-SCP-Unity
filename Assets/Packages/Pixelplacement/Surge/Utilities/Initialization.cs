@@ -87,7 +87,6 @@ namespace Pixelplacement
 #endif
 
                     m.Invoke(item, new Component[] { item });
-                    break;
                 }
             }
         }

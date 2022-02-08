@@ -11,7 +11,6 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System;
-using Pixelplacement;
 using UnityEngine.UI;
 
 namespace Pixelplacement
@@ -21,7 +20,7 @@ namespace Pixelplacement
         /// <summary>
         /// Used internally to identify the type of tween to carry out.
         /// </summary>
-        public enum TweenType { Position, Rotation, LocalScale, LightColor, LightIntensity, LightRange, FieldOfView, SpriteRendererColor, RawImageColor, ImageColor, AnchoredPosition, Size, Volume, Pitch, PanStereo, ShaderFloat, ShaderColor, ShaderInt, ShaderVector, Value, TextMeshColor, GUITextColor, TextColor, CanvasGroupAlpha, Spline };
+        public enum TweenType { Position, Rotation, LocalScale, LightColor, CameraBackgroundColor, LightIntensity, LightRange, FieldOfView, SpriteRendererColor, GraphicColor, AnchoredPosition, Size, Volume, Pitch, PanStereo, ShaderFloat, ShaderColor, ShaderInt, ShaderVector, Value, CanvasGroupAlpha, Spline, TextColor, ImageColor, RawImageColor, TextMeshColor };
 
         /// <summary>
         /// What style of loop, if any, should be applied to this tween.
@@ -401,63 +400,26 @@ namespace Pixelplacement
             target.localScale = startValue;
             return LocalScale(target, endValue, duration, delay, easeCurve, loop, startCallback, completeCallback, obeyTimescale);
         }
+        
         /// <summary>
-        /// Changes the color of an image.
+        /// Changes the color of graphic.
         /// </summary>
-        public static TweenSystem.TweenBase Color(RawImage target, Color endValue, float duration, float delay, AnimationCurve easeCurve = null, LoopType loop = LoopType.None, Action startCallback = null, Action completeCallback = null, bool obeyTimescale = true)
+        public static TweenSystem.TweenBase Color(Graphic target, Color endValue, float duration, float delay, AnimationCurve easeCurve = null, LoopType loop = LoopType.None, Action startCallback = null, Action completeCallback = null, bool obeyTimescale = true)
         {
-            TweenSystem.RawImageColor tween = new TweenSystem.RawImageColor(target, endValue, duration, delay, obeyTimescale, easeCurve, loop, startCallback, completeCallback);
+            TweenSystem.GraphicColor tween = new TweenSystem.GraphicColor(target, endValue, duration, delay, obeyTimescale, easeCurve, loop, startCallback, completeCallback);
             SendTweenForProcessing(tween, true);
             return tween;
         }
 
         /// <summary>
-        /// Changes the color of an image.
+        /// Changes the color of a graphic.
         /// </summary>
-        public static TweenSystem.TweenBase Color(RawImage target, Color startValue, Color endValue, float duration, float delay, AnimationCurve easeCurve = null, LoopType loop = LoopType.None, Action startCallback = null, Action completeCallback = null, bool obeyTimescale = true)
+        public static TweenSystem.TweenBase Color(Graphic target, Color startValue, Color endValue, float duration, float delay, AnimationCurve easeCurve = null, LoopType loop = LoopType.None, Action startCallback = null, Action completeCallback = null, bool obeyTimescale = true)
         {
             target.color = startValue;
             return Color(target, endValue, duration, delay, easeCurve, loop, startCallback, completeCallback, obeyTimescale);
-        }
-
-        /// <summary>
-        /// Changes the color of an image.
-        /// </summary>
-        public static TweenSystem.TweenBase Color(Image target, Color endValue, float duration, float delay, AnimationCurve easeCurve = null, LoopType loop = LoopType.None, Action startCallback = null, Action completeCallback = null, bool obeyTimescale = true)
-        {
-            TweenSystem.ImageColor tween = new TweenSystem.ImageColor(target, endValue, duration, delay, obeyTimescale, easeCurve, loop, startCallback, completeCallback);
-            SendTweenForProcessing(tween, true);
-            return tween;
-        }
-
-        /// <summary>
-        /// Changes the color of an image.
-        /// </summary>
-        public static TweenSystem.TweenBase Color(Image target, Color startValue, Color endValue, float duration, float delay, AnimationCurve easeCurve = null, LoopType loop = LoopType.None, Action startCallback = null, Action completeCallback = null, bool obeyTimescale = true)
-        {
-            target.color = startValue;
-            return Color(target, endValue, duration, delay, easeCurve, loop, startCallback, completeCallback, obeyTimescale);
-        }
-
-        /// <summary>
-        /// Changes the color of a text object.
-        /// </summary>
-        public static TweenSystem.TweenBase Color(Text target, Color endValue, float duration, float delay, AnimationCurve easeCurve = null, LoopType loop = LoopType.None, Action startCallback = null, Action completeCallback = null, bool obeyTimescale = true)
-        {
-            TweenSystem.TextColor tween = new TweenSystem.TextColor(target, endValue, duration, delay, obeyTimescale, easeCurve, loop, startCallback, completeCallback);
-            SendTweenForProcessing(tween, true);
-            return tween;
-        }
-
-        /// <summary>
-        /// Changes the color of a text object.
-        /// </summary>
-        public static TweenSystem.TweenBase Color(Text target, Color startValue, Color endValue, float duration, float delay, AnimationCurve easeCurve = null, LoopType loop = LoopType.None, Action startCallback = null, Action completeCallback = null, bool obeyTimescale = true)
-        {
-            target.color = startValue;
-            return Color(target, endValue, duration, delay, easeCurve, loop, startCallback, completeCallback, obeyTimescale);
-        }
-
+        }        
+        
         /// <summary>
         /// Changes the color of a light.
         /// </summary>
@@ -472,25 +434,6 @@ namespace Pixelplacement
         /// Changes the color of a light.
         /// </summary>
         public static TweenSystem.TweenBase Color(Light target, Color startValue, Color endValue, float duration, float delay, AnimationCurve easeCurve = null, LoopType loop = LoopType.None, Action startCallback = null, Action completeCallback = null, bool obeyTimescale = true)
-        {
-            target.color = startValue;
-            return Color(target, endValue, duration, delay, easeCurve, loop, startCallback, completeCallback, obeyTimescale);
-        }
-
-        /// <summary>
-        /// Changes the color of a TextMesh's color propery.
-        /// </summary>
-        public static TweenSystem.TweenBase Color(TextMesh target, Color endValue, float duration, float delay, AnimationCurve easeCurve = null, LoopType loop = LoopType.None, Action startCallback = null, Action completeCallback = null, bool obeyTimescale = true)
-        {
-            TweenSystem.TextMeshColor tween = new TweenSystem.TextMeshColor(target, endValue, duration, delay, obeyTimescale, easeCurve, loop, startCallback, completeCallback);
-            SendTweenForProcessing(tween, true);
-            return tween;
-        }
-
-        /// <summary>
-        /// Changes the color of a TextMesh's color propery.
-        /// </summary>
-        public static TweenSystem.TweenBase Color(TextMesh target, Color startValue, Color endValue, float duration, float delay, AnimationCurve easeCurve = null, LoopType loop = LoopType.None, Action startCallback = null, Action completeCallback = null, bool obeyTimescale = true)
         {
             target.color = startValue;
             return Color(target, endValue, duration, delay, easeCurve, loop, startCallback, completeCallback, obeyTimescale);
@@ -983,7 +926,7 @@ namespace Pixelplacement
 
         static void StopInstanceTargetType(int id, TweenType type)
         {
-            for (int i = 0; i < activeTweens.Count; i++)
+            for (int i = activeTweens.Count - 1; i >= 0; i--)
             {
                 if (activeTweens[i].targetInstanceID == id && activeTweens[i].tweenType == type)
                 {
@@ -994,22 +937,24 @@ namespace Pixelplacement
 
         static void FinishInstanceTarget(int id)
         {
-            for (int i = 0; i < activeTweens.Count; i++)
+            for (int i = activeTweens.Count - 1; i >= 0; i--)
             {
                 if (activeTweens[i].targetInstanceID == id)
                 {
                     activeTweens[i].Finish();
+                    //activeTweens.RemoveAt(i); needs validation
                 }
             }
         }
 
         static void CancelInstanceTarget(int id)
         {
-            for (int i = 0; i < activeTweens.Count; i++)
+            for (int i = activeTweens.Count - 1; i >= 0; i--)
             {
                 if (activeTweens[i].targetInstanceID == id)
                 {
                     activeTweens[i].Cancel();
+                    //activeTweens.RemoveAt(i); needs validation
                 }
             }
         }
@@ -1026,7 +971,7 @@ namespace Pixelplacement
             {
                 StopInstanceTargetType(tween.targetInstanceID, tween.tweenType);
             }
-            //Debug.Log("Ejecutando Tween");
+
             Instance.ExecuteTween(tween);
         }
     }

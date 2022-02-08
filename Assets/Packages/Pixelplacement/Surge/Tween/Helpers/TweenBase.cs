@@ -43,6 +43,7 @@ namespace Pixelplacement.TweenSystem
         public void Stop ()
         {
             Status = Tween.TweenStatus.Stopped;
+            Tick ();
         }
 
         /// <summary>
@@ -50,12 +51,10 @@ namespace Pixelplacement.TweenSystem
         /// </summary>
         public void Start ()
         {
-            //Debug.Log("Iniciando Tween con estado" + Status);
             elapsedTime = 0.0f;
 
             if (Status == Tween.TweenStatus.Canceled || Status == Tween.TweenStatus.Finished || Status == Tween.TweenStatus.Stopped)
             {
-                //Debug.Log("El estado esta raro, ahora es RTunning");
                 Status = Tween.TweenStatus.Running;
                 Operation (0);
                 Tween.Instance.ExecuteTween (this);
@@ -91,6 +90,7 @@ namespace Pixelplacement.TweenSystem
         public void Cancel ()
         {
             Status = Tween.TweenStatus.Canceled;
+            Tick ();
         }
 
         /// <summary>
@@ -99,17 +99,19 @@ namespace Pixelplacement.TweenSystem
         public void Finish ()
         {
             Status = Tween.TweenStatus.Finished;
+            Tick ();
         }
 
         /// <summary>
         /// Used internally to update the tween and report status to the main system.
         /// </summary>
-        public bool Tick ()
+        public void Tick ()
         {
             //stop where we are:
             if (Status == Tween.TweenStatus.Stopped) 
             {
-                return false;
+                CleanUp();
+                return;
             }
 
             //rewind operation and stop:
@@ -117,7 +119,8 @@ namespace Pixelplacement.TweenSystem
             {
                 Operation (0);
                 Percentage = 0;
-                return false;
+                CleanUp();
+                return;
             }
 
             //fast forward operation and stop:
@@ -126,10 +129,12 @@ namespace Pixelplacement.TweenSystem
                 Operation (1);
                 Percentage = 1;
                 if (CompleteCallback != null) CompleteCallback ();
-                return false;
+                CleanUp();
+                return;
             }
 
             float progress = 0.0f;
+            
             //calculate:
             if (ObeyTimescale) 
             {
@@ -141,20 +146,20 @@ namespace Pixelplacement.TweenSystem
 
             //percentage:
             float percentage = Mathf.Min(progress / Duration, 1);
-        
+  
             //delayed?
             if (percentage == 0 && Status != Tween.TweenStatus.Delayed) Status = Tween.TweenStatus.Delayed;
 
             //running?
             if (percentage > 0 && Status == Tween.TweenStatus.Delayed) 
             {
-                Tween.Stop (targetInstanceID, tweenType);
                 if (SetStartValue ())
                 {
                     if (StartCallback != null) StartCallback ();
                     Status = Tween.TweenStatus.Running;	
                 }else{
-                    return false;
+                    CleanUp();
+                    return;
                 }
             }
 
@@ -168,21 +173,22 @@ namespace Pixelplacement.TweenSystem
             if (Status == Tween.TweenStatus.Running) 
             {
                 try {
-                    //Debug.Log("Operacion ");
                     Operation (curveValue);
                     Percentage = curveValue;
                 } catch (Exception ex) {
-                    //Debug.Log("Error al ejecutar " + ex.Message);
-                    return false;
+                    CleanUp();
+                    return;
                 }
             }
 
-            //Debug.Log("Estado del tween " + Status + " valor de curva " + curveValue + " Porcentaje " + Percentage);
-
             //tween complete:
-            if (percentage == 1) 
+            if (percentage == 1)
             {
-                if (CompleteCallback != null) CompleteCallback ();
+                if (CompleteCallback != null)
+                {
+                    CompleteCallback();
+                }
+
                 switch (LoopType) 
                 {
                 case Tween.LoopType.Loop:
@@ -195,12 +201,19 @@ namespace Pixelplacement.TweenSystem
 
                 default:
                     Status = Tween.TweenStatus.Finished;
-                    return false;
+                    CleanUp();
+                    return;
                 }
             }
-
-            //tell system we are still have work to do:
-            return true;
+        }
+        
+        //Private Methods:
+        private void CleanUp()
+        {
+            if (Tween.activeTweens.Contains(this))
+            {
+                Tween.activeTweens.Remove(this);
+            }
         }
 
         //Protected Methods:

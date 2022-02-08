@@ -39,9 +39,7 @@ namespace Pixelplacement.TweenSystem
 
         protected override void Operation (float percentage)
         {
-            
             float calculatedValue = TweenUtilities.LinearInterpolate (_start, EndValue, percentage);
-            //Debug.Log("Porcentaje: " + percentage + " valor calculado = " + calculatedValue);
             _valueUpdatedCallback (calculatedValue);
         }
 

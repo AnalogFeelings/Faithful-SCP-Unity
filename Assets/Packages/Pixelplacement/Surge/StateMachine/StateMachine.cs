@@ -30,7 +30,7 @@ namespace Pixelplacement
         /// Should log messages be thrown during usage?
         /// </summary>
         [Tooltip("Should log messages be thrown during usage?")]
-        public bool verbose = true;
+        public bool verbose;
 
         /// <summary>
         /// Can States within this StateMachine be reentered?
@@ -117,13 +117,21 @@ namespace Pixelplacement
         /// <summary>
         /// Change to the next state if possible.
         /// </summary>
-        public GameObject Next ()
+        public GameObject Next (bool exitIfLast = false)
         {
             if (currentState == null) return ChangeState (0);
             int currentIndex = currentState.transform.GetSiblingIndex();
             if (currentIndex == transform.childCount - 1)
             {
-                return currentState;	
+                if (exitIfLast)
+                {
+                    Exit();
+                    return null;
+                }
+                else
+                {
+                    return currentState;	
+                }
             }else{
                 return ChangeState (++currentIndex);
             }
@@ -132,14 +140,23 @@ namespace Pixelplacement
         /// <summary>
         /// Change to the previous state if possible.
         /// </summary>
-        public GameObject Previous ()
+        public GameObject Previous (bool exitIfFirst = false)
         {
             if (currentState == null) return ChangeState(0);
             int currentIndex = currentState.transform.GetSiblingIndex();
             if (currentIndex == 0)
             {
-                return currentState;	
-            }else{
+                if (exitIfFirst)
+                {
+                    Exit();
+                    return null;
+                }
+                else
+                {
+                    return currentState;
+                }
+            }
+            else{
                 return ChangeState(--currentIndex);
             }
         }
@@ -174,6 +191,7 @@ namespace Pixelplacement
                 Log("Index is greater than the amount of states in the StateMachine \"" + gameObject.name + "\" please verify the index you are trying to change to.");
                 return null;
             }
+
             return ChangeState(transform.GetChild(childIndex).gameObject);
         }
 
