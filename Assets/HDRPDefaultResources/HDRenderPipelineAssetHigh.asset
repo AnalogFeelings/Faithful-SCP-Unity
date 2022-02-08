@@ -204,7 +204,7 @@ MonoBehaviour:
     supportSSR: 1
     supportSSRTransparent: 0
     supportSSAO: 1
-    supportSSGI: 0
+    supportSSGI: 1
     supportSubsurfaceScattering: 0
     sssSampleBudget:
       m_Values: 140000002800000050000000
@@ -259,27 +259,27 @@ MonoBehaviour:
       cookieFormat: 74
       cookieAtlasLastValidMip: 0
       cookieTexArraySize: 1
-      planarReflectionAtlasSize: 1024
+      planarReflectionAtlasSize: 2048
       reflectionProbeCacheSize: 64
       reflectionCubemapSize: 256
-      reflectionCacheCompressed: 0
+      reflectionCacheCompressed: 1
       reflectionProbeFormat: 74
       skyReflectionSize: 256
       skyLightingOverrideLayerMask:
         serializedVersion: 2
         m_Bits: 0
       supportFabricConvolution: 0
-      maxDirectionalLightsOnScreen: 16
-      maxPunctualLightsOnScreen: 128
+      maxDirectionalLightsOnScreen: 32
+      maxPunctualLightsOnScreen: 256
       maxAreaLightsOnScreen: 32
       maxEnvLightsOnScreen: 16
       maxDecalsOnScreen: 512
-      maxPlanarReflectionOnScreen: 8
+      maxPlanarReflectionOnScreen: 16
       maxLightsPerClusterCell: 4
     hdShadowInitParams:
       maxShadowRequests: 128
       directionalShadowsDepthBits: 32
-      shadowFilteringQuality: 1
+      shadowFilteringQuality: 2
       punctualLightShadowAtlas:
         shadowAtlasResolution: 1024
         shadowAtlasDepthBits: 32
@@ -288,8 +288,8 @@ MonoBehaviour:
         shadowAtlasResolution: 1024
         shadowAtlasDepthBits: 32
         useDynamicViewportRescale: 1
-      cachedPunctualLightShadowAtlas: 2048
-      cachedAreaLightShadowAtlas: 2048
+      cachedPunctualLightShadowAtlas: 4096
+      cachedAreaLightShadowAtlas: 4096
       shadowResolutionDirectional:
         m_Values: 00010000000200000004000000080000
         m_SchemaId:
@@ -305,7 +305,7 @@ MonoBehaviour:
       maxDirectionalShadowMapResolution: 1024
       maxPunctualShadowMapResolution: 1024
       maxAreaShadowMapResolution: 1024
-      supportScreenSpaceShadows: 0
+      supportScreenSpaceShadows: 1
       maxScreenSpaceShadowSlots: 4
       screenSpaceShadowBufferFormat: 48
     decalSettings:
@@ -354,7 +354,7 @@ MonoBehaviour:
       ChromaticAberrationMaxSamples: 030000000600000006000000
     lightSettings:
       useContactShadow:
-        m_Values: 010000
+        m_Values: 000000
         m_SchemaId:
           m_Id: With3Levels
     maximumLODLevel:
@@ -369,13 +369,13 @@ MonoBehaviour:
       m_SchemaId:
         m_Id: With3Levels
     lightingQualitySettings:
-      AOStepCount: 040000000600000008000000
+      AOStepCount: 040000000600000010000000
       AOFullRes: 000000
       AOMaximumRadiusPixels: 200000002800000050000000
       AOBilateralUpsample: 000101
       AODirectionCount: 010000000200000004000000
       ContactShadowSampleCount: 060000000400000008000000
-      SSRMaxRaySteps: 080000001000000010000000
+      SSRMaxRaySteps: 080000001000000008000000
       RTAORayLength:
       - 0.5
       - 3
@@ -453,4 +453,4 @@ MonoBehaviour:
     streamingCpuCacheSizeInMegaBytes: 1024
     streamingGpuCacheSettings:
     - format: 0
-      sizeInMegaBytes: 512
+      sizeInMegaBytes: 2048
