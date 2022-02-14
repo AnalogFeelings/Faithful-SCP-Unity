@@ -203,14 +203,14 @@ MonoBehaviour:
     supportShadowMask: 1
     supportSSR: 1
     supportSSRTransparent: 0
-    supportSSAO: 1
+    supportSSAO: 0
     supportSSGI: 0
     supportSubsurfaceScattering: 0
     sssSampleBudget:
       m_Values: 140000002800000050000000
       m_SchemaId:
         m_Id: With3Levels
-    supportVolumetrics: 0
+    supportVolumetrics: 1
     supportLightLayers: 0
     lightLayerName0: Light Layer default
     lightLayerName1: Light Layer 1
@@ -243,7 +243,7 @@ MonoBehaviour:
     decalLayerName6: Decal Layer 6
     decalLayerName7: Decal Layer 7
     msaaSampleCount: 1
-    supportMotionVectors: 1
+    supportMotionVectors: 0
     supportRuntimeDebugDisplay: 0
     supportRuntimeAOVAPI: 0
     supportDitheringCrossFade: 1
@@ -260,8 +260,8 @@ MonoBehaviour:
       cookieAtlasLastValidMip: 0
       cookieTexArraySize: 1
       planarReflectionAtlasSize: 1024
-      reflectionProbeCacheSize: 64
-      reflectionCubemapSize: 256
+      reflectionProbeCacheSize: 32
+      reflectionCubemapSize: 128
       reflectionCacheCompressed: 0
       reflectionProbeFormat: 74
       skyReflectionSize: 128
@@ -269,17 +269,17 @@ MonoBehaviour:
         serializedVersion: 2
         m_Bits: 0
       supportFabricConvolution: 0
-      maxDirectionalLightsOnScreen: 8
-      maxPunctualLightsOnScreen: 32
+      maxDirectionalLightsOnScreen: 16
+      maxPunctualLightsOnScreen: 64
       maxAreaLightsOnScreen: 32
       maxEnvLightsOnScreen: 8
       maxDecalsOnScreen: 512
       maxPlanarReflectionOnScreen: 16
       maxLightsPerClusterCell: 2
     hdShadowInitParams:
-      maxShadowRequests: 16
+      maxShadowRequests: 32
       directionalShadowsDepthBits: 16
-      shadowFilteringQuality: 0
+      shadowFilteringQuality: 1
       punctualLightShadowAtlas:
         shadowAtlasResolution: 1024
         shadowAtlasDepthBits: 16
@@ -288,7 +288,7 @@ MonoBehaviour:
         shadowAtlasResolution: 1024
         shadowAtlasDepthBits: 16
         useDynamicViewportRescale: 1
-      cachedPunctualLightShadowAtlas: 2048
+      cachedPunctualLightShadowAtlas: 1024
       cachedAreaLightShadowAtlas: 1024
       shadowResolutionDirectional:
         m_Values: 00010000000200000004000000080000
@@ -302,14 +302,14 @@ MonoBehaviour:
         m_Values: 00010000000200000004000000080000
         m_SchemaId:
           m_Id: With4Levels
-      maxDirectionalShadowMapResolution: 2048
-      maxPunctualShadowMapResolution: 2048
-      maxAreaShadowMapResolution: 2048
+      maxDirectionalShadowMapResolution: 1024
+      maxPunctualShadowMapResolution: 1024
+      maxAreaShadowMapResolution: 1024
       supportScreenSpaceShadows: 0
       maxScreenSpaceShadowSlots: 4
       screenSpaceShadowBufferFormat: 48
     decalSettings:
-      drawDistance: 50
+      drawDistance: 10
       atlasWidth: 4096
       atlasHeight: 4096
       perChannelMask: 0
@@ -347,14 +347,14 @@ MonoBehaviour:
       DoFResolution: 040000000200000001000000
       DoFHighQualityFiltering: 000101
       DoFPhysicallyBased: 000000
-      MotionBlurSampleCount: 04000000080000000c000000
+      MotionBlurSampleCount: 04000000040000000c000000
       BloomRes: 040000000200000002000000
       BloomHighQualityFiltering: 000101
       BloomHighQualityPrefiltering: 000001
-      ChromaticAberrationMaxSamples: 03000000060000000c000000
+      ChromaticAberrationMaxSamples: 03000000040000000c000000
     lightSettings:
       useContactShadow:
-        m_Values: 010000
+        m_Values: 000000
         m_SchemaId:
           m_Id: With3Levels
     maximumLODLevel:
@@ -374,8 +374,8 @@ MonoBehaviour:
       AOMaximumRadiusPixels: 200000002800000050000000
       AOBilateralUpsample: 000101
       AODirectionCount: 010000000200000004000000
-      ContactShadowSampleCount: 060000000a00000010000000
-      SSRMaxRaySteps: 080000000800000020000000
+      ContactShadowSampleCount: 060000000500000010000000
+      SSRMaxRaySteps: 020000000400000010000000
       RTAORayLength:
       - 0.5
       - 3
@@ -440,7 +440,7 @@ MonoBehaviour:
   enableSRPBatcher: 1
   shaderVariantLogLevel: 0
   availableMaterialQualityLevels: -1
-  m_DefaultMaterialQualityLevel: 4
+  m_DefaultMaterialQualityLevel: 2
   diffusionProfileSettings: {fileID: 0}
   diffusionProfileSettingsList:
   - {fileID: 11400000, guid: b3387e5bc51e1b949937129e667e7cc2, type: 2}
@@ -453,4 +453,4 @@ MonoBehaviour:
     streamingCpuCacheSizeInMegaBytes: 1024
     streamingGpuCacheSettings:
     - format: 0
-      sizeInMegaBytes: 512
+      sizeInMegaBytes: 1024

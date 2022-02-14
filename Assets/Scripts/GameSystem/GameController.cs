@@ -8,6 +8,7 @@ using Pixelplacement;
 using Pixelplacement.TweenSystem;
 using UnityEngine.Tilemaps;
 using UnityEngine.Events;
+using Volume = UnityEngine.Rendering.Volume;
 
 public enum DeathEvent {none, pocketDimension, zombie008 };
 
@@ -67,6 +68,7 @@ public class GameController : MonoBehaviour
     [Header("Volumes")]
     public UnityEngine.Rendering.Volume HorrorVol;
     public UnityEngine.Rendering.Volume MainVol;
+    LiftGammaGain liftGamma;
     //DepthOfField depth;
     TweenBase HorrorTween;
 
@@ -1171,11 +1173,10 @@ public class GameController : MonoBehaviour
         SubtitleEngine.instance.LoadValues();
         SCP_UI.instance.LoadValues();
         HorrorFov.gameObject.GetComponent<Player_MouseLook>().LoadValues();
-        
-        //Debug.Log(MainVol.profile.GetSetting<ColorGrading>().gamma.value);
-        MainVol.profile.Add<LiftGammaGain>().gamma.value = new Vector4(1, 1, 1, PlayerPrefs.GetFloat("Gamma", 0)*2.5F);
+        //liftGamma.gamma.value = new Vector4(setValue(1, 1, 1, PlayerPrefs.GetFloat("Gamma", 0) * 2.5f);
+        //Debug.Log(MainVol.profile.Has<LiftGammaGain>().gamma.value);
+        //   if (MainVol.profile.Has<LiftGammaGain>())//.gamma.value = new Vector4(1, 1, 1, PlayerPrefs.GetFloat("Gamma", 0)*2.5F);
         //Debug.Log(PlayerPrefs.GetFloat("Gamma", 0));
-
         switch (PlayerPrefs.GetInt("Post",1))
         {
             case 0:

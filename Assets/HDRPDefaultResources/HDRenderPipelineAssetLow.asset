@@ -269,7 +269,7 @@ MonoBehaviour:
         serializedVersion: 2
         m_Bits: 0
       supportFabricConvolution: 0
-      maxDirectionalLightsOnScreen: 4
+      maxDirectionalLightsOnScreen: 16
       maxPunctualLightsOnScreen: 16
       maxAreaLightsOnScreen: 16
       maxEnvLightsOnScreen: 8
@@ -344,13 +344,13 @@ MonoBehaviour:
       - 5
       - 8
       - 13
-      DoFResolution: 040000000200000001000000
-      DoFHighQualityFiltering: 000101
+      DoFResolution: 040000000200000002000000
+      DoFHighQualityFiltering: 000100
       DoFPhysicallyBased: 000000
       MotionBlurSampleCount: 040000000800000006000000
       BloomRes: 040000000200000002000000
-      BloomHighQualityFiltering: 000101
-      BloomHighQualityPrefiltering: 000001
+      BloomHighQualityFiltering: 000100
+      BloomHighQualityPrefiltering: 000000
       ChromaticAberrationMaxSamples: 030000000600000008000000
     lightSettings:
       useContactShadow:
@@ -374,8 +374,8 @@ MonoBehaviour:
       AOMaximumRadiusPixels: 200000002800000050000000
       AOBilateralUpsample: 000101
       AODirectionCount: 010000000200000004000000
-      ContactShadowSampleCount: 060000000a00000010000000
-      SSRMaxRaySteps: 040000001000000020000000
+      ContactShadowSampleCount: 020000000400000010000000
+      SSRMaxRaySteps: 020000000800000020000000
       RTAORayLength:
       - 0.5
       - 3
