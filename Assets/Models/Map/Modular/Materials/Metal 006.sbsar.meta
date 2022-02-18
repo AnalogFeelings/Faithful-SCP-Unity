@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c0590169a3df2fe46b0dd8706cc66811
+guid: 504e0b894ead1b3448bd2ab7f27186e1
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -11,22 +11,25 @@ ScriptedImporter:
   version: 29
   projectContext: 1
   mGraphInstanceData:
-  - graphLabel: Bolted Square Plate
-    prototypeName: Bolted Square Plate
+  - graphLabel: Metal 006
+    prototypeName: Metal 006
     graphDescIndex: 0
     generateAllOutputs: 0
     generateMipMaps: 1
-    preset: " <sbspreset pkgurl=\"pkg://metal_bolted_square_plate\" label=\"\" >\n 
-      <presetinput identifier=\"$outputsize\" uid=\"1804581856\" type=\"8\" value=\"11,11\"
-      />\n  <presetinput identifier=\"metal_roughness\" uid=\"370083223\" type=\"0\"
-      value=\"0.329\" />\n </sbspreset>\n"
+    preset: " <sbspreset pkgurl=\"pkg://metal_006\" label=\"\" >\n  <presetinput
+      identifier=\"$outputsize\" uid=\"461559496\" type=\"8\" value=\"10,10\" />\n 
+      <presetinput identifier=\"dirt\" uid=\"515202638\" type=\"0\" value=\"0.773\"
+      />\n  <presetinput identifier=\"scratches\" uid=\"515202654\" type=\"0\" value=\"0.609\"
+      />\n  <presetinput identifier=\"metal_color\" uid=\"1635178658\" type=\"2\"
+      value=\"0.216358,0.230059,0.245283\" />\n  <presetinput identifier=\"metal_roughness\"
+      uid=\"1727753270\" type=\"0\" value=\"0.207\" />\n </sbspreset>\n"
     shaderName: HDRP/LitTessellation
     materialProperties:
       shader: {fileID: 4800000, guid: 756bac9090102564582875f4c7e30202, type: 3}
       shaderKeywords: _BASECOLORMAP _DISABLE_SSR_TRANSPARENT _HEIGHTMAP _MASKMAP
         _NORMALMAP _NORMALMAP_TANGENT_SPACE _SPECULARCOLORMAP
       lightmapFlags: 4
-      enableInstancingVariants: 1
+      enableInstancingVariants: 0
       doubleSidedGI: 0
       customRenderQueue: 2225
       texEnvs:
@@ -35,10 +38,10 @@ ScriptedImporter:
         scale: {x: 1, y: 1}
         offset: {x: 0, y: 0}
       - name: _BaseColorMap
-        texture: {fileID: -2003861037263888680, guid: c0590169a3df2fe46b0dd8706cc66811,
+        texture: {fileID: 8714526317094329886, guid: 504e0b894ead1b3448bd2ab7f27186e1,
           type: 3}
         scale: {x: 1, y: 1}
-        offset: {x: -0.1, y: 0}
+        offset: {x: 0, y: 0}
       - name: _BentNormalMap
         texture: {instanceID: 0}
         scale: {x: 1, y: 1}
@@ -60,7 +63,7 @@ ScriptedImporter:
         scale: {x: 1, y: 1}
         offset: {x: 0, y: 0}
       - name: _HeightMap
-        texture: {fileID: -4237506371756070027, guid: c0590169a3df2fe46b0dd8706cc66811,
+        texture: {fileID: 4895182546727821380, guid: 504e0b894ead1b3448bd2ab7f27186e1,
           type: 3}
         scale: {x: 1, y: 1}
         offset: {x: 0, y: 0}
@@ -77,12 +80,12 @@ ScriptedImporter:
         scale: {x: 1, y: 1}
         offset: {x: 0, y: 0}
       - name: _MaskMap
-        texture: {fileID: 5047833814650382716, guid: c0590169a3df2fe46b0dd8706cc66811,
+        texture: {fileID: 6123929093231335070, guid: 504e0b894ead1b3448bd2ab7f27186e1,
           type: 3}
         scale: {x: 1, y: 1}
         offset: {x: 0, y: 0}
       - name: _NormalMap
-        texture: {fileID: -1518796965386839079, guid: c0590169a3df2fe46b0dd8706cc66811,
+        texture: {fileID: -9145106948908842110, guid: 504e0b894ead1b3448bd2ab7f27186e1,
           type: 3}
         scale: {x: 1, y: 1}
         offset: {x: 0, y: 0}
@@ -91,7 +94,7 @@ ScriptedImporter:
         scale: {x: 1, y: 1}
         offset: {x: 0, y: 0}
       - name: _SpecularColorMap
-        texture: {fileID: -1910398200091642630, guid: c0590169a3df2fe46b0dd8706cc66811,
+        texture: {fileID: -3046377412796421483, guid: 504e0b894ead1b3448bd2ab7f27186e1,
           type: 3}
         scale: {x: 1, y: 1}
         offset: {x: 0, y: 0}
@@ -455,21 +458,21 @@ ScriptedImporter:
       bImage: 1
       bNumerical: 0
       bLinear: 1
-    - outputName: ambientOcclusion
-      identifier: ambient_occlusion
-      usageName: ambientOcclusion
-      channelStr: ambientOcclusion
-      label: Ambient Occlusion
-      usage: 5
-      bImage: 1
-      bNumerical: 0
-      bLinear: 1
     - outputName: height
       identifier: height
       usageName: height
       channelStr: height
       label: Height
       usage: 9
+      bImage: 1
+      bNumerical: 0
+      bLinear: 1
+    - outputName: ambientOcclusion
+      identifier: ambient_occlusion
+      usageName: ambientOcclusion
+      channelStr: ambientOcclusion
+      label: Ambient Occlusion
+      usage: 5
       bImage: 1
       bNumerical: 0
       bLinear: 1
@@ -518,14 +521,14 @@ ScriptedImporter:
       - sourceName: smoothness
         from: 0
         to: 3
-    - targetName: ambientOcclusion
-      components:
-      - sourceName: ambientOcclusion
-        from: 0
-        to: 3
     - targetName: height
       components:
       - sourceName: height
+        from: 0
+        to: 3
+    - targetName: ambientOcclusion
+      components:
+      - sourceName: ambientOcclusion
         from: 0
         to: 3
     - targetName: mask
@@ -543,43 +546,43 @@ ScriptedImporter:
         from: 0
         to: 3
     textureParameters:
-    - textureName: Bolted Square Plate - diffuse
+    - textureName: Metal 006 - diffuse
       wrapMode: 0
       filterMode: 1
       aniso: 1
-    - textureName: Bolted Square Plate - baseColor
+    - textureName: Metal 006 - baseColor
       wrapMode: 0
       filterMode: 1
       aniso: 1
-    - textureName: Bolted Square Plate - normal
+    - textureName: Metal 006 - normal
       wrapMode: 0
       filterMode: 1
       aniso: 1
-    - textureName: Bolted Square Plate - specular
+    - textureName: Metal 006 - specular
       wrapMode: 0
       filterMode: 1
       aniso: 1
-    - textureName: Bolted Square Plate - glossiness
+    - textureName: Metal 006 - glossiness
       wrapMode: 0
       filterMode: 1
       aniso: 1
-    - textureName: Bolted Square Plate - roughness
+    - textureName: Metal 006 - roughness
       wrapMode: 0
       filterMode: 1
       aniso: 1
-    - textureName: Bolted Square Plate - metallic
+    - textureName: Metal 006 - metallic
       wrapMode: 0
       filterMode: 1
       aniso: 1
-    - textureName: Bolted Square Plate - ambientOcclusion
+    - textureName: Metal 006 - height
       wrapMode: 0
       filterMode: 1
       aniso: 1
-    - textureName: Bolted Square Plate - height
+    - textureName: Metal 006 - ambientOcclusion
       wrapMode: 0
       filterMode: 1
       aniso: 1
-    - textureName: Bolted Square Plate - mask
+    - textureName: Metal 006 - mask
       wrapMode: 0
       filterMode: 1
       aniso: 1
@@ -589,16 +592,16 @@ ScriptedImporter:
     - label: Default
       bOverride: 0
       bLockRatio: 1
-      textureWidth: 2048
-      textureHeight: 2048
+      textureWidth: 1024
+      textureHeight: 1024
       textureFormatMode: 0
       normalCompressed: 0
       bGenerateOnLoad: 1
-    material: {fileID: 1488312942963591191, guid: c0590169a3df2fe46b0dd8706cc66811,
+    material: {fileID: 3954565982357225544, guid: 504e0b894ead1b3448bd2ab7f27186e1,
       type: 3}
     generatedTextures:
-    - {fileID: -2003861037263888680, guid: c0590169a3df2fe46b0dd8706cc66811, type: 3}
-    - {fileID: -1518796965386839079, guid: c0590169a3df2fe46b0dd8706cc66811, type: 3}
-    - {fileID: -1910398200091642630, guid: c0590169a3df2fe46b0dd8706cc66811, type: 3}
-    - {fileID: -4237506371756070027, guid: c0590169a3df2fe46b0dd8706cc66811, type: 3}
-    - {fileID: 5047833814650382716, guid: c0590169a3df2fe46b0dd8706cc66811, type: 3}
+    - {fileID: 8714526317094329886, guid: 504e0b894ead1b3448bd2ab7f27186e1, type: 3}
+    - {fileID: -9145106948908842110, guid: 504e0b894ead1b3448bd2ab7f27186e1, type: 3}
+    - {fileID: -3046377412796421483, guid: 504e0b894ead1b3448bd2ab7f27186e1, type: 3}
+    - {fileID: 4895182546727821380, guid: 504e0b894ead1b3448bd2ab7f27186e1, type: 3}
+    - {fileID: 6123929093231335070, guid: 504e0b894ead1b3448bd2ab7f27186e1, type: 3}

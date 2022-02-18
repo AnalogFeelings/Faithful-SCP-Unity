@@ -18,25 +18,28 @@ ScriptedImporter:
     generateMipMaps: 1
     preset: " <sbspreset pkgurl=\"pkg://Concrete_Generator\" label=\"\" >\n  <presetinput
       identifier=\"$outputsize\" uid=\"567878824\" type=\"8\" value=\"10,10\" />\n 
-      <presetinput identifier=\"Steel_Bars_Tiling\" uid=\"1251000840\" type=\"4\"
-      value=\"20\" />\n  <presetinput identifier=\"Bar_Scale\" uid=\"1252138761\"
-      type=\"0\" value=\"0.0018\" />\n  <presetinput identifier=\"Small_Damage_Amount\"
-      uid=\"1252163617\" type=\"0\" value=\"0.778\" />\n  <presetinput identifier=\"Structural_Damage\"
-      uid=\"1252488536\" type=\"0\" value=\"0\" />\n  <presetinput identifier=\"Damage_Cell_Size\"
-      uid=\"1252377799\" type=\"0\" value=\"1\" />\n  <presetinput identifier=\"Brick_Intensity\"
+      <presetinput identifier=\"Bar_Scale\" uid=\"1252138761\" type=\"0\" value=\"0.0018\"
+      />\n  <presetinput identifier=\"Small_Damage_Amount\" uid=\"1252163617\" type=\"0\"
+      value=\"0.778\" />\n  <presetinput identifier=\"Structural_Damage\" uid=\"1252488536\"
+      type=\"0\" value=\"0\" />\n  <presetinput identifier=\"Damage_Cell_Size\" uid=\"1252377799\"
+      type=\"0\" value=\"1\" />\n  <presetinput identifier=\"Damage_Cell_Size_Random\"
+      uid=\"1252377138\" type=\"0\" value=\"1\" />\n  <presetinput identifier=\"Damage_Cells_Tiling\"
+      uid=\"1252353946\" type=\"4\" value=\"44\" />\n  <presetinput identifier=\"Brick_Intensity\"
       uid=\"1253453208\" type=\"0\" value=\"0.19\" />\n  <presetinput identifier=\"Base_Damage\"
       uid=\"1253461886\" type=\"0\" value=\"1\" />\n  <presetinput identifier=\"Base_Damage_Cell_Scale\"
-      uid=\"1252194712\" type=\"4\" value=\"1\" />\n  <presetinput identifier=\"Crack_Intensity\"
+      uid=\"1252194712\" type=\"4\" value=\"30\" />\n  <presetinput identifier=\"Crack_Intensity\"
       uid=\"1253524599\" type=\"0\" value=\"0\" />\n  <presetinput identifier=\"Micro_Cracks\"
       uid=\"1252778983\" type=\"0\" value=\"0\" />\n  <presetinput identifier=\"Erosion\"
-      uid=\"1253326581\" type=\"0\" value=\"0\" />\n  <presetinput identifier=\"Blocks\"
-      uid=\"1252700881\" type=\"4\" value=\"0\" />\n  <presetinput identifier=\"Blocks_Tiling\"
-      uid=\"1251291148\" type=\"4\" value=\"4\" />\n  <presetinput identifier=\"Blocks_Edge_Damage\"
-      uid=\"1251061085\" type=\"0\" value=\"0\" />\n  <presetinput identifier=\"Color_Paint\"
+      uid=\"1253326581\" type=\"0\" value=\"0\" />\n  <presetinput identifier=\"Blocks_Tiling\"
+      uid=\"1251291148\" type=\"4\" value=\"2\" />\n  <presetinput identifier=\"Blocks_Edge_Damage\"
+      uid=\"1251061085\" type=\"0\" value=\"0\" />\n  <presetinput identifier=\"Blocks_Damage2\"
+      uid=\"1252508709\" type=\"0\" value=\"0.549\" />\n  <presetinput identifier=\"Blocks_Damage_3\"
+      uid=\"1252260750\" type=\"0\" value=\"0.553\" />\n  <presetinput identifier=\"Color_Paint\"
       uid=\"1252877427\" type=\"3\" value=\"0.744037,0.750712,0.754717,1\" />\n 
-      <presetinput identifier=\"Base_Damage_Cell_Size\" uid=\"1252158421\" type=\"0\"
-      value=\"0\" />\n  <presetinput identifier=\"Base_Damage_Size_Random\" uid=\"1252234029\"
-      type=\"0\" value=\"1\" />\n </sbspreset>\n"
+      <presetinput identifier=\"Paint_Damage_Masking\" uid=\"1252251730\" type=\"0\"
+      value=\"0.17\" />\n  <presetinput identifier=\"Base_Damage_Cell_Size\" uid=\"1252158421\"
+      type=\"0\" value=\"0\" />\n  <presetinput identifier=\"Base_Damage_Size_Random\"
+      uid=\"1252234029\" type=\"0\" value=\"1\" />\n </sbspreset>\n"
     shaderName: HDRP/LitTessellation
     materialProperties:
       shader: {fileID: 4800000, guid: 756bac9090102564582875f4c7e30202, type: 3}
@@ -54,7 +57,7 @@ ScriptedImporter:
       - name: _BaseColorMap
         texture: {fileID: 5850843876618213956, guid: 193494aa5f2a38946b7f81beceeb8b02,
           type: 3}
-        scale: {x: 1, y: 1}
+        scale: {x: 2, y: 2}
         offset: {x: 0, y: 0}
       - name: _BentNormalMap
         texture: {instanceID: 0}
@@ -243,7 +246,7 @@ ScriptedImporter:
       - name: _HeightTessCenter
         float: 0.5
       - name: _InvTilingScale
-        float: 1
+        float: 0.5
       - name: _Ior
         float: 1.5
       - name: _IridescenceMask
