@@ -11,12 +11,13 @@ GameObject:
   - component: {fileID: 1239208479321894359}
   - component: {fileID: 2782474834228879986}
   - component: {fileID: 106293463145633464}
-  m_Layer: 0
+  - component: {fileID: 5142227358085570213}
+  m_Layer: 10
   m_Name: Walkway
-  m_TagString: Untagged
+  m_TagString: Concrete
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 40
   m_IsActive: 1
 --- !u!4 &1239208479321894359
 Transform:
@@ -25,9 +26,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1907658340428838765}
-  m_LocalRotation: {x: 0.000000021855694, y: 0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
+  m_LocalScale: {x: 0.8000003, y: 0.8, z: 0.8000003}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -59,8 +60,8 @@ MeshRenderer:
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 653003206444337839, guid: 3aa3bb5dd204fb94180db0724272a1ae, type: 3}
-  - {fileID: -7261640565506504245, guid: 322e4405d0c1d7549abb4c27b1d6a1b5, type: 3}
+  - {fileID: 4780624140596219681, guid: 193494aa5f2a38946b7f81beceeb8b02, type: 3}
+  - {fileID: 5003023311454858309, guid: 204718d172debff469ad08928814cb44, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -82,3 +83,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &5142227358085570213
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1907658340428838765}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 5, y: 0.5, z: 5}
+  m_Center: {x: -2.5, y: -0.25, z: 2.5}
