@@ -12,6 +12,7 @@ public class Object_instaItem : Object_Interact
     public Material[] itemMats;
     public BoxCollider col;
     public Rigidbody body;
+    public MeshRenderer meshRenderer;
     // Start is called before the first frame updat
     public void Start()
     {

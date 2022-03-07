@@ -21,14 +21,14 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: papertexture
-  m_Shader: {fileID: 4800000, guid: c4edd00ff2db5b24391a4fcb1762e459, type: 3}
+  m_Shader: {fileID: 4800000, guid: 6e4ae4064600d784cac1e41a9e6f2e59, type: 3}
   m_ShaderKeywords: _AXF_BRDF_TYPE_SVBRDF _COLORMAP _DISABLE_DECALS _DISABLE_SSR
-    _DISABLE_SSR_TRANSPARENT _DOUBLESIDED_ON _MATERIAL_AFFECTS_ALBEDO _MATERIAL_AFFECTS_MASKMAP
-    _MATERIAL_AFFECTS_NORMAL _NORMALMAP_TANGENT_SPACE _NORMALMAP_TANGENT_SPACE0 _NORMALMAP_TANGENT_SPACE1
+    _DISABLE_SSR_TRANSPARENT _MATERIAL_AFFECTS_ALBEDO _MATERIAL_AFFECTS_MASKMAP _MATERIAL_AFFECTS_NORMAL
+    _NORMALMAP_TANGENT_SPACE _NORMALMAP_TANGENT_SPACE0 _NORMALMAP_TANGENT_SPACE1
     _NORMALMAP_TANGENT_SPACE2 _NORMALMAP_TANGENT_SPACE3
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 1
+  m_DoubleSidedGI: 0
   m_CustomRenderQueue: 2000
   stringTagMap:
     MotionVector: User
@@ -37,6 +37,10 @@ Material:
   - DecalProjectorForwardEmissive
   - DecalMeshForwardEmissive
   - MOTIONVECTORS
+  - TransparentDepthPrepass
+  - TransparentDepthPostpass
+  - TransparentBackface
+  - RayTracingPrepass
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -449,8 +453,8 @@ Material:
     - _CarPaint2_LobeCount: 0
     - _CoatMask: 0
     - _ColorMask: 15
-    - _CullMode: 0
-    - _CullModeForward: 0
+    - _CullMode: 2
+    - _CullModeForward: 2
     - _Cutoff: 1
     - _DecalBlend: 1
     - _DecalColorMask0: 15
@@ -508,7 +512,7 @@ Material:
     - _DistortionSrcBlend: 1
     - _DistortionVectorBias: -1
     - _DistortionVectorScale: 2
-    - _DoubleSidedEnable: 1
+    - _DoubleSidedEnable: 0
     - _DoubleSidedNormalMode: 1
     - _DrawOrder: 0
     - _DstBlend: 0
