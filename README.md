@@ -3,6 +3,8 @@ SCP - Remake Unity 2020.3.XX LTS
 ---------------------------------------
 Built on Unity HDRP
 
+Using modular assets for easy level creation.
+
 ![alt text](https://i.imgur.com/281jdTv.jpg)
 ![alt text](https://i.imgur.com/G0LVirJ.jpg)
 ![alt text](https://i.imgur.com/wdUznGn.jpg)
