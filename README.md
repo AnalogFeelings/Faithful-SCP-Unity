@@ -1,50 +1,13 @@
 SCP - Remake Unity 2020.3.XX LTS
 
 ---------------------------------------
-Aqui iria la documentacion...
-Si tuviera ganas de escribir una
+Built on Unity HDRP
 
-**/Assets/Plugins/*
-**/Assets/Plugins.meta
+Using modular assets for easy level creation.
 
-**/Assets/Audio/*
-**/Assets/Examples/*
-**/Assets/GFX/*
-**/Assets/Gizmos/*
-**/Assets/SCP_Menu/*
-**/Assets/Resources/*
-**/Assets/Items/*
-**/Assets/GUI_Sprites/*
-**/Assets/Packages/*
-**/Assets/Head Look Controller/*
-**/Assets/Models/*
-**/Assets/NavMeshComponents/*
-**/Assets/PostProcessing/*
-**/Assets/Prefabs/*
-**/Assets/Scenes/*
-**/Assets/Settings/*
-**/Assets/Standard Assets/*
-**/Assets/Test/*
-**/Assets/Pixelplacement/*
-
-**/Assets/Audio.meta
-**/Assets/Examples.meta
-**/Assets/GFX.meta
-**/Assets/Gizmos.meta
-**/Assets/GUI_Sprites.meta
-**/Assets/Head Look Controller.meta
-**/Assets/Models.meta
-**/Assets/Packages.meta
-**/Assets/SCP_Menu.meta
-**/Assets/Items.meta
-**/Assets/NavMeshComponents.meta
-**/Assets/PostProcessing.meta
-**/Assets/Prefabs.meta
-**/Assets/Resources.meta
-**/Assets/Scenes.meta
-**/Assets/Settings.meta
-**/Assets/Standard Assets.meta
-**/Assets/Test.meta
-**/Assets/Pixelplacement.meta
-
-
+![alt text](https://i.imgur.com/281jdTv.jpg)
+![alt text](https://i.imgur.com/G0LVirJ.jpg)
+![alt text](https://i.imgur.com/wdUznGn.jpg)
+![alt text](https://i.imgur.com/LPI9Lr3.jpg)
+![alt text](https://i.imgur.com/7h8JcdL.jpg)
+![alt text](https://i.imgur.com/9XvxclV.jpg)
