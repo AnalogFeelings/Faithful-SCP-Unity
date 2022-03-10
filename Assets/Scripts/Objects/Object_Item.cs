@@ -7,10 +7,10 @@ public class Object_Item : Object_Interact
     public int id;
 
     public Mesh itemMesh;
+    public SkinnedMeshRenderer skinnedMesh;
     public BoxCollider col;
     public Rigidbody body;
     public Material[] itemMats;
-    public MeshRenderer meshRenderer;
     // Start is called before the first frame updat
     public void Start()
     {
@@ -27,6 +27,10 @@ public class Object_Item : Object_Interact
         col.center = ItemController.instance.items[item.itemFileName].colCenter;
         col.size = ItemController.instance.items[item.itemFileName].colSize;
         body.mass = ItemController.instance.items[item.itemFileName].mass;
+        skinnedMesh = gameObject.AddComponent<SkinnedMeshRenderer>();
+        skinnedMesh.sharedMesh = itemMesh;
+        skinnedMesh.materials = itemMats;
+        skinnedMesh.localBounds = mesh.mesh.bounds;
     }
 
     // Update is called once per frame
