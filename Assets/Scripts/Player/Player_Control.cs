@@ -58,7 +58,8 @@ public class Player_Control : MonoBehaviour
     private CharacterController _controller;
     bool Grounded = true, isSmoke = false, objectLock=false,fakeBlink, isRunning, isTired = false, isLooking=false, cognitoEffect, onBlink, cameraNextFrame, isCaptive = false;
     Camera PlayerCam;
-    Image eyes, blinkbar, runbar, batbar, overlay, handEquip, eyeIcon;
+    Image eyes, batbar, overlay, handEquip, eyeIcon;
+    SegmentedSlider blinkbar, runbar;
     RectTransform hand_rect, hud_rect;
     public bool Freeze = false, isGameplay = false, Crouch = false, onCam = false, godmode = false, checkObjects = true, IsPuttingOn=false, hasZombie=true, allowZombie=true, allowMove=true;
     public bool noMasterController = false;
@@ -417,13 +418,13 @@ public class Player_Control : MonoBehaviour
         {
             if (!noMasterController)
             {
-                int blinkPercent = ((int)Mathf.Ceil((BlinkingTimer / (BlinkingTimerBase / 100)) / 5));
+                int blinkPercent = (int)Mathf.Ceil(BlinkingTimer / (BlinkingTimerBase / 100));
 
-                blinkbar.rectTransform.sizeDelta = new Vector2(blinkPercent * 8, 14);
+                blinkbar.UpdateSlider(blinkPercent);
 
-                int runPercent = ((int)Mathf.Floor((RunningTimer / (RunningTimerBase / 100)) / 5));
+                int runPercent = (int)Mathf.Floor(RunningTimer / (RunningTimerBase / 100));
 
-                runbar.rectTransform.sizeDelta = new Vector2(runPercent * 8, 14);
+                runbar.UpdateSlider(runPercent);
 
                 if (InterHold != null)
                 {

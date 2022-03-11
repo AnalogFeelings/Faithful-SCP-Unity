@@ -29,7 +29,8 @@ public class SCP_UI : MonoBehaviour
 
     bool canConsole, canTuto, canPause;
 
-    public Image blinkBar, Overlay, handEquip, runBar, navBar;
+    public Image Overlay, handEquip, navBar;
+    public SegmentedSlider blinkBar, runBar;
 
     public GameObject defInv, defPause, hand;
     // Start is called before the first frame update
